@@ -1,4 +1,4 @@
-L.Handler.PolyDraw = L.Handler.extend({
+L.Polyline.Draw = L.Handler.Draw.extend({
 	options: {
 		icon: new L.DivIcon({
 			iconSize: new L.Point(8, 8),
@@ -7,15 +7,8 @@ L.Handler.PolyDraw = L.Handler.extend({
 		guidelineDistance: 20
 	},
 	
-	initialize: function (map, options) {
-		this._map = map;
-		this._container = map._container;
-		this._pane = map._panes.overlayPane;
-
-		L.Util.setOptions(this, options);
-	},
-	
 	addHooks: function () {
+		L.Handler.Draw.prototype.addHooks.call(this);
 		if (this._map) {
 			this._markers = [];
 
@@ -23,12 +16,6 @@ L.Handler.PolyDraw = L.Handler.extend({
 			this._map.addLayer(this._markerGroup);
 
 			this._poly = new L.Polyline([], { color: '#f06eaa' });
-
-			//create the label if haven't before
-			if (!this._cursorLabel) {
-				this._cursorLabel = L.DomUtil.create('div', 'leaflet-cursor-label', this._pane);
-			}
-			this._cursorLabel.style.display = 'block';
 
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
@@ -40,6 +27,7 @@ L.Handler.PolyDraw = L.Handler.extend({
 	},
 
 	removeHooks: function () {
+		L.Handler.Draw.prototype.removeHooks.call(this);
 		if (this._map) {
 			var poly;
 
@@ -65,10 +53,6 @@ L.Handler.PolyDraw = L.Handler.extend({
 
 			//clean up DOM
 			this._clearGuides();
-			this._cursorLabel.style.display = 'none';
-
-			//TODO refactor: move cursor to styles
-			this._container.style.cursor = '';
 
 			L.DomEvent
 				.removeListener(this._container, 'mousemove', this._onMouseMove)
@@ -128,8 +112,11 @@ L.Handler.PolyDraw = L.Handler.extend({
 			markerCount = this._markers.length;
 
 		// update the label
-		L.DomUtil.setPosition(this._cursorLabel, newPos);
-		this._setToolipText(latlng, this._polyOptions.getLabelText(markerCount));
+		this._updateLabel(
+			newPos,
+			latlng.lat.toFixed(6) + ', ' + latlng.lng.toFixed(6),
+			this._polyOptions.getLabelText(markerCount)
+		);
 
 		// draw the guides
 		if (markerCount > 0) {
@@ -166,17 +153,6 @@ L.Handler.PolyDraw = L.Handler.extend({
 		if (this._poly.getLatLngs().length === 2) {
 			this._map.addLayer(this._poly);
 		}
-	},
-
-	_setToolipText: function (latlng, text) {
-		this._cursorLabel.innerHTML =
-			'<span class="leaflet-cursor-label-latlng">' +
-				latlng.lat.toFixed(6) +
-				', ' +
-				latlng.lng.toFixed(6) +
-			'</span>' +
-			'<br />' +
-			'<span>' + text + '</span>';
 	},
 
 	// removes all child elements (guide dashes) from the guides container
@@ -219,4 +195,4 @@ L.Handler.PolyDraw = L.Handler.extend({
 	}
 });
 
-L.Map.addInitHook('addHandler', 'polyDraw', L.Handler.PolyDraw);
+L.Map.addInitHook('addHandler', 'polyDraw', L.Polyline.Draw);

@@ -6,7 +6,7 @@ L.Control.Draw = L.Control.extend({
 	},
 
 	onAdd: function (map) {
-		var className = 'leaflet-control-polydraw',
+		var className = 'leaflet-control-draw',
 			container = L.DomUtil.create('div', className);
 
 		if(this.options.drawPolyline) {

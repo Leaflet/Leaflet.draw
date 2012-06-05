@@ -42,10 +42,10 @@
 	background-image: url(images/polygon.png);
 	}
 
-.leaflet-cursor-label {
+.leaflet-draw-label {
 	background-color: #fff;
 	border: 1px solid #ccc;
-	color: #999;
+	color: #ccc;
 	font: 12px/18px "Helvetica Neue", Arial, Helvetica, sans-serif;
 	margin-left: 20px;
 	margin-top: -21px;
@@ -55,11 +55,11 @@
 	z-index: 6;
 }
 
-.leaflet-cursor-label-latlng {
-	color: #222;
+.leaflet-draw-label-subtext {
+	color: #999;
 }
 
-.leaflet-polyline-guide-dash {
+.leaflet-draw-polyline-guide-dash {
 	background-color: #f06eaa;
 	font-size: 1%;
 	opacity: 0.6;
