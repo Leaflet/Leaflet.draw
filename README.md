@@ -17,14 +17,14 @@ map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(-37.7772, 175.
 If you would like to reposition the control or turn off poly type add the control manually:
 
 ````
-var drawControl = new L.Control.Draw({
+var drawControl = new L.Control.PolyDraw({
 	position: 'topright',
 	drawPolyline: false
 });
 map.addControl(drawControl);
 ````
 
-See [example/map-polydraw.html](https://github.com/jacobtoye/Leaflet.iconlabel/blob/master/example/map-marker-iconlabels.html) for a working example.
+See [example/map-polydraw.html](https://github.com/jacobtoye/Leaflet.draw/blob/master/example/drawing.html) for a working example.
 
 #Official support
 Leaflet plan to include drawing in 0.4 so this is just a band-aid until it comes. See https://github.com/CloudMade/Leaflet/issues/174
