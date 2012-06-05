@@ -4,12 +4,12 @@
 	<title>Leaflet PolyDraw</title>
 
 	<link rel="stylesheet" href="../dist/leaflet.css" />
-	<link rel="stylesheet" href="../Control.PolyDraw.css" />
+	<link rel="stylesheet" href="../Control.Draw.css" />
 	<!--[if lte IE 8]><link rel="stylesheet" href="../dist/leaflet.ie.css" /><![endif]-->
 
 	<script src="../dist/leaflet.js"></script>
-	<script src="../Handler.PolyDraw.js"></script>
-	<script src="../Control.PolyDraw.js"></script>
+	<script src="../Poly.Draw.js"></script>
+	<script src="../Control.Draw.js"></script>
 </head>
 <body>
 	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
@@ -18,7 +18,7 @@
 		
 		var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png',
 			cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18}),
-			map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(-37.7772, 175.2756), zoom: 15, polyDrawControl: true });
+			map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(-37.7772, 175.2756), zoom: 15, drawControl: true });
 		
 		var polygons = new L.LayerGroup();
 		map.on('polycreated', function (e) {

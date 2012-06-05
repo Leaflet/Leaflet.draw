@@ -1,4 +1,4 @@
-L.Control.PolyDraw = L.Control.extend({
+L.Control.Draw = L.Control.extend({
 	options: {
 		position: 'topleft',
 		drawPolyline: true,
@@ -47,8 +47,8 @@ L.Control.PolyDraw = L.Control.extend({
 });
 
 L.Map.addInitHook(function () {
-	if (this.options.polyDrawControl) {
-		this.polyDrawControl = new L.Control.PolyDraw();
-		this.addControl(this.polyDrawControl);
+	if (this.options.drawControl) {
+		this.drawControl = new L.Control.Draw();
+		this.addControl(this.drawControl);
 	}
 });
