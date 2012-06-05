@@ -1,0 +1,54 @@
+L.Control.PolyDraw = L.Control.extend({
+	options: {
+		position: 'topleft',
+		drawPolyline: true,
+		drawPolygon: true
+	},
+
+	onAdd: function (map) {
+		var className = 'leaflet-control-polydraw',
+			container = L.DomUtil.create('div', className);
+
+		if(this.options.drawPolyline) {
+			this._createButton(
+				'Draw a polyline',
+				className + '-polyline',
+				container,
+				map.polyDraw.drawPolyline,
+				map.polyDraw
+			);
+		}
+
+		if(this.options.drawPolygon) {
+			this._createButton(
+				'Draw a polygon',
+				className + '-polygon',
+				container,
+				map.polyDraw.drawPolygon,
+				map.polyDraw
+			);
+		}
+		
+		return container;
+	},
+
+	_createButton: function (title, className, container, fn, context) {
+		var link = L.DomUtil.create('a', className, container);
+		link.href = '#';
+		link.title = title;
+
+		L.DomEvent
+			.addListener(link, 'click', L.DomEvent.stopPropagation)
+			.addListener(link, 'click', L.DomEvent.preventDefault)
+			.addListener(link, 'click', fn, context);
+
+		return link;
+	}
+});
+
+L.Map.addInitHook(function () {
+	if (this.options.polyDrawControl) {
+		this.polyDrawControl = new L.Control.PolyDraw();
+		this.addControl(this.polyDrawControl);
+	}
+});

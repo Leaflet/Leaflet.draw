@@ -1,0 +1,69 @@
+/* Leaflet controls */
+
+.leaflet-control-polydraw {
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
+	}
+.leaflet-control-polydraw {
+	padding: 5px;
+	background: rgba(0, 0, 0, 0.25);
+	}
+.leaflet-control-polydraw a {
+	background-color: rgba(255, 255, 255, 0.75);
+	}
+.leaflet-control-polydraw a {
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	display: block;
+	}
+.leaflet-control-polydraw a {
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	width: 19px;
+	height: 19px;
+	margin-top: 5px;
+	}
+.leaflet-control-polydraw a:first-child{
+	margin-top: 0;
+} 	
+.leaflet-control-polydraw a:hover {
+	background-color: #fff;
+	}
+.leaflet-touch .leaflet-control-polydraw a {
+	width: 27px;
+	height: 27px;
+	}	
+.leaflet-control-polydraw-polyline {
+	background-image: url(images/polyline.png);
+	}
+.leaflet-control-polydraw-polygon {
+	background-image: url(images/polygon.png);
+	}
+
+.leaflet-cursor-label {
+	background-color: #fff;
+	border: 1px solid #ccc;
+	color: #999;
+	font: 12px/18px "Helvetica Neue", Arial, Helvetica, sans-serif;
+	margin-left: 20px;
+	margin-top: -21px;
+	padding: 2px 4px;
+	position: absolute;
+	white-space: nowrap;
+	z-index: 6;
+}
+
+.leaflet-cursor-label-latlng {
+	color: #222;
+}
+
+.leaflet-polyline-guide-dash {
+	background-color: #f06eaa;
+	font-size: 1%;
+	opacity: 0.6;
+	position: absolute;
+	width: 5px;
+	height: 5px;
+}

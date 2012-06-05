@@ -1,0 +1,4 @@
+ - ability to change colour
+ - add support for esc = cancel
+ - use distance instead of lat/lng
+ - add in rectangle and marker
