@@ -55,6 +55,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 			//clean up DOM
 			this._clearGuides();
+			this._container.style.cursor = '';
 
 			L.DomEvent
 				.removeListener(this._container, 'mousemove', this._onMouseMove)
