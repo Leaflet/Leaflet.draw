@@ -1,3 +1,7 @@
+L.Map.mergeOptions({
+	drawControl: false
+});
+
 L.Control.Draw = L.Control.extend({
 	options: {
 		position: 'topleft',
