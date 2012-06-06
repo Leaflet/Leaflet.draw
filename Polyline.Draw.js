@@ -173,7 +173,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 		//create the guides container if we haven't yet (TODO: probaly shouldn't do this every time the user starts to draw?)
 		if (!this._guidesContainer) {
-			this._guidesContainer = L.DomUtil.create('div', 'leaflet-polyline-guides', this._pane);
+			this._guidesContainer = L.DomUtil.create('div', 'leaflet-draw-guides', this._pane);
 		}
 	
 		//draw a dash every GuildeLineDistance
@@ -188,7 +188,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			};
 
 			//add guide dash to guide container
-			dash = L.DomUtil.create('div', 'leaflet-polyline-guide-dash', this._guidesContainer);
+			dash = L.DomUtil.create('div', 'leaflet-draw-guide-dash', this._guidesContainer);
 
 			L.DomUtil.setPosition(dash, dashPoint);
 		}
