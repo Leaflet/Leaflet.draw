@@ -45,7 +45,7 @@
 .leaflet-draw-label {
 	background-color: #fff;
 	border: 1px solid #ccc;
-	color: #ccc;
+	color: #222;
 	font: 12px/18px "Helvetica Neue", Arial, Helvetica, sans-serif;
 	margin-left: 20px;
 	margin-top: -21px;
@@ -53,6 +53,10 @@
 	position: absolute;
 	white-space: nowrap;
 	z-index: 6;
+}
+
+.leaflet-draw-label-single {
+	margin-top: -12px
 }
 
 .leaflet-draw-label-subtext {
