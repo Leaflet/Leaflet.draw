@@ -9,12 +9,14 @@ L.Handler.Draw = L.Handler.extend({
 	
 	addHooks: function () {
 		if (this._map) {
+			L.DomUtil.disableTextSelection();
 			this._label = L.DomUtil.create('div', 'leaflet-draw-label', this._pane);
 		}
 	},
 
 	removeHooks: function () {
 		if (this._map) {
+			L.DomUtil.enableTextSelection();
 			this._pane.removeChild(this._label);
 		}
 	},
