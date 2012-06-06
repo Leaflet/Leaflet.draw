@@ -11,6 +11,7 @@ L.Handler.Draw = L.Handler.extend({
 		if (this._map) {
 			L.DomUtil.disableTextSelection();
 			this._label = L.DomUtil.create('div', 'leaflet-draw-label', this._pane);
+			this._singleLineLabel = false;
 		}
 	},
 
@@ -22,11 +23,25 @@ L.Handler.Draw = L.Handler.extend({
 		}
 	},
 
-	_updateLabel: function (pos, text, subtext) {
-		L.DomUtil.setPosition(this._label, pos);
+	_updateLabelText: function (text, subtext) {
+		subtext = subtext || '';
+
+		// update the vertical position (only if changed)
+		if (subtext.length === 0 && !this._singleLineLabel) {
+			L.DomUtil.addClass(this._label, 'leaflet-draw-label-single');
+			this._singleLineLabel = true;
+		}
+		else if (subtext.length > 0 && this._singleLineLabel) {
+			L.DomUtil.removeClass(this._label, 'leaflet-draw-label-single');
+			this._singleLineLabel = false;
+		}
+
 		this._label.innerHTML =
-			'<span>' + text + '</span>' +
-			'<br />' +
-			'<span class="leaflet-draw-label-subtext">' + subtext + '</span>';
+			(subtext.length > 0 ? '<span class="leaflet-draw-label-subtext">' + subtext + '</span>' + '<br />' : '') +
+			'<span>' + text + '</span>';
+	},
+
+	_updateLabelPosition: function (pos) {
+		L.DomUtil.setPosition(this._label, pos);
 	}
 });

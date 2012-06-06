@@ -20,6 +20,8 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
 
+			this._updateLabelText(this._polyOptions.getLabelText(this._markers.length));
+
 			L.DomEvent
 				.addListener(this._container, 'mousemove', this._onMouseMove, this)
 				.addListener(this._container, 'click', this._onClick, this);
@@ -111,12 +113,8 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			latlng = this._map.mouseEventToLatLng(e),
 			markerCount = this._markers.length;
 
-		// update the label
-		this._updateLabel(
-			newPos,
-			latlng.lat.toFixed(6) + ', ' + latlng.lng.toFixed(6),
-			this._polyOptions.getLabelText(markerCount)
-		);
+		// update the label position
+		this._updateLabelPosition(newPos);
 
 		// draw the guides
 		if (markerCount > 0) {
@@ -147,6 +145,12 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		}
 
 		this._markers.push(marker);
+
+		//update the label text
+		this._updateLabelText(
+			this._polyOptions.getLabelText(this._markers.length),
+			this._markers.length > 1 ? '?? km' : ''
+		);
 
 		this._poly.addLatLng(latlng);
 
