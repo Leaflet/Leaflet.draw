@@ -21,20 +21,23 @@ L.Rectangle.Draw = L.Handler.Draw.extend({
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = '';
 
-			this._pane.removeChild(this._box);
-			delete this._box;
-
 			L.DomEvent
 				.removeListener(this._container, 'mousedown', this._onMouseDown)
 				.removeListener(document, 'mousemove', this._onMouseMove)
 				.removeListener(document, 'mouseup', this._onMouseUp);
 
-			this._map.fire(
-				'draw:rectangle-created',
-				{
-					rect: new L.Rectangle(new L.LatLngBounds(this._startLatLng, this._endLatLng), { color: '#f06eaa', weight: 4 })
-				}
-			);
+			// If the box element doesn't exist they must not have moved the mouse, so don't need to destroy/return
+			if (this._box) {
+				this._pane.removeChild(this._box);
+				delete this._box;
+
+				this._map.fire(
+					'draw:rectangle-created',
+					{
+						rect: new L.Rectangle(new L.LatLngBounds(this._startLatLng, this._endLatLng), { color: '#f06eaa', weight: 4 })
+					}
+				);
+			}
 		}
 	},
 
