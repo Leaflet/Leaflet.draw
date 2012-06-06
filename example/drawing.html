@@ -7,9 +7,10 @@
 	<link rel="stylesheet" href="../Control.Draw.css" />
 	<!--[if lte IE 8]><link rel="stylesheet" href="../dist/leaflet.ie.css" /><![endif]-->
 
-	<script src="../dist/leaflet.js"></script>
+	<script src="../dist/leaflet-src.js"></script>
 	<script src="../Handler.Draw.js"></script>
 	<script src="../Polyline.Draw.js"></script>
+	<script src="../Rectangle.Draw.js"></script>
 	<script src="../Control.Draw.js"></script>
 </head>
 <body>
@@ -22,8 +23,11 @@
 			map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(-37.7772, 175.2756), zoom: 15, drawControl: true });
 		
 		var polygons = new L.LayerGroup();
-		map.on('polycreated', function (e) {
+		map.on('draw:poly-created', function (e) {
 			polygons.addLayer(e.poly);
+		});
+		map.on('draw:rectangle-created', function (e) {
+			polygons.addLayer(e.rect);
 		});
 		map.addLayer(polygons);
 		

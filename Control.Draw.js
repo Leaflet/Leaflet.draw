@@ -2,14 +2,15 @@ L.Control.Draw = L.Control.extend({
 	options: {
 		position: 'topleft',
 		drawPolyline: true,
-		drawPolygon: true
+		drawPolygon: true,
+		drawRectangle: true
 	},
 
 	onAdd: function (map) {
 		var className = 'leaflet-control-draw',
 			container = L.DomUtil.create('div', className);
 
-		if(this.options.drawPolyline) {
+		if (this.options.drawPolyline) {
 			this._createButton(
 				'Draw a polyline',
 				className + '-polyline',
@@ -19,13 +20,23 @@ L.Control.Draw = L.Control.extend({
 			);
 		}
 
-		if(this.options.drawPolygon) {
+		if (this.options.drawPolygon) {
 			this._createButton(
 				'Draw a polygon',
 				className + '-polygon',
 				container,
 				map.polyDraw.drawPolygon,
 				map.polyDraw
+			);
+		}
+
+		if (this.options.drawRectangle) {
+			this._createButton(
+				'Draw a rectangle',
+				className + '-rectangle',
+				container,
+				map.rectangleDraw.enable,
+				map.rectangleDraw
 			);
 		}
 		

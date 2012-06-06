@@ -15,7 +15,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._markerGroup = new L.LayerGroup();
 			this._map.addLayer(this._markerGroup);
 
-			this._poly = new L.Polyline([], { color: '#f06eaa' });
+			this._poly = new L.Polyline([], { color: '#f06eaa', weight: 4 });
 
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
@@ -34,12 +34,10 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			var poly;
 
 			if (this._polyOptions.type === 'polygon') {
-				poly = new L.Polygon(this._poly.getLatLngs(), { color: '#f06eaa' });
+				poly = new L.Polygon(this._poly.getLatLngs(), { color: '#f06eaa', weight: 4 });
 			} else {
-				poly = new L.Polyline(this._poly.getLatLngs(), { color: '#f06eaa' });
+				poly = new L.Polyline(this._poly.getLatLngs(), { color: '#f06eaa', weight: 4 });
 			}
-
-			this._map.fire('polycreated', { poly: poly });
 
 			if (this._markers.length > 0) {
 				this._markers[0].off('click', this.disable);
@@ -60,6 +58,8 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			L.DomEvent
 				.removeListener(this._container, 'mousemove', this._onMouseMove)
 				.removeListener(this._container, 'click', this._onClick);
+
+			this._map.fire('draw:poly-created', { poly: poly });
 		}
 	},
 
