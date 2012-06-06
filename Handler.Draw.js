@@ -18,6 +18,7 @@ L.Handler.Draw = L.Handler.extend({
 		if (this._map) {
 			L.DomUtil.enableTextSelection();
 			this._pane.removeChild(this._label);
+			delete this._label;
 		}
 	},
 
