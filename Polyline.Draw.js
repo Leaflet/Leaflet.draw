@@ -1,10 +1,16 @@
 L.Polyline.Draw = L.Handler.Draw.extend({
+	Poly: L.Polyline,
+
 	options: {
 		icon: new L.DivIcon({
 			iconSize: new L.Point(8, 8),
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
-		guidelineDistance: 20
+		guidelineDistance: 20,
+		polyStyles: {
+			color: '#f06eaa',
+			weight: 4
+		}
 	},
 	
 	addHooks: function () {
@@ -15,12 +21,12 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._markerGroup = new L.LayerGroup();
 			this._map.addLayer(this._markerGroup);
 
-			this._poly = new L.Polyline([], { color: '#f06eaa', weight: 4 });
+			this._poly = new L.Polyline([], this.options.polyStyles);
 
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
 
-			this._updateLabelText(this._polyOptions.getLabelText(this._markers.length));
+			this._updateLabelText(this._getLabelText());
 
 			L.DomEvent
 				.addListener(this._container, 'mousemove', this._onMouseMove, this)
@@ -30,83 +36,29 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 	removeHooks: function () {
 		L.Handler.Draw.prototype.removeHooks.call(this);
-		if (this._map) {
-			var poly;
 
-			if (this._polyOptions.type === 'polygon') {
-				poly = new L.Polygon(this._poly.getLatLngs(), { color: '#f06eaa', weight: 4 });
-			} else {
-				poly = new L.Polyline(this._poly.getLatLngs(), { color: '#f06eaa', weight: 4 });
-			}
+		this._cleanUpShape();
 
-			if (this._markers.length > 0) {
-				this._markers[0].off('click', this.disable);
-			}
-
-			//remove markers from map
-			this._map.removeLayer(this._markerGroup);
-			delete this._markerGroup;
-			delete this._markers;
-
-			this._map.removeLayer(this._poly);
-			delete this._poly;
-
-			//clean up DOM
-			this._clearGuides();
-			this._container.style.cursor = '';
-
-			L.DomEvent
-				.removeListener(this._container, 'mousemove', this._onMouseMove)
-				.removeListener(this._container, 'click', this._onClick);
-
-			this._map.fire('draw:poly-created', { poly: poly });
-		}
-	},
-
-	drawPolyline: function () {
-		this._polyOptions = {
-			type: 'polyline',
-			getLabelText: function (markerCount) {
-				var text;
-				if (markerCount === 0) {
-					text = 'Click to start drawing line.';
-				} else if (markerCount === 1) {
-					text = 'Click to continue drawing line.';
-				} else {
-					text = 'Click last point to finish line.';
-				}
-				return text;
-			}
-		};
-		this.enable();
-	},
-
-	drawPolygon: function () {
-		this._polyOptions = {
-			type: 'polygon',
-			getLabelText: function (markerCount) {
-				var text;
-				if (markerCount === 0) {
-					text = 'Click to start drawing shape.';
-				} else if (markerCount < 3) {
-					text = 'Click to continue drawing shape.';
-				} else {
-					text = 'Click first point to close this shape.';
-				}
-				return text;
-			}
-		};
-		this.enable();
-	},
-	
-	_createMarker: function (latlng) {
-		var marker = new L.Marker(latlng, {
-			icon: this.options.icon
-		});
+		this._map.fire(
+			'draw:poly-created',
+			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.polyStyles) }
+		);
 		
-		this._markerGroup.addLayer(marker);
+		// remove markers from map
+		this._map.removeLayer(this._markerGroup);
+		delete this._markerGroup;
+		delete this._markers;
 
-		return marker;
+		this._map.removeLayer(this._poly);
+		delete this._poly;
+
+		// clean up DOM
+		this._clearGuides();
+		this._container.style.cursor = '';
+
+		L.DomEvent
+			.removeListener(this._container, 'mousemove', this._onMouseMove)
+			.removeListener(this._container, 'click', this._onClick);
 	},
 
 	_onMouseMove: function (e) {
@@ -114,11 +66,12 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			latlng = this._map.mouseEventToLatLng(e),
 			markerCount = this._markers.length;
 
-		// update the label position
+		// update the label
 		this._updateLabelPosition(newPos);
 
-		// draw the guides
 		if (markerCount > 0) {
+			this._updateLabelText(this._getLabelText(latlng));
+			// draw the guide line
 			this._clearGuides();
 			this._drawGuide(
 				this._map.latLngToLayerPoint(this._markers[markerCount - 1].getLatLng()),
@@ -130,43 +83,41 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	},
 
 	_onClick: function (e) {
-		var latlng = this._map.mouseEventToLatLng(e),
-			marker = this._createMarker(latlng);
+		var latlng = this._map.mouseEventToLatLng(e);
 
-		// Add close handler to appropriate point
-		if ((this._polyOptions.type === 'polygon' && this._markers.length === 0) ||
-			(this._polyOptions.type === 'polyline' && this._markers.length > 0)
-			) {
-			marker.on('click', this.disable, this);
-		}
-		
-		// Remove the close handler from the last point and add to new marker
-		if (this._polyOptions.type === 'polyline' && this._markers.length !== 0) {
-			this._markers[this._markers.length - 1].off('click', this.disable);
-		}
-
-		this._markers.push(marker);
-
-		//update the label text
-		this._updateLabelText(
-			this._polyOptions.getLabelText(this._markers.length),
-			this._markers.length > 1 ? '?? km' : ''
-		);
+		this._markers.push(this._createMarker(latlng));
 
 		this._poly.addLatLng(latlng);
 
 		if (this._poly.getLatLngs().length === 2) {
 			this._map.addLayer(this._poly);
 		}
+
+		this._updateMarkerHandler();
+
+		this._vertexAdded(latlng);
 	},
 
-	// removes all child elements (guide dashes) from the guides container
-	_clearGuides: function () {
-		if (this._guidesContainer) {
-			while (this._guidesContainer.firstChild) {
-				this._guidesContainer.removeChild(this._guidesContainer.firstChild);
-			}
+	_updateMarkerHandler: function () {
+		// The last marker shold have a click handler to close the polyline
+		if (this._markers.length > 1) {
+			this._markers[this._markers.length - 1].on('click', this.disable, this);
 		}
+		
+		// Remove the old marker click handler (as only the last point should close the polyline)
+		if (this._markers.length > 2) {
+			this._markers[this._markers.length - 2].off('click', this.disable);
+		}
+	},
+	
+	_createMarker: function (latlng) {
+		var marker = new L.Marker(latlng, {
+			icon: this.options.icon
+		});
+		
+		this._markerGroup.addLayer(marker);
+
+		return marker;
 	},
 
 	_drawGuide: function (pointA, pointB) {
@@ -197,7 +148,62 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 			L.DomUtil.setPosition(dash, dashPoint);
 		}
+	},
+
+	_getLabelText: function (currentLatLng) {
+		var labelText,
+			distance,
+			distanceStr;
+
+		if (this._markers.length === 0) {
+			labelText = {
+				text: 'Click to start drawing line.'
+			};
+		} else {
+			// calculate the distance from the last fixed point to the mouse position
+			distance = this._measurementRunningTotal + currentLatLng.distanceTo(this._markers[this._markers.length - 1].getLatLng());
+			// show metres when distance is < 1km, then show km
+			distanceStr = distance  > 1000 ? (distance  / 1000).toFixed(2) + ' km' : Math.ceil(distance) + ' m';
+			
+			if (this._markers.length === 1) {
+				labelText = {
+					text: 'Click to continue drawing line.',
+					subtext: distanceStr
+				};
+			} else {
+				labelText = {
+					text: 'Click last point to finish line.',
+					subtext: distanceStr
+				};
+			}
+		}
+		return labelText;
+	},
+
+	_vertexAdded: function (latlng) {
+		if (this._markers.length === 1) {
+			this._measurementRunningTotal = 0;
+		}
+		else {
+			this._measurementRunningTotal +=
+				latlng.distanceTo(this._markers[this._markers.length - 2].getLatLng());
+		}
+	},
+
+	_cleanUpShape: function () {
+		if (this._markers.length > 0) {
+			this._markers[this._markers.length - 1].off('click', this.disable);
+		}
+	},
+
+	// removes all child elements (guide dashes) from the guides container
+	_clearGuides: function () {
+		if (this._guidesContainer) {
+			while (this._guidesContainer.firstChild) {
+				this._guidesContainer.removeChild(this._guidesContainer.firstChild);
+			}
+		}
 	}
 });
 
-L.Map.addInitHook('addHandler', 'polyDraw', L.Polyline.Draw);
+L.Map.addInitHook('addHandler', 'polylineDraw', L.Polyline.Draw);

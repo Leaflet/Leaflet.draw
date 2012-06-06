@@ -15,8 +15,8 @@ L.Control.Draw = L.Control.extend({
 				'Draw a polyline',
 				className + '-polyline',
 				container,
-				map.polyDraw.drawPolyline,
-				map.polyDraw
+				map.polylineDraw.enable,
+				map.polylineDraw
 			);
 		}
 
@@ -25,8 +25,8 @@ L.Control.Draw = L.Control.extend({
 				'Draw a polygon',
 				className + '-polygon',
 				container,
-				map.polyDraw.drawPolygon,
-				map.polyDraw
+				map.polygonDraw.enable,
+				map.polygonDraw
 			);
 		}
 

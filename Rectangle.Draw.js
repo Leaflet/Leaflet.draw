@@ -6,7 +6,7 @@ L.Rectangle.Draw = L.Handler.Draw.extend({
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
 
-			this._updateLabelText('Click and drag to draw rectangle.');
+			this._updateLabelText({ text: 'Click and drag to draw rectangle.' });
 
 			L.DomEvent
 				.addListener(this._container, 'mousedown', this._onMouseDown, this)
@@ -41,7 +41,7 @@ L.Rectangle.Draw = L.Handler.Draw.extend({
 	_onMouseDown: function (e) {
 		this._isDrawing = true;
 		
-		this._updateLabelText('Release mouse to finish drawing.');
+		this._updateLabelText({ text: 'Release mouse to finish drawing.' });
 
 		this._startLatLng = this._map.mouseEventToLatLng(e);
 
