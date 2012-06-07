@@ -28,7 +28,7 @@ L.Control.Draw = L.Control.extend({
 			handler;
 
 		if (this.options.drawPolyline) {
-			handler = new L.Polyline.Draw(map, this.options.shapeOptions);
+			handler = new L.Polyline.Draw(map, { shapeOptions: this.options.shapeOptions });
 			this._createButton(
 				'Draw a polyline',
 				className + '-polyline',
@@ -39,7 +39,7 @@ L.Control.Draw = L.Control.extend({
 		}
 
 		if (this.options.drawPolygon) {
-			handler = new L.Polygon.Draw(map, this.options.shapeOptions);
+			handler = new L.Polygon.Draw(map, { shapeOptions: this.options.shapeOptions });
 			this._createButton(
 				'Draw a polygon',
 				className + '-polygon',
@@ -50,7 +50,7 @@ L.Control.Draw = L.Control.extend({
 		}
 
 		if (this.options.drawRectangle) {
-			handler = new L.Rectangle.Draw(map, this.options.shapeOptions);
+			handler = new L.Rectangle.Draw(map, { shapeOptions: this.options.shapeOptions });
 			this._createButton(
 				'Draw a rectangle',
 				className + '-rectangle',

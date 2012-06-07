@@ -34,7 +34,7 @@ L.Rectangle.Draw = L.Handler.Draw.extend({
 				this._map.fire(
 					'draw:rectangle-created',
 					{
-						rect: new L.Rectangle(new L.LatLngBounds(this._startLatLng, this._endLatLng), { color: '#f06eaa', weight: 4 })
+						rect: new L.Rectangle(new L.LatLngBounds(this._startLatLng, this._endLatLng), this.options.shapeOptions)
 					}
 				);
 			}

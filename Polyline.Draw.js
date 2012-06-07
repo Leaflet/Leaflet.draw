@@ -6,11 +6,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			iconSize: new L.Point(8, 8),
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
-		guidelineDistance: 20,
-		polyStyles: {
-			color: '#f06eaa',
-			weight: 4
-		}
+		guidelineDistance: 20
 	},
 	
 	addHooks: function () {
@@ -21,7 +17,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._markerGroup = new L.LayerGroup();
 			this._map.addLayer(this._markerGroup);
 
-			this._poly = new L.Polyline([], this.options.polyStyles);
+			this._poly = new L.Polyline([], this.options.shapeOptions);
 
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
@@ -41,7 +37,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 		this._map.fire(
 			'draw:poly-created',
-			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.polyStyles) }
+			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions) }
 		);
 		
 		// remove markers from map
