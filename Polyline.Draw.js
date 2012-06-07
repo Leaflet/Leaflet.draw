@@ -205,5 +205,3 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		}
 	}
 });
-
-L.Map.addInitHook('addHandler', 'polylineDraw', L.Polyline.Draw);

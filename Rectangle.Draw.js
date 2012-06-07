@@ -97,5 +97,3 @@ L.Rectangle.Draw = L.Handler.Draw.extend({
 		this._box.style.height = (Math.abs(offset.y) - 4) + 'px';
 	}
 });
-
-L.Map.addInitHook('addHandler', 'rectangleDraw', L.Rectangle.Draw);

@@ -12,35 +12,39 @@ L.Control.Draw = L.Control.extend({
 
 	onAdd: function (map) {
 		var className = 'leaflet-control-draw',
-			container = L.DomUtil.create('div', className);
+			container = L.DomUtil.create('div', className),
+			handler;
 
 		if (this.options.drawPolyline) {
+			handler = new L.Polyline.Draw(map, this.options.shapeOptions);
 			this._createButton(
 				'Draw a polyline',
 				className + '-polyline',
 				container,
-				map.polylineDraw.enable,
-				map.polylineDraw
+				handler.enable,
+				handler
 			);
 		}
 
 		if (this.options.drawPolygon) {
+			handler = new L.Polygon.Draw(map, this.options.shapeOptions);
 			this._createButton(
 				'Draw a polygon',
 				className + '-polygon',
 				container,
-				map.polygonDraw.enable,
-				map.polygonDraw
+				handler.enable,
+				handler
 			);
 		}
 
 		if (this.options.drawRectangle) {
+			handler = new L.Rectangle.Draw(map, this.options.shapeOptions);
 			this._createButton(
 				'Draw a rectangle',
 				className + '-rectangle',
 				container,
-				map.rectangleDraw.enable,
-				map.rectangleDraw
+				handler.enable,
+				handler
 			);
 		}
 		

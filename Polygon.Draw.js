@@ -32,5 +32,3 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 		}
 	}
 });
-
-L.Map.addInitHook('addHandler', 'polygonDraw', L.Polygon.Draw);
