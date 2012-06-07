@@ -7,7 +7,19 @@ L.Control.Draw = L.Control.extend({
 		position: 'topleft',
 		drawPolyline: true,
 		drawPolygon: true,
-		drawRectangle: true
+		drawRectangle: true,
+		shapeOptions: {
+			stroke: true,
+			color: '#f06eaa',
+			weight: 4,
+			opacity: 0.5,
+
+			fill: false,
+			fillColor: null, //same as color by default
+			fillOpacity: 0.2,
+
+			clickable: false
+		}
 	},
 
 	onAdd: function (map) {
