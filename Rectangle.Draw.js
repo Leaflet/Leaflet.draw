@@ -43,15 +43,9 @@ L.Rectangle.Draw = L.Handler.Draw.extend({
 			if (this._rect) {
 				this._map.removeLayer(this._rect);
 				delete this._rect;
-
-				this._map.fire(
-					'draw:rectangle-created',
-					{
-						rect: new L.Rectangle(new L.LatLngBounds(this._startLatLng, this._endLatLng), this.options.shapeOptions)
-					}
-				);
 			}
 		}
+		this._isDrawing = false;
 	},
 
 	_onMouseDown: function (e) {
@@ -87,8 +81,11 @@ L.Rectangle.Draw = L.Handler.Draw.extend({
 
 	_onMouseUp: function (e) {
 		this._endLatLng = this._map.mouseEventToLatLng(e);
-
-		this._isDrawing = false;
+		
+		this._map.fire(
+			'draw:rectangle-created',
+			{ rect: new L.Rectangle(new L.LatLngBounds(this._startLatLng, this._endLatLng), this.options.shapeOptions) }
+		);
 		
 		this.disable();
 	}

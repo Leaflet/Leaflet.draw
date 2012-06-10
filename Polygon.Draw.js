@@ -17,7 +17,7 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 	_updateMarkerHandler: function () {
 		// The first marker shold have a click handler to close the polygon
 		if (this._markers.length === 1) {
-			this._markers[0].on('click', this.disable, this);
+			this._markers[0].on('click', this._finishShape, this);
 		}
 	},
 
@@ -41,7 +41,7 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 
 	_cleanUpShape: function () {
 		if (this._markers.length > 0) {
-			this._markers[0].off('click', this.disable);
+			this._markers[0].off('click', this._finishShape);
 		}
 	}
 });
