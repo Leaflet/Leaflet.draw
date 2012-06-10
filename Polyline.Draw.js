@@ -6,7 +6,15 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			iconSize: new L.Point(8, 8),
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
-		guidelineDistance: 20
+		guidelineDistance: 20,
+		shapeOptions: {
+			stroke: true,
+			color: '#f06eaa',
+			weight: 4,
+			opacity: 0.5,
+			fill: false,
+			clickable: true
+		}
 	},
 	
 	addHooks: function () {
@@ -141,6 +149,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 			//add guide dash to guide container
 			dash = L.DomUtil.create('div', 'leaflet-draw-guide-dash', this._guidesContainer);
+			dash.style.backgroundColor = this.options.shapeOptions.color;
 
 			L.DomUtil.setPosition(dash, dashPoint);
 		}

@@ -7,19 +7,7 @@ L.Control.Draw = L.Control.extend({
 		position: 'topleft',
 		drawPolyline: true,
 		drawPolygon: true,
-		drawRectangle: true,
-		shapeOptions: {
-			stroke: true,
-			color: '#f06eaa',
-			weight: 4,
-			opacity: 0.5,
-
-			fill: false,
-			fillColor: null, //same as color by default
-			fillOpacity: 0.2,
-
-			clickable: false
-		}
+		drawRectangle: true
 	},
 
 	onAdd: function (map) {
@@ -28,7 +16,7 @@ L.Control.Draw = L.Control.extend({
 			handler;
 
 		if (this.options.drawPolyline) {
-			handler = new L.Polyline.Draw(map, { shapeOptions: this.options.shapeOptions });
+			handler = new L.Polyline.Draw(map);
 			this._createButton(
 				'Draw a polyline',
 				className + '-polyline',
@@ -39,7 +27,7 @@ L.Control.Draw = L.Control.extend({
 		}
 
 		if (this.options.drawPolygon) {
-			handler = new L.Polygon.Draw(map, { shapeOptions: this.options.shapeOptions });
+			handler = new L.Polygon.Draw(map, { color: '#000' });
 			this._createButton(
 				'Draw a polygon',
 				className + '-polygon',
@@ -50,7 +38,7 @@ L.Control.Draw = L.Control.extend({
 		}
 
 		if (this.options.drawRectangle) {
-			handler = new L.Rectangle.Draw(map, { shapeOptions: this.options.shapeOptions });
+			handler = new L.Rectangle.Draw(map);
 			this._createButton(
 				'Draw a rectangle',
 				className + '-rectangle',

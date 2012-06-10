@@ -1,10 +1,11 @@
 L.Handler.Draw = L.Handler.extend({
-	initialize: function (map, options) {
+	initialize: function (map, shapeOptions) {
 		this._map = map;
 		this._container = map._container;
 		this._pane = map._panes.overlayPane;
 
-		L.Util.setOptions(this, options);
+		// Extend the shape options to include any customer parameters
+		this.options.shapeOptions = L.Util.extend({}, this.options.shapeOptions, shapeOptions);
 	},
 	
 	addHooks: function () {

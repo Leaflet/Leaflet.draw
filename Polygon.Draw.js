@@ -1,6 +1,19 @@
 L.Polygon.Draw = L.Polyline.Draw.extend({
 	Poly: L.Polygon,
 
+	options: {
+		shapeOptions: {
+			stroke: true,
+			color: '#f06eaa',
+			weight: 4,
+			opacity: 0.5,
+			fill: true,
+			fillColor: null, //same as color by default
+			fillOpacity: 0.2,
+			clickable: true
+		}
+	},
+
 	_updateMarkerHandler: function () {
 		// The first marker shold have a click handler to close the polygon
 		if (this._markers.length === 1) {
