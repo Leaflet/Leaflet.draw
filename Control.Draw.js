@@ -27,7 +27,7 @@ L.Control.Draw = L.Control.extend({
 		}
 
 		if (this.options.drawPolygon) {
-			handler = new L.Polygon.Draw(map, { color: '#000' });
+			handler = new L.Polygon.Draw(map);
 			this._createButton(
 				'Draw a polygon',
 				className + '-polygon',
