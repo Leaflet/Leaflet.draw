@@ -17,7 +17,9 @@ L.Marker.Draw = L.Handler.Draw.extend({
 		
 		if (this._map) {
 			if (this._marker) {
-				L.DomEvent.removeListener(this._marker, 'click', this._onClick);
+				L.DomEvent
+					.removeListener(this._marker, 'click', this._onClick)
+					.removeListener(this._map, 'click', this._onClick);
 				this._map.removeLayer(this._marker);
 				delete this._marker;
 			}
@@ -35,8 +37,10 @@ L.Marker.Draw = L.Handler.Draw.extend({
 		if (!this._marker) {
 			this._marker = new L.Marker(latlng, this.options.icon);
 			this._map.addLayer(this._marker);
-			// Bind to clicking on the marker as this will be above the map.
-			L.DomEvent.addListener(this._marker, 'click', this._onClick, this);
+			// Bind to both marker and map to make sure we get the click event.
+			L.DomEvent
+				.addListener(this._marker, 'click', this._onClick, this)
+				.addListener(this._map, 'click', this._onClick, this);
 		}
 		else {
 			this._marker.setLatLng(latlng);
