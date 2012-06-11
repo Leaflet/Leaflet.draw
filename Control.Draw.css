@@ -44,6 +44,9 @@
 .leaflet-control-draw-rectangle {
 	background-image: url(images/rectangle.png);
 	}
+.leaflet-control-draw-marker {
+	background-image: url(images/draw-marker-icon.png);
+	}
 
 .leaflet-draw-label {
 	background-color: #fff;

@@ -47,6 +47,17 @@ L.Control.Draw = L.Control.extend({
 				handler
 			);
 		}
+
+		if (this.options.drawRectangle) {
+			handler = new L.Marker.Draw(map);
+			this._createButton(
+				'Add a marker',
+				className + '-marker',
+				container,
+				handler.enable,
+				handler
+			);
+		}
 		
 		return container;
 	},
