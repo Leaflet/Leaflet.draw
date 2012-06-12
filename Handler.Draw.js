@@ -1,4 +1,6 @@
 L.Handler.Draw = L.Handler.extend({
+	includes: L.Mixin.Events,
+
 	initialize: function (map, shapeOptions) {
 		this._map = map;
 		this._container = map._container;
@@ -6,6 +8,11 @@ L.Handler.Draw = L.Handler.extend({
 
 		// Extend the shape options to include any customer parameters
 		this.options.shapeOptions = L.Util.extend({}, this.options.shapeOptions, shapeOptions);
+	},
+
+	enable: function () {
+		this.fire('activated');
+		L.Handler.prototype.enable.call(this);
 	},
 	
 	addHooks: function () {
