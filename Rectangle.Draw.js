@@ -55,8 +55,6 @@ L.Rectangle.Draw = L.Handler.Draw.extend({
 
 		this._startLatLng = this._map.mouseEventToLatLng(e);
 
-		this._startLayerPoint = this._map.mouseEventToLayerPoint(e);
-
 		L.DomEvent
 			.addListener(document, 'mouseup', this._onMouseUp, this)
 			.preventDefault(e);
