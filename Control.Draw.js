@@ -3,11 +3,13 @@ L.Map.mergeOptions({
 });
 
 L.Control.Draw = L.Control.extend({
+
 	options: {
 		position: 'topleft',
 		drawPolyline: true,
 		drawPolygon: true,
-		drawRectangle: true
+		drawRectangle: true,
+		styles: {}
 	},
 
 	handlers: {},
@@ -17,7 +19,7 @@ L.Control.Draw = L.Control.extend({
 			container = L.DomUtil.create('div', className);
 
 		if (this.options.drawPolyline) {
-			this.handlers.polyline = new L.Polyline.Draw(map);
+			this.handlers.polyline = new L.Polyline.Draw(map, this.options.styles.polyline);
 			this._createButton(
 				'Draw a polyline',
 				className + '-polyline',
@@ -29,7 +31,7 @@ L.Control.Draw = L.Control.extend({
 		}
 
 		if (this.options.drawPolygon) {
-			this.handlers.polygon = new L.Polygon.Draw(map);
+			this.handlers.polygon = new L.Polygon.Draw(map, this.options.styles.polygon);
 			this._createButton(
 				'Draw a polygon',
 				className + '-polygon',
@@ -41,7 +43,7 @@ L.Control.Draw = L.Control.extend({
 		}
 
 		if (this.options.drawRectangle) {
-			this.handlers.rectangle = new L.Rectangle.Draw(map);
+			this.handlers.rectangle = new L.Rectangle.Draw(map, this.options.styles.rectangle);
 			this._createButton(
 				'Draw a rectangle',
 				className + '-rectangle',
