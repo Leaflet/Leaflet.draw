@@ -21,11 +21,11 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 		}
 	},
 
-	_getLabelText: function (markerCount) {
+	_getLabelText: function () {
 		var text;
-		if (markerCount === 0) {
+		if (this._markers.length === 0) {
 			text = 'Click to start drawing shape.';
-		} else if (markerCount < 3) {
+		} else if (this._markers.length < 3) {
 			text = 'Click to continue drawing shape.';
 		} else {
 			text = 'Click first point to close this shape.';
