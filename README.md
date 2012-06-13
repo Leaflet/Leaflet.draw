@@ -1,7 +1,9 @@
 #Leaflet.draw
 Adds support for drawing polys to Leaflet.
 
-This plugin is based on @brunob's [draw plugin](https://github.com/brunob/leaflet.draw). I decided to create a new repo rather than forking as I wanted to take the coding style and functionality in a different direction.
+Check out the [demo](http://jacobtoye.github.com/Leaflet.draw/)
+
+This plugin was inspired by @brunob's [draw plugin](https://github.com/brunob/leaflet.draw). I decided to create a new repo rather than forking as I wanted to take the coding style and functionality in a different direction.
 
 #Using the plugin
 If you are happy with the control being displayed below the zoom controls just set ````drawControl = true```` when declaring your Leaflet map.
