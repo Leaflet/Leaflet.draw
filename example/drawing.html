@@ -12,6 +12,7 @@
 	<script src="../Polyline.Draw.js"></script>
 	<script src="../Polygon.Draw.js"></script>
 	<script src="../Rectangle.Draw.js"></script>
+	<script src="../Circle.Draw.js"></script>
 	<script src="../Marker.Draw.js"></script>
 	<script src="../Control.Draw.js"></script>
 </head>
@@ -40,6 +41,9 @@
 		});
 		map.on('draw:rectangle-created', function (e) {
 			drawnItems.addLayer(e.rect);
+		});
+		map.on('draw:circle-created', function (e) {
+			drawnItems.addLayer(e.circ);
 		});
 		map.on('draw:marker-created', function (e) {
 			drawnItems.addLayer(e.marker);

@@ -9,6 +9,8 @@ L.Control.Draw = L.Control.extend({
 		drawPolyline: true,
 		drawPolygon: true,
 		drawRectangle: true,
+		drawCircle: true,
+		drawMarker: true,
 		styles: {}
 	},
 
@@ -54,7 +56,19 @@ L.Control.Draw = L.Control.extend({
 			this.handlers.rectangle.on('activated', this._disableInactiveModes, this);
 		}
 
-		if (this.options.drawRectangle) {
+		if (this.options.drawCircle) {
+			this.handlers.circle = new L.Circle.Draw(map, this.options.styles.circle);
+			this._createButton(
+				'Draw a circle',
+				className + '-circle',
+				container,
+				this.handlers.circle.enable,
+				this.handlers.circle
+			);
+			this.handlers.circle.on('activated', this._disableInactiveModes, this);
+		}
+
+		if (this.options.drawMarker) {
 			this.handlers.marker = new L.Marker.Draw(map);
 			this._createButton(
 				'Add a marker',

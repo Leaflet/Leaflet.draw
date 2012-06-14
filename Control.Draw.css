@@ -44,6 +44,9 @@
 .leaflet-control-draw-rectangle {
 	background-image: url(images/draw-rectangle.png);
 	}
+.leaflet-control-draw-circle {
+	background-image: url(images/draw-circle.png);
+	}
 .leaflet-control-draw-marker {
 	background-image: url(images/draw-marker-icon.png);
 	}
