@@ -128,6 +128,8 @@ Thumbs.db
 # Folder config file
 Desktop.ini
 
+# Node modules used during build
+node_modules/
 
 #############
 ## Python
