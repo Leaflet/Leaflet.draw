@@ -3,7 +3,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 	options: {
 		icon: new L.DivIcon({
-			iconSize: new L.Point(8, 8),
+			iconSize: new L.Point(20, 20),
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
 		guidelineDistance: 20,
@@ -34,7 +34,9 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 			L.DomEvent
 				.addListener(this._container, 'mousemove', this._onMouseMove, this)
-				.addListener(this._container, 'click', this._onClick, this);
+				.addListener(this._container, 'touchmove', this._onMouseMove, this)
+				.addListener(this._container, 'click', this._onClick, this)
+				.addListener(this._container, 'touchend', this._onClick, this);
 		}
 	},
 
@@ -57,7 +59,9 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 		L.DomEvent
 			.removeListener(this._container, 'mousemove', this._onMouseMove)
-			.removeListener(this._container, 'click', this._onClick);
+			.removeListener(this._container, 'touchmove', this._onMouseMove)
+			.removeListener(this._container, 'click', this._onClick)
+			.removeListener(this._container, 'touchend', this._onClick);
 	},
 
 	_finishShape: function () {
@@ -109,11 +113,13 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		// The last marker shold have a click handler to close the polyline
 		if (this._markers.length > 1) {
 			this._markers[this._markers.length - 1].on('click', this._finishShape, this);
+			this._markers[this._markers.length - 1].on('touchend', this._finishShape, this);
 		}
 		
 		// Remove the old marker click handler (as only the last point should close the polyline)
 		if (this._markers.length > 2) {
 			this._markers[this._markers.length - 2].off('click', this._finishShape);
+			this._markers[this._markers.length - 2].off('touchend', this._finishShape);
 		}
 	},
 	
@@ -165,7 +171,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 		if (this._markers.length === 0) {
 			labelText = {
-				text: 'Click to start drawing line.'
+				text: 'Tap to start drawing line.'
 			};
 		} else {
 			// calculate the distance from the last fixed point to the mouse position
@@ -175,12 +181,12 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			
 			if (this._markers.length === 1) {
 				labelText = {
-					text: 'Click to continue drawing line.',
+					text: 'Tap to continue drawing line.',
 					subtext: distanceStr
 				};
 			} else {
 				labelText = {
-					text: 'Click last point to finish line.',
+					text: 'Tap last point to finish line.',
 					subtext: distanceStr
 				};
 			}
@@ -201,6 +207,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	_cleanUpShape: function () {
 		if (this._markers.length > 0) {
 			this._markers[this._markers.length - 1].off('click', this._finishShape);
+			this._markers[this._markers.length - 1].off('touchend', this._finishShape);
 		}
 	},
 

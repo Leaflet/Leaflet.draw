@@ -12,7 +12,9 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 
 			L.DomEvent
 				.addListener(this._container, 'mousedown', this._onMouseDown, this)
-				.addListener(document, 'mousemove', this._onMouseMove, this);
+				.addListener(this._container, 'touchstart', this._onMouseDown, this)
+				.addListener(document, 'mousemove', this._onMouseMove, this)
+				.addListener(document, 'touchmove', this._onMouseMove, this);
 		}
 	},
 
@@ -25,8 +27,11 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 
 			L.DomEvent
 				.removeListener(this._container, 'mousedown', this._onMouseDown)
+				.removeListener(this._container, 'touchstart', this._onMouseDown)
 				.removeListener(document, 'mousemove', this._onMouseMove)
-				.removeListener(document, 'mouseup', this._onMouseUp);
+				.removeListener(document, 'touchmove', this._onMouseMove)
+				.removeListener(document, 'mouseup', this._onMouseUp)
+				.removeListener(document, 'touchend', this._onMouseUp);
 
 			// If the box element doesn't exist they must not have moved the mouse, so don't need to destroy/return
 			if (this._shape) {
@@ -46,6 +51,7 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 
 		L.DomEvent
 			.addListener(document, 'mouseup', this._onMouseUp, this)
+			.addListener(document, 'touchend', this._onMouseUp, this)
 			.preventDefault(e);
 	},
 

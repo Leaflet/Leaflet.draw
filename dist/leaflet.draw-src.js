@@ -74,7 +74,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 	options: {
 		icon: new L.DivIcon({
-			iconSize: new L.Point(8, 8),
+			iconSize: new L.Point(20, 20),
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
 		guidelineDistance: 20,
@@ -105,7 +105,9 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 			L.DomEvent
 				.addListener(this._container, 'mousemove', this._onMouseMove, this)
-				.addListener(this._container, 'click', this._onClick, this);
+				.addListener(this._container, 'touchmove', this._onMouseMove, this)
+				.addListener(this._container, 'click', this._onClick, this)
+				.addListener(this._container, 'touchend', this._onClick, this);
 		}
 	},
 
@@ -128,7 +130,9 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 		L.DomEvent
 			.removeListener(this._container, 'mousemove', this._onMouseMove)
-			.removeListener(this._container, 'click', this._onClick);
+			.removeListener(this._container, 'touchmove', this._onMouseMove)
+			.removeListener(this._container, 'click', this._onClick)
+			.removeListener(this._container, 'touchend', this._onClick);
 	},
 
 	_finishShape: function () {
@@ -180,11 +184,13 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		// The last marker shold have a click handler to close the polyline
 		if (this._markers.length > 1) {
 			this._markers[this._markers.length - 1].on('click', this._finishShape, this);
+			this._markers[this._markers.length - 1].on('touchend', this._finishShape, this);
 		}
 		
 		// Remove the old marker click handler (as only the last point should close the polyline)
 		if (this._markers.length > 2) {
 			this._markers[this._markers.length - 2].off('click', this._finishShape);
+			this._markers[this._markers.length - 2].off('touchend', this._finishShape);
 		}
 	},
 	
@@ -236,7 +242,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 		if (this._markers.length === 0) {
 			labelText = {
-				text: 'Click to start drawing line.'
+				text: 'Tap to start drawing line.'
 			};
 		} else {
 			// calculate the distance from the last fixed point to the mouse position
@@ -246,12 +252,12 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			
 			if (this._markers.length === 1) {
 				labelText = {
-					text: 'Click to continue drawing line.',
+					text: 'Tap to continue drawing line.',
 					subtext: distanceStr
 				};
 			} else {
 				labelText = {
-					text: 'Click last point to finish line.',
+					text: 'Tap last point to finish line.',
 					subtext: distanceStr
 				};
 			}
@@ -272,6 +278,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	_cleanUpShape: function () {
 		if (this._markers.length > 0) {
 			this._markers[this._markers.length - 1].off('click', this._finishShape);
+			this._markers[this._markers.length - 1].off('touchend', this._finishShape);
 		}
 	},
 
@@ -305,17 +312,18 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 		// The first marker shold have a click handler to close the polygon
 		if (this._markers.length === 1) {
 			this._markers[0].on('click', this._finishShape, this);
+			this._markers[0].on('touchend', this._finishShape, this);
 		}
 	},
 
 	_getLabelText: function () {
 		var text;
 		if (this._markers.length === 0) {
-			text = 'Click to start drawing shape.';
+			text = 'Tap to start drawing shape.';
 		} else if (this._markers.length < 3) {
-			text = 'Click to continue drawing shape.';
+			text = 'Tap to continue drawing shape.';
 		} else {
-			text = 'Click first point to close this shape.';
+			text = 'Tap first point to close this shape.';
 		}
 		return {
 			text: text
@@ -329,6 +337,7 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 	_cleanUpShape: function () {
 		if (this._markers.length > 0) {
 			this._markers[0].off('click', this._finishShape);
+			this._markers[0].off('touchend', this._finishShape);
 		}
 	}
 });
@@ -347,7 +356,9 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 
 			L.DomEvent
 				.addListener(this._container, 'mousedown', this._onMouseDown, this)
-				.addListener(document, 'mousemove', this._onMouseMove, this);
+				.addListener(this._container, 'touchstart', this._onMouseDown, this)
+				.addListener(document, 'mousemove', this._onMouseMove, this)
+				.addListener(document, 'touchmove', this._onMouseMove, this);
 		}
 	},
 
@@ -360,8 +371,11 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 
 			L.DomEvent
 				.removeListener(this._container, 'mousedown', this._onMouseDown)
+				.removeListener(this._container, 'touchstart', this._onMouseDown)
 				.removeListener(document, 'mousemove', this._onMouseMove)
-				.removeListener(document, 'mouseup', this._onMouseUp);
+				.removeListener(document, 'touchmove', this._onMouseMove)
+				.removeListener(document, 'mouseup', this._onMouseUp)
+				.removeListener(document, 'touchend', this._onMouseUp);
 
 			// If the box element doesn't exist they must not have moved the mouse, so don't need to destroy/return
 			if (this._shape) {
@@ -381,6 +395,7 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 
 		L.DomEvent
 			.addListener(document, 'mouseup', this._onMouseUp, this)
+			.addListener(document, 'touchend', this._onMouseUp, this)
 			.preventDefault(e);
 	},
 
@@ -480,8 +495,9 @@ L.Marker.Draw = L.Handler.Draw.extend({
 		L.Handler.Draw.prototype.addHooks.call(this);
 		
 		if (this._map) {
-			this._updateLabelText({ text: 'Click map to place marker.' });
+			this._updateLabelText({ text: 'Click or tap map to place marker.' });
 			L.DomEvent.addListener(this._container, 'mousemove', this._onMouseMove, this);
+			L.DomEvent.addListener(this._container, 'touchmove', this._onMouseMove, this);
 		}
 	},
 
@@ -492,12 +508,15 @@ L.Marker.Draw = L.Handler.Draw.extend({
 			if (this._marker) {
 				L.DomEvent
 					.removeListener(this._marker, 'click', this._onClick)
-					.removeListener(this._map, 'click', this._onClick);
+					.removeListener(this._marker, 'touchstart', this._onClick)
+					.removeListener(this._map, 'click', this._onClick)
+					.removeListener(this._map, 'touchstart', this._onClick);
 				this._map.removeLayer(this._marker);
 				delete this._marker;
 			}
 
 			L.DomEvent.removeListener(this._container, 'mousemove', this._onMouseMove);
+			L.DomEvent.removeListener(this._container, 'touchmove', this._onMouseMove);
 		}
 	},
 
@@ -513,7 +532,9 @@ L.Marker.Draw = L.Handler.Draw.extend({
 			// Bind to both marker and map to make sure we get the click event.
 			L.DomEvent
 				.addListener(this._marker, 'click', this._onClick, this)
-				.addListener(this._map, 'click', this._onClick, this);
+				.addListener(this._marker, 'touchstart', this._onClick, this)
+				.addListener(this._map, 'click', this._onClick, this)
+				.addListener(this._map, 'touchstart', this._onClick, this);
 		}
 		else {
 			this._marker.setLatLng(latlng);
