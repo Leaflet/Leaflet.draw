@@ -18,18 +18,20 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 		// The first marker shold have a click handler to close the polygon
 		if (this._markers.length === 1) {
 			this._markers[0].on('click', this._finishShape, this);
-			this._markers[0].on('touchend', this._finishShape, this);
+			if (L.Browser.touch) {
+				this._markers[0].on('touchend', this._finishShape, this);
+			}
 		}
 	},
 
 	_getLabelText: function () {
 		var text;
 		if (this._markers.length === 0) {
-			text = 'Tap to start drawing shape.';
+			text = (L.Browser.touch ? 'Tap' : 'Click') + ' to start drawing shape.';
 		} else if (this._markers.length < 3) {
-			text = 'Tap to continue drawing shape.';
+			text = (L.Browser.touch ? 'Tap' : 'Click') + ' to continue drawing shape.';
 		} else {
-			text = 'Tap first point to close this shape.';
+			text = (L.Browser.touch ? 'Tap' : 'Click') + ' first point to close this shape.';
 		}
 		return {
 			text: text
@@ -37,13 +39,15 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 	},
 
 	_vertexAdded: function (latlng) {
-		//calc area here
+	//calc area here
 	},
 
 	_cleanUpShape: function () {
 		if (this._markers.length > 0) {
 			this._markers[0].off('click', this._finishShape);
-			this._markers[0].off('touchend', this._finishShape);
+			if (L.Browser.touch) {
+				this._markers[0].off('touchend', this._finishShape);
+			}
 		}
 	}
 });

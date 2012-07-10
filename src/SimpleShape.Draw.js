@@ -8,13 +8,19 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
 
-			this._updateLabelText({ text: this._initialLabelText });
+			this._updateLabelText({
+				text: this._initialLabelText
+			});
 
 			L.DomEvent
-				.addListener(this._container, 'mousedown', this._onMouseDown, this)
+			.addListener(this._container, 'mousedown', this._onMouseDown, this)
+			.addListener(document, 'mousemove', this._onMouseMove, this);
+				
+			if (L.Browser.touch) {
+				L.DomEvent
 				.addListener(this._container, 'touchstart', this._onMouseDown, this)
-				.addListener(document, 'mousemove', this._onMouseMove, this)
 				.addListener(document, 'touchmove', this._onMouseMove, this);
+			}
 		}
 	},
 
@@ -26,12 +32,16 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 			this._container.style.cursor = '';
 
 			L.DomEvent
-				.removeListener(this._container, 'mousedown', this._onMouseDown)
+			.removeListener(this._container, 'mousedown', this._onMouseDown)
+			.removeListener(document, 'mousemove', this._onMouseMove)
+			.removeListener(document, 'mouseup', this._onMouseUp);
+			
+			if (L.Browser.touch) {
+				L.DomEvent
 				.removeListener(this._container, 'touchstart', this._onMouseDown)
-				.removeListener(document, 'mousemove', this._onMouseMove)
 				.removeListener(document, 'touchmove', this._onMouseMove)
-				.removeListener(document, 'mouseup', this._onMouseUp)
 				.removeListener(document, 'touchend', this._onMouseUp);
+			}
 
 			// If the box element doesn't exist they must not have moved the mouse, so don't need to destroy/return
 			if (this._shape) {
@@ -45,19 +55,35 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 	_onMouseDown: function (e) {
 		this._isDrawing = true;
 		
-		this._updateLabelText({ text: 'Release mouse to finish drawing.' });
+		this._updateLabelText({
+			text: 'Release ' + (L.Browser.touch ? 'finger' : 'mouse') + ' to finish drawing.'
+		});
 
-		this._startLatLng = this._map.mouseEventToLatLng(e);
+		this._startLatLng = this._map.mouseEventToLatLng(e.touches ? e.touches[0] : e);
+		
+		if (e.touches) {
+			L.DomEvent.stopPropagation(e);
+		}
+		
 
 		L.DomEvent
-			.addListener(document, 'mouseup', this._onMouseUp, this)
-			.addListener(document, 'touchend', this._onMouseUp, this)
-			.preventDefault(e);
+		.addListener(document, 'mouseup', this._onMouseUp, this)
+		.preventDefault(e);
+		
+		if (L.Browser.touch) {
+			L.DomEvent
+			.addListener(document, 'touchend', this._onMouseUp, this);
+		}
 	},
 
 	_onMouseMove: function (e) {
-		var layerPoint = this._map.mouseEventToLayerPoint(e),
-			latlng = this._map.mouseEventToLatLng(e);
+		var layerPoint = this._map.mouseEventToLayerPoint(e.touches ? e.touches[0] : e),
+		latlng = this._map.mouseEventToLatLng(e.touches ? e.touches[0] : e);
+		
+		if (e.touches) {
+			L.DomEvent.stopPropagation(e);
+		}
+
 
 		this._updateLabelPosition(layerPoint);
 
@@ -68,7 +94,10 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 	},
 
 	_onMouseUp: function (e) {
-		this._endLatLng = this._map.mouseEventToLatLng(e);
+		this._endLatLng = this._map.mouseEventToLatLng(e.touches ? e.touches[0] : e);
+		if (e.touches) {
+			L.DomEvent.stopPropagation(e);
+		}
 
 		this._fireCreatedEvent();
 		

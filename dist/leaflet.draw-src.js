@@ -104,10 +104,14 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._updateLabelText(this._getLabelText());
 
 			L.DomEvent
-				.addListener(this._container, 'mousemove', this._onMouseMove, this)
+			.addListener(this._container, 'mousemove', this._onMouseMove, this)
+			.addListener(this._container, 'click', this._onClick, this);
+				
+			if (L.Browser.touch) {
+				L.DomEvent
 				.addListener(this._container, 'touchmove', this._onMouseMove, this)
-				.addListener(this._container, 'click', this._onClick, this)
 				.addListener(this._container, 'touchend', this._onClick, this);
+			}
 		}
 	},
 
@@ -129,24 +133,34 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		this._container.style.cursor = '';
 
 		L.DomEvent
-			.removeListener(this._container, 'mousemove', this._onMouseMove)
+		.removeListener(this._container, 'mousemove', this._onMouseMove)
+		.removeListener(this._container, 'click', this._onClick);
+		
+		if (L.Browser.touch) {
+			L.DomEvent
 			.removeListener(this._container, 'touchmove', this._onMouseMove)
-			.removeListener(this._container, 'click', this._onClick)
 			.removeListener(this._container, 'touchend', this._onClick);
+		}
 	},
 
 	_finishShape: function () {
 		this._map.fire(
 			'draw:poly-created',
-			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions) }
-		);
+			{
+				poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions)
+			}
+			);
 		this.disable();
 	},
 
 	_onMouseMove: function (e) {
-		var newPos = this._map.mouseEventToLayerPoint(e),
-			latlng = this._map.mouseEventToLatLng(e),
-			markerCount = this._markers.length;
+		var newPos = this._map.mouseEventToLayerPoint(e.touches ? e.touches[0] : e),
+		latlng = this._map.mouseEventToLatLng(e.touches ? e.touches[0] : e),
+		markerCount = this._markers.length;
+		
+		if (e.touches) {
+			L.DomEvent.stopPropagation(e);
+		}
 
 		// update the label
 		this._updateLabelPosition(newPos);
@@ -158,14 +172,14 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._drawGuide(
 				this._map.latLngToLayerPoint(this._markers[markerCount - 1].getLatLng()),
 				newPos
-			);
+				);
 		}
 
 		L.DomEvent.preventDefault(e);
 	},
 
 	_onClick: function (e) {
-		var latlng = this._map.mouseEventToLatLng(e);
+		var latlng = this._map.mouseEventToLatLng(e.touches ? e.touches[0] : e);
 
 		this._markers.push(this._createMarker(latlng));
 
@@ -184,13 +198,17 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		// The last marker shold have a click handler to close the polyline
 		if (this._markers.length > 1) {
 			this._markers[this._markers.length - 1].on('click', this._finishShape, this);
-			this._markers[this._markers.length - 1].on('touchend', this._finishShape, this);
+			if (L.Browser.touch) {
+				this._markers[this._markers.length - 1].on('touchend', this._finishShape, this);
+			}
 		}
 		
 		// Remove the old marker click handler (as only the last point should close the polyline)
 		if (this._markers.length > 2) {
 			this._markers[this._markers.length - 2].off('click', this._finishShape);
-			this._markers[this._markers.length - 2].off('touchend', this._finishShape);
+			if (L.Browser.touch) {
+				this._markers[this._markers.length - 2].off('touchend', this._finishShape);
+			}
 		}
 	},
 	
@@ -206,10 +224,10 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 	_drawGuide: function (pointA, pointB) {
 		var length = Math.floor(Math.sqrt(Math.pow((pointB.x - pointA.x), 2) + Math.pow((pointB.y - pointA.y), 2))),
-			i,
-			fraction,
-			dashPoint,
-			dash;
+		i,
+		fraction,
+		dashPoint,
+		dash;
 
 		//create the guides container if we haven't yet (TODO: probaly shouldn't do this every time the user starts to draw?)
 		if (!this._guidesContainer) {
@@ -237,12 +255,12 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 	_getLabelText: function (currentLatLng) {
 		var labelText,
-			distance,
-			distanceStr;
+		distance,
+		distanceStr;
 
 		if (this._markers.length === 0) {
 			labelText = {
-				text: 'Tap to start drawing line.'
+				text: (L.Browser.touch ? 'Tap' : 'Click') + ' to start drawing line.'
 			};
 		} else {
 			// calculate the distance from the last fixed point to the mouse position
@@ -252,12 +270,12 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			
 			if (this._markers.length === 1) {
 				labelText = {
-					text: 'Tap to continue drawing line.',
+					text: (L.Browser.touch ? 'Tap' : 'Click') + ' to continue drawing line.',
 					subtext: distanceStr
 				};
 			} else {
 				labelText = {
-					text: 'Tap last point to finish line.',
+					text: (L.Browser.touch ? 'Tap' : 'Click') + ' last point to finish line.',
 					subtext: distanceStr
 				};
 			}
@@ -271,14 +289,16 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		}
 		else {
 			this._measurementRunningTotal +=
-				latlng.distanceTo(this._markers[this._markers.length - 2].getLatLng());
+			latlng.distanceTo(this._markers[this._markers.length - 2].getLatLng());
 		}
 	},
 
 	_cleanUpShape: function () {
 		if (this._markers.length > 0) {
 			this._markers[this._markers.length - 1].off('click', this._finishShape);
-			this._markers[this._markers.length - 1].off('touchend', this._finishShape);
+			if (L.Browser.touch) {
+				this._markers[this._markers.length - 1].off('touchend', this._finishShape);
+			}
 		}
 	},
 
@@ -312,18 +332,20 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 		// The first marker shold have a click handler to close the polygon
 		if (this._markers.length === 1) {
 			this._markers[0].on('click', this._finishShape, this);
-			this._markers[0].on('touchend', this._finishShape, this);
+			if (L.Browser.touch) {
+				this._markers[0].on('touchend', this._finishShape, this);
+			}
 		}
 	},
 
 	_getLabelText: function () {
 		var text;
 		if (this._markers.length === 0) {
-			text = 'Tap to start drawing shape.';
+			text = (L.Browser.touch ? 'Tap' : 'Click') + ' to start drawing shape.';
 		} else if (this._markers.length < 3) {
-			text = 'Tap to continue drawing shape.';
+			text = (L.Browser.touch ? 'Tap' : 'Click') + ' to continue drawing shape.';
 		} else {
-			text = 'Tap first point to close this shape.';
+			text = (L.Browser.touch ? 'Tap' : 'Click') + ' first point to close this shape.';
 		}
 		return {
 			text: text
@@ -331,13 +353,15 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 	},
 
 	_vertexAdded: function (latlng) {
-		//calc area here
+	//calc area here
 	},
 
 	_cleanUpShape: function () {
 		if (this._markers.length > 0) {
 			this._markers[0].off('click', this._finishShape);
-			this._markers[0].off('touchend', this._finishShape);
+			if (L.Browser.touch) {
+				this._markers[0].off('touchend', this._finishShape);
+			}
 		}
 	}
 });
@@ -352,13 +376,19 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
 
-			this._updateLabelText({ text: this._initialLabelText });
+			this._updateLabelText({
+				text: this._initialLabelText
+			});
 
 			L.DomEvent
-				.addListener(this._container, 'mousedown', this._onMouseDown, this)
+			.addListener(this._container, 'mousedown', this._onMouseDown, this)
+			.addListener(document, 'mousemove', this._onMouseMove, this);
+				
+			if (L.Browser.touch) {
+				L.DomEvent
 				.addListener(this._container, 'touchstart', this._onMouseDown, this)
-				.addListener(document, 'mousemove', this._onMouseMove, this)
 				.addListener(document, 'touchmove', this._onMouseMove, this);
+			}
 		}
 	},
 
@@ -370,12 +400,16 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 			this._container.style.cursor = '';
 
 			L.DomEvent
-				.removeListener(this._container, 'mousedown', this._onMouseDown)
+			.removeListener(this._container, 'mousedown', this._onMouseDown)
+			.removeListener(document, 'mousemove', this._onMouseMove)
+			.removeListener(document, 'mouseup', this._onMouseUp);
+			
+			if (L.Browser.touch) {
+				L.DomEvent
 				.removeListener(this._container, 'touchstart', this._onMouseDown)
-				.removeListener(document, 'mousemove', this._onMouseMove)
 				.removeListener(document, 'touchmove', this._onMouseMove)
-				.removeListener(document, 'mouseup', this._onMouseUp)
 				.removeListener(document, 'touchend', this._onMouseUp);
+			}
 
 			// If the box element doesn't exist they must not have moved the mouse, so don't need to destroy/return
 			if (this._shape) {
@@ -389,19 +423,35 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 	_onMouseDown: function (e) {
 		this._isDrawing = true;
 		
-		this._updateLabelText({ text: 'Release mouse to finish drawing.' });
+		this._updateLabelText({
+			text: 'Release ' + (L.Browser.touch ? 'finger' : 'mouse') + ' to finish drawing.'
+		});
 
-		this._startLatLng = this._map.mouseEventToLatLng(e);
+		this._startLatLng = this._map.mouseEventToLatLng(e.touches ? e.touches[0] : e);
+		
+		if (e.touches) {
+			L.DomEvent.stopPropagation(e);
+		}
+		
 
 		L.DomEvent
-			.addListener(document, 'mouseup', this._onMouseUp, this)
-			.addListener(document, 'touchend', this._onMouseUp, this)
-			.preventDefault(e);
+		.addListener(document, 'mouseup', this._onMouseUp, this)
+		.preventDefault(e);
+		
+		if (L.Browser.touch) {
+			L.DomEvent
+			.addListener(document, 'touchend', this._onMouseUp, this);
+		}
 	},
 
 	_onMouseMove: function (e) {
-		var layerPoint = this._map.mouseEventToLayerPoint(e),
-			latlng = this._map.mouseEventToLatLng(e);
+		var layerPoint = this._map.mouseEventToLayerPoint(e.touches ? e.touches[0] : e),
+		latlng = this._map.mouseEventToLatLng(e.touches ? e.touches[0] : e);
+		
+		if (e.touches) {
+			L.DomEvent.stopPropagation(e);
+		}
+
 
 		this._updateLabelPosition(layerPoint);
 
@@ -412,7 +462,10 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 	},
 
 	_onMouseUp: function (e) {
-		this._endLatLng = this._map.mouseEventToLatLng(e);
+		this._endLatLng = this._map.mouseEventToLatLng(e.touches ? e.touches[0] : e);
+		if (e.touches) {
+			L.DomEvent.stopPropagation(e);
+		}
 
 		this._fireCreatedEvent();
 		
@@ -434,7 +487,7 @@ L.Circle.Draw = L.SimpleShape.Draw.extend({
 		}
 	},
 
-	_initialLabelText: 'Click and drag to draw circle.',
+	_initialLabelText: (L.Browser.touch ? 'Tap' : 'Click') + ' and drag to draw circle.',
 
 	_drawShape: function (latlng) {
 		if (!this._shape) {
@@ -467,7 +520,7 @@ L.Rectangle.Draw = L.SimpleShape.Draw.extend({
 		}
 	},
 	
-	_initialLabelText: 'Click and drag to draw rectangle.',
+	_initialLabelText: (L.Browser.touch ? 'Tap' : 'Click') + ' and drag to draw rectangle.',
 
 	_drawShape: function (latlng) {
 		if (!this._shape) {
@@ -493,36 +546,54 @@ L.Marker.Draw = L.Handler.Draw.extend({
 	
 	addHooks: function () {
 		L.Handler.Draw.prototype.addHooks.call(this);
-		
+		//this._marker = null;
 		if (this._map) {
-			this._updateLabelText({ text: 'Click or tap map to place marker.' });
+			this._updateLabelText({
+				text: (L.Browser.touch ? 'Tap' : 'Click') + ' map to place marker.'
+			});
 			L.DomEvent.addListener(this._container, 'mousemove', this._onMouseMove, this);
-			L.DomEvent.addListener(this._container, 'touchmove', this._onMouseMove, this);
+			if (L.Browser.touch) {
+				L.DomEvent.addListener(this._container, 'touchmove', this._onMouseMove, this);
+				L.DomEvent.addListener(this._container, 'touchend', this._onClick, this);
+			}
 		}
 	},
 
 	removeHooks: function () {
+		console.log("removing hooks");
 		L.Handler.Draw.prototype.removeHooks.call(this);
 		
 		if (this._map) {
 			if (this._marker) {
 				L.DomEvent
-					.removeListener(this._marker, 'click', this._onClick)
-					.removeListener(this._marker, 'touchstart', this._onClick)
-					.removeListener(this._map, 'click', this._onClick)
-					.removeListener(this._map, 'touchstart', this._onClick);
+				.removeListener(this._marker, 'click', this._onClick)
+				.removeListener(this._map, 'click', this._onClick);
+				
+				if (L.Browser.touch) {
+					L.DomEvent
+					.removeListener(this._marker, 'touchend', this._onClick);
+				}
 				this._map.removeLayer(this._marker);
 				delete this._marker;
 			}
 
 			L.DomEvent.removeListener(this._container, 'mousemove', this._onMouseMove);
-			L.DomEvent.removeListener(this._container, 'touchmove', this._onMouseMove);
+			if (L.Browser.touch) {
+				L.DomEvent
+				.removeListener(this._container, 'touchmove', this._onMouseMove)
+				.removeListener(this._container, 'touchend', this._onClick);
+			}
 		}
 	},
 
 	_onMouseMove: function (e) {
-		var newPos = this._map.mouseEventToLayerPoint(e),
-			latlng = this._map.mouseEventToLatLng(e);
+		var newPos = this._map.mouseEventToLayerPoint(e.touches ? e.touches[0] : e),
+		latlng = this._map.mouseEventToLatLng(e.touches ? e.touches[0] : e);
+		
+		if (e.touches) {
+			// This is necessary to stop the map from panning
+			L.DomEvent.stopPropagation(e);
+		}
 
 		this._updateLabelPosition(newPos);
 
@@ -531,10 +602,13 @@ L.Marker.Draw = L.Handler.Draw.extend({
 			this._map.addLayer(this._marker);
 			// Bind to both marker and map to make sure we get the click event.
 			L.DomEvent
-				.addListener(this._marker, 'click', this._onClick, this)
-				.addListener(this._marker, 'touchstart', this._onClick, this)
-				.addListener(this._map, 'click', this._onClick, this)
-				.addListener(this._map, 'touchstart', this._onClick, this);
+			.addListener(this._marker, 'click', this._onClick, this)
+			.addListener(this._map, 'click', this._onClick, this);
+			
+			if (L.Browser.touch) {
+				L.DomEvent
+				.addListener(this._marker, 'touchend', this._onClick, this);
+			}
 		}
 		else {
 			this._marker.setLatLng(latlng);
@@ -542,10 +616,27 @@ L.Marker.Draw = L.Handler.Draw.extend({
 	},
 
 	_onClick: function (e) {
+		console.log("Tapped" + (this._map ? "map" : "somewhere"));
+		if (e.touches) {
+			// This might be a bit greedy
+			L.DomEvent.stopPropagation(e);
+		}
+		var latlng = null;
+		if (this._marker) {
+			console.log("creating latlng from marker");
+			latlng = this._marker.getLatLng();
+		}
+		console.log("creating latlng from touch " + e.touches.length);
+		latlng =  this._map.mouseEventToLatLng(e.changedTouches ? e.changedTouches[0] : e);
+		
+		console.log("firing now");
 		this._map.fire(
 			'draw:marker-created',
-			{ marker: new L.Marker(this._marker.getLatLng(), this.options.icon) }
-		);
+			{
+				marker: new L.Marker(latlng, this.options.icon)
+			}
+			);
+		console.log("fired event");
 		this.disable();
 	}
 });
