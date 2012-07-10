@@ -19,7 +19,6 @@ L.Marker.Draw = L.Handler.Draw.extend({
 	},
 
 	removeHooks: function () {
-		console.log("removing hooks");
 		L.Handler.Draw.prototype.removeHooks.call(this);
 		
 		if (this._map) {
@@ -75,27 +74,16 @@ L.Marker.Draw = L.Handler.Draw.extend({
 	},
 
 	_onClick: function (e) {
-		console.log("Tapped" + (this._map ? "map" : "somewhere"));
 		if (e.touches) {
 			// This might be a bit greedy
 			L.DomEvent.stopPropagation(e);
 		}
-		var latlng = null;
-		if (this._marker) {
-			console.log("creating latlng from marker");
-			latlng = this._marker.getLatLng();
-		}
-		console.log("creating latlng from touch " + e.touches.length);
-		latlng =  this._map.mouseEventToLatLng(e.changedTouches ? e.changedTouches[0] : e);
-		
-		console.log("firing now");
 		this._map.fire(
 			'draw:marker-created',
 			{
-				marker: new L.Marker(latlng, this.options.icon)
+				marker: new L.Marker(this._marker ? this._marker.getLatLng() : this._map.mouseEventToLatLng(e.changedTouches ? e.changedTouches[0] : e), this.options.icon)
 			}
 			);
-		console.log("fired event");
 		this.disable();
 	}
 });

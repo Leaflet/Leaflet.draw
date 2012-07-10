@@ -84,7 +84,6 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 			L.DomEvent.stopPropagation(e);
 		}
 
-
 		this._updateLabelPosition(layerPoint);
 
 		if (this._isDrawing) {
@@ -94,7 +93,7 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 	},
 
 	_onMouseUp: function (e) {
-		this._endLatLng = this._map.mouseEventToLatLng(e.touches ? e.touches[0] : e);
+		this._endLatLng = this._map.mouseEventToLatLng(e.changedTouches ? e.changedTouches[0] : e);
 		if (e.touches) {
 			L.DomEvent.stopPropagation(e);
 		}
