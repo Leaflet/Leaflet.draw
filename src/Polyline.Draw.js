@@ -3,7 +3,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 	options: {
 		icon: new L.DivIcon({
-			iconSize: new L.Point(8, 8),
+			iconSize: L.Browser.touch ? new L.Point(30, 30) : new L.Point(10, 10),
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
 		guidelineDistance: 20,
@@ -14,7 +14,8 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			opacity: 0.5,
 			fill: false,
 			clickable: true
-		}
+		},
+		touchtarget : 1.5 // iconSize multiplied by touchtarget = final target size
 	},
 	
 	addHooks: function () {
@@ -33,8 +34,15 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._updateLabelText(this._getLabelText());
 
 			L.DomEvent
-				.addListener(this._container, 'mousemove', this._onMouseMove, this)
-				.addListener(this._container, 'click', this._onClick, this);
+			.addListener(this._container, 'mousemove', this._onMouseMove, this)
+			.addListener(this._container, 'click', this._onClick, this);
+				
+			if (L.Browser.touch) {
+				L.DomEvent
+				.addListener(this._container, 'touchstart', this._onMouseMove, this)
+				.addListener(this._container, 'touchmove', this._onMouseMove, this)
+				.addListener(this._container, 'touchend', this._onClick, this);
+			}
 		}
 	},
 
@@ -56,22 +64,34 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		this._container.style.cursor = '';
 
 		L.DomEvent
-			.removeListener(this._container, 'mousemove', this._onMouseMove)
-			.removeListener(this._container, 'click', this._onClick);
+		.removeListener(this._container, 'mousemove', this._onMouseMove)
+		.removeListener(this._container, 'click', this._onClick);
+		
+		if (L.Browser.touch) {
+			L.DomEvent
+			.removeListener(this._container, 'touchmove', this._onMouseMove)
+			.removeListener(this._container, 'touchend', this._onClick);
+		}
 	},
 
 	_finishShape: function () {
 		this._map.fire(
 			'draw:poly-created',
-			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions) }
-		);
+			{
+				poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions)
+			}
+			);
 		this.disable();
 	},
 
 	_onMouseMove: function (e) {
-		var newPos = this._map.mouseEventToLayerPoint(e),
-			latlng = this._map.mouseEventToLatLng(e),
-			markerCount = this._markers.length;
+		var newPos = this._map.mouseEventToLayerPoint(e.touches ? e.touches[0] : e),
+		latlng = this._map.mouseEventToLatLng(e.touches ? e.touches[0] : e),
+		markerCount = this._markers.length;
+		
+		if (e.touches) {
+			L.DomEvent.stopPropagation(e);
+		}
 
 		// update the label
 		this._updateLabelPosition(newPos);
@@ -83,14 +103,25 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._drawGuide(
 				this._map.latLngToLayerPoint(this._markers[markerCount - 1].getLatLng()),
 				newPos
-			);
+				);
 		}
 
 		L.DomEvent.preventDefault(e);
 	},
 
 	_onClick: function (e) {
-		var latlng = this._map.mouseEventToLatLng(e);
+		var latlng = this._map.mouseEventToLatLng(e.changedTouches ? e.changedTouches[0] : e);
+		
+		if (e.touches) {
+			this._clearGuides();
+			// The touchend on the container seems to have preference over the touchend on the marker, so we manually check position of the last marker.
+			// This also gives us the opportunity to use a touch target a little bigger than the visual shape, which makes it easier to hit the marker with clumsy fingers
+			if (this._clickedFinishMarker(latlng)) {
+				this._finishShape();
+				return true;
+			}
+			
+		}
 
 		this._markers.push(this._createMarker(latlng));
 
@@ -104,16 +135,37 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 		this._vertexAdded(latlng);
 	},
+	
+	_clickedFinishMarker : function (latlng) {
+		if (this._markers.length > 1) {
+			var m = this._markers[this._markers.length - 1];
+			// This could be improved by considering width and height of the icon separately, instead of just using the bigger one
+			var pointA = this._map.latLngToContainerPoint(latlng);
+			var pointB = this._map.latLngToContainerPoint(m.getLatLng());
+			var length = Math.floor(Math.sqrt(Math.pow((pointB.x - pointA.x), 2) + Math.pow((pointB.y - pointA.y), 2)));
+			var size = m.options.icon.options.iconSize;
+			if (length < Math.max(size.x, size.y) * this.options.touchtarget) {
+				return true;
+			}
+		}
+		return false;
+	},
 
 	_updateMarkerHandler: function () {
 		// The last marker shold have a click handler to close the polyline
 		if (this._markers.length > 1) {
 			this._markers[this._markers.length - 1].on('click', this._finishShape, this);
+			if (L.Browser.touch) {
+				this._markers[this._markers.length - 1].on('touchend', this._finishShape, this);
+			}
 		}
 		
 		// Remove the old marker click handler (as only the last point should close the polyline)
 		if (this._markers.length > 2) {
 			this._markers[this._markers.length - 2].off('click', this._finishShape);
+			if (L.Browser.touch) {
+				this._markers[this._markers.length - 2].off('touchend', this._finishShape);
+			}
 		}
 	},
 	
@@ -129,10 +181,10 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 	_drawGuide: function (pointA, pointB) {
 		var length = Math.floor(Math.sqrt(Math.pow((pointB.x - pointA.x), 2) + Math.pow((pointB.y - pointA.y), 2))),
-			i,
-			fraction,
-			dashPoint,
-			dash;
+		i,
+		fraction,
+		dashPoint,
+		dash;
 
 		//create the guides container if we haven't yet (TODO: probaly shouldn't do this every time the user starts to draw?)
 		if (!this._guidesContainer) {
@@ -160,12 +212,12 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 	_getLabelText: function (currentLatLng) {
 		var labelText,
-			distance,
-			distanceStr;
+		distance,
+		distanceStr;
 
 		if (this._markers.length === 0) {
 			labelText = {
-				text: 'Click to start drawing line.'
+				text: (L.Browser.touch ? 'Tap' : 'Click') + ' to start drawing line.'
 			};
 		} else {
 			// calculate the distance from the last fixed point to the mouse position
@@ -175,12 +227,12 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			
 			if (this._markers.length === 1) {
 				labelText = {
-					text: 'Click to continue drawing line.',
+					text: (L.Browser.touch ? 'Tap' : 'Click') + ' to continue drawing line.',
 					subtext: distanceStr
 				};
 			} else {
 				labelText = {
-					text: 'Click last point to finish line.',
+					text: (L.Browser.touch ? 'Tap' : 'Click') + ' last point to finish line.',
 					subtext: distanceStr
 				};
 			}
@@ -194,13 +246,16 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		}
 		else {
 			this._measurementRunningTotal +=
-				latlng.distanceTo(this._markers[this._markers.length - 2].getLatLng());
+			latlng.distanceTo(this._markers[this._markers.length - 2].getLatLng());
 		}
 	},
 
 	_cleanUpShape: function () {
 		if (this._markers.length > 0) {
 			this._markers[this._markers.length - 1].off('click', this._finishShape);
+			if (L.Browser.touch) {
+				this._markers[this._markers.length - 1].off('touchend', this._finishShape);
+			}
 		}
 	},
 
