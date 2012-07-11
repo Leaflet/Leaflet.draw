@@ -23,6 +23,21 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 			}
 		}
 	},
+	
+	_clickedFinishMarker : function (latlng) {
+		if (this._markers.length > 1) {
+			var m = this._markers[0];
+			// This could be improved by considering width and height of the icon separately, instead of just using the bigger one
+			var pointA = this._map.latLngToContainerPoint(latlng);
+			var pointB = this._map.latLngToContainerPoint(m.getLatLng());
+			var length = Math.floor(Math.sqrt(Math.pow((pointB.x - pointA.x), 2) + Math.pow((pointB.y - pointA.y), 2)));
+			var size = m.options.icon.options.iconSize;
+			if (length < Math.max(size.x, size.y) * this.options.touchtarget) {
+				return true;
+			}
+		}
+		return false;
+	},
 
 	_getLabelText: function () {
 		var text;
