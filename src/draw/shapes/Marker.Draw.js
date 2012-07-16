@@ -8,7 +8,7 @@ L.Marker.Draw = L.Handler.Draw.extend({
 		
 		if (this._map) {
 			this._updateLabelText({ text: 'Click map to place marker.' });
-			L.DomEvent.addListener(this._container, 'mousemove', this._onMouseMove, this);
+			this._map.on('mousemove', this._onMouseMove, this);
 		}
 	},
 
@@ -17,30 +17,30 @@ L.Marker.Draw = L.Handler.Draw.extend({
 		
 		if (this._map) {
 			if (this._marker) {
-				L.DomEvent
-					.removeListener(this._marker, 'click', this._onClick)
-					.removeListener(this._map, 'click', this._onClick);
-				this._map.removeLayer(this._marker);
+				this._marker.off('click', this._onClick);
+				this._map
+					.off('click', this._onClick)
+					.removeLayer(this._marker);
 				delete this._marker;
 			}
 
-			L.DomEvent.removeListener(this._container, 'mousemove', this._onMouseMove);
+			this._map.off('mousemove', this._onMouseMove);
 		}
 	},
 
 	_onMouseMove: function (e) {
-		var newPos = this._map.mouseEventToLayerPoint(e),
-			latlng = this._map.mouseEventToLatLng(e);
+		var newPos = e.layerPoint,
+			latlng = e.latlng;
 
 		this._updateLabelPosition(newPos);
 
 		if (!this._marker) {
 			this._marker = new L.Marker(latlng, this.options.icon);
-			this._map.addLayer(this._marker);
 			// Bind to both marker and map to make sure we get the click event.
-			L.DomEvent
-				.addListener(this._marker, 'click', this._onClick, this)
-				.addListener(this._map, 'click', this._onClick, this);
+			this._marker.on('click', this._onClick, this);
+			this._map
+				.on('click', this._onClick, this)
+				.addLayer(this._marker);
 		}
 		else {
 			this._marker.setLatLng(latlng);
