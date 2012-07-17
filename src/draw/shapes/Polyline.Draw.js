@@ -32,9 +32,9 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 			this._updateLabelText(this._getLabelText());
 
-			L.DomEvent
-				.addListener(this._container, 'mousemove', this._onMouseMove, this)
-				.addListener(this._container, 'click', this._onClick, this);
+			this._map
+				.on('mousemove', this._onMouseMove, this)
+				.on('click', this._onClick, this);
 		}
 	},
 
@@ -55,9 +55,9 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		this._clearGuides();
 		this._container.style.cursor = '';
 
-		L.DomEvent
-			.removeListener(this._container, 'mousemove', this._onMouseMove)
-			.removeListener(this._container, 'click', this._onClick);
+		this._map
+			.off('mousemove', this._onMouseMove)
+			.off('click', this._onClick);
 	},
 
 	_finishShape: function () {
@@ -69,8 +69,8 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	},
 
 	_onMouseMove: function (e) {
-		var newPos = this._map.mouseEventToLayerPoint(e),
-			latlng = this._map.mouseEventToLatLng(e),
+		var newPos = e.layerPoint,
+			latlng = e.latlng,
 			markerCount = this._markers.length;
 
 		// update the label
@@ -90,7 +90,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	},
 
 	_onClick: function (e) {
-		var latlng = this._map.mouseEventToLatLng(e);
+		var latlng = e.latlng;
 
 		this._markers.push(this._createMarker(latlng));
 
