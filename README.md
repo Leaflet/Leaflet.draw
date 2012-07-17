@@ -37,7 +37,7 @@ var options = {
 	styles: {
 		polyine: {
 			color: '#f357a1',
-			width: 10
+			weight: 10
 		},
 		polygon: {
 			color: '#bada55'
