@@ -10,9 +10,10 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 
 			this._updateLabelText({ text: this._initialLabelText });
 
-			L.DomEvent
-				.addListener(this._container, 'mousedown', this._onMouseDown, this)
-				.addListener(document, 'mousemove', this._onMouseMove, this);
+			this._map
+				.on('mousedown', this._onMouseDown, this)
+				.on('mousemove', this._onMouseMove, this);
+
 		}
 	},
 
@@ -23,10 +24,11 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = '';
 
-			L.DomEvent
-				.removeListener(this._container, 'mousedown', this._onMouseDown)
-				.removeListener(document, 'mousemove', this._onMouseMove)
-				.removeListener(document, 'mouseup', this._onMouseUp);
+			this._map
+				.off('mousedown', this._onMouseDown, this)
+				.off('mousemove', this._onMouseMove, this);
+
+			L.DomEvent.off(document, 'mouseup', this._onMouseUp);
 
 			// If the box element doesn't exist they must not have moved the mouse, so don't need to destroy/return
 			if (this._shape) {
@@ -39,19 +41,18 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 
 	_onMouseDown: function (e) {
 		this._isDrawing = true;
+		this._startLatLng = e.latlng;
 		
 		this._updateLabelText({ text: 'Release mouse to finish drawing.' });
 
-		this._startLatLng = this._map.mouseEventToLatLng(e);
-
 		L.DomEvent
-			.addListener(document, 'mouseup', this._onMouseUp, this)
+			.on(document, 'mouseup', this._onMouseUp, this)
 			.preventDefault(e);
 	},
 
 	_onMouseMove: function (e) {
-		var layerPoint = this._map.mouseEventToLayerPoint(e),
-			latlng = this._map.mouseEventToLatLng(e);
+		var layerPoint = e.layerPoint,
+			latlng = e.latlng;
 
 		this._updateLabelPosition(layerPoint);
 
@@ -62,8 +63,6 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 	},
 
 	_onMouseUp: function (e) {
-		this._endLatLng = this._map.mouseEventToLatLng(e);
-
 		this._fireCreatedEvent();
 		
 		this.disable();
