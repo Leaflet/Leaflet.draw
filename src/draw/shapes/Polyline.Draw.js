@@ -180,9 +180,27 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 			//add guide dash to guide container
 			dash = L.DomUtil.create('div', 'leaflet-draw-guide-dash', this._guidesContainer);
-			dash.style.backgroundColor = this.options.shapeOptions.color;
+			dash.style.backgroundColor =
+				!this._errorShown ? this.options.shapeOptions.color : this.options.drawError.color;
 
 			L.DomUtil.setPosition(dash, dashPoint);
+		}
+	},
+
+	_updateGuideColor: function (color) {
+		if (this._guidesContainer) {
+			for (var i = 0, l = this._guidesContainer.childNodes.length; i < l; i++) {
+				this._guidesContainer.childNodes[i].style.backgroundColor = color;
+			}
+		}
+	},
+
+	// removes all child elements (guide dashes) from the guides container
+	_clearGuides: function () {
+		if (this._guidesContainer) {
+			while (this._guidesContainer.firstChild) {
+				this._guidesContainer.removeChild(this._guidesContainer.firstChild);
+			}
 		}
 	},
 
@@ -231,7 +249,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		L.Handler.Draw.prototype._updateLabelText.call(this, { text: this.options.drawError.message });
 
 		// Update shape
-		L.DomUtil.addClass(this._guidesContainer, 'leaflet-draw-error-guide-dash');
+		this._updateGuideColor(this.options.drawError.color);
 		this._poly.setStyle({ color: this.options.drawError.color });
 
 		// Hide the error after 2 seconds
@@ -250,7 +268,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		this._updateLabelText(this._getLabelText());
 
 		// Revert shape
-		L.DomUtil.removeClass(this._guidesContainer, 'leaflet-draw-error-guide-dash');
+		this._updateGuideColor(this.options.shapeOptions.color);
 		this._poly.setStyle({ color: this.options.shapeOptions.color });
 	},
 
@@ -274,15 +292,6 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	_cleanUpShape: function () {
 		if (this._markers.length > 0) {
 			this._markers[this._markers.length - 1].off('click', this._finishShape);
-		}
-	},
-
-	// removes all child elements (guide dashes) from the guides container
-	_clearGuides: function () {
-		if (this._guidesContainer) {
-			while (this._guidesContainer.firstChild) {
-				this._guidesContainer.removeChild(this._guidesContainer.firstChild);
-			}
 		}
 	}
 });

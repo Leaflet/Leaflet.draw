@@ -86,10 +86,6 @@
 	height: 5px;
 }
 
-.leaflet-draw-error-guide-dash div {
-	background-color: #b00b00 !important;
-}
-
 .leaflet-flash-anim {
 	-webkit-animation-duration: 0.66s;
 	   -moz-animation-duration: 0.66s;
