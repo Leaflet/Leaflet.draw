@@ -68,7 +68,7 @@ L.Control.Draw = L.Control.extend({
 		}
 
 		if (this.options.marker) {
-			this.handlers.marker = new L.Marker.Draw(map);
+			this.handlers.marker = new L.Marker.Draw(map, this.options.marker);
 			this._createButton(
 				'Add a marker',
 				className + '-marker',

@@ -35,7 +35,7 @@ L.Marker.Draw = L.Handler.Draw.extend({
 		this._updateLabelPosition(newPos);
 
 		if (!this._marker) {
-			this._marker = new L.Marker(latlng, this.options.icon);
+			this._marker = new L.Marker(latlng, { icon: this.options.icon });
 			// Bind to both marker and map to make sure we get the click event.
 			this._marker.on('click', this._onClick, this);
 			this._map
@@ -50,7 +50,7 @@ L.Marker.Draw = L.Handler.Draw.extend({
 	_onClick: function (e) {
 		this._map.fire(
 			'draw:marker-created',
-			{ marker: new L.Marker(this._marker.getLatLng(), this.options.icon) }
+			{ marker: new L.Marker(this._marker.getLatLng(), { icon: this.options.icon }) }
 		);
 		this.disable();
 	}
