@@ -54,6 +54,8 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	removeHooks: function () {
 		L.Handler.Draw.prototype.removeHooks.call(this);
 
+		this._clearHideErrorTimeout();
+
 		this._cleanUpShape();
 		
 		// remove markers from map
