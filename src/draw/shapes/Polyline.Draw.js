@@ -2,6 +2,11 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	Poly: L.Polyline,
 
 	options: {
+		allowIntersection: true,
+		drawError: {
+			color: '#e61b17',
+			message: '<strong>Error:</strong> shape edges cannot cross!'
+		},
 		icon: new L.DivIcon({
 			iconSize: new L.Point(8, 8),
 			className: 'leaflet-div-icon leaflet-editing-icon'
@@ -73,11 +78,14 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			latlng = e.latlng,
 			markerCount = this._markers.length;
 
+		// Save latlng
+		this._currentLatLng = latlng;
+
 		// update the label
 		this._updateLabelPosition(newPos);
 
 		if (markerCount > 0) {
-			this._updateLabelText(this._getLabelText(latlng));
+			this._updateLabelText(this._getLabelText());
 			// draw the guide line
 			this._clearGuides();
 			this._drawGuide(
@@ -90,7 +98,16 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	},
 
 	_onClick: function (e) {
-		var latlng = e.latlng;
+		var latlng = e.latlng,
+			markerCount = this._markers.length;
+
+		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
+			this._showErrorLabel();
+			return;
+		}
+		else if (this._errorShown) {
+			this._hideErrorLabel();
+		}
 
 		this._markers.push(this._createMarker(latlng));
 
@@ -158,7 +175,13 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		}
 	},
 
-	_getLabelText: function (currentLatLng) {
+	_updateLabelText: function (labelText) {
+		if (!this._errorShown) {
+			L.Handler.Draw.prototype._updateLabelText.call(this, labelText);
+		}
+	},
+
+	_getLabelText: function () {
 		var labelText,
 			distance,
 			distanceStr;
@@ -169,7 +192,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			};
 		} else {
 			// calculate the distance from the last fixed point to the mouse position
-			distance = this._measurementRunningTotal + currentLatLng.distanceTo(this._markers[this._markers.length - 1].getLatLng());
+			distance = this._measurementRunningTotal + this._currentLatLng.distanceTo(this._markers[this._markers.length - 1].getLatLng());
 			// show metres when distance is < 1km, then show km
 			distanceStr = distance  > 1000 ? (distance  / 1000).toFixed(2) + ' km' : Math.ceil(distance) + ' m';
 			
@@ -186,6 +209,45 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			}
 		}
 		return labelText;
+	},
+
+	_showErrorLabel: function () {
+		this._errorShown = true;
+
+		// Update label
+		L.DomUtil.addClass(this._label, 'leaflet-error-draw-label');
+		L.DomUtil.addClass(this._label, 'leaflet-flash-anim');
+		L.Handler.Draw.prototype._updateLabelText.call(this, { text: this.options.drawError.message });
+
+		// Update shape
+		L.DomUtil.addClass(this._guidesContainer, 'leaflet-draw-error-guide-dash');
+		this._poly.setStyle({ color: this.options.drawError.color });
+
+		// Hide the error after 2 seconds
+		this._clearHideErrorTimeout();
+		this._hideErrorTimeout = setTimeout(L.Util.bind(this._hideErrorLabel, this), 3000);
+	},
+
+	_hideErrorLabel: function () {
+		this._errorShown = false;
+
+		this._clearHideErrorTimeout();
+		
+		// Revert label
+		L.DomUtil.removeClass(this._label, 'leaflet-error-draw-label');
+		L.DomUtil.removeClass(this._label, 'leaflet-flash-anim');
+		this._updateLabelText(this._getLabelText());
+
+		// Revert shape
+		L.DomUtil.removeClass(this._guidesContainer, 'leaflet-draw-error-guide-dash');
+		this._poly.setStyle({ color: this.options.shapeOptions.color });
+	},
+
+	_clearHideErrorTimeout: function () {
+		if (this._hideErrorTimeout) {
+			clearTimeout(this._hideErrorTimeout);
+			this._hideErrorTimeout = null;
+		}
 	},
 
 	_vertexAdded: function (latlng) {

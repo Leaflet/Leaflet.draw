@@ -64,6 +64,12 @@
 	z-index: 6;
 }
 
+.leaflet-error-draw-label {
+	background-color: #F2DEDE;
+	border-color: #E6B6BD;
+	color: #B94A48;
+}
+
 .leaflet-draw-label-single {
 	margin-top: -12px
 }
@@ -78,4 +84,43 @@
 	position: absolute;
 	width: 5px;
 	height: 5px;
+}
+
+.leaflet-draw-error-guide-dash div {
+	background-color: #e61b17 !important;
+}
+
+.leaflet-flash-anim {
+	-webkit-animation-duration: 0.66s;
+	   -moz-animation-duration: 0.66s;
+	     -o-animation-duration: 0.66s;
+	        animation-duration: 0.66s;
+	-webkit-animation-fill-mode: both;
+	   -moz-animation-fill-mode: both;
+	     -o-animation-fill-mode: both;
+	        animation-fill-mode: both;
+	-webkit-animation-name: leaflet-flash;
+	   -moz-animation-name: leaflet-flash;
+	     -o-animation-name: leaflet-flash;
+	        animation-name: leaflet-flash;
+}
+
+@-webkit-keyframes leaflet-flash {
+	0%, 50%, 100% { opacity: 1; }	
+	25%, 75% { opacity: 0.3; }
+}
+
+@-moz-keyframes leaflet-flash {
+	0%, 50%, 100% { opacity: 1; }	
+	25%, 75% { opacity: 0.3; }
+}
+
+@-o-keyframes leaflet-flash {
+	0%, 50%, 100% { opacity: 1; }	
+	25%, 75% { opacity: 0.3; }
+}
+
+@keyframes leaflet-flash {
+	0%, 50%, 100% { opacity: 1; }	
+	25%, 75% { opacity: 0; }
 }
