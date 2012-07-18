@@ -4,7 +4,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	options: {
 		allowIntersection: true,
 		drawError: {
-			color: '#e61b17',
+			color: '#b00b00',
 			message: '<strong>Error:</strong> shape edges cannot cross!'
 		},
 		icon: new L.DivIcon({
