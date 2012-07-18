@@ -6,12 +6,11 @@ L.Control.Draw = L.Control.extend({
 
 	options: {
 		position: 'topleft',
-		drawPolyline: true,
-		drawPolygon: true,
-		drawRectangle: true,
-		drawCircle: true,
-		drawMarker: true,
-		styles: {}
+		polyline: {},
+		polygon: {},
+		rectangle: {},
+		circle: {},
+		marker: {}
 	},
 
 	handlers: {},
@@ -20,8 +19,8 @@ L.Control.Draw = L.Control.extend({
 		var className = 'leaflet-control-draw',
 			container = L.DomUtil.create('div', className);
 
-		if (this.options.drawPolyline) {
-			this.handlers.polyline = new L.Polyline.Draw(map, this.options.styles.polyline);
+		if (this.options.polyline) {
+			this.handlers.polyline = new L.Polyline.Draw(map, this.options.polyline);
 			this._createButton(
 				'Draw a polyline',
 				className + '-polyline',
@@ -32,8 +31,8 @@ L.Control.Draw = L.Control.extend({
 			this.handlers.polyline.on('activated', this._disableInactiveModes, this);
 		}
 
-		if (this.options.drawPolygon) {
-			this.handlers.polygon = new L.Polygon.Draw(map, this.options.styles.polygon);
+		if (this.options.polygon) {
+			this.handlers.polygon = new L.Polygon.Draw(map, this.options.polygon);
 			this._createButton(
 				'Draw a polygon',
 				className + '-polygon',
@@ -44,8 +43,8 @@ L.Control.Draw = L.Control.extend({
 			this.handlers.polygon.on('activated', this._disableInactiveModes, this);
 		}
 
-		if (this.options.drawRectangle) {
-			this.handlers.rectangle = new L.Rectangle.Draw(map, this.options.styles.rectangle);
+		if (this.options.rectangle) {
+			this.handlers.rectangle = new L.Rectangle.Draw(map, this.options.rectangle);
 			this._createButton(
 				'Draw a rectangle',
 				className + '-rectangle',
@@ -56,8 +55,8 @@ L.Control.Draw = L.Control.extend({
 			this.handlers.rectangle.on('activated', this._disableInactiveModes, this);
 		}
 
-		if (this.options.drawCircle) {
-			this.handlers.circle = new L.Circle.Draw(map, this.options.styles.circle);
+		if (this.options.circle) {
+			this.handlers.circle = new L.Circle.Draw(map, this.options.circle);
 			this._createButton(
 				'Draw a circle',
 				className + '-circle',
@@ -68,7 +67,7 @@ L.Control.Draw = L.Control.extend({
 			this.handlers.circle.on('activated', this._disableInactiveModes, this);
 		}
 
-		if (this.options.drawMarker) {
+		if (this.options.marker) {
 			this.handlers.marker = new L.Marker.Draw(map);
 			this._createButton(
 				'Add a marker',

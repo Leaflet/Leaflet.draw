@@ -12,7 +12,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
 		guidelineDistance: 20,
-		shapeOptions: {
+		styles: {
 			stroke: true,
 			color: '#f06eaa',
 			weight: 4,
@@ -20,6 +20,14 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			fill: false,
 			clickable: true
 		}
+	},
+
+	initialize: function (map, options) {
+		// Merge default drawError options with custom options
+		if (options && options.drawError) {
+			options.drawError = L.Util.extend({}, this.options.drawError, options.drawError);
+		}
+		L.Handler.Draw.prototype.initialize.call(this, map, options);
 	},
 	
 	addHooks: function () {
@@ -30,7 +38,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._markerGroup = new L.LayerGroup();
 			this._map.addLayer(this._markerGroup);
 
-			this._poly = new L.Polyline([], this.options.shapeOptions);
+			this._poly = new L.Polyline([], this.options.styles);
 
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
@@ -68,7 +76,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	_finishShape: function () {
 		this._map.fire(
 			'draw:poly-created',
-			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions) }
+			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.styles) }
 		);
 		this.disable();
 	},
@@ -169,7 +177,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 			//add guide dash to guide container
 			dash = L.DomUtil.create('div', 'leaflet-draw-guide-dash', this._guidesContainer);
-			dash.style.backgroundColor = this.options.shapeOptions.color;
+			dash.style.backgroundColor = this.options.styles.color;
 
 			L.DomUtil.setPosition(dash, dashPoint);
 		}
@@ -240,7 +248,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 		// Revert shape
 		L.DomUtil.removeClass(this._guidesContainer, 'leaflet-draw-error-guide-dash');
-		this._poly.setStyle({ color: this.options.shapeOptions.color });
+		this._poly.setStyle({ color: this.options.styles.color });
 	},
 
 	_clearHideErrorTimeout: function () {

@@ -2,7 +2,7 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 	Poly: L.Polygon,
 
 	options: {
-		shapeOptions: {
+		styles: {
 			stroke: true,
 			color: '#f06eaa',
 			weight: 4,

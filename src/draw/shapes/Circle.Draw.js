@@ -1,6 +1,6 @@
 L.Circle.Draw = L.SimpleShape.Draw.extend({
 	options: {
-		shapeOptions: {
+		styles: {
 			stroke: true,
 			color: '#f06eaa',
 			weight: 4,
@@ -16,7 +16,7 @@ L.Circle.Draw = L.SimpleShape.Draw.extend({
 
 	_drawShape: function (latlng) {
 		if (!this._shape) {
-			this._shape = new L.Circle(this._startLatLng, this._startLatLng.distanceTo(latlng), this.options.shapeOptions);
+			this._shape = new L.Circle(this._startLatLng, this._startLatLng.distanceTo(latlng), this.options.styles);
 			this._map.addLayer(this._shape);
 		} else {
 			this._shape.setRadius(this._startLatLng.distanceTo(latlng));
@@ -26,7 +26,7 @@ L.Circle.Draw = L.SimpleShape.Draw.extend({
 	_fireCreatedEvent: function () {
 		this._map.fire(
 			'draw:circle-created',
-			{ circ: new L.Circle(this._startLatLng, this._shape.getRadius(), this.options.shapeOptions) }
+			{ circ: new L.Circle(this._startLatLng, this._shape.getRadius(), this.options.styles) }
 		);
 	}
 });

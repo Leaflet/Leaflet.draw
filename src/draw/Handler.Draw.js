@@ -1,13 +1,16 @@
 L.Handler.Draw = L.Handler.extend({
 	includes: L.Mixin.Events,
 
-	initialize: function (map, shapeOptions) {
+	initialize: function (map, options) {
 		this._map = map;
 		this._container = map._container;
 		this._pane = map._panes.overlayPane;
 
-		// Extend the shape options to include any customer parameters
-		this.options.shapeOptions = L.Util.extend({}, this.options.shapeOptions, shapeOptions);
+		// Merge default styles options with custom styles
+		if (options && options.styles) {
+			options.styles = L.Util.extend({}, this.options.styles, options.styles);
+		}
+		L.Util.extend(this.options, options);
 	},
 
 	enable: function () {
