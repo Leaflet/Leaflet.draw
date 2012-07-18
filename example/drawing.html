@@ -31,11 +31,17 @@
 
 		var drawControl = new L.Control.Draw({
 			position: 'topright',
-			styles: {
-				polygon: {
-					color: '#bada55'
+			polygon: {
+				allowIntersection: false,
+				drawError: {
+					color: '#b00b00'
 				},
-				circle: {
+				styles: {
+					color: '#bada55'
+				}
+			},
+			circle: {
+				styles: {
 					color: '#662d91'
 				}
 			}
