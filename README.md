@@ -16,12 +16,12 @@ cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18}),
 map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(-37.7772, 175.2756), zoom: 15, drawControl: true });
 ````
 
-If you would like to reposition the control, turn off a tyep or customize the styles then add the control manually:
+If you would like to reposition the control, turn off a type or customize the styles then add the control manually:
 
 ````
 var drawControl = new L.Control.Draw({
 	position: 'topright',
-	drawPolyline: false
+	polyline: false
 });
 map.addControl(drawControl);
 ````
@@ -30,22 +30,32 @@ See [example/map-polydraw.html](https://github.com/jacobtoye/Leaflet.draw/blob/m
 
 #Customize shape styles
 
-L.Control.Draw can take an options object. You can specify a styles property like so:
+L.Control.Draw can take an options object. You can customize the look and behaviour like so:
 
 ````
 var options = {
-	styles: {
-		polyine: {
+	polyline: {
+		shapeOptions: {
 			color: '#f357a1',
 			weight: 10
+		}
+	},
+	polygon: {
+		allowIntersection: false, // Restricts shapes to simple polygons
+		drawError: {
+			color: '#e1e100, // Color the shape will turn when intersects
+			message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
 		},
-		polygon: {
+		shapeOptions: {
 			color: '#bada55'
-		},
-		rectangle: {
+		}
+	},
+	circle: false, // Turns off this drawing tool
+	rectangle: {
+		shapeOptions: {
 			clickable: false
 		}
-	}
+	},
 }
 ````
 
