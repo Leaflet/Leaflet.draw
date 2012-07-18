@@ -12,7 +12,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
 		guidelineDistance: 20,
-		styles: {
+		shapeOptions: {
 			stroke: true,
 			color: '#f06eaa',
 			weight: 4,
@@ -38,7 +38,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._markerGroup = new L.LayerGroup();
 			this._map.addLayer(this._markerGroup);
 
-			this._poly = new L.Polyline([], this.options.styles);
+			this._poly = new L.Polyline([], this.options.shapeOptions);
 
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
@@ -76,7 +76,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	_finishShape: function () {
 		this._map.fire(
 			'draw:poly-created',
-			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.styles) }
+			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions) }
 		);
 		this.disable();
 	},
@@ -177,7 +177,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 			//add guide dash to guide container
 			dash = L.DomUtil.create('div', 'leaflet-draw-guide-dash', this._guidesContainer);
-			dash.style.backgroundColor = this.options.styles.color;
+			dash.style.backgroundColor = this.options.shapeOptions.color;
 
 			L.DomUtil.setPosition(dash, dashPoint);
 		}
@@ -248,7 +248,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 		// Revert shape
 		L.DomUtil.removeClass(this._guidesContainer, 'leaflet-draw-error-guide-dash');
-		this._poly.setStyle({ color: this.options.styles.color });
+		this._poly.setStyle({ color: this.options.shapeOptions.color });
 	},
 
 	_clearHideErrorTimeout: function () {

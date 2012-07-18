@@ -1,6 +1,6 @@
 L.Rectangle.Draw = L.SimpleShape.Draw.extend({
 	options: {
-		styles: {
+		shapeOptions: {
 			stroke: true,
 			color: '#f06eaa',
 			weight: 4,
@@ -16,7 +16,7 @@ L.Rectangle.Draw = L.SimpleShape.Draw.extend({
 
 	_drawShape: function (latlng) {
 		if (!this._shape) {
-			this._shape = new L.Rectangle(new L.LatLngBounds(this._startLatLng, latlng), this.options.styles);
+			this._shape = new L.Rectangle(new L.LatLngBounds(this._startLatLng, latlng), this.options.shapeOptions);
 			this._map.addLayer(this._shape);
 		} else {
 			this._shape.setBounds(new L.LatLngBounds(this._startLatLng, latlng));
@@ -26,7 +26,7 @@ L.Rectangle.Draw = L.SimpleShape.Draw.extend({
 	_fireCreatedEvent: function () {
 		this._map.fire(
 			'draw:rectangle-created',
-			{ rect: new L.Rectangle(this._shape.getBounds(), this.options.styles) }
+			{ rect: new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions) }
 		);
 	}
 });

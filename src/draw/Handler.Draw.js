@@ -6,9 +6,9 @@ L.Handler.Draw = L.Handler.extend({
 		this._container = map._container;
 		this._pane = map._panes.overlayPane;
 
-		// Merge default styles options with custom styles
-		if (options && options.styles) {
-			options.styles = L.Util.extend({}, this.options.styles, options.styles);
+		// Merge default shapeOptions options with custom shapeOptions
+		if (options && options.shapeOptions) {
+			options.shapeOptions = L.Util.extend({}, this.options.shapeOptions, options.shapeOptions);
 		}
 		L.Util.extend(this.options, options);
 	},
