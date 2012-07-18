@@ -5,7 +5,8 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		allowIntersection: true,
 		drawError: {
 			color: '#b00b00',
-			message: '<strong>Error:</strong> shape edges cannot cross!'
+			message: '<strong>Error:</strong> shape edges cannot cross!',
+			timeout: 2500
 		},
 		icon: new L.DivIcon({
 			iconSize: new L.Point(8, 8),
@@ -235,7 +236,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 		// Hide the error after 2 seconds
 		this._clearHideErrorTimeout();
-		this._hideErrorTimeout = setTimeout(L.Util.bind(this._hideErrorLabel, this), 3000);
+		this._hideErrorTimeout = setTimeout(L.Util.bind(this._hideErrorLabel, this), this.options.drawError.timeout);
 	},
 
 	_hideErrorLabel: function () {
