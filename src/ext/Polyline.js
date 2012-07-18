@@ -1,4 +1,4 @@
-L.Util.extend(L.Polyline, {
+L.Polyline.include({
 	// Check to see if this polyline has any linesegments that intersect.
 	// NOTE: does not support detecting intersection for degenerate cases.
 	intersects: function () {
@@ -26,6 +26,11 @@ L.Util.extend(L.Polyline, {
 	// Check for intersection if new latlng was added to this polyline.
 	// NOTE: does not support detecting intersection for degenerate cases.
 	newLatLngIntersects: function (latlng) {
+		// Cannot check a polyline for intersecting lats/lngs when not added to the map
+		if (!this._map) {
+			return false;
+		}
+
 		return this.newPointIntersects(this._map.latLngToLayerPoint(latlng));
 	},
 
