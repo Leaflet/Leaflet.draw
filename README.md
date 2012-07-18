@@ -61,5 +61,28 @@ var options = {
 
 The shape styles are the leaflet [Path](http://leaflet.cloudmade.com/reference.html#path-options) and [Polyline](http://leaflet.cloudmade.com/reference.html#polyline-options) options.
 
+#Custom marker
+
+To use a different image as the marker, simple override the icon option of option.marker:
+
+````
+// Declare a new Leaflet Icon
+var MyCustomMaker = L.Icon.extend({
+	options: {
+		shadowUrl: null,
+		iconAnchor: new L.Point(12, 12),
+		iconSize: new L.Point(24, 24),
+		iconUrl: 'link/to/image.png'
+	}
+});
+
+// Pass this new icon in using options.marker
+var drawControl = new L.Control.Draw({
+	marker: {
+		icon: new MyCustomMaker()
+	}
+});
+````
+
 #Official support
 Leaflet plan to include drawing in 0.4 so this is just a band-aid until it comes. See https://github.com/CloudMade/Leaflet/issues/174
