@@ -13,7 +13,20 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 			clickable: false
 		}
 	},
-
+	
+	_undo: function (e) {
+		if(e.keyCode == 90 && e.ctrlKey) {
+			var lastMarkerIndex = this._markers.length - 1;
+			var lastLatLngIndex = this._poly.getLatLngs().length -1;
+			
+			this._poly.spliceLatLngs(lastLatLngIndex, 1);
+			this._markerGroup.removeLayer(this._markers[lastMarkerIndex]);
+			this._markers.splice(lastMarkerIndex , 1);
+			this._clearGuides();
+			this._hideErrorLabel();
+		}
+	},
+	
 	_updateMarkerHandler: function () {
 		// The first marker shold have a click handler to close the polygon
 		if (this._markers.length === 1) {
