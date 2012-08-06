@@ -33,6 +33,8 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	
 	addHooks: function () {
 		L.Handler.Draw.prototype.addHooks.call(this);
+		
+		L.DomEvent.addListener(window, 'keyup', this._undo, this);
 		if (this._map) {
 			this._markers = [];
 
@@ -49,12 +51,13 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._map
 				.on('mousemove', this._onMouseMove, this)
 				.on('click', this._onClick, this);
+				
 		}
 	},
 
 	removeHooks: function () {
 		L.Handler.Draw.prototype.removeHooks.call(this);
-
+		L.DomEvent.removeListener(window, 'keyup', this._undo, this);
 		this._clearHideErrorTimeout();
 
 		this._cleanUpShape();
@@ -108,6 +111,19 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		L.DomEvent.preventDefault(e);
 	},
 
+	_undo: function (e) {
+		if(e.keyCode == 90 && e.ctrlKey) {
+			var lastMarkerIndex = this._markers.length - 1;
+			var lastLatLngIndex = this._poly.getLatLngs().length -1;
+			
+			this._poly.spliceLatLngs(lastLatLngIndex, 1);
+			this._markerGroup.removeLayer(this._markers[lastMarkerIndex]);
+			this._markers.splice(lastMarkerIndex , 1);
+			this._clearGuides();
+			this._hideErrorLabel();
+		}
+	},
+	
 	_onClick: function (e) {
 		var latlng = e.latlng,
 			markerCount = this._markers.length;
