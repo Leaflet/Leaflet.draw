@@ -67,7 +67,7 @@ To use a different image as the marker, simple override the icon option of optio
 
 ````
 // Declare a new Leaflet Icon
-var MyCustomMaker = L.Icon.extend({
+var MyCustomMarker = L.Icon.extend({
 	options: {
 		shadowUrl: null,
 		iconAnchor: new L.Point(12, 12),
@@ -79,7 +79,7 @@ var MyCustomMaker = L.Icon.extend({
 // Pass this new icon in using options.marker
 var drawControl = new L.Control.Draw({
 	marker: {
-		icon: new MyCustomMaker()
+		icon: new MyCustomMarker()
 	}
 });
 ````
