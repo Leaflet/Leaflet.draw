@@ -81,12 +81,22 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._showErrorLabel();
 			return;
 		}
+		if (!this._finishIsGood()) {
+			this._showErrorLabel();
+			return;
+		}
 
 		this._map.fire(
 			'draw:poly-created',
 			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions) }
 		);
 		this.disable();
+	},
+
+	//Called to verify the shape is valid when the user tries to finish it
+	//Return false if the shape is not valid
+	_shapeIsValid: function () {
+		return true;
 	},
 
 	_onMouseMove: function (e) {

@@ -35,6 +35,10 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 		};
 	},
 
+	_shapeIsValid: function () {
+		return this._markers.length >= 3;
+	},
+
 	_vertexAdded: function (latlng) {
 		//calc area here
 	},
