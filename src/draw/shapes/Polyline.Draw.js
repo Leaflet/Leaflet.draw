@@ -95,7 +95,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 	//Called to verify the shape is valid when the user tries to finish it
 	//Return false if the shape is not valid
-	_finishIsGood: function () {
+	_shapeIsValid: function () {
 		return true;
 	},
 

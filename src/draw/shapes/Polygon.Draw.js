@@ -35,7 +35,7 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 		};
 	},
 
-	_finishIsGood: function () {
+	_shapeIsValid: function () {
 		return this._markers.length >= 3;
 	},
 
