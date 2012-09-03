@@ -77,6 +77,11 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	},
 
 	_finishShape: function () {
+		if (!this.options.allowIntersection && this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true)) {
+			this._showErrorLabel();
+			return;
+		}
+
 		this._map.fire(
 			'draw:poly-created',
 			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions) }
