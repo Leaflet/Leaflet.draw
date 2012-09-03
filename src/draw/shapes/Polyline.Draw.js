@@ -77,7 +77,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	},
 
 	_finishShape: function () {
-		if (!this.options.allowIntersection && this._poly.newLatLngIntersects(this._poly.getLatLngs()[0])) {
+		if (!this.options.allowIntersection && this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true)) {
 			this._showErrorLabel();
 			return;
 		}
