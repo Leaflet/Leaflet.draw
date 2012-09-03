@@ -25,19 +25,19 @@ L.Polyline.include({
 
 	// Check for intersection if new latlng was added to this polyline.
 	// NOTE: does not support detecting intersection for degenerate cases.
-	newLatLngIntersects: function (latlng) {
+	newLatLngIntersects: function (latlng, skipFirst) {
 		// Cannot check a polyline for intersecting lats/lngs when not added to the map
 		if (!this._map) {
 			return false;
 		}
 
-		return this.newPointIntersects(this._map.latLngToLayerPoint(latlng));
+		return this.newPointIntersects(this._map.latLngToLayerPoint(latlng), skipFirst);
 	},
 
 	// Check for intersection if new point was added to this polyline.
 	// newPoint must be a layer point.
 	// NOTE: does not support detecting intersection for degenerate cases.
-	newPointIntersects: function (newPoint) {
+	newPointIntersects: function (newPoint, skipFirst) {
 		var points = this._originalPoints,
 			len = points ? points.length : 0,
 			lastPoint = points ? points[len - 1] : null,
@@ -48,7 +48,7 @@ L.Polyline.include({
 			return false;
 		}
 
-		return this._lineSegmentsIntersectsRange(lastPoint, newPoint, maxIndex);
+		return this._lineSegmentsIntersectsRange(lastPoint, newPoint, maxIndex, skipFirst ? 1 : 0);
 	},
 
 	// Polylines with 2 sides can only intersect in cases where points are collinear (we don't support detecting these).
