@@ -1,6 +1,10 @@
 var build = require('./build/build.js'),
 	lint = require('./build/hint.js');
 
+var COPYRIGHT = '/*\n Copyright (c) 2012, Smartrak, Jacob Toye\n' +
+	' Leaflet.draw is an open-source JavaScript library for drawing shapes/markers on leaflet powered maps.\n' +
+	' https://github.com/jacobtoye/Leaflet.draw\n*/\n';
+
 desc('Check source for errors with JSHint');
 task('lint', function () {
 	var files = build.getFiles();
@@ -30,7 +34,7 @@ task('build', ['lint'], function () {
 	var content = build.combineFiles(files);
 
 	var oldSrc = build.load(srcPath),
-		newSrc = content,
+		newSrc = COPYRIGHT + content,
 		srcDelta = build.getSizeDelta(newSrc, oldSrc);
 
 	console.log('\tUncompressed size: ' + newSrc.length + ' bytes (' + srcDelta + ')');
@@ -45,7 +49,7 @@ task('build', ['lint'], function () {
 	console.log('Compressing...');
 
 	var oldCompressed = build.load(path),
-		newCompressed = build.uglify(content),
+		newCompressed = COPYRIGHT + build.uglify(content),
 		delta = build.getSizeDelta(newCompressed, oldCompressed);
 
 	console.log('\tCompressed size: ' + newCompressed.length + ' bytes (' + delta + ')');
