@@ -83,6 +83,3 @@ var drawControl = new L.Control.Draw({
 	}
 });
 ````
-
-#Official support
-Leaflet plan to include drawing in 0.4 so this is just a band-aid until it comes. See https://github.com/CloudMade/Leaflet/issues/174
