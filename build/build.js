@@ -36,11 +36,12 @@ exports.uglify = function (code) {
 };
 
 exports.combineFiles = function (files) {
-	var content = '(function () {\n\n';
+	var content = '(function (window, undefined) {\n\n' +
+		'L.drawVersion = \'0.1\';\n\n';
 	for (var i = 0, len = files.length; i < len; i++) {
 		content += fs.readFileSync(files[i], 'utf8') + '\n\n';
 	}
-	return content + '\n\n}());';
+	return content + '\n\n}(this));';
 };
 
 exports.save = function (savePath, compressed) {
