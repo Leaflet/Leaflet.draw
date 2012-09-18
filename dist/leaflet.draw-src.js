@@ -1,4 +1,11 @@
-(function () {
+/*
+ Copyright (c) 2012, Smartrak, Jacob Toye
+ Leaflet.draw is an open-source JavaScript library for drawing shapes/markers on leaflet powered maps.
+ https://github.com/jacobtoye/Leaflet.draw
+*/
+(function (window, undefined) {
+
+L.drawVersion = '0.1';
 
 L.Util.extend(L.LineUtil, {
 	// Checks to see if two line segments intersect. Does not handle degenerate cases.
@@ -874,4 +881,4 @@ L.Map.addInitHook(function () {
 
 
 
-}());
+}(this));
