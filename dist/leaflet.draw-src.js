@@ -5,7 +5,7 @@
 */
 (function (window, undefined) {
 
-L.drawVersion = '0.1';
+L.drawVersion = '0.1.1';
 
 L.Util.extend(L.LineUtil, {
 	// Checks to see if two line segments intersect. Does not handle degenerate cases.
@@ -50,19 +50,19 @@ L.Polyline.include({
 
 	// Check for intersection if new latlng was added to this polyline.
 	// NOTE: does not support detecting intersection for degenerate cases.
-	newLatLngIntersects: function (latlng) {
+	newLatLngIntersects: function (latlng, skipFirst) {
 		// Cannot check a polyline for intersecting lats/lngs when not added to the map
 		if (!this._map) {
 			return false;
 		}
 
-		return this.newPointIntersects(this._map.latLngToLayerPoint(latlng));
+		return this.newPointIntersects(this._map.latLngToLayerPoint(latlng), skipFirst);
 	},
 
 	// Check for intersection if new point was added to this polyline.
 	// newPoint must be a layer point.
 	// NOTE: does not support detecting intersection for degenerate cases.
-	newPointIntersects: function (newPoint) {
+	newPointIntersects: function (newPoint, skipFirst) {
 		var points = this._originalPoints,
 			len = points ? points.length : 0,
 			lastPoint = points ? points[len - 1] : null,
@@ -73,7 +73,7 @@ L.Polyline.include({
 			return false;
 		}
 
-		return this._lineSegmentsIntersectsRange(lastPoint, newPoint, maxIndex);
+		return this._lineSegmentsIntersectsRange(lastPoint, newPoint, maxIndex, skipFirst ? 1 : 0);
 	},
 
 	// Polylines with 2 sides can only intersect in cases where points are collinear (we don't support detecting these).
@@ -288,11 +288,26 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	},
 
 	_finishShape: function () {
+		if (!this.options.allowIntersection && this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true)) {
+			this._showErrorLabel();
+			return;
+		}
+		if (!this._finishIsGood()) {
+			this._showErrorLabel();
+			return;
+		}
+
 		this._map.fire(
 			'draw:poly-created',
 			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions) }
 		);
 		this.disable();
+	},
+
+	//Called to verify the shape is valid when the user tries to finish it
+	//Return false if the shape is not valid
+	_shapeIsValid: function () {
+		return true;
 	},
 
 	_onMouseMove: function (e) {
@@ -316,7 +331,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			);
 		}
 
-		L.DomEvent.preventDefault(e);
+		L.DomEvent.preventDefault(e.originalEvent);
 	},
 
 	_onClick: function (e) {
@@ -544,6 +559,10 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 		};
 	},
 
+	_shapeIsValid: function () {
+		return this._markers.length >= 3;
+	},
+
 	_vertexAdded: function (latlng) {
 		//calc area here
 	},
@@ -604,7 +623,7 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 
 		L.DomEvent
 			.on(document, 'mouseup', this._onMouseUp, this)
-			.preventDefault(e);
+			.preventDefault(e.originalEvent);
 	},
 
 	_onMouseMove: function (e) {
