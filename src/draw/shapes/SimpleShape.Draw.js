@@ -47,7 +47,7 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 
 		L.DomEvent
 			.on(document, 'mouseup', this._onMouseUp, this)
-			.preventDefault(e);
+			.preventDefault(e.originalEvent);
 	},
 
 	_onMouseMove: function (e) {

@@ -120,7 +120,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			);
 		}
 
-		L.DomEvent.preventDefault(e);
+		L.DomEvent.preventDefault(e.originalEvent);
 	},
 
 	_onClick: function (e) {
