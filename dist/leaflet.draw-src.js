@@ -292,7 +292,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._showErrorLabel();
 			return;
 		}
-		if (!this._shapeIsValid()) {
+		if (!this._finishIsGood()) {
 			this._showErrorLabel();
 			return;
 		}
