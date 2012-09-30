@@ -5,7 +5,7 @@
 */
 (function (window, undefined) {
 
-L.drawVersion = '0.1.1';
+L.drawVersion = '0.1.2';
 
 L.Util.extend(L.LineUtil, {
 	// Checks to see if two line segments intersect. Does not handle degenerate cases.
@@ -292,7 +292,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._showErrorLabel();
 			return;
 		}
-		if (!this._finishIsGood()) {
+		if (!this._shapeIsValid()) {
 			this._showErrorLabel();
 			return;
 		}
