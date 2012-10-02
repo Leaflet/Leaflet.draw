@@ -46,9 +46,27 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 			this._updateLabelText(this._getLabelText());
 
-			this._map
-				.on('mousemove', this._onMouseMove, this)
-				.on('click', this._onClick, this);
+			// Make a transparent marker that will used to catch click events. These click
+			// events will create the vertices. We need to do this so we can ensure that
+			// we can create vertices over other map layers (markers, vector layers). We
+			// also do not want to trigger any click handlers of objects we are clicking on
+			// while drawing.
+			if (!this._mouseMarker) {
+				this._mouseMarker = L.marker(this._map.getCenter(), {
+					icon: L.divIcon({
+						className: 'leaflet-mouse-marker',
+						iconAnchor: [20, 20],
+						iconSize: [40, 40]
+					}),
+					zIndexOffset: 2000
+				});
+			}
+
+			this._mouseMarker
+				.on('click', this._onClick, this)
+				.addTo(this._map);
+
+			this._map.on('mousemove', this._onMouseMove, this);
 		}
 	},
 
@@ -67,13 +85,15 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		this._map.removeLayer(this._poly);
 		delete this._poly;
 
+		this._mouseMarker.off('click', this._onClick);
+		this._map.removeLayer(this._mouseMarker);
+		delete this._mouseMarker;
+
 		// clean up DOM
 		this._clearGuides();
 		this._container.style.cursor = '';
 
-		this._map
-			.off('mousemove', this._onMouseMove)
-			.off('click', this._onClick);
+		this._map.off('mousemove', this._onMouseMove);
 	},
 
 	_finishShape: function () {
@@ -120,11 +140,14 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			);
 		}
 
+		// Update the mouse marker position
+		this._mouseMarker.setLatLng(latlng);
+
 		L.DomEvent.preventDefault(e.originalEvent);
 	},
 
 	_onClick: function (e) {
-		var latlng = e.latlng,
+		var latlng = e.target.getLatLng(),
 			markerCount = this._markers.length;
 
 		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
@@ -162,7 +185,8 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	
 	_createMarker: function (latlng) {
 		var marker = new L.Marker(latlng, {
-			icon: this.options.icon
+			icon: this.options.icon,
+			zIndexOffset: 4000
 		});
 		
 		this._markerGroup.addLayer(marker);

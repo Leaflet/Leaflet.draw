@@ -51,6 +51,10 @@
 	background-image: url(images/draw-marker-icon.png);
 	}
 
+.leaflet-mouse-marker {
+	background-color: transparent;
+}
+
 .leaflet-draw-label {
 	background-color: #fff;
 	border: 1px solid #ccc;
