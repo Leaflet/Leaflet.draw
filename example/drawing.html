@@ -61,6 +61,7 @@
 			drawnItems.addLayer(e.circ);
 		});
 		map.on('draw:marker-created', function (e) {
+			e.marker.bindPopup('A popup!');
 			drawnItems.addLayer(e.marker);
 		});
 		map.addLayer(drawnItems);
