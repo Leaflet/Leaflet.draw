@@ -41,9 +41,6 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 			this._poly = new L.Polyline([], this.options.shapeOptions);
 
-			//TODO refactor: move cursor to styles
-			this._container.style.cursor = 'crosshair';
-
 			this._updateLabelText(this._getLabelText());
 
 			// Make a transparent marker that will used to catch click events. These click
@@ -91,7 +88,6 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 		// clean up DOM
 		this._clearGuides();
-		this._container.style.cursor = '';
 
 		this._map.off('mousemove', this._onMouseMove);
 	},

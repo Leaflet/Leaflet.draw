@@ -53,6 +53,7 @@
 
 .leaflet-mouse-marker {
 	background-color: transparent;
+	cursor: crosshair;
 }
 
 .leaflet-draw-label {
