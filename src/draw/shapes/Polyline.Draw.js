@@ -20,7 +20,8 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			opacity: 0.5,
 			fill: false,
 			clickable: true
-		}
+		},
+		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
 
 	initialize: function (map, options) {
@@ -55,7 +56,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 						iconAnchor: [20, 20],
 						iconSize: [40, 40]
 					}),
-					zIndexOffset: 2000
+					zIndexOffset: this.options.zIndexOffset
 				});
 			}
 
@@ -182,7 +183,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	_createMarker: function (latlng) {
 		var marker = new L.Marker(latlng, {
 			icon: this.options.icon,
-			zIndexOffset: 4000
+			zIndexOffset: this.options.zIndexOffset * 2
 		});
 		
 		this._markerGroup.addLayer(marker);
