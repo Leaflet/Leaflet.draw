@@ -5,7 +5,7 @@
 */
 (function (window, undefined) {
 
-L.drawVersion = '0.1.2';
+L.drawVersion = '0.1.3';
 
 L.Util.extend(L.LineUtil, {
 	// Checks to see if two line segments intersect. Does not handle degenerate cases.
@@ -143,7 +143,8 @@ L.Handler.Draw = L.Handler.extend({
 	initialize: function (map, options) {
 		this._map = map;
 		this._container = map._container;
-		this._pane = map._panes.overlayPane;
+		this._overlayPane = map._panes.overlayPane;
+		this._popupPane = map._panes.popupPane;
 
 		// Merge default shapeOptions options with custom shapeOptions
 		if (options && options.shapeOptions) {
@@ -161,7 +162,7 @@ L.Handler.Draw = L.Handler.extend({
 		if (this._map) {
 			L.DomUtil.disableTextSelection();
 
-			this._label = L.DomUtil.create('div', 'leaflet-draw-label', this._pane);
+			this._label = L.DomUtil.create('div', 'leaflet-draw-label', this._popupPane);
 			this._singleLineLabel = false;
 
 			L.DomEvent.addListener(window, 'keyup', this._cancelDrawing, this);
@@ -172,7 +173,7 @@ L.Handler.Draw = L.Handler.extend({
 		if (this._map) {
 			L.DomUtil.enableTextSelection();
 
-			this._pane.removeChild(this._label);
+			this._popupPane.removeChild(this._label);
 			delete this._label;
 
 			L.DomEvent.removeListener(window, 'keyup', this._cancelDrawing);
@@ -231,7 +232,8 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			opacity: 0.5,
 			fill: false,
 			clickable: true
-		}
+		},
+		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
 
 	initialize: function (map, options) {
@@ -252,14 +254,29 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 			this._poly = new L.Polyline([], this.options.shapeOptions);
 
-			//TODO refactor: move cursor to styles
-			this._container.style.cursor = 'crosshair';
-
 			this._updateLabelText(this._getLabelText());
 
-			this._map
-				.on('mousemove', this._onMouseMove, this)
-				.on('click', this._onClick, this);
+			// Make a transparent marker that will used to catch click events. These click
+			// events will create the vertices. We need to do this so we can ensure that
+			// we can create vertices over other map layers (markers, vector layers). We
+			// also do not want to trigger any click handlers of objects we are clicking on
+			// while drawing.
+			if (!this._mouseMarker) {
+				this._mouseMarker = L.marker(this._map.getCenter(), {
+					icon: L.divIcon({
+						className: 'leaflet-mouse-marker',
+						iconAnchor: [20, 20],
+						iconSize: [40, 40]
+					}),
+					zIndexOffset: this.options.zIndexOffset
+				});
+			}
+
+			this._mouseMarker
+				.on('click', this._onClick, this)
+				.addTo(this._map);
+
+			this._map.on('mousemove', this._onMouseMove, this);
 		}
 	},
 
@@ -278,13 +295,14 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		this._map.removeLayer(this._poly);
 		delete this._poly;
 
+		this._mouseMarker.off('click', this._onClick);
+		this._map.removeLayer(this._mouseMarker);
+		delete this._mouseMarker;
+
 		// clean up DOM
 		this._clearGuides();
-		this._container.style.cursor = '';
 
-		this._map
-			.off('mousemove', this._onMouseMove)
-			.off('click', this._onClick);
+		this._map.off('mousemove', this._onMouseMove);
 	},
 
 	_finishShape: function () {
@@ -331,11 +349,14 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			);
 		}
 
+		// Update the mouse marker position
+		this._mouseMarker.setLatLng(latlng);
+
 		L.DomEvent.preventDefault(e.originalEvent);
 	},
 
 	_onClick: function (e) {
-		var latlng = e.latlng,
+		var latlng = e.target.getLatLng(),
 			markerCount = this._markers.length;
 
 		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
@@ -373,7 +394,8 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	
 	_createMarker: function (latlng) {
 		var marker = new L.Marker(latlng, {
-			icon: this.options.icon
+			icon: this.options.icon,
+			zIndexOffset: this.options.zIndexOffset * 2
 		});
 		
 		this._markerGroup.addLayer(marker);
@@ -390,7 +412,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 		//create the guides container if we haven't yet (TODO: probaly shouldn't do this every time the user starts to draw?)
 		if (!this._guidesContainer) {
-			this._guidesContainer = L.DomUtil.create('div', 'leaflet-draw-guides', this._pane);
+			this._guidesContainer = L.DomUtil.create('div', 'leaflet-draw-guides', this._overlayPane);
 		}
 	
 		//draw a dash every GuildeLineDistance
@@ -713,7 +735,8 @@ L.Rectangle.Draw = L.SimpleShape.Draw.extend({
 
 L.Marker.Draw = L.Handler.Draw.extend({
 	options: {
-		icon: new L.Icon.Default()
+		icon: new L.Icon.Default(),
+		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
 	
 	addHooks: function () {
@@ -748,7 +771,10 @@ L.Marker.Draw = L.Handler.Draw.extend({
 		this._updateLabelPosition(newPos);
 
 		if (!this._marker) {
-			this._marker = new L.Marker(latlng, { icon: this.options.icon });
+			this._marker = new L.Marker(latlng, {
+				icon: this.options.icon,
+				zIndexOffset: this.options.zIndexOffset
+			});
 			// Bind to both marker and map to make sure we get the click event.
 			this._marker.on('click', this._onClick, this);
 			this._map
