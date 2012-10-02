@@ -4,7 +4,8 @@ L.Handler.Draw = L.Handler.extend({
 	initialize: function (map, options) {
 		this._map = map;
 		this._container = map._container;
-		this._pane = map._panes.overlayPane;
+		this._overlayPane = map._panes.overlayPane;
+		this._popupPane = map._panes.popupPane;
 
 		// Merge default shapeOptions options with custom shapeOptions
 		if (options && options.shapeOptions) {
@@ -22,7 +23,7 @@ L.Handler.Draw = L.Handler.extend({
 		if (this._map) {
 			L.DomUtil.disableTextSelection();
 
-			this._label = L.DomUtil.create('div', 'leaflet-draw-label', this._pane);
+			this._label = L.DomUtil.create('div', 'leaflet-draw-label', this._popupPane);
 			this._singleLineLabel = false;
 
 			L.DomEvent.addListener(window, 'keyup', this._cancelDrawing, this);
@@ -33,7 +34,7 @@ L.Handler.Draw = L.Handler.extend({
 		if (this._map) {
 			L.DomUtil.enableTextSelection();
 
-			this._pane.removeChild(this._label);
+			this._popupPane.removeChild(this._label);
 			delete this._label;
 
 			L.DomEvent.removeListener(window, 'keyup', this._cancelDrawing);
