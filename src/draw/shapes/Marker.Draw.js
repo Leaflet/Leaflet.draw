@@ -1,6 +1,7 @@
 L.Marker.Draw = L.Handler.Draw.extend({
 	options: {
-		icon: new L.Icon.Default()
+		icon: new L.Icon.Default(),
+		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
 	
 	addHooks: function () {
@@ -35,7 +36,10 @@ L.Marker.Draw = L.Handler.Draw.extend({
 		this._updateLabelPosition(newPos);
 
 		if (!this._marker) {
-			this._marker = new L.Marker(latlng, { icon: this.options.icon });
+			this._marker = new L.Marker(latlng, {
+				icon: this.options.icon,
+				zIndexOffset: this.options.zIndexOffset
+			});
 			// Bind to both marker and map to make sure we get the click event.
 			this._marker.on('click', this._onClick, this);
 			this._map
