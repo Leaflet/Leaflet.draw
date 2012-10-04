@@ -10,7 +10,6 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 
 			this._updateLabelText({ text: this._initialLabelText });
 
-			this._clickCount = 0;
 			this._map
 				.on('mousedown', this._onMouseDown, this)
 				.on('mousemove', this._onMouseMove, this);
