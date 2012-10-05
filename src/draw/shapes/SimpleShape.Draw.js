@@ -50,15 +50,11 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 
 	_onMouseMove: function (e) {
 		var layerPoint = e.layerPoint,
-			latlng = e.latlng;
+				latlng = e.latlng;
 
+		this._updateLabelPosition(layerPoint);
 		if (this._isDrawing) {
 			this._updateLabelText({ text: 'Release mouse to finish drawing.' });
-		}
-		this._updateLabelPosition(layerPoint);
-
-		if (this._isDrawing) {
-			this._updateLabelPosition(layerPoint);
 			this._drawShape(latlng);
 		}
 	},
