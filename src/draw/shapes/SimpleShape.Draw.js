@@ -42,6 +42,8 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 	_onMouseDown: function (e) {
 		this._isDrawing = true;
 		this._startLatLng = e.latlng;
+		
+		this._updateLabelText({ text: 'Release mouse to finish drawing.' });
 
 		L.DomEvent
 			.on(document, 'mouseup', this._onMouseUp, this)
@@ -52,9 +54,6 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 		var layerPoint = e.layerPoint,
 			latlng = e.latlng;
 
-		if (this._isDrawing) {
-			this._updateLabelText({ text: 'Release mouse to finish drawing.' });
-		}
 		this._updateLabelPosition(layerPoint);
 
 		if (this._isDrawing) {
@@ -64,9 +63,7 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 	},
 
 	_onMouseUp: function (e) {
-		if (this._shape) {
-			this._fireCreatedEvent();
-		}
+		this._fireCreatedEvent();
 		
 		this.disable();
 	}
