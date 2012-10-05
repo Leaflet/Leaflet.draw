@@ -113,7 +113,7 @@ L.Control.Draw = L.Control.extend({
 	_disableInactiveModes: function () {
 		for (var i in this.handlers) {
 			// Check if is a property of this object and is enabled
-			if (this.handlers.hasOwnProperty(i) && this.handlers[i].enabled) {
+			if (this.handlers.hasOwnProperty(i) && this.handlers[i].enabled()) {
 				this.handlers[i].disable();
 			}
 		}
