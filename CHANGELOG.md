@@ -5,7 +5,9 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
-...
+### Bugfixes
+
+ * Fixed a bug that would cause and error when creating rectangles/circles withought moving the mouse. (by [@inpursuit](https://github.com/inpursuit)). [#25] 
 
 ## 0.1.3 (October 3, 2012)
 
