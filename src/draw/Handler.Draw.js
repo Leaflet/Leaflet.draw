@@ -18,13 +18,6 @@ L.Handler.Draw = L.Handler.extend({
 		this.fire('activated');
 		L.Handler.prototype.enable.call(this);
 	},
-
-	disable: function () {
-		if (!this._enabled) { return; }
-
-		this.fire('deactivated');
-		L.Handler.prototype.disable.call(this);
-	},
 	
 	addHooks: function () {
 		if (this._map) {
