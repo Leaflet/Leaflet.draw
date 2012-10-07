@@ -3,11 +3,11 @@
 <head>
 	<title>Leaflet Draw</title>
 
-	<link rel="stylesheet" href="../lib/leaflet/leaflet.css" />
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.ie.css" /><![endif]-->
 	<link rel="stylesheet" href="../dist/leaflet.draw.css" />
-	<!--[if lte IE 8]><link rel="stylesheet" href="../ib/leaflet/leaflet.ie.css" /><![endif]-->
 
-	<script src="../lib/leaflet/leaflet-src.js"></script>
+	<script src="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet-src.js"></script>
 	<script src="../src/ext/LineUtil.js"></script>
 	<script src="../src/ext/Polygon.js"></script>
 	<script src="../src/ext/Polyline.js"></script>
@@ -30,7 +30,7 @@
 			map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(-37.7772, 175.2756), zoom: 15 });
 
 		var drawControl = new L.Control.Draw({
-			position: 'topright',
+			position: 'topleft',
 			polygon: {
 				title: 'Draw a sexy polygon!',
 				allowIntersection: false,
