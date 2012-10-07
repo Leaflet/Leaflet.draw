@@ -56,6 +56,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 						iconAnchor: [20, 20],
 						iconSize: [40, 40]
 					}),
+					opacity: 0,
 					zIndexOffset: this.options.zIndexOffset
 				});
 			}

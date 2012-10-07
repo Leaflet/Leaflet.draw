@@ -52,7 +52,7 @@
 	}
 
 .leaflet-mouse-marker {
-	background-color: transparent;
+	background-color: #fff;
 	cursor: crosshair;
 }
 
