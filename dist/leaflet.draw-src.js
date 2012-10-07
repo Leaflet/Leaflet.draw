@@ -5,7 +5,7 @@
 */
 (function (window, undefined) {
 
-L.drawVersion = '0.1.3';
+L.drawVersion = '0.1.4';
 
 L.Util.extend(L.LineUtil, {
 	// Checks to see if two line segments intersect. Does not handle degenerate cases.
@@ -268,6 +268,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 						iconAnchor: [20, 20],
 						iconSize: [40, 40]
 					}),
+					opacity: 0,
 					zIndexOffset: this.options.zIndexOffset
 				});
 			}
@@ -640,8 +641,6 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 	_onMouseDown: function (e) {
 		this._isDrawing = true;
 		this._startLatLng = e.latlng;
-		
-		this._updateLabelText({ text: 'Release mouse to finish drawing.' });
 
 		L.DomEvent
 			.on(document, 'mouseup', this._onMouseUp, this)
@@ -650,18 +649,19 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 
 	_onMouseMove: function (e) {
 		var layerPoint = e.layerPoint,
-			latlng = e.latlng;
+				latlng = e.latlng;
 
 		this._updateLabelPosition(layerPoint);
-
 		if (this._isDrawing) {
-			this._updateLabelPosition(layerPoint);
+			this._updateLabelText({ text: 'Release mouse to finish drawing.' });
 			this._drawShape(latlng);
 		}
 	},
 
 	_onMouseUp: function (e) {
-		this._fireCreatedEvent();
+		if (this._shape) {
+			this._fireCreatedEvent();
+		}
 		
 		this.disable();
 	}
@@ -899,9 +899,11 @@ L.Control.Draw = L.Control.extend({
 		link.title = title;
 
 		L.DomEvent
-			.addListener(link, 'click', L.DomEvent.stopPropagation)
-			.addListener(link, 'click', L.DomEvent.preventDefault)
-			.addListener(link, 'click', fn, context);
+			.on(link, 'click', L.DomEvent.stopPropagation)
+			.on(link, 'mousedown', L.DomEvent.stopPropagation)
+			.on(link, 'dblclick', L.DomEvent.stopPropagation)
+			.on(link, 'click', L.DomEvent.preventDefault)
+			.on(link, 'click', fn, context);
 
 		return link;
 	},
@@ -910,7 +912,7 @@ L.Control.Draw = L.Control.extend({
 	_disableInactiveModes: function () {
 		for (var i in this.handlers) {
 			// Check if is a property of this object and is enabled
-			if (this.handlers.hasOwnProperty(i) && this.handlers[i].enabled) {
+			if (this.handlers.hasOwnProperty(i) && this.handlers[i].enabled()) {
 				this.handlers[i].disable();
 			}
 		}
