@@ -5,10 +5,16 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
+...
+
+## 0.1.4 (October 8, 2012)
+
 ### Bugfixes
 
  * Fixed a bug that would cause an error when creating rectangles/circles withought moving the mouse. (by [@inpursuit](https://github.com/inpursuit)). [#25](https://github.com/jacobtoye/Leaflet.draw/pull/25)
  * Fixed a bug that would cause an error when clicking a different drawing tool while another mode enabled. (by [@thegreat](https://github.com/thegreat)). [#27](https://github.com/jacobtoye/Leaflet.draw/pull/27)
+  * Fixed control buttons breaking plugin in oldIE.
+  * Fixed drawing polylines and polygons in oldIE.
 
 ## 0.1.3 (October 3, 2012)
 
