@@ -165,7 +165,7 @@ L.Handler.Draw = L.Handler.extend({
 			this._label = L.DomUtil.create('div', 'leaflet-draw-label', this._popupPane);
 			this._singleLineLabel = false;
 
-			L.DomEvent.addListener(window, 'keyup', this._cancelDrawing, this);
+			L.DomEvent.addListener(this._container, 'keyup', this._cancelDrawing, this);
 		}
 	},
 
@@ -176,7 +176,7 @@ L.Handler.Draw = L.Handler.extend({
 			this._popupPane.removeChild(this._label);
 			delete this._label;
 
-			L.DomEvent.removeListener(window, 'keyup', this._cancelDrawing);
+			L.DomEvent.removeListener(this._container, 'keyup', this._cancelDrawing);
 		}
 	},
 
