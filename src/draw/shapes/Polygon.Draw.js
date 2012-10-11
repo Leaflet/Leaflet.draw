@@ -1,5 +1,7 @@
 L.Polygon.Draw = L.Polyline.Draw.extend({
 	Poly: L.Polygon,
+	
+	type: 'polygon',
 
 	options: {
 		shapeOptions: {

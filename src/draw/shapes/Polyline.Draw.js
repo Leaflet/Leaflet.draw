@@ -1,5 +1,7 @@
 L.Polyline.Draw = L.Handler.Draw.extend({
 	Poly: L.Polyline,
+	
+	type: 'polyline',
 
 	options: {
 		allowIntersection: true,

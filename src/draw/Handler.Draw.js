@@ -16,6 +16,7 @@ L.Handler.Draw = L.Handler.extend({
 
 	enable: function () {
 		this.fire('activated');
+		this._map.fire('drawing', { drawingType: this.type });
 		L.Handler.prototype.enable.call(this);
 	},
 	

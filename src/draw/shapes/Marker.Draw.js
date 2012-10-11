@@ -1,4 +1,6 @@
 L.Marker.Draw = L.Handler.Draw.extend({
+	type: 'marker',
+
 	options: {
 		icon: new L.Icon.Default(),
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers

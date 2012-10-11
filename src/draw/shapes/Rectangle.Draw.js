@@ -1,4 +1,6 @@
 L.Rectangle.Draw = L.SimpleShape.Draw.extend({
+	type: 'rectangle',
+
 	options: {
 		shapeOptions: {
 			stroke: true,
