@@ -1,4 +1,6 @@
 L.Circle.Draw = L.SimpleShape.Draw.extend({
+	type: 'circle',
+
 	options: {
 		shapeOptions: {
 			stroke: true,
