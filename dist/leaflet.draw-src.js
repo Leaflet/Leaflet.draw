@@ -155,6 +155,7 @@ L.Handler.Draw = L.Handler.extend({
 
 	enable: function () {
 		this.fire('activated');
+		this._map.fire('drawing', { drawingType: this.type });
 		L.Handler.prototype.enable.call(this);
 	},
 	
@@ -212,6 +213,8 @@ L.Handler.Draw = L.Handler.extend({
 
 L.Polyline.Draw = L.Handler.Draw.extend({
 	Poly: L.Polyline,
+	
+	type: 'polyline',
 
 	options: {
 		allowIntersection: true,
@@ -547,6 +550,8 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 L.Polygon.Draw = L.Polyline.Draw.extend({
 	Poly: L.Polygon,
+	
+	type: 'polygon',
 
 	options: {
 		shapeOptions: {
@@ -668,6 +673,8 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 });
 
 L.Circle.Draw = L.SimpleShape.Draw.extend({
+	type: 'circle',
+
 	options: {
 		shapeOptions: {
 			stroke: true,
@@ -701,6 +708,8 @@ L.Circle.Draw = L.SimpleShape.Draw.extend({
 });
 
 L.Rectangle.Draw = L.SimpleShape.Draw.extend({
+	type: 'rectangle',
+
 	options: {
 		shapeOptions: {
 			stroke: true,
@@ -734,6 +743,8 @@ L.Rectangle.Draw = L.SimpleShape.Draw.extend({
 });
 
 L.Marker.Draw = L.Handler.Draw.extend({
+	type: 'marker',
+
 	options: {
 		icon: new L.Icon.Default(),
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
