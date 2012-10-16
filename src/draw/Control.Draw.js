@@ -23,8 +23,6 @@ L.Control.Draw = L.Control.extend({
 		}
 	},
 
-	handlers: {},
-	
 	initialize: function (options) {
 		L.Util.extend(this.options, options);
 	},
@@ -32,7 +30,9 @@ L.Control.Draw = L.Control.extend({
 	onAdd: function (map) {
 		var className = 'leaflet-control-draw',
 			container = L.DomUtil.create('div', className);
-
+	
+		this.handlers = {};
+	
 		if (this.options.polyline) {
 			this.handlers.polyline = new L.Polyline.Draw(map, this.options.polyline);
 			this._createButton(
