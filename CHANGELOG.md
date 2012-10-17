@@ -5,7 +5,14 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
-...
+### Features
+
+ * Added 'drawing-disabled' event fired on the map when a draw handler is disabled. (by [@ajbeaven](https://github.com/thegreat)). [#35](https://github.com/jacobtoye/Leaflet.draw/pull/35)
+ * Added 'drawing' event fired on the map when a draw handler is actived. (by [@ajbeaven](https://github.com/thegreat)). [#30](https://github.com/jacobtoye/Leaflet.draw/pull/30)
+
+### Bugfixes
+ 
+ * Stopped L.Control.Draw from storing handlers in it's prototype. (by [@thegreat](https://github.com/thegreat)). [#37](https://github.com/jacobtoye/Leaflet.draw/pull/37)
 
 ## 0.1.4 (October 8, 2012)
 
