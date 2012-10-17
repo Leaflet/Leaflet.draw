@@ -19,6 +19,11 @@ L.Handler.Draw = L.Handler.extend({
 		this._map.fire('drawing', { drawingType: this.type });
 		L.Handler.prototype.enable.call(this);
 	},
+
+	disable: function () {
+		this._map.fire('drawing-disabled', { drawingType: this.type });
+		L.Handler.prototype.disable.call(this);
+	},
 	
 	addHooks: function () {
 		if (this._map) {
