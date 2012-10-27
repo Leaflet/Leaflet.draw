@@ -1,5 +1,7 @@
 L.Circle.Draw = L.SimpleShape.Draw.extend({
-	type: 'circle',
+	statics: {
+		TYPE: 'circle'
+	},
 
 	options: {
 		shapeOptions: {
@@ -12,6 +14,13 @@ L.Circle.Draw = L.SimpleShape.Draw.extend({
 			fillOpacity: 0.2,
 			clickable: true
 		}
+	},
+
+	initialize: function (map, options) {
+		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
+		this.type = L.Circle.Draw.TYPE;
+
+		L.Handler.Draw.prototype.initialize.call(this, map, options);
 	},
 
 	_initialLabelText: 'Click and drag to draw circle.',

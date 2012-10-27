@@ -1,9 +1,18 @@
 L.Marker.Draw = L.Handler.Draw.extend({
-	type: 'marker',
+	statics: {
+		TYPE: 'marker'
+	},
 
 	options: {
 		icon: new L.Icon.Default(),
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
+	},
+
+	initialize: function (map, options) {
+		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
+		this.type = L.Marker.Draw.TYPE;
+
+		L.Handler.Draw.prototype.initialize.call(this, map, options);
 	},
 	
 	addHooks: function () {

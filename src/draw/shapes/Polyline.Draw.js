@@ -1,7 +1,9 @@
 L.Polyline.Draw = L.Handler.Draw.extend({
+	statics: {
+		TYPE: 'polyline'
+	},
+
 	Poly: L.Polyline,
-	
-	type: 'polyline',
 
 	options: {
 		allowIntersection: true,
@@ -31,6 +33,10 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		if (options && options.drawError) {
 			options.drawError = L.Util.extend({}, this.options.drawError, options.drawError);
 		}
+
+		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
+		this.type = L.Polyline.Draw.TYPE;
+
 		L.Handler.Draw.prototype.initialize.call(this, map, options);
 	},
 	
