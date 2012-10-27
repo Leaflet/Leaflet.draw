@@ -87,7 +87,7 @@ L.Control.Draw = L.Control.extend({
 		this._shapes[type].handler = new Handler(map, this.options[type]);
 
 		this._shapes[type].button = this._createButton({
-			title: this.options.polyline.title,
+			title: this.options[type].title,
 			className: className + '-' + type,
 			container: container,
 			callback: this._shapes[type].handler.enable,
