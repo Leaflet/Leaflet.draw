@@ -15,13 +15,13 @@ L.Handler.Draw = L.Handler.extend({
 	},
 
 	enable: function () {
-		this.fire('activated', { handler: this.type });
+		this.fire('activated', { drawingType: this.type });
 		this._map.fire('drawing', { drawingType: this.type });
 		L.Handler.prototype.enable.call(this);
 	},
 
 	disable: function () {
-		this.fire('deactivated', { handler: this.type });
+		this.fire('deactivated', { drawingType: this.type });
 		this._map.fire('drawing-disabled', { drawingType: this.type });
 		L.Handler.prototype.disable.call(this);
 	},

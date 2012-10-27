@@ -119,10 +119,12 @@ L.Control.Draw = L.Control.extend({
 	},
 
 	_drawHandlerActivated: function (e) {
+		var drawingType = e.drawingType;
+
 		// Disable any active modes
 		this._disableInactiveModes();
 		
-		this._showCancelButton();
+		this._showCancelButton(drawingType);
 	},
 
 	_drawHandlerDeactivated: function (e) {
@@ -139,11 +141,11 @@ L.Control.Draw = L.Control.extend({
 		}
 	},
 
-	_showCancelButton: function () {
-		var buttonNumber = 1 - 1,
+	_showCancelButton: function (drawingType) {
+		var buttonIndex = this._shapes[drawingType].buttonIndex,
 			buttonHeight = 19, // TODO: this should be calculated
 			buttonMargin = 5, // TODO: this should also be calculated
-			cancelPosition = (buttonNumber * buttonHeight) + (buttonNumber * buttonMargin);
+			cancelPosition = (buttonIndex * buttonHeight) + (buttonIndex * buttonMargin);
 		
 		// Correctly position the cancel button
 		this._cancelContainer.style.marginTop = cancelPosition + 'px';
@@ -159,7 +161,7 @@ L.Control.Draw = L.Control.extend({
 	},
 
 	_cancelDrawing: function (e) {
-		// TODO: replace with more sophisticated method (of cancelling, like caching)
+		// TODO: replace with more sophisticated method (of cancelling, like caching the active mode)
 		this._disableInactiveModes();
 	}
 });
