@@ -30,7 +30,7 @@ L.Control.Draw = L.Control.extend({
 	onAdd: function (map) {
 		var className = 'leaflet-control-draw',
 			container = L.DomUtil.create('div', ''),
-			buttonIndex = 0, cancelButton;
+			buttonIndex = 0;
 
 		this._drawContainer = L.DomUtil.create('div', className),
 		this._cancelContainer = L.DomUtil.create('div', className + ' leaflet-control-draw-cancel');
@@ -63,7 +63,7 @@ L.Control.Draw = L.Control.extend({
 		this._lastButtonIndex = buttonIndex;
 
 		// Create the cancel button
-		cancelButton = this._createButton({
+		this._createButton({
 			title: 'Cancel drawing',
 			text: 'Cancel',
 			container: this._cancelContainer,
