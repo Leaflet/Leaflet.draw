@@ -35,112 +35,28 @@ L.Control.Draw = L.Control.extend({
 		this._drawContainer = L.DomUtil.create('div', className),
 		this._cancelContainer = L.DomUtil.create('div', className + ' leaflet-control-draw-cancel');
 	
+		// TODO: should this be done in initialize()?
 		this._shapes = {};
-	
-		// TODO: refactor? not happy with this, is there a better way to avoid all the repitition?
+
+		//
 		if (this.options.polyline) {
-			this._shapes.polyline = {};
-
-			this._shapes.polyline.handler = new L.Polyline.Draw(map, this.options.polyline);
-
-			this._shapes.polyline.button = this._createButton(
-				this.options.polyline.title,
-				'',
-				className + '-polyline',
-				this._drawContainer,
-				this._shapes.polyline.handler.enable,
-				this._shapes.polyline.handler
-			);
-
-			this._shapes.polyline.buttonIndex = buttonIndex++;
-
-			this._shapes.polyline.handler
-				.on('activated', this._drawHandlerActivated, this)
-				.on('deactivated', this._drawHandlerDeactivated, this);
+			this._initShapeHandler(L.Polyline.Draw, this._drawContainer, buttonIndex++);
 		}
 
 		if (this.options.polygon) {
-			this._shapes.polygon = {};
-
-			this._shapes.polygon.handler = new L.Polygon.Draw(map, this.options.polygon);
-
-			this._shapes.polygon.button = this._createButton(
-				this.options.polygon.title,
-				'',
-				className + '-polygon',
-				this._drawContainer,
-				this._shapes.polygon.handler.enable,
-				this._shapes.polygon.handler
-			);
-
-			this._shapes.polygon.buttonIndex = buttonIndex++;
-
-			this._shapes.polygon.handler
-				.on('activated', this._drawHandlerActivated, this)
-				.on('deactivated', this._drawHandlerDeactivated, this);
+			this._initShapeHandler(L.Polygon.Draw, this._drawContainer, buttonIndex++);
 		}
 
 		if (this.options.rectangle) {
-			this._shapes.rectangle = {};
-
-			this._shapes.rectangle.handler = new L.Rectangle.Draw(map, this.options.rectangle);
-
-			this._shapes.rectangle.button = this._createButton(
-				this.options.rectangle.title,
-				'',
-				className + '-rectangle',
-				this._drawContainer,
-				this._shapes.rectangle.handler.enable,
-				this._shapes.rectangle.handler
-			);
-
-			this._shapes.rectangle.buttonIndex = buttonIndex++;
-
-			this._shapes.rectangle.handler
-				.on('activated', this._drawHandlerActivated, this)
-				.on('deactivated', this._drawHandlerDeactivated, this);
+			this._initShapeHandler(L.Rectangle.Draw, this._drawContainer, buttonIndex++);
 		}
 
 		if (this.options.circle) {
-			this._shapes.circle = {};
-
-			this._shapes.circle.handler = new L.Circle.Draw(map, this.options.circle);
-
-			this._shapes.circle.button = this._createButton(
-				this.options.circle.title,
-				'',
-				className + '-circle',
-				this._drawContainer,
-				this._shapes.circle.handler.enable,
-				this._shapes.circle.handler
-			);
-
-			this._shapes.circle.buttonIndex = buttonIndex++;
-
-			this._shapes.circle.handler
-				.on('activated', this._drawHandlerActivated, this)
-				.on('deactivated', this._drawHandlerDeactivated, this);
+			this._initShapeHandler(L.Circle.Draw, this._drawContainer, buttonIndex++);
 		}
 
 		if (this.options.marker) {
-			this._shapes.marker = {};
-
-			this._shapes.marker.handler = new L.Marker.Draw(map, this.options.marker);
-
-			this._shapes.marker.button = this._createButton(
-				this.options.marker.title,
-				'',
-				className + '-marker',
-				this._drawContainer,
-				this._shapes.marker.handler.enable,
-				this._shapes.marker.handler
-			);
-
-			this._shapes.marker.buttonIndex = buttonIndex++;
-
-			this._shapes.marker.handler
-				.on('activated', this._drawHandlerActivated, this)
-				.on('deactivated', this._drawHandlerDeactivated, this);
+			this._initShapeHandler(L.Marker.Draw, this._drawContainer, buttonIndex++);
 		}
 
 		// Create the cancel button
@@ -158,6 +74,31 @@ L.Control.Draw = L.Control.extend({
 		container.appendChild(this._cancelContainer);
 
 		return container;
+	},
+
+	_initShapeHandler: function (Handler, container, buttonIndex) {
+		// TODO: make as a part of options?
+		var className = 'leaflet-control-draw',
+			type = Handler.TYPE;
+
+		this._shapes[type] = {};
+
+		this._shapes[type].handler = new Handler(map, this.options[type]);
+
+		this._shapes[type].button = this._createButton(
+			this.options.polyline.title,
+			'',
+			className + '-' + type,
+			container,
+			this._shapes[type].handler.enable,
+			this._shapes[type].handler
+		);
+
+		this._shapes[type].buttonIndex = buttonIndex;
+
+		this._shapes[type].handler
+			.on('activated', this._drawHandlerActivated, this)
+			.on('deactivated', this._drawHandlerDeactivated, this);
 	},
 
 	// TODO: take an options object to reduce variable clutter
