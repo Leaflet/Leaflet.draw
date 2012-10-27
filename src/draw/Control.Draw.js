@@ -56,8 +56,11 @@ L.Control.Draw = L.Control.extend({
 		}
 
 		if (this.options.marker) {
-			this._initShapeHandler(L.Marker.Draw, this._drawContainer, buttonIndex++);
+			this._initShapeHandler(L.Marker.Draw, this._drawContainer, buttonIndex);
 		}
+
+		// Save button index of the last button
+		this._lastButtonIndex = buttonIndex;
 
 		// Create the cancel button
 		cancelButton = this._createButton({
@@ -143,6 +146,7 @@ L.Control.Draw = L.Control.extend({
 
 	_showCancelButton: function (drawingType) {
 		var buttonIndex = this._shapes[drawingType].buttonIndex,
+			lastButtonIndex = this._lastButtonIndex,
 			buttonHeight = 19, // TODO: this should be calculated
 			buttonMargin = 5, // TODO: this should also be calculated
 			cancelPosition = (buttonIndex * buttonHeight) + (buttonIndex * buttonMargin);
@@ -151,6 +155,12 @@ L.Control.Draw = L.Control.extend({
 		this._cancelContainer.style.marginTop = cancelPosition + 'px';
 
 		// TODO: remove the top and button rounded border if first or last button
+		if (buttonIndex === 0) {
+			L.DomUtil.addClass(this._drawContainer, 'leaflet-control-draw-cancel-top');
+		}
+		else if (buttonIndex == lastButtonIndex) {
+			L.DomUtil.addClass(this._drawContainer, 'leaflet-control-draw-cancel-bottom');
+		}
 
 		// Show the cancel button
 		// TODO: anitmation!
@@ -160,6 +170,9 @@ L.Control.Draw = L.Control.extend({
 	_hideCancelButton: function () {
 		// TODO: anitmation!
 		this._cancelContainer.style.display = 'none';
+
+		L.DomUtil.removeClass(this._drawContainer, 'leaflet-control-draw-cancel-top');
+		L.DomUtil.removeClass(this._drawContainer, 'leaflet-control-draw-cancel-bottom');
 	},
 
 	_cancelDrawing: function (e) {

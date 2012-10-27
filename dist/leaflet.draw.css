@@ -80,6 +80,14 @@
 	width: auto;
 }
 
+.leaflet-control-draw-cancel-top {
+	border-top-right-radius: 0;
+}
+
+.leaflet-control-draw-cancel-bottom {
+	border-bottom-right-radius: 0;
+}
+
 /* ================================================================== */
 /* Drawing styles
 /* ================================================================== */
