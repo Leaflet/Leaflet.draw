@@ -25,6 +25,8 @@ L.Control.Draw = L.Control.extend({
 
 	initialize: function (options) {
 		L.Util.extend(this.options, options);
+
+		this._shapes = {};
 	},
 	
 	onAdd: function (map) {
@@ -34,11 +36,8 @@ L.Control.Draw = L.Control.extend({
 
 		this._drawContainer = L.DomUtil.create('div', className),
 		this._cancelContainer = L.DomUtil.create('div', className + ' leaflet-control-draw-cancel');
-	
-		// TODO: should this be done in initialize()?
-		this._shapes = {};
 
-		//
+
 		if (this.options.polyline) {
 			this._initShapeHandler(L.Polyline.Draw, this._drawContainer, buttonIndex++);
 		}
