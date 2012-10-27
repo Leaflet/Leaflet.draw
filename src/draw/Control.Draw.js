@@ -158,7 +158,7 @@ L.Control.Draw = L.Control.extend({
 		if (buttonIndex === 0) {
 			L.DomUtil.addClass(this._drawContainer, 'leaflet-control-draw-cancel-top');
 		}
-		else if (buttonIndex == lastButtonIndex) {
+		else if (buttonIndex === lastButtonIndex) {
 			L.DomUtil.addClass(this._drawContainer, 'leaflet-control-draw-cancel-bottom');
 		}
 
