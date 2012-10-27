@@ -60,14 +60,13 @@ L.Control.Draw = L.Control.extend({
 		}
 
 		// Create the cancel button
-		cancelButton = this._createButton(
-			'Cancel drawing',
-			'Cancel',
-			'',
-			this._cancelContainer,
-			this._cancelDrawing,
-			this
-		);
+		cancelButton = this._createButton({
+			title: 'Cancel drawing',
+			text: 'Cancel',
+			container: this._cancelContainer,
+			callback: this._cancelDrawing,
+			context: this
+		});
 		
 		// Add draw and cancel containers to the control container
 		container.appendChild(this._drawContainer);
@@ -85,14 +84,13 @@ L.Control.Draw = L.Control.extend({
 
 		this._shapes[type].handler = new Handler(map, this.options[type]);
 
-		this._shapes[type].button = this._createButton(
-			this.options.polyline.title,
-			'',
-			className + '-' + type,
-			container,
-			this._shapes[type].handler.enable,
-			this._shapes[type].handler
-		);
+		this._shapes[type].button = this._createButton({
+			title: this.options.polyline.title,
+			className: className + '-' + type,
+			container: container,
+			callback: this._shapes[type].handler.enable,
+			context: this._shapes[type].handler
+		});
 
 		this._shapes[type].buttonIndex = buttonIndex;
 
@@ -102,18 +100,20 @@ L.Control.Draw = L.Control.extend({
 	},
 
 	// TODO: take an options object to reduce variable clutter
-	_createButton: function (title, text, className, container, fn, context) {
-		var link = L.DomUtil.create('a', className, container);
-		link.innerHTML = text;
+	_createButton: function (options) {
+		var link = L.DomUtil.create('a', options.className || '', options.container);
 		link.href = '#';
-		link.title = title;
+
+		if (options.text) link.innerHTML = options.text;
+
+		if (options.title) link.title = options.title;
 
 		L.DomEvent
 			.on(link, 'click', L.DomEvent.stopPropagation)
 			.on(link, 'mousedown', L.DomEvent.stopPropagation)
 			.on(link, 'dblclick', L.DomEvent.stopPropagation)
 			.on(link, 'click', L.DomEvent.preventDefault)
-			.on(link, 'click', fn, context);
+			.on(link, 'click', options.callback, options.context);
 
 		return link;
 	},
@@ -149,6 +149,8 @@ L.Control.Draw = L.Control.extend({
 		
 		// Correctly position the cancel button
 		this._cancelContainer.style.marginTop = cancelPosition + 'px';
+
+		// TODO: remove the top and button rounded border if first or last button
 
 		// Show the cancel button
 		// TODO: anitmation!
