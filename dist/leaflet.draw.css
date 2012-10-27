@@ -29,12 +29,15 @@
 	margin-top: 0;
 } 	
 
-.leaflet-control-draw a:hover,
-.leaflet-control-draw-active {
+.leaflet-control-draw a:hover {
 	background-color: #fff;
 }
 
-.leaflet-control-draw-disabled {
+.leaflet-control-draw-button-enabled {
+	background-color: #fff !important;
+}
+
+.leaflet-control-draw-button-disabled {
 	background-color: rgba(255, 255, 255, 0.5);
 }
 
@@ -67,8 +70,6 @@
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 	display: none;
-	/*margin-left: 39px; /* TODO: this should be animated */
-	/*margin-top: -53px; /* This will be set depending on the button that is active */
 	padding-left: 0;
 }
 

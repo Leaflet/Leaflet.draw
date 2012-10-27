@@ -129,11 +129,15 @@ L.Control.Draw = L.Control.extend({
 		// Cache new active shape
 		this._activeShape = this._shapes[e.drawingType];
 
+		L.DomUtil.addClass(this._activeShape.button, 'leaflet-control-draw-button-enabled');
+
 		this._showCancelButton();
 	},
 
 	_drawHandlerDeactivated: function (e) {
 		this._hideCancelButton();
+
+		L.DomUtil.removeClass(this._activeShape.button, 'leaflet-control-draw-button-enabled');
 
 		this._activeShape = null;
 	},
