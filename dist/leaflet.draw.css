@@ -1,10 +1,14 @@
-/* Leaflet controls */
+/* ================================================================== */
+/* Draw toolbars
+/* ================================================================== */
 
-.leaflet-control-draw {
+.leaflet-control-draw,
+.leaflet-control-draw-cancel {
 	background-color: rgba(0, 0, 0, 0.25);
 	-webkit-border-radius: 7px;
 	   -moz-border-radius: 7px;
 	        border-radius: 7px;
+	float: left;
 	padding: 5px;
 }
 
@@ -25,8 +29,13 @@
 	margin-top: 0;
 } 	
 
-.leaflet-control-draw a:hover {
+.leaflet-control-draw a:hover,
+.leaflet-control-draw-active {
 	background-color: #fff;
+}
+
+.leaflet-control-draw-disabled {
+	background-color: rgba(255, 255, 255, 0.5);
 }
 
 .leaflet-touch .leaflet-control-draw a {
@@ -53,6 +62,27 @@
 .leaflet-control-draw-marker {
 	background-image: url(images/draw-marker-icon.png);
 }
+
+.leaflet-control-draw-cancel {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	display: none;
+	/*margin-left: 39px; /* TODO: this should be animated */
+	/*margin-top: -53px; /* This will be set depending on the button that is active */
+	padding-left: 0;
+}
+
+.leaflet-control-draw-cancel a {
+	color: #000;
+	font: 11px/19px "Helvetica Neue", Arial, Helvetica, sans-serif;
+	padding: 0 4px;
+	text-decoration: none;
+	width: auto;
+}
+
+/* ================================================================== */
+/* Drawing styles
+/* ================================================================== */
 
 .leaflet-mouse-marker {
 	background-color: #fff;
