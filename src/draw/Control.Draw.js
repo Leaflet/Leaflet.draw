@@ -102,7 +102,6 @@ L.Control.Draw = L.Control.extend({
 			.on('deactivated', this._drawHandlerDeactivated, this);
 	},
 
-	// TODO: take an options object to reduce variable clutter
 	_createButton: function (options) {
 		var link = L.DomUtil.create('a', options.className || '', options.container);
 		link.href = '#';
@@ -122,30 +121,25 @@ L.Control.Draw = L.Control.extend({
 	},
 
 	_drawHandlerActivated: function (e) {
-		var drawingType = e.drawingType;
-
-		// Disable any active modes
-		this._disableInactiveModes();
+		// Disable active mode (if present)
+		if (this._activeShape && this._activeShape.handler.enabled()) {
+			this._activeShape.handler.disable();
+		}
 		
-		this._showCancelButton(drawingType);
+		// Cache new active shape
+		this._activeShape = this._shapes[e.drawingType];
+
+		this._showCancelButton();
 	},
 
 	_drawHandlerDeactivated: function (e) {
 		this._hideCancelButton();
+
+		this._activeShape = null;
 	},
 
-	// Need to disable the drawing modes if user clicks on another without disabling the current mode
-	_disableInactiveModes: function () {
-		for (var i in this._shapes) {
-			// Check if is a property of this object and is enabled
-			if (this._shapes.hasOwnProperty(i) && this._shapes[i].handler.enabled()) {
-				this._shapes[i].handler.disable();
-			}
-		}
-	},
-
-	_showCancelButton: function (drawingType) {
-		var buttonIndex = this._shapes[drawingType].buttonIndex,
+	_showCancelButton: function () {
+		var buttonIndex = this._activeShape.buttonIndex,
 			lastButtonIndex = this._lastButtonIndex,
 			buttonHeight = 19, // TODO: this should be calculated
 			buttonMargin = 5, // TODO: this should also be calculated
@@ -176,8 +170,7 @@ L.Control.Draw = L.Control.extend({
 	},
 
 	_cancelDrawing: function (e) {
-		// TODO: replace with more sophisticated method (of cancelling, like caching the active mode)
-		this._disableInactiveModes();
+		this._activeShape.handler.disable();
 	}
 });
 
