@@ -1,4 +1,4 @@
-L.Polyline.Draw = L.Handler.Draw.extend({
+L.Polyline.Draw = L.Feature.Draw.extend({
 	statics: {
 		TYPE: 'polyline'
 	},
@@ -37,11 +37,11 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Polyline.Draw.TYPE;
 
-		L.Handler.Draw.prototype.initialize.call(this, map, options);
+		L.Feature.Draw.prototype.initialize.call(this, map, options);
 	},
 	
 	addHooks: function () {
-		L.Handler.Draw.prototype.addHooks.call(this);
+		L.Feature.Draw.prototype.addHooks.call(this);
 		if (this._map) {
 			this._markers = [];
 
@@ -78,7 +78,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	},
 
 	removeHooks: function () {
-		L.Handler.Draw.prototype.removeHooks.call(this);
+		L.Feature.Draw.prototype.removeHooks.call(this);
 
 		this._clearHideErrorTimeout();
 
@@ -251,7 +251,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 	_updateLabelText: function (labelText) {
 		if (!this._errorShown) {
-			L.Handler.Draw.prototype._updateLabelText.call(this, labelText);
+			L.Feature.Draw.prototype._updateLabelText.call(this, labelText);
 		}
 	},
 
@@ -291,7 +291,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		// Update label
 		L.DomUtil.addClass(this._label, 'leaflet-error-draw-label');
 		L.DomUtil.addClass(this._label, 'leaflet-flash-anim');
-		L.Handler.Draw.prototype._updateLabelText.call(this, { text: this.options.drawError.message });
+		L.Feature.Draw.prototype._updateLabelText.call(this, { text: this.options.drawError.message });
 
 		// Update shape
 		this._updateGuideColor(this.options.drawError.color);

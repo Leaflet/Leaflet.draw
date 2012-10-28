@@ -1,10 +1,7 @@
 /*
  * Adapted from Tom Nightingale's https://github.com/tnightingale/Leaflet.widget/blob/master/src/Select.js
  */
-
-L.Vector = {};
-
-L.Vector.Edit = L.Handler.extend({
+L.Feature.Edit = L.Handler.extend({
 	includes: L.Mixin.Events,
 
 	options: {},

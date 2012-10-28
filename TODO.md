@@ -5,8 +5,9 @@
  * Do we need a better visual cue for when in selecting mode?
  * Make Control.Draw inherit from Control.Toolbar.
  * See if any common code can move to Control.Toolbar from Control.Draw.
- * Rename Handler.Draw -> Vector.Draw. What about markers? they aren't vectors, is there a better name? Maybe Feature?
+ * ~~Rename Handler.Draw -> Vector.Draw. What about markers? they aren't vectors, is there a better name? Maybe Feature?~~
  * Add enbled/disabled states for the delete & edit buttons.
+ * Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only?
 
 ### Edit functionality
 

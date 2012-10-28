@@ -20,7 +20,7 @@ L.Circle.Draw = L.SimpleShape.Draw.extend({
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Circle.Draw.TYPE;
 
-		L.Handler.Draw.prototype.initialize.call(this, map, options);
+		L.Feature.Draw.prototype.initialize.call(this, map, options);
 	},
 
 	_initialLabelText: 'Click and drag to draw circle.',

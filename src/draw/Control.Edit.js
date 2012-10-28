@@ -1,6 +1,6 @@
-L.Map.mergeOptions({
-	editControl: false
-});
+/*L.Map.mergeOptions({
+	editControl: true
+});*/
 
 L.Control.Edit = L.Control.Toolbar.extend({
 	options: {
@@ -14,7 +14,7 @@ L.Control.Edit = L.Control.Toolbar.extend({
 		var className = 'leaflet-control-edit',
 			container = L.DomUtil.create('div', className);
 
-		this._handler = new L.Vector.Edit(map, {
+		this._handler = new L.Feature.Edit(map, {
 			selectableLayers: this.options.selectableLayers
 		});
 

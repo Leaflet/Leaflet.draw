@@ -1,8 +1,8 @@
 L.SimpleShape = {};
 
-L.SimpleShape.Draw = L.Handler.Draw.extend({
+L.SimpleShape.Draw = L.Feature.Draw.extend({
 	addHooks: function () {
-		L.Handler.Draw.prototype.addHooks.call(this);
+		L.Feature.Draw.prototype.addHooks.call(this);
 		if (this._map) {
 			this._map.dragging.disable();
 			//TODO refactor: move cursor to styles
@@ -18,7 +18,7 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 	},
 
 	removeHooks: function () {
-		L.Handler.Draw.prototype.removeHooks.call(this);
+		L.Feature.Draw.prototype.removeHooks.call(this);
 		if (this._map) {
 			this._map.dragging.enable();
 			//TODO refactor: move cursor to styles
