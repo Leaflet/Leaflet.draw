@@ -1,9 +1,11 @@
 /* ================================================================== */
-/* Draw toolbars
+/* Toolbars
 /* ================================================================== */
 
+/* TODO: join style to common class: leaflet-control-toolbar */
 .leaflet-control-draw,
-.leaflet-control-draw-cancel {
+.leaflet-control-draw-cancel,
+.leaflet-control-edit {
 	background-color: rgba(0, 0, 0, 0.25);
 	-webkit-border-radius: 7px;
 	   -moz-border-radius: 7px;
@@ -12,7 +14,8 @@
 	padding: 5px;
 }
 
-.leaflet-control-draw a {
+.leaflet-control-draw a,
+.leaflet-control-edit a {
 	background-color: rgba(255, 255, 255, 0.75);
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
@@ -25,11 +28,13 @@
 	height: 19px;
 }
 
-.leaflet-control-draw a:first-child{
+.leaflet-control-draw a:first-child,
+.leaflet-control-edit a:first-child {
 	margin-top: 0;
 } 	
 
-.leaflet-control-draw a:hover {
+.leaflet-control-draw a:hover,
+.leaflet-control-edit a:hover {
 	background-color: #fff;
 }
 
@@ -44,7 +49,11 @@
 .leaflet-touch .leaflet-control-draw a {
 	width: 27px;
 	height: 27px;
-}	
+}
+
+/* ================================================================== */
+/* Draw toolbar
+/* ================================================================== */
 
 .leaflet-control-draw-polyline {
 	background-image: url(images/draw-polyline.png);
@@ -87,6 +96,22 @@
 
 .leaflet-control-draw-cancel-bottom {
 	border-bottom-right-radius: 0;
+}
+
+/* ================================================================== */
+/* Edit toolbar
+/* ================================================================== */
+
+.leaflet-control-edit-select {
+	background-image: url(images/select.png);
+}
+
+.leaflet-control-edit-edit {
+	background-image: url(images/edit.png);
+}
+
+.leaflet-control-edit-remove {
+	background-image: url(images/remove.png);
 }
 
 /* ================================================================== */

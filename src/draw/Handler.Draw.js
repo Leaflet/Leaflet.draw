@@ -1,3 +1,4 @@
+// TODO: should this be remnamed to Vector.Draw?
 L.Handler.Draw = L.Handler.extend({
 	includes: L.Mixin.Events,
 
