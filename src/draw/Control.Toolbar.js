@@ -15,5 +15,26 @@ L.Control.Toolbar = L.Control.extend({
 			.on(link, 'click', options.callback, options.context);
 
 		return link;
+	},
+
+	_createCancelButton: function () {
+		this._createButton({
+			title: 'Cancel drawing',
+			text: 'Cancel',
+			container: this._cancelContainer,
+			callback: this._cancel,
+			context: this
+		});
+	},
+
+	_showCancelButton: function () {
+		this._cancelContainer.style.display = 'block';
+	},
+
+	_hideCancelButton: function () {
+		this._cancelContainer.style.display = 'none';
+
+		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-control-toolbar-cancel-top');
+		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-control-toolbar-cancel-bottom');
 	}
 });

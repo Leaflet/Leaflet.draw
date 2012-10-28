@@ -15,8 +15,13 @@ L.Feature.Edit = L.Handler.extend({
 	},
 
 	enable: function () {
-		this.fire('activated');
+		this.fire('enabled');
 		L.Handler.prototype.enable.call(this);
+	},
+
+	disable: function () {
+		this.fire('disabled');
+		L.Handler.prototype.disable.call(this);
 	},
 
 	addHooks: function () {
