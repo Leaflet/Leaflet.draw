@@ -2,7 +2,7 @@ L.Map.mergeOptions({
 	drawControl: false
 });
 
-L.Control.Draw = L.Control.extend({
+L.Control.Draw = L.Control.Toolbar.extend({
 
 	options: {
 		position: 'topleft',
@@ -99,24 +99,6 @@ L.Control.Draw = L.Control.extend({
 		this._shapes[type].handler
 			.on('activated', this._drawHandlerActivated, this)
 			.on('deactivated', this._drawHandlerDeactivated, this);
-	},
-
-	_createButton: function (options) {
-		var link = L.DomUtil.create('a', options.className || '', options.container);
-		link.href = '#';
-
-		if (options.text) link.innerHTML = options.text;
-
-		if (options.title) link.title = options.title;
-
-		L.DomEvent
-			.on(link, 'click', L.DomEvent.stopPropagation)
-			.on(link, 'mousedown', L.DomEvent.stopPropagation)
-			.on(link, 'dblclick', L.DomEvent.stopPropagation)
-			.on(link, 'click', L.DomEvent.preventDefault)
-			.on(link, 'click', options.callback, options.context);
-
-		return link;
 	},
 
 	_drawHandlerActivated: function (e) {
