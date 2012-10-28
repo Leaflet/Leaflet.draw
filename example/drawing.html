@@ -20,6 +20,10 @@
 	<script src="../src/draw/shapes/Circle.Draw.js"></script>
 	<script src="../src/draw/shapes/Marker.Draw.js"></script>
 	<script src="../src/draw/Control.Draw.js"></script>
+
+	<script src="../src/draw/Vector.Edit.js"></script>
+	<script src="../src/draw/Control.Toolbar.js"></script>
+	<script src="../src/draw/Control.Edit.js"></script>
 </head>
 <body>
 	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
@@ -66,7 +70,11 @@
 			drawnItems.addLayer(e.marker);
 		});
 		map.addLayer(drawnItems);
-		
+
+		var editControl = new L.Control.Edit({
+			selectableLayers: drawnItems
+		});
+		map.addControl(editControl);
 	</script>
 </body>
 </html>
