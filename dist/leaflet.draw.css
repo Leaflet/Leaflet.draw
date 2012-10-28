@@ -3,9 +3,8 @@
 /* ================================================================== */
 
 /* TODO: join style to common class: leaflet-control-toolbar */
-.leaflet-control-draw,
-.leaflet-control-draw-cancel,
-.leaflet-control-edit {
+.leaflet-control-toolbar,
+.leaflet-control-toolbar-cancel {
 	background-color: rgba(0, 0, 0, 0.25);
 	-webkit-border-radius: 7px;
 	   -moz-border-radius: 7px;
@@ -14,8 +13,7 @@
 	padding: 5px;
 }
 
-.leaflet-control-draw a,
-.leaflet-control-edit a {
+.leaflet-control-toolbar a {
 	background-color: rgba(255, 255, 255, 0.75);
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
@@ -28,27 +26,48 @@
 	height: 19px;
 }
 
-.leaflet-control-draw a:first-child,
-.leaflet-control-edit a:first-child {
+.leaflet-control-toolbar a:first-child {
 	margin-top: 0;
 } 	
 
-.leaflet-control-draw a:hover,
-.leaflet-control-edit a:hover {
+.leaflet-control-toolbar a:hover {
 	background-color: #fff;
 }
 
-.leaflet-control-draw-button-enabled {
+.leaflet-control-toolbar-button-enabled {
 	background-color: #fff !important;
 }
 
-.leaflet-control-draw-button-disabled {
+.leaflet-control-toolbar-button-disabled {
 	background-color: rgba(255, 255, 255, 0.5);
 }
 
-.leaflet-touch .leaflet-control-draw a {
+.leaflet-touch .leaflet-control-toolbar a {
 	width: 27px;
 	height: 27px;
+}
+
+.leaflet-control-toolbar-cancel {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	display: none;
+	padding-left: 0;
+}
+
+.leaflet-control-toolbar-cancel a {
+	color: #000;
+	font: 11px/19px "Helvetica Neue", Arial, Helvetica, sans-serif;
+	padding: 0 4px;
+	text-decoration: none;
+	width: auto;
+}
+
+.leaflet-control-toolbar-cancel-top {
+	border-top-right-radius: 0;
+}
+
+.leaflet-control-toolbar-cancel-bottom {
+	border-bottom-right-radius: 0;
 }
 
 /* ================================================================== */
@@ -73,29 +92,6 @@
 
 .leaflet-control-draw-marker {
 	background-image: url(images/draw-marker-icon.png);
-}
-
-.leaflet-control-draw-cancel {
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
-	display: none;
-	padding-left: 0;
-}
-
-.leaflet-control-draw-cancel a {
-	color: #000;
-	font: 11px/19px "Helvetica Neue", Arial, Helvetica, sans-serif;
-	padding: 0 4px;
-	text-decoration: none;
-	width: auto;
-}
-
-.leaflet-control-draw-cancel-top {
-	border-top-right-radius: 0;
-}
-
-.leaflet-control-draw-cancel-bottom {
-	border-bottom-right-radius: 0;
 }
 
 /* ================================================================== */

@@ -11,7 +11,8 @@ L.Control.Edit = L.Control.Toolbar.extend({
 	},
 	
 	onAdd: function (map) {
-		var className = 'leaflet-control-edit',
+		var className = 'leaflet-control-toolbar',
+			prefixClassName = 'leaflet-control-edit',
 			container = L.DomUtil.create('div', className);
 
 		this._handler = new L.Feature.Edit(map, {
@@ -23,11 +24,11 @@ L.Control.Edit = L.Control.Toolbar.extend({
 		// Create the select button
 		this._createButton({
 			title: 'Select items',
-			className: className + '-select',
+			className: prefixClassName + '-select',
 			container: container,
 			callback: this._handler.enable,
 			context: this._handler
-		});		
+		});
 
 		if (this.options.edit) {
 			// TODO
@@ -36,7 +37,7 @@ L.Control.Edit = L.Control.Toolbar.extend({
 		if (this.options.remove) {
 			this._createButton({
 				title: 'Remove items',
-				className: className + '-remove',
+				className: prefixClassName + '-remove',
 				container: container,
 				callback: this._handler.removeItems,
 				context: this._handler

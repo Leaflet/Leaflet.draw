@@ -30,12 +30,12 @@ L.Control.Draw = L.Control.Toolbar.extend({
 	},
 	
 	onAdd: function (map) {
-		var className = 'leaflet-control-draw',
+		var className = 'leaflet-control-toolbar',
 			container = L.DomUtil.create('div', ''),
 			buttonIndex = 0;
 
 		this._drawContainer = L.DomUtil.create('div', className),
-		this._cancelContainer = L.DomUtil.create('div', className + ' leaflet-control-draw-cancel');
+		this._cancelContainer = L.DomUtil.create('div', className + ' leaflet-control-toolbar-cancel');
 
 
 		if (this.options.polyline) {
@@ -79,7 +79,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 
 	_initShapeHandler: function (Handler, container, buttonIndex) {
 		// TODO: make as a part of options?
-		var className = 'leaflet-control-draw',
+		var classNamePredix = 'leaflet-control-draw',
 			type = Handler.TYPE;
 
 		this._shapes[type] = {};
@@ -88,7 +88,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 
 		this._shapes[type].button = this._createButton({
 			title: this.options[type].title,
-			className: className + '-' + type,
+			className: classNamePredix + '-' + type,
 			container: container,
 			callback: this._shapes[type].handler.enable,
 			context: this._shapes[type].handler
@@ -110,7 +110,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 		// Cache new active shape
 		this._activeShape = this._shapes[e.drawingType];
 
-		L.DomUtil.addClass(this._activeShape.button, 'leaflet-control-draw-button-enabled');
+		L.DomUtil.addClass(this._activeShape.button, 'leaflet-control-toolbar-button-enabled');
 
 		this._showCancelButton();
 	},
@@ -118,7 +118,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 	_drawHandlerDeactivated: function (e) {
 		this._hideCancelButton();
 
-		L.DomUtil.removeClass(this._activeShape.button, 'leaflet-control-draw-button-enabled');
+		L.DomUtil.removeClass(this._activeShape.button, 'leaflet-control-toolbar-button-enabled');
 
 		this._activeShape = null;
 	},
@@ -135,10 +135,10 @@ L.Control.Draw = L.Control.Toolbar.extend({
 
 		// TODO: remove the top and button rounded border if first or last button
 		if (buttonIndex === 0) {
-			L.DomUtil.addClass(this._drawContainer, 'leaflet-control-draw-cancel-top');
+			L.DomUtil.addClass(this._drawContainer, 'leaflet-control-toolbar-cancel-top');
 		}
 		else if (buttonIndex === lastButtonIndex) {
-			L.DomUtil.addClass(this._drawContainer, 'leaflet-control-draw-cancel-bottom');
+			L.DomUtil.addClass(this._drawContainer, 'leaflet-control-toolbar-cancel-bottom');
 		}
 
 		// Show the cancel button
@@ -150,8 +150,8 @@ L.Control.Draw = L.Control.Toolbar.extend({
 		// TODO: anitmation!
 		this._cancelContainer.style.display = 'none';
 
-		L.DomUtil.removeClass(this._drawContainer, 'leaflet-control-draw-cancel-top');
-		L.DomUtil.removeClass(this._drawContainer, 'leaflet-control-draw-cancel-bottom');
+		L.DomUtil.removeClass(this._drawContainer, 'leaflet-control-toolbar-cancel-top');
+		L.DomUtil.removeClass(this._drawContainer, 'leaflet-control-toolbar-cancel-bottom');
 	},
 
 	_cancelDrawing: function (e) {
