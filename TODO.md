@@ -11,6 +11,12 @@
  * Move control/handler files out of draw folder.
  * Rename the draw events from draw:feature t0 feature-created.
  * Write up a breaking changes for when 0.2 goes live.
+ * Have special behavior for selected markers. Do we just set the background color?
+ * Revert to the correct colour for the feature that was just deselected.
+ * Fix up the toolbar rounded corners when only 1 item in the toolbar.
+ * Handle controls from being removed from map.
+ * Rename the Handler activated/deactivated events to enabled/disabled.
+ * Should the Edit control disable when the user has pressed delete?
 
 ### Edit functionality
 
