@@ -13,7 +13,8 @@
 	padding: 5px;
 }
 
-.leaflet-control-toolbar a {
+.leaflet-control-toolbar a,
+.leaflet-control-toolbar-cancel a {
 	background-color: rgba(255, 255, 255, 0.75);
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
@@ -26,11 +27,13 @@
 	height: 19px;
 }
 
-.leaflet-control-toolbar a:first-child {
+.leaflet-control-toolbar a:first-child,
+.leaflet-control-toolbar-cancel a:first-child {
 	margin-top: 0;
 } 	
 
-.leaflet-control-toolbar a:hover {
+.leaflet-control-toolbar a:hover,
+.leaflet-control-toolbar-cancel a:hover {
 	background-color: #fff;
 }
 
@@ -61,6 +64,10 @@
 	padding: 0 4px;
 	text-decoration: none;
 	width: auto;
+}
+
+.leaflet-touch .leaflet-control-toolbar-cancel a {
+	height: 27px;
 }
 
 .leaflet-control-toolbar-cancel-top {

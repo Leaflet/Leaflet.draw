@@ -30,12 +30,11 @@ L.Control.Draw = L.Control.Toolbar.extend({
 	},
 	
 	onAdd: function (map) {
-		var className = 'leaflet-control-toolbar',
-			container = L.DomUtil.create('div', ''),
+		var container = L.DomUtil.create('div', ''),
 			buttonIndex = 0;
 
-		this._drawContainer = L.DomUtil.create('div', className),
-		this._cancelContainer = L.DomUtil.create('div', className + ' leaflet-control-toolbar-cancel');
+		this._drawContainer = L.DomUtil.create('div', 'leaflet-control-toolbar'),
+		this._cancelContainer = L.DomUtil.create('div', 'leaflet-control-toolbar-cancel');
 
 
 		if (this.options.polyline) {
