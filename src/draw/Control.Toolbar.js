@@ -27,6 +27,10 @@ L.Control.Toolbar = L.Control.extend({
 		});
 	},
 
+	_cancel: function () {
+		// NOTE: this should be overridden by children
+	},
+
 	_showCancelButton: function () {
 		this._cancelContainer.style.display = 'block';
 	},
