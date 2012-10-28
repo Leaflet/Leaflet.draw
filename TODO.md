@@ -6,9 +6,11 @@
  * ~~Make Control.Draw inherit from Control.Toolbar.~~
  * See if any common code can move to Control.Toolbar from Control.Draw.
  * ~~Rename Handler.Draw -> Vector.Draw. What about markers? they aren't vectors, is there a better name? Maybe Feature?~~
- * Add enbled/disabled states for the delete & edit buttons.
+ * ~~Add enbled/disabled states for the delete & edit buttons.~~
  * Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only?
  * Move control/handler files out of draw folder.
+ * Rename the draw events from draw:feature t0 feature-created.
+ * Write up a breaking changes for when 0.2 goes live.
 
 ### Edit functionality
 

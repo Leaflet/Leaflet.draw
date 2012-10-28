@@ -71,7 +71,7 @@ L.Feature.Edit = L.Handler.extend({
 
 		this._selected.addLayer(layer);
 
-		this._map.fire('selected', { layer: layer });
+		this._map.fire('feature-selected', { layer: layer });
 	},
 
 	removeItems: function (callback) {
@@ -98,7 +98,7 @@ L.Feature.Edit = L.Handler.extend({
 
 		this._selected.removeLayer(layer);
 
-		this._map.fire('deselected', { layer: layer });
+		this._map.fire('feature-deselected', { layer: layer });
 	},
 
 	_bind: function (e) {
