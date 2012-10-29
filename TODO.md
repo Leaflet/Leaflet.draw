@@ -9,14 +9,19 @@
  * ~~Add enbled/disabled states for the delete & edit buttons.~~
  * Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only?
  * Move control/handler files out of draw folder.
- * Rename the draw events from draw:feature t0 feature-created.
- * Write up a breaking changes for when 0.2 goes live.
+ * ~~Rename the draw events from draw:feature t0 feature-created.~~
+ * Write up a breaking changes for when 0.2 goes live. (See below)
  * Have special behavior for selected markers. Do we just set the background color?
- * Revert to the correct colour for the feature that was just deselected.
+ * ~~Revert to the correct colour for the feature that was just deselected.~~
  * Fix up the toolbar rounded corners when only 1 item in the toolbar.
  * Handle controls from being removed from map.
- * Rename the Handler activated/deactivated events to enabled/disabled.
+ * ~~Rename the Handler activated/deactivated events to enabled/disabled.~~
  * Should the Edit control disable when the user has pressed delete?
+ * Turn the cancel button UI into a button container for things like undo.
+ * ~~Add option for setting the selected color.~~
+ * Add support for tooltips for the edit mode.
+ * Add some proper documentation. I.e. for the events & methods
+ * ~~Rename _shapes variable in Control.Draw to make better sense.~~
 
 ### Edit functionality
 
@@ -25,3 +30,9 @@ Need to add a new button that puts the selected shape in edit mode.
 Some questions:
 
 1. Currently the select tool will let the user select multiple objects. Is it OK to then set all selected shapes to edit mode?
+
+### Breaking changes
+
+ * activated & deactivated events renamed to enabled/disabled.
+ * renamed css classes.
+ * drawing & drawing-disabled events renamed to: draw:enabled & draw:disabled.
