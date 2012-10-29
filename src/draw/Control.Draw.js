@@ -26,7 +26,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 	initialize: function (options) {
 		L.Util.extend(this.options, options);
 
-		this._shapes = {};
+		this._feature = {};
 	},
 	
 	onAdd: function (map) {
@@ -74,35 +74,35 @@ L.Control.Draw = L.Control.Toolbar.extend({
 		var classNamePredix = 'leaflet-control-draw',
 			type = Handler.TYPE;
 
-		this._shapes[type] = {};
+		this._feature[type] = {};
 
-		this._shapes[type].handler = new Handler(map, this.options[type]);
+		this._feature[type].handler = new Handler(map, this.options[type]);
 
-		this._shapes[type].button = this._createButton({
+		this._feature[type].button = this._createButton({
 			title: this.options[type].title,
 			className: classNamePredix + '-' + type,
 			container: container,
-			callback: this._shapes[type].handler.enable,
-			context: this._shapes[type].handler
+			callback: this._feature[type].handler.enable,
+			context: this._feature[type].handler
 		});
 
-		this._shapes[type].buttonIndex = buttonIndex;
+		this._feature[type].buttonIndex = buttonIndex;
 
-		this._shapes[type].handler
+		this._feature[type].handler
 			.on('enabled', this._drawHandlerActivated, this)
 			.on('disabled', this._drawHandlerDeactivated, this);
 	},
 
 	_drawHandlerActivated: function (e) {
 		// Disable active mode (if present)
-		if (this._activeShape && this._activeShape.handler.enabled()) {
-			this._activeShape.handler.disable();
+		if (this._activeFeature && this._activeFeature.handler.enabled()) {
+			this._activeFeature.handler.disable();
 		}
 		
-		// Cache new active shape
-		this._activeShape = this._shapes[e.drawingType];
+		// Cache new active feature
+		this._activeFeature = this._feature[e.drawingType];
 
-		L.DomUtil.addClass(this._activeShape.button, 'leaflet-control-toolbar-button-enabled');
+		L.DomUtil.addClass(this._activeFeature.button, 'leaflet-control-toolbar-button-enabled');
 
 		this._showCancelButton();
 	},
@@ -110,13 +110,13 @@ L.Control.Draw = L.Control.Toolbar.extend({
 	_drawHandlerDeactivated: function (e) {
 		this._hideCancelButton();
 
-		L.DomUtil.removeClass(this._activeShape.button, 'leaflet-control-toolbar-button-enabled');
+		L.DomUtil.removeClass(this._activeFeature.button, 'leaflet-control-toolbar-button-enabled');
 
-		this._activeShape = null;
+		this._activeFeature = null;
 	},
 
 	_showCancelButton: function () {
-		var buttonIndex = this._activeShape.buttonIndex,
+		var buttonIndex = this._activeFeature.buttonIndex,
 			lastButtonIndex = this._lastButtonIndex,
 			buttonHeight = 19, // TODO: this should be calculated
 			buttonMargin = 5, // TODO: this should also be calculated
@@ -137,7 +137,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 	},
 
 	_cancel: function (e) {
-		this._activeShape.handler.disable();
+		this._activeFeature.handler.disable();
 	}
 });
 
