@@ -38,23 +38,23 @@ L.Control.Draw = L.Control.Toolbar.extend({
 
 
 		if (this.options.polyline) {
-			this._initShapeHandler(L.Polyline.Draw, this._toolbarContainer, buttonIndex++);
+			this._initFeatureHandler(L.Polyline.Draw, this._toolbarContainer, buttonIndex++);
 		}
 
 		if (this.options.polygon) {
-			this._initShapeHandler(L.Polygon.Draw, this._toolbarContainer, buttonIndex++);
+			this._initFeatureHandler(L.Polygon.Draw, this._toolbarContainer, buttonIndex++);
 		}
 
 		if (this.options.rectangle) {
-			this._initShapeHandler(L.Rectangle.Draw, this._toolbarContainer, buttonIndex++);
+			this._initFeatureHandler(L.Rectangle.Draw, this._toolbarContainer, buttonIndex++);
 		}
 
 		if (this.options.circle) {
-			this._initShapeHandler(L.Circle.Draw, this._toolbarContainer, buttonIndex++);
+			this._initFeatureHandler(L.Circle.Draw, this._toolbarContainer, buttonIndex++);
 		}
 
 		if (this.options.marker) {
-			this._initShapeHandler(L.Marker.Draw, this._toolbarContainer, buttonIndex);
+			this._initFeatureHandler(L.Marker.Draw, this._toolbarContainer, buttonIndex);
 		}
 
 		// Save button index of the last button
@@ -69,7 +69,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 		return container;
 	},
 
-	_initShapeHandler: function (Handler, container, buttonIndex) {
+	_initFeatureHandler: function (Handler, container, buttonIndex) {
 		// TODO: make as a part of options?
 		var classNamePredix = 'leaflet-control-draw',
 			type = Handler.TYPE;
