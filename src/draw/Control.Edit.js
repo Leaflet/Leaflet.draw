@@ -7,7 +7,8 @@ L.Control.Edit = L.Control.Toolbar.extend({
 		position: 'topleft',
 		edit: true,
 		remove: true,
-		selectableLayers: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
+		selectableLayers: null, /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
+		selectedColor: '#fe57a1' /* Hot pink all the things! */
 	},
 
 	initialize: function (options) {
@@ -26,7 +27,8 @@ L.Control.Edit = L.Control.Toolbar.extend({
 		this._map = map;
 
 		this._handler = new L.Feature.Edit(map, {
-			selectableLayers: this.options.selectableLayers
+			selectableLayers: this.options.selectableLayers,
+			selectedColor: this.options.selectedColor
 		});
 
 		// TODO: will need to refactor when add edit button (can't just show/hide cancel button)
