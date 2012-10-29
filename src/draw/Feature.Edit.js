@@ -67,6 +67,7 @@ L.Feature.Edit = L.Handler.extend({
 
 		// TODO: cache the old colour and change back to it
 		if (!(layer instanceof L.Marker)) {
+			layer.options.previousColor = layer.options.color;
 			layer.setStyle({color: '#f00'});
 		}
 
@@ -93,7 +94,7 @@ L.Feature.Edit = L.Handler.extend({
 		var layer = e.layer || e.target || e;
 
 		if (!(layer instanceof L.Marker)) {
-			layer.setStyle({color: '#0f0'});
+			layer.setStyle({color: layer.options.previousColor});
 		}
 
 		layer.off('click', this._deselect, this);
