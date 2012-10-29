@@ -89,8 +89,8 @@ L.Control.Draw = L.Control.Toolbar.extend({
 		this._shapes[type].buttonIndex = buttonIndex;
 
 		this._shapes[type].handler
-			.on('activated', this._drawHandlerActivated, this)
-			.on('deactivated', this._drawHandlerDeactivated, this);
+			.on('enabled', this._drawHandlerActivated, this)
+			.on('disabled', this._drawHandlerDeactivated, this);
 	},
 
 	_drawHandlerActivated: function (e) {
