@@ -1,6 +1,6 @@
-L.Feature = {};
+L.Draw = {};
 
-L.Feature.Draw = L.Handler.extend({
+L.Draw.Feature = L.Handler.extend({
 	includes: L.Mixin.Events,
 
 	initialize: function (map, options) {

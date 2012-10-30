@@ -1,7 +1,9 @@
 /*
- * Adapted from Tom Nightingale's https://github.com/tnightingale/Leaflet.widget/blob/master/src/Select.js
+ * Initially adapted from Tom Nightingale's https://github.com/tnightingale/Leaflet.widget/blob/master/src/Select.js
  */
-L.Feature.Edit = L.Handler.extend({
+L.Edit = L.Edit || {};
+
+L.Edit.Feature = L.Handler.extend({
 	includes: L.Mixin.Events,
 
 	options: {},

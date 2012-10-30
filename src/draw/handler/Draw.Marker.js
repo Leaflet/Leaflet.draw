@@ -1,4 +1,4 @@
-L.Marker.Draw = L.Feature.Draw.extend({
+L.Draw.Marker = L.Draw.Feature.extend({
 	statics: {
 		TYPE: 'marker'
 	},
@@ -10,13 +10,13 @@ L.Marker.Draw = L.Feature.Draw.extend({
 
 	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
-		this.type = L.Marker.Draw.TYPE;
+		this.type = L.Draw.Marker.TYPE;
 
-		L.Feature.Draw.prototype.initialize.call(this, map, options);
+		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 	
 	addHooks: function () {
-		L.Feature.Draw.prototype.addHooks.call(this);
+		L.Draw.Feature.prototype.addHooks.call(this);
 		
 		if (this._map) {
 			this._updateLabelText({ text: 'Click map to place marker.' });
@@ -25,7 +25,7 @@ L.Marker.Draw = L.Feature.Draw.extend({
 	},
 
 	removeHooks: function () {
-		L.Feature.Draw.prototype.removeHooks.call(this);
+		L.Draw.Feature.prototype.removeHooks.call(this);
 		
 		if (this._map) {
 			if (this._marker) {

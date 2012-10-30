@@ -38,23 +38,23 @@ L.Control.Draw = L.Control.Toolbar.extend({
 
 
 		if (this.options.polyline) {
-			this._initFeatureHandler(L.Polyline.Draw, this._toolbarContainer, buttonIndex++);
+			this._initFeatureHandler(L.Draw.Polyline, this._toolbarContainer, buttonIndex++);
 		}
 
 		if (this.options.polygon) {
-			this._initFeatureHandler(L.Polygon.Draw, this._toolbarContainer, buttonIndex++);
+			this._initFeatureHandler(L.Draw.Polygon, this._toolbarContainer, buttonIndex++);
 		}
 
 		if (this.options.rectangle) {
-			this._initFeatureHandler(L.Rectangle.Draw, this._toolbarContainer, buttonIndex++);
+			this._initFeatureHandler(L.Draw.Rectangle, this._toolbarContainer, buttonIndex++);
 		}
 
 		if (this.options.circle) {
-			this._initFeatureHandler(L.Circle.Draw, this._toolbarContainer, buttonIndex++);
+			this._initFeatureHandler(L.Draw.Circle, this._toolbarContainer, buttonIndex++);
 		}
 
 		if (this.options.marker) {
-			this._initFeatureHandler(L.Marker.Draw, this._toolbarContainer, buttonIndex);
+			this._initFeatureHandler(L.Draw.Marker, this._toolbarContainer, buttonIndex);
 		}
 
 		// Save button index of the last button

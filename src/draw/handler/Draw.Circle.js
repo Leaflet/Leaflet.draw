@@ -1,6 +1,6 @@
-L.Rectangle.Draw = L.SimpleShape.Draw.extend({
+L.Draw.Circle = L.Draw.SimpleShape.extend({
 	statics: {
-		TYPE: 'rectangle'
+		TYPE: 'circle'
 	},
 
 	options: {
@@ -18,26 +18,26 @@ L.Rectangle.Draw = L.SimpleShape.Draw.extend({
 
 	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
-		this.type = L.Rectangle.Draw.TYPE;
+		this.type = L.Draw.Circle.TYPE;
 
-		L.Feature.Draw.prototype.initialize.call(this, map, options);
+		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
-	
-	_initialLabelText: 'Click and drag to draw rectangle.',
+
+	_initialLabelText: 'Click and drag to draw circle.',
 
 	_drawShape: function (latlng) {
 		if (!this._shape) {
-			this._shape = new L.Rectangle(new L.LatLngBounds(this._startLatLng, latlng), this.options.shapeOptions);
+			this._shape = new L.Circle(this._startLatLng, this._startLatLng.distanceTo(latlng), this.options.shapeOptions);
 			this._map.addLayer(this._shape);
 		} else {
-			this._shape.setBounds(new L.LatLngBounds(this._startLatLng, latlng));
+			this._shape.setRadius(this._startLatLng.distanceTo(latlng));
 		}
 	},
 
 	_fireCreatedEvent: function () {
 		this._map.fire(
-			'draw:rectangle-created',
-			{ rect: new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions) }
+			'draw:circle-created',
+			{ circ: new L.Circle(this._startLatLng, this._shape.getRadius(), this.options.shapeOptions) }
 		);
 	}
 });

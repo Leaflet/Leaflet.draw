@@ -26,7 +26,7 @@ L.Control.Edit = L.Control.Toolbar.extend({
 
 		this._map = map;
 
-		this._handler = new L.Feature.Edit(map, {
+		this._handler = new L.Edit.Feature(map, {
 			selectableLayers: this.options.selectableLayers,
 			selectedColor: this.options.selectedColor
 		});

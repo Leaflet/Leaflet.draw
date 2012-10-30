@@ -1,4 +1,4 @@
-L.Polygon.Draw = L.Polyline.Draw.extend({
+L.Draw.Polygon = L.Draw.Polyline.extend({
 	statics: {
 		TYPE: 'polygon'
 	},
@@ -19,10 +19,10 @@ L.Polygon.Draw = L.Polyline.Draw.extend({
 	},
 
 	initialize: function (map, options) {
-		L.Polyline.Draw.prototype.initialize.call(this, map, options);
+		L.Draw.Polyline.prototype.initialize.call(this, map, options);
 		
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
-		this.type = L.Polygon.Draw.TYPE;
+		this.type = L.Draw.Polygon.TYPE;
 	},
 
 	_updateMarkerHandler: function () {
