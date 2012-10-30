@@ -7,8 +7,8 @@
  * See if any common code can move to Control.Toolbar from Control.Draw.
  * ~~Rename Handler.Draw -> Vector.Draw. What about markers? they aren't vectors, is there a better name? Maybe Feature?~~
  * ~~Add enbled/disabled states for the delete & edit buttons.~~
- * Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only?
- * Move control/handler files out of draw folder.
+ * Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only? Also file names ahve changed.
+ * ~~Move control/handler files out of draw folder.~~
  * ~~Rename the draw events from draw:feature t0 feature-created.~~
  * Write up a breaking changes for when 0.2 goes live. (See below)
  * Have special behavior for selected markers. Do we just set the background color?
@@ -22,6 +22,9 @@
  * Add support for tooltips for the edit mode.
  * Add some proper documentation. I.e. for the events & methods
  * ~~Rename _shapes variable in Control.Draw to make better sense.~~
+ * Should the ext classes be renamed to Polyline.Intersect or similar?
+ * Fix up all files that rely on the L.Draw, L.Edit to have something like: L.Draw = L.Draw || {};
+ * Check and calls to L.Feature.Draw.prototype, are they correct? In Draw.Circle it hink it should be referencing L.Draw.SimpleShape
 
 ### Edit functionality
 
