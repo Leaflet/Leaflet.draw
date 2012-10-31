@@ -72,6 +72,8 @@ L.Edit.Feature = L.Handler.extend({
 		if (!(layer instanceof L.Marker)) {
 			layer.options.previousColor = layer.options.color;
 			layer.setStyle({ color: selectedColor });
+		} else {
+			this._toggleMarkerHighlight(layer);
 		}
 
 		layer
@@ -81,6 +83,8 @@ L.Edit.Feature = L.Handler.extend({
 		this._selected.addLayer(layer);
 
 		this._map.fire('feature-selected', { layer: layer });
+
+		return false;
 	},
 
 	removeItems: function (callback) {
@@ -98,6 +102,8 @@ L.Edit.Feature = L.Handler.extend({
 
 		if (!(layer instanceof L.Marker)) {
 			layer.setStyle({ color: layer.options.previousColor });
+		} else {
+			this._toggleMarkerHighlight(layer);
 		}
 
 		layer.off('click', this._deselect, this);
@@ -124,6 +130,34 @@ L.Edit.Feature = L.Handler.extend({
 		if (this._selectableLayers.hasLayer(layer) && this._selected.hasLayer(layer)) {
 			this._deselect(layer, true);
 		}
+	},
+
+	_toggleMarkerHighlight: function (marker) {
+		// This is quite naughty, but I don't see another way of doing it. (short of setting a new icon)
+		var icon = marker._icon;
+
+		icon.style.display = 'none';
+
+		if (L.DomUtil.hasClass(icon, 'leaflet-edit-marker-selected')) {
+			L.DomUtil.removeClass(icon, 'leaflet-edit-marker-selected');
+			// Offset as the border will make the icon move.
+			this._offsetMarker(icon, -4);
+
+		} else {
+			L.DomUtil.addClass(icon, 'leaflet-edit-marker-selected');
+			// Offset as the border will make the icon move.
+			this._offsetMarker(icon, 4);
+		}
+
+		icon.style.display = '';
+	},
+
+	_offsetMarker: function (icon, offset) {
+		var iconMarginTop = parseInt(icon.style.marginTop, 10) - offset,
+			iconMarginLeft = parseInt(icon.style.marginLeft, 10) - offset;
+
+		icon.style.marginTop = iconMarginTop + 'px';
+		icon.style.marginLeft = iconMarginLeft + 'px';
 	}
 });
 
