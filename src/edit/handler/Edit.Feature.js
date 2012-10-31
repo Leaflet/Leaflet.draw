@@ -6,10 +6,23 @@ L.Edit = L.Edit || {};
 L.Edit.Feature = L.Handler.extend({
 	includes: L.Mixin.Events,
 
-	options: {},
+	options: {
+		selectedPathOptions: {
+			color: '#fe57a1', /* Hot pink all the things! */
+			opacity: 0.6,
+			dashArray: '10, 10',
+
+			fill: true,
+			fillColor: '#fe57a1',
+			fillOpacity: 0.1
+		}
+	},
 
 	initialize: function (map, options) {
 		this._container = map._container;
+
+		// Set options to the default unless already set
+		options.selectedPathOptions = options.selectedPathOptions || this.options.selectedPathOptions;
 
 		L.Util.setOptions(this, options);
 
@@ -65,13 +78,11 @@ L.Edit.Feature = L.Handler.extend({
 	},
 
 	select: function (e) {
-		var layer = e.layer || e.target || e,
-			selectedColor = this.options.selectedColor;
+		var layer = e.layer || e.target || e;
 
-		// TODO: cache the old colour and change back to it
 		if (!(layer instanceof L.Marker)) {
-			layer.options.previousColor = layer.options.color;
-			layer.setStyle({ color: selectedColor });
+			layer.options.previousOptions = layer.options;
+			layer.setStyle(this.options.selectedPathOptions);
 		} else {
 			this._toggleMarkerHighlight(layer);
 		}
@@ -101,7 +112,10 @@ L.Edit.Feature = L.Handler.extend({
 		var layer = e.layer || e.target || e;
 
 		if (!(layer instanceof L.Marker)) {
-			layer.setStyle({ color: layer.options.previousColor });
+			// reset the layer style to what is was before being selected
+			layer.setStyle(layer.options.previousOptions);
+			// remove the cached options for the layer object
+			delete layer.options.previousOptions;
 		} else {
 			this._toggleMarkerHighlight(layer);
 		}
