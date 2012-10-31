@@ -20,7 +20,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Rectangle.TYPE;
 
-		L.Draw.Feature.prototype.initialize.call(this, map, options);
+		L.Draw.SimpleShape.prototype.initialize.call(this, map, options);
 	},
 	
 	_initialLabelText: 'Click and drag to draw rectangle.',
