@@ -78,10 +78,6 @@ L.Control.Edit = L.Control.Toolbar.extend({
 	_featureSelected: function () {
 		this._selectedFeatureCount++;
 
-		if (this.options.edit) {
-			L.DomUtil.removeClass(this._editButton, 'leaflet-control-toolbar-button-disabled');
-		}
-
 		if (this.options.remove) {
 			L.DomUtil.removeClass(this._removeButton, 'leaflet-control-toolbar-button-disabled');
 		}
@@ -89,10 +85,6 @@ L.Control.Edit = L.Control.Toolbar.extend({
 
 	_featureDeselected: function () {
 		this._selectedFeatureCount--;
-
-		if (this._selectedFeatureCount <= 0 && this.options.edit) {
-			L.DomUtil.addClass(this._editButton, 'leaflet-control-toolbar-button-disabled');
-		}
 
 		if (this._selectedFeatureCount <= 0 && this.options.remove) {
 			L.DomUtil.addClass(this._removeButton, 'leaflet-control-toolbar-button-disabled');
