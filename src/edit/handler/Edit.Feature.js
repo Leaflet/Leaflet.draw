@@ -80,12 +80,16 @@ L.Edit.Feature = L.Handler.extend({
 	select: function (e) {
 		var layer = e.layer || e.target || e;
 
+		// Change style of layer to show as selected
 		if (!(layer instanceof L.Marker)) {
 			layer.options.previousOptions = layer.options;
 			layer.setStyle(this.options.selectedPathOptions);
 		} else {
 			this._toggleMarkerHighlight(layer);
+			// TODO: make marker draggable
 		}
+
+		this._enableLayerEdit(layer);
 
 		layer
 			.off('click', this.select)
@@ -98,7 +102,7 @@ L.Edit.Feature = L.Handler.extend({
 		return false;
 	},
 
-	removeItems: function (callback) {
+	removeItems: function () {
 		if (!this.enabled()) {
 			return;
 		}
@@ -111,6 +115,7 @@ L.Edit.Feature = L.Handler.extend({
 	_deselect: function (e, permanent) {
 		var layer = e.layer || e.target || e;
 
+		// Reset layer styles to that of before select
 		if (!(layer instanceof L.Marker)) {
 			// reset the layer style to what is was before being selected
 			layer.setStyle(layer.options.previousOptions);
@@ -120,6 +125,10 @@ L.Edit.Feature = L.Handler.extend({
 			this._toggleMarkerHighlight(layer);
 		}
 
+		// TODO: should we do this or should the user have to press save? regardless something needs to happed, save or cancel
+		this._disableLayerEdit(layer);
+
+		// Reset layer handlers
 		layer.off('click', this._deselect, this);
 		if (!permanent) {
 			layer.on('click', this.select, this);
@@ -172,6 +181,20 @@ L.Edit.Feature = L.Handler.extend({
 
 		icon.style.marginTop = iconMarginTop + 'px';
 		icon.style.marginLeft = iconMarginLeft + 'px';
+	},
+
+	_enableLayerEdit: function (layer) {
+		// currently only supports polygon & polylines
+		if (layer instanceof L.Polyline || layer instanceof L.Polygon) {
+			layer.editing.enable();
+		}
+	},
+
+	_disableLayerEdit: function (layer) {
+		// currently only supports polygon & polylines
+		if (layer instanceof L.Polyline || layer instanceof L.Polygon) {
+			layer.editing.disable();
+		}
 	}
 });
 
