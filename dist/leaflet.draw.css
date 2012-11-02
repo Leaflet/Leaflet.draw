@@ -4,7 +4,7 @@
 
 /* TODO: join style to common class: leaflet-control-toolbar */
 .leaflet-control-toolbar,
-.leaflet-control-toolbar-cancel {
+.leaflet-control-toolbar-actions {
 	background-color: rgba(0, 0, 0, 0.25);
 	-webkit-border-radius: 7px;
 	   -moz-border-radius: 7px;
@@ -14,7 +14,7 @@
 }
 
 .leaflet-control-toolbar a,
-.leaflet-control-toolbar-cancel a {
+.leaflet-control-toolbar-actions a {
 	background-color: rgba(255, 255, 255, 0.75);
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
@@ -28,12 +28,12 @@
 }
 
 .leaflet-control-toolbar a:first-child,
-.leaflet-control-toolbar-cancel a:first-child {
+.leaflet-control-toolbar-actions a:first-child {
 	margin-top: 0;
 } 	
 
 .leaflet-control-toolbar a:hover,
-.leaflet-control-toolbar-cancel a:hover {
+.leaflet-control-toolbar-actions a:hover {
 	background-color: #fff;
 }
 
@@ -51,14 +51,20 @@
 	height: 27px;
 }
 
-.leaflet-control-toolbar-cancel {
+.leaflet-control-toolbar-actions {
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 	display: none;
+	list-style: none;
+	margin: 0;
 	padding-left: 0;
 }
 
-.leaflet-control-toolbar-cancel a {
+.leaflet-control-toolbar-actions li {
+	float: left;
+}
+
+.leaflet-control-toolbar-actions li a {
 	color: #000;
 	font: 11px/19px "Helvetica Neue", Arial, Helvetica, sans-serif;
 	padding: 0 4px;
@@ -66,15 +72,15 @@
 	width: auto;
 }
 
-.leaflet-touch .leaflet-control-toolbar-cancel a {
+.leaflet-touch .leaflet-control-toolbar-actions li a {
 	height: 27px;
 }
 
-.leaflet-control-toolbar-cancel-top {
+.leaflet-control-toolbar-actions-top {
 	border-top-right-radius: 0;
 }
 
-.leaflet-control-toolbar-cancel-bottom {
+.leaflet-control-toolbar-actions-bottom {
 	border-bottom-right-radius: 0;
 }
 

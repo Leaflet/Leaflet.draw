@@ -22,7 +22,6 @@ L.Control.Edit = L.Control.Toolbar.extend({
 			container = L.DomUtil.create('div', '');
 
 		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-control-toolbar'),
-		this._cancelContainer = L.DomUtil.create('div', 'leaflet-control-toolbar-cancel');
 
 		this._map = map;
 
@@ -51,8 +50,6 @@ L.Control.Edit = L.Control.Toolbar.extend({
 			context: this._handler
 		});
 
-		this._createCancelButton();
-
 		if (this.options.remove) {
 			this._removeButton = this._createButton({
 				title: 'Remove items',
@@ -63,9 +60,19 @@ L.Control.Edit = L.Control.Toolbar.extend({
 			});
 		}
 
+		// Create the actions part of the toolbar
+		this._actionsContainer = this._createActions([
+			{
+				title: 'Cancel drawing',
+				text: 'Cancel',
+				callback: this._cancel,
+				context: this
+			}
+		]);
+
 		// Add draw and cancel containers to the control container
 		container.appendChild(this._toolbarContainer);
-		container.appendChild(this._cancelContainer);
+		container.appendChild(this._actionsContainer);
 
 		return container;
 	},

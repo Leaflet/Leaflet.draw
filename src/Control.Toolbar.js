@@ -17,14 +17,24 @@ L.Control.Toolbar = L.Control.extend({
 		return link;
 	},
 
-	_createCancelButton: function () {
-		this._createButton({
-			title: 'Cancel drawing',
-			text: 'Cancel',
-			container: this._cancelContainer,
-			callback: this._cancel,
-			context: this
-		});
+	// buttons = { 'button name': { text, callback, context } }
+	_createActions: function (buttons) {
+		var container = L.DomUtil.create('ul', 'leaflet-control-toolbar-actions'),
+			li;
+
+		for (var i = 0, l = buttons.length; i < l; i++) {
+			li = L.DomUtil.create('li', '', container);
+
+			this._createButton({
+				title: buttons[i].title,
+				text: buttons[i].text,
+				container: li,
+				callback: buttons[i].callback,
+				context: buttons[i].context
+			});
+		}
+
+		return container;
 	},
 
 	_cancel: function () {
@@ -32,13 +42,13 @@ L.Control.Toolbar = L.Control.extend({
 	},
 
 	_showCancelButton: function () {
-		this._cancelContainer.style.display = 'block';
+		this._actionsContainer.style.display = 'block';
 	},
 
 	_hideCancelButton: function () {
-		this._cancelContainer.style.display = 'none';
+		this._actionsContainer.style.display = 'none';
 
-		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-control-toolbar-cancel-top');
-		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-control-toolbar-cancel-bottom');
+		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-control-toolbar-actions-top');
+		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-control-toolbar-actions-bottom');
 	}
 });

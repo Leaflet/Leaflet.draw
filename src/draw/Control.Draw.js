@@ -33,8 +33,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 		var container = L.DomUtil.create('div', ''),
 			buttonIndex = 0;
 
-		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-control-toolbar'),
-		this._cancelContainer = L.DomUtil.create('div', 'leaflet-control-toolbar-cancel');
+		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-control-toolbar');
 
 
 		if (this.options.polyline) {
@@ -60,11 +59,19 @@ L.Control.Draw = L.Control.Toolbar.extend({
 		// Save button index of the last button
 		this._lastButtonIndex = buttonIndex;
 
-		this._createCancelButton();
+		// Create the actions part of the toolbar
+		this._actionsContainer = this._createActions([
+			{
+				title: 'Cancel drawing',
+				text: 'Cancel',
+				callback: this._cancel,
+				context: this
+			}
+		]);
 		
 		// Add draw and cancel containers to the control container
 		container.appendChild(this._toolbarContainer);
-		container.appendChild(this._cancelContainer);
+		container.appendChild(this._actionsContainer);
 
 		return container;
 	},
@@ -123,14 +130,14 @@ L.Control.Draw = L.Control.Toolbar.extend({
 			cancelPosition = (buttonIndex * buttonHeight) + (buttonIndex * buttonMargin);
 		
 		// Correctly position the cancel button
-		this._cancelContainer.style.marginTop = cancelPosition + 'px';
+		this._actionsContainer.style.marginTop = cancelPosition + 'px';
 
 		// TODO: remove the top and button rounded border if first or last button
 		if (buttonIndex === 0) {
-			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-control-toolbar-cancel-top');
+			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-control-toolbar-actions-top');
 		}
 		else if (buttonIndex === lastButtonIndex) {
-			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-control-toolbar-cancel-bottom');
+			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-control-toolbar-actions-bottom');
 		}
 
 		L.Control.Toolbar.prototype._showCancelButton.call(this);
