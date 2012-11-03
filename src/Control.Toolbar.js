@@ -100,7 +100,8 @@ L.Control.Toolbar = L.Control.extend({
 		if (buttonIndex === 0) {
 			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-control-toolbar-actions-top');
 		}
-		else if (buttonIndex === lastButtonIndex) {
+		
+		if (buttonIndex === lastButtonIndex) {
 			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-control-toolbar-actions-bottom');
 		}
 		
