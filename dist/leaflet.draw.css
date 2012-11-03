@@ -62,7 +62,12 @@
 
 .leaflet-control-toolbar-actions li {
 	float: left;
+	margin-left: 5px;
 }
+
+.leaflet-control-toolbar-actions li:first-child {
+	margin-left: 0;
+} 
 
 .leaflet-control-toolbar-actions li a {
 	color: #000;
