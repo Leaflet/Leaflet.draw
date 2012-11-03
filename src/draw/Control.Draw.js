@@ -22,12 +22,6 @@ L.Control.Draw = L.Control.Toolbar.extend({
 			title: 'Add a marker'
 		}
 	},
-
-	initialize: function (options) {
-		L.Util.extend(this.options, options);
-
-		this._feature = {};
-	},
 	
 	onAdd: function (map) {
 		var container = L.DomUtil.create('div', ''),
@@ -37,27 +31,52 @@ L.Control.Draw = L.Control.Toolbar.extend({
 
 
 		if (this.options.polyline) {
-			this._initFeatureHandler(L.Draw.Polyline, this._toolbarContainer, buttonIndex++);
+			this._initModeHandler(
+				new L.Draw.Polyline(map, this.options.polyline),
+				this._toolbarContainer,
+				buttonIndex++,
+				'leaflet-control-draw'
+			);
 		}
 
 		if (this.options.polygon) {
-			this._initFeatureHandler(L.Draw.Polygon, this._toolbarContainer, buttonIndex++);
+			this._initModeHandler(
+				new L.Draw.Polygon(map, this.options.polygon),
+				this._toolbarContainer,
+				buttonIndex++,
+				'leaflet-control-draw'
+			);
 		}
 
 		if (this.options.rectangle) {
-			this._initFeatureHandler(L.Draw.Rectangle, this._toolbarContainer, buttonIndex++);
+			this._initModeHandler(
+				new L.Draw.Rectangle(map, this.options.rectangle),
+				this._toolbarContainer,
+				buttonIndex++,
+				'leaflet-control-draw'
+			);
 		}
 
 		if (this.options.circle) {
-			this._initFeatureHandler(L.Draw.Circle, this._toolbarContainer, buttonIndex++);
+			this._initModeHandler(
+				new L.Draw.Circle(map, this.options.circle),
+				this._toolbarContainer,
+				buttonIndex++,
+				'leaflet-control-draw'
+			);
 		}
 
 		if (this.options.marker) {
-			this._initFeatureHandler(L.Draw.Marker, this._toolbarContainer, buttonIndex);
+			this._initModeHandler(
+				new L.Draw.Marker(map, this.options.marker),
+				this._toolbarContainer,
+				buttonIndex++,
+				'leaflet-control-draw'
+			);
 		}
 
-		// Save button index of the last button
-		this._lastButtonIndex = buttonIndex;
+		// Save button index of the last button, -1 as we would have ++ after the last button
+		this._lastButtonIndex = buttonIndex--;
 
 		// Create the actions part of the toolbar
 		this._actionsContainer = this._createActions([
@@ -76,75 +95,8 @@ L.Control.Draw = L.Control.Toolbar.extend({
 		return container;
 	},
 
-	_initFeatureHandler: function (Handler, container, buttonIndex) {
-		// TODO: make as a part of options?
-		var classNamePredix = 'leaflet-control-draw',
-			type = Handler.TYPE;
-
-		this._feature[type] = {};
-
-		this._feature[type].handler = new Handler(map, this.options[type]);
-
-		this._feature[type].button = this._createButton({
-			title: this.options[type].title,
-			className: classNamePredix + '-' + type,
-			container: container,
-			callback: this._feature[type].handler.enable,
-			context: this._feature[type].handler
-		});
-
-		this._feature[type].buttonIndex = buttonIndex;
-
-		this._feature[type].handler
-			.on('enabled', this._drawHandlerActivated, this)
-			.on('disabled', this._drawHandlerDeactivated, this);
-	},
-
-	_drawHandlerActivated: function (e) {
-		// Disable active mode (if present)
-		if (this._activeFeature && this._activeFeature.handler.enabled()) {
-			this._activeFeature.handler.disable();
-		}
-		
-		// Cache new active feature
-		this._activeFeature = this._feature[e.drawingType];
-
-		L.DomUtil.addClass(this._activeFeature.button, 'leaflet-control-toolbar-button-enabled');
-
-		this._showCancelButton();
-	},
-
-	_drawHandlerDeactivated: function (e) {
-		this._hideCancelButton();
-
-		L.DomUtil.removeClass(this._activeFeature.button, 'leaflet-control-toolbar-button-enabled');
-
-		this._activeFeature = null;
-	},
-
-	_showCancelButton: function () {
-		var buttonIndex = this._activeFeature.buttonIndex,
-			lastButtonIndex = this._lastButtonIndex,
-			buttonHeight = 19, // TODO: this should be calculated
-			buttonMargin = 5, // TODO: this should also be calculated
-			cancelPosition = (buttonIndex * buttonHeight) + (buttonIndex * buttonMargin);
-		
-		// Correctly position the cancel button
-		this._actionsContainer.style.marginTop = cancelPosition + 'px';
-
-		// TODO: remove the top and button rounded border if first or last button
-		if (buttonIndex === 0) {
-			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-control-toolbar-actions-top');
-		}
-		else if (buttonIndex === lastButtonIndex) {
-			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-control-toolbar-actions-bottom');
-		}
-
-		L.Control.Toolbar.prototype._showCancelButton.call(this);
-	},
-
 	_cancel: function (e) {
-		this._activeFeature.handler.disable();
+		this._activeMode.handler.disable();
 	}
 });
 
