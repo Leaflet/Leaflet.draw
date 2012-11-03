@@ -14,26 +14,32 @@
  * ~~Check and calls to L.Feature.Draw.prototype, are they correct? In Draw.Circle it hink it should be referencing L.Draw.SimpleShape~~
  * ~~Add in cancel buttons for selected button.~~
  * ~~Have special behavior for selected markers. Do we just set the background color?~~
+ * ~~Turn the cancel button UI into a button container for things like undo.~~
+ * ~~Add Save to edit mode. Same as cancel but does not revert any shapes.~~
+ * ~~rename selectableLayers = layerGroup~~
+ * ~~refactor the repositioning of the actions toolbar for Control.Draw.~~
+ * ~~If more than 1 button in actions toolbar but not first is showing then margin is wrong.~~
+ * ~~Support cancelling delete?~~
+ * ~~Rename the _showCancel/_hideCancel methods in Control.Toolbar~~
+ * ~~See if any common code can move to Control.Toolbar from Control.Draw.~~
 
+####Edit
+ * [BUG] draw a circle, select it, draw a square select it. When try to deselect the circle it doesn't revert the shape styles.
+ * Fix the bottom border radius when the actions buttons are at the bottom
+ * Handle layers being added/removed to the layergroup. i.e. need to be placed in edit mode or have a delete handler added
+
+####Other
  * Do we need a better visual cue for when in selecting mode?
- * See if any common code can move to Control.Toolbar from Control.Draw.
  * Fix up the toolbar rounded corners when only 1 item in the toolbar.
  * Handle controls from being removed from map.
- * Should the Edit control disable when the user has pressed delete?
- * Turn the cancel button UI into a button container for things like undo.
  * Add support for tooltips for the edit mode.
+ * CSS classes should probably be stored in constants somewhere.
+ * Move clone methods from Edit.Feature
+ * Search for TODO
 
  * Write up a breaking changes for when 0.2 goes live. (See below)
  * Add some proper documentation. I.e. for the events & methods
  * Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only? Also file names ahve changed.
-
-### Edit functionality
-
-Need to add a new button that puts the selected shape in edit mode.
-
-Some questions:
-
-1. Currently the select tool will let the user select multiple objects. Is it OK to then set all selected shapes to edit mode?
 
 ### Breaking changes
 
