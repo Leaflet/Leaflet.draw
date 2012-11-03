@@ -22,20 +22,20 @@
  * ~~Support cancelling delete?~~
  * ~~Rename the _showCancel/_hideCancel methods in Control.Toolbar~~
  * ~~See if any common code can move to Control.Toolbar from Control.Draw.~~
+ * ~~Fix the bottom border radius when the actions buttons are at the bottom~~
+ * ~~Fix up the toolbar rounded corners when only 1 item in the toolbar.~~
 
 ####Edit
- * [BUG] draw a circle, select it, draw a square select it. When try to deselect the circle it doesn't revert the shape styles.
- * Fix the bottom border radius when the actions buttons are at the bottom
  * Handle layers being added/removed to the layergroup. i.e. need to be placed in edit mode or have a delete handler added
+ * Add a delete cursor. When mouseover the layer will have a trashcan cursor.
 
 ####Other
- * Do we need a better visual cue for when in selecting mode?
- * Fix up the toolbar rounded corners when only 1 item in the toolbar.
  * Handle controls from being removed from map.
  * Add support for tooltips for the edit mode.
  * CSS classes should probably be stored in constants somewhere.
  * Move clone methods from Edit.Feature
  * Search for TODO
+ * Add handlers for Circle and Rectangle editing.
 
  * Write up a breaking changes for when 0.2 goes live. (See below)
  * Add some proper documentation. I.e. for the events & methods
