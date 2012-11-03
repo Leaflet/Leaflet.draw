@@ -42,7 +42,14 @@ L.Control.Edit = L.Control.Toolbar.extend({
 		}
 
 		if (this.options.remove) {
-			// TODO
+			this._initModeHandler(
+				new L.Delete.Feature(map, {
+					layerGroup: this.options.layerGroup
+				}),
+				this._toolbarContainer,
+				buttonIndex++,
+				'leaflet-control-edit'
+			);
 		}
 
 		// Save button index of the last button, -1 as we would have ++ after the last button
