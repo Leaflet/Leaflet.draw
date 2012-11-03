@@ -5,65 +5,58 @@
 L.Control.Edit = L.Control.Toolbar.extend({
 	options: {
 		position: 'topleft',
-		edit: true,
-		remove: true,
-		selectableLayers: null, /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
-		selectedPathOptions: null // See Edit.Feature options, this is used to customize the style of selected paths
+		edit: {
+			title: 'Edit layers'
+		},
+		remove: {
+			title: 'Delete layers'
+		},
+		layerGroup: null, /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
+		selectedPathOptions: null // See Edit handler options, this is used to customize the style of selected paths
 	},
 
 	initialize: function (options) {
-		L.Util.extend(this.options, options);
+		L.Control.Toolbar.prototype.initialize.call(this, options);
 
 		this._selectedFeatureCount = 0;
 	},
 	
 	onAdd: function (map) {
-		var prefixClassName = 'leaflet-control-edit',
-			container = L.DomUtil.create('div', '');
+		var container = L.DomUtil.create('div', ''),
+			buttonIndex = 0;
 
 		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-control-toolbar'),
 
 		this._map = map;
 
-		this._handler = new L.Edit.Feature(map, {
-			selectableLayers: this.options.selectableLayers,
-			selectedPathOptions: this.options.selectedPathOptions
-		});
-
-		// TODO: will need to refactor when add edit button (can't just show/hide cancel button)
-		this._handler
-			.on('enabled', this._showCancelButton, this)
-			.on('disabled', this._hideCancelButton, this);
-
-		this._map
-			.on('feature-selected', this._featureSelected, this)
-			.on('feature-deselected', this._featureDeselected, this);
-
-		// TODO: way to disable the handler (cancel, esc?)
-
-		// Create the select button
-		this._createButton({
-			title: 'Select items to edit',
-			className: prefixClassName + '-select',
-			container: this._toolbarContainer,
-			callback: this._handler.enable,
-			context: this._handler
-		});
+		if (this.options.edit) {
+			this._initModeHandler(
+				new L.Edit.Feature(map, {
+					layerGroup: this.options.layerGroup,
+					selectedPathOptions: this.options.selectedPathOptions
+				}),
+				this._toolbarContainer,
+				buttonIndex++,
+				'leaflet-control-edit'
+			);
+		}
 
 		if (this.options.remove) {
-			this._removeButton = this._createButton({
-				title: 'Remove items',
-				className: prefixClassName + '-remove leaflet-control-toolbar-button-disabled',
-				container: this._toolbarContainer,
-				callback: this._handler.removeItems,
-				context: this._handler
-			});
+			// TODO
 		}
+
+		// Save button index of the last button, -1 as we would have ++ after the last button
+		this._lastButtonIndex = buttonIndex--;
 
 		// Create the actions part of the toolbar
 		this._actionsContainer = this._createActions([
 			{
-				title: 'Cancel drawing',
+				title: 'Save changes.',
+				text: 'Save',
+				callback: this._save,
+				context: this
+			},{
+				title: 'Cancel editing, discards all changes.',
 				text: 'Cancel',
 				callback: this._cancel,
 				context: this
@@ -78,24 +71,12 @@ L.Control.Edit = L.Control.Toolbar.extend({
 	},
 
 	_cancel: function () {
-		// TODO: when have edit button will need to know which button is active (select or edit)
-		this._handler.disable();
+		this._activeMode.handler.revertLayers();
+		this._activeMode.handler.disable();
 	},
 
-	_featureSelected: function () {
-		this._selectedFeatureCount++;
-
-		if (this.options.remove) {
-			L.DomUtil.removeClass(this._removeButton, 'leaflet-control-toolbar-button-disabled');
-		}
-	},
-
-	_featureDeselected: function () {
-		this._selectedFeatureCount--;
-
-		if (this._selectedFeatureCount <= 0 && this.options.remove) {
-			L.DomUtil.addClass(this._removeButton, 'leaflet-control-toolbar-button-disabled');
-		}
+	_save: function () {
+		this._activeMode.handler.disable();
 	},
 
 	_showCancelButton: function () {
@@ -105,7 +86,7 @@ L.Control.Edit = L.Control.Toolbar.extend({
 	}
 });
 
-/* need to sort out how to do selectableLayers
+/* need to sort out how to do layerGroup
 L.Map.addInitHook(function () {
 	if (this.options.editControl) {
 		this.editControl = new L.Control.Edit();

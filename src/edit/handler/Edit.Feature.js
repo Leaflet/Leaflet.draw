@@ -4,6 +4,10 @@
 L.Edit = L.Edit || {};
 
 L.Edit.Feature = L.Handler.extend({
+	statics: {
+		TYPE: 'edit'
+	},
+
 	includes: L.Mixin.Events,
 
 	options: {
@@ -19,139 +23,119 @@ L.Edit.Feature = L.Handler.extend({
 	},
 
 	initialize: function (map, options) {
-		this._container = map._container;
+		L.Handler.prototype.initialize.call(this, map);
 
 		// Set options to the default unless already set
 		options.selectedPathOptions = options.selectedPathOptions || this.options.selectedPathOptions;
 
 		L.Util.setOptions(this, options);
 
-		L.Handler.prototype.initialize.call(this, map);
+		// Store the selectable layer group for ease of access
+		this._layerGroup = this.options.layerGroup;
+
+		if (!(this._layerGroup instanceof L.LayerGroup) && !(this._layerGroup instanceof L.FeatureGroup)) {
+			throw new Error('options.layerGroup must be a L.LayerGroup or L.FeatureGroup');
+		}
+
+		this._uneditedLayerProps = {};
+
+		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
+		this.type = L.Edit.Feature.TYPE;
 	},
 
 	enable: function () {
-		this.fire('enabled');
 		L.Handler.prototype.enable.call(this);
+
+		this.fire('enabled', { handler: this.type});
 	},
 
 	disable: function () {
-		this.fire('disabled');
+		this.fire('disabled', { handler: this.type});
 		L.Handler.prototype.disable.call(this);
 	},
 
 	addHooks: function () {
-		if (this._map && this.options.selectableLayers) {
-			this._selectableLayers = this.options.selectableLayers;
+		if (this._map) {
+			this._layerGroup.eachLayer(function (layer) {
+				// Back up this layer (if haven't before)
+				this._backupLayer(layer);
 
-			if (!(this._selectableLayers instanceof L.LayerGroup) && !(this._selectableLayers instanceof L.FeatureGroup)) {
-				throw new Error('options.selectableLayers must be a L.LayerGroup or L.FeatureGroup');
-			}
+				// Update layer style so appears editable
+				if (layer instanceof L.Marker) {
+					this._toggleMarkerHighlight(layer);
+				} else {
+					layer.options.previousOptions = layer.options;
+					layer.setStyle(this.options.selectedPathOptions);
+				}
 
-			// Used to store the selected layers
-			this._selected = L.layerGroup();
-
-			this._selectableLayers.eachLayer(function (layer) {
-				this._bind(layer);
-			}, this);
-
-			// Listen for new layers being added to the map
-			this._map.on({
-				layeradd: this._bind,
-				layerremove: this._unbind
+				this._enableLayerEdit(layer);
 			}, this);
 		}
 	},
 
 	removeHooks: function () {
-		if (this._map && this._selectableLayers) {
+		if (this._map) {
 			// Clean up selected layers.
-			this._selectableLayers.eachLayer(function (layer) {
-				this._unbind(layer);
-			}, this);
-			delete this._selected;
+			this._layerGroup.eachLayer(function (layer) {
+				// Reset layer styles to that of before select
+				if (layer instanceof L.Marker) {
+					this._toggleMarkerHighlight(layer);
+				} else {
+					// reset the layer style to what is was before being selected
+					layer.setStyle(layer.options.previousOptions);
+					// remove the cached options for the layer object
+					delete layer.options.previousOptions;
+				}
 
-			this._map.off({
-				layeradd: this._bind,
-				layerremove: this._unbind
+				this._disableLayerEdit(layer);
 			}, this);
+
+			// Clear the backups of the original layers
+			this._uneditedLayerProps = {};
 		}
 	},
 
-	select: function (e) {
-		var layer = e.layer || e.target || e;
-
-		// Change style of layer to show as selected
-		if (!(layer instanceof L.Marker)) {
-			layer.options.previousOptions = layer.options;
-			layer.setStyle(this.options.selectedPathOptions);
-		} else {
-			this._toggleMarkerHighlight(layer);
-			// TODO: make marker draggable
-		}
-
-		this._enableLayerEdit(layer);
-
-		layer
-			.off('click', this.select)
-			.on('click', this._deselect, this);
-
-		this._selected.addLayer(layer);
-
-		this._map.fire('feature-selected', { layer: layer });
-
-		return false;
-	},
-
-	removeItems: function () {
-		if (!this.enabled()) {
-			return;
-		}
-
-		this._selected.eachLayer(function (layer) {
-			this._map.removeLayer(layer);
+	revertLayers: function () {
+		this._layerGroup.eachLayer(function (layer) {
+			this._revertLayer(layer);
 		}, this);
 	},
 
-	_deselect: function (e, permanent) {
-		var layer = e.layer || e.target || e;
+	_backupLayer: function (layer) {
+		var id = L.Util.stamp(layer), latlng;
 
-		// Reset layer styles to that of before select
-		if (!(layer instanceof L.Marker)) {
-			// reset the layer style to what is was before being selected
-			layer.setStyle(layer.options.previousOptions);
-			// remove the cached options for the layer object
-			delete layer.options.previousOptions;
-		} else {
-			this._toggleMarkerHighlight(layer);
-		}
-
-		// TODO: should we do this or should the user have to press save? regardless something needs to happed, save or cancel
-		this._disableLayerEdit(layer);
-
-		// Reset layer handlers
-		layer.off('click', this._deselect, this);
-		if (!permanent) {
-			layer.on('click', this.select, this);
-		}
-
-		this._selected.removeLayer(layer);
-
-		this._map.fire('feature-deselected', { layer: layer });
-	},
-
-	_bind: function (e) {
-		var layer = e.layer ? e.layer : e;
-
-		if (this._selectableLayers.hasLayer(layer)) {
-			layer.on('click', this.select, this);
+		if (!this._uneditedLayerProps[id]) {
+			// Polyline, Polygon or Rectangle
+			if (layer instanceof L.Polyline || layer instanceof L.Polygon || layer instanceof L.Rectangle) {
+				this._uneditedLayerProps[id] = {
+					latlngs: this._cloneLatLngs(layer.getLatLngs())
+				};
+			} else if (layer instanceof L.Circle) {
+				this._uneditedLayerProps[id] = {
+					latlng: this._cloneLatLng(layer.getLatLng()),
+					radius: layer.getRadius()
+				};
+			} else { // Marker
+				this._uneditedLayerProps[id] = {
+					latlng: this._cloneLatLng(layer.getLatLng())
+				};
+			}
 		}
 	},
 
-	_unbind: function (e) {
-		var layer = e.layer ? e.layer : e;
+	_revertLayer: function (layer) {
+		var id = L.Util.stamp(layer);
 
-		if (this._selectableLayers.hasLayer(layer) && this._selected.hasLayer(layer)) {
-			this._deselect(layer, true);
+		if (this._uneditedLayerProps.hasOwnProperty(id)) {
+			// Polyline, Polygon or Rectangle
+			if (layer instanceof L.Polyline || layer instanceof L.Polygon || layer instanceof L.Rectangle) {
+				layer.setLatLngs(this._uneditedLayerProps[id].latlngs);
+			} else if (layer instanceof L.Circle) {
+				layer.setLatLng(this._uneditedLayerProps[id].latlng);
+				layer.setRadius(this._uneditedLayerProps[id].radius);
+			} else { // Marker
+				layer.setLatLng(this._uneditedLayerProps[id].latlng);
+			}
 		}
 	},
 
@@ -187,19 +171,44 @@ L.Edit.Feature = L.Handler.extend({
 		// currently only supports polygon & polylines
 		if (layer instanceof L.Polyline || layer instanceof L.Polygon) {
 			layer.editing.enable();
+		} else if (layer instanceof L.Marker) {
+			layer.dragging.enable();
 		}
+
+		// TODO: Rectangle and Circle
 	},
 
 	_disableLayerEdit: function (layer) {
 		// currently only supports polygon & polylines
 		if (layer instanceof L.Polyline || layer instanceof L.Polygon) {
 			layer.editing.disable();
+		} else if (layer instanceof L.Marker) {
+			layer.dragging.disable();
 		}
-	}
-});
 
-L.LayerGroup.include({
-	hasLayer: function (layer) {
-		return !!this._layers[L.Util.stamp(layer)];
+		// TODO: Rectangle and Circle
+	},
+
+
+
+
+
+	// TODO: move!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+	// Clones a LatLngs[], returns [][]
+	_cloneLatLngs: function (latlngs) {
+		var clone = [];
+		for (var i = 0, l = latlngs.length; i < l; i++) {
+			// NOTE: maybe should try to get a clone method added to L.LatLng
+			clone.push(this._cloneLatLng(latlngs[i]));
+		}
+		return clone;
+	},
+
+	// NOTE: maybe should get this added to Leaflet core? Also doesn't support if LatLng should be wrapped
+	_cloneLatLng: function (latlng) {
+		return L.latLng(latlng.lat, latlng.lng);
 	}
+
+	// TODO: move!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 });
