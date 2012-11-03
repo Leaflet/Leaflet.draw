@@ -1,6 +1,3 @@
-/*
- * Initially adapted from Tom Nightingale's https://github.com/tnightingale/Leaflet.widget/blob/master/src/Select.js
- */
 L.Edit = L.Edit || {};
 
 L.Edit.Feature = L.Handler.extend({

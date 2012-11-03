@@ -7,11 +7,6 @@ L.Delete.Feature = L.Handler.extend({
 
 	includes: L.Mixin.Events,
 
-	/*
-	 TODO:
-	 	- when layers are removed from the layergroup then remove them from here
-	 */ 
-
 	initialize: function (map, options) {
 		L.Handler.prototype.initialize.call(this, map);
 
@@ -75,7 +70,7 @@ L.Delete.Feature = L.Handler.extend({
 	}
 });
 
-// TODO: should this be added to Leaflet core?
+// TODO: do we need this? should this be added to Leaflet core?
 L.LayerGroup.include({
 	hasLayer: function (layer) {
 		return !!this._layers[L.Util.stamp(layer)];
