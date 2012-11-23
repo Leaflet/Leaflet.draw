@@ -24,9 +24,9 @@
  * ~~See if any common code can move to Control.Toolbar from Control.Draw.~~
  * ~~Fix the bottom border radius when the actions buttons are at the bottom~~
  * ~~Fix up the toolbar rounded corners when only 1 item in the toolbar.~~
+ * ~~Handle layers being added/removed to the layergroup. i.e. need to be placed in edit mode or have a delete handler added~~
 
 ####Edit
- * Handle layers being added/removed to the layergroup. i.e. need to be placed in edit mode or have a delete handler added
  * Add a delete cursor. When mouseover the layer will have a trashcan cursor.
 
 ####Other

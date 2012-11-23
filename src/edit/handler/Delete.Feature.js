@@ -25,40 +25,58 @@ L.Delete.Feature = L.Handler.extend({
 
 	enable: function () {
 		L.Handler.prototype.enable.call(this);
+
+		this._deletableLayers
+			.on('layeradd', this._enableLayerDelete, this)
+			.on('layerremove', this._disableLayerDelete, this);
+
 		this.fire('enabled', { handler: this.type});
 	},
 
 	disable: function (revert) {
 		L.Handler.prototype.disable.call(this);
+
+		this._deletableLayers
+			.off('layeradd', this._enableLayerDelete)
+			.off('layerremove', this._disableLayerDelete);
+
 		this.fire('disabled', { handler: this.type});
 	},
 
 	addHooks: function () {
 		if (this._map) {
-			this._deletableLayers.eachLayer(function (layer) {
-				layer.on('click', this._removeLayer, this);
-			}, this);
-
-			this._deletedLayers = new L.featureGroup();
+			this._deletableLayers.eachLayer(this._enableLayerDelete, this);
+			this._deletedLayers = new L.layerGroup();
 		}
 	},
 
 	removeHooks: function () {
 		if (this._map) {
-			this._deletableLayers.eachLayer(function (layer) {
-				layer.off('click', this._removeLayer);
-			}, this);
-
-			this._deletedLayers.clearLayers();
+			this._deletableLayers.eachLayer(this._disableLayerDelete, this);
 			this._deletedLayers = null;
 		}
 	},
 
 	revertLayers: function () {
-		// iterate of the deleted layers and add them back into the featureGroup
+		// Iterate of the deleted layers and add them back into the featureGroup
 		this._deletedLayers.eachLayer(function (layer) {
 			this._deletableLayers.addLayer(layer);
 		}, this);
+	},
+
+	_enableLayerDelete: function (e) {
+		var layer = e.layer || e.target || e;
+
+		layer.on('click', this._removeLayer, this);
+	},
+
+	_disableLayerDelete: function (e) {
+		var layer = e.layer || e.target || e;
+
+		layer.off('click', this._removeLayer);
+
+		// Remove from the deleted layers so we can't accidently revert if the user presses cancel
+		this._deletedLayers.removeLayer(layer);
 	},
 
 	_removeLayer: function (e) {
@@ -67,12 +85,5 @@ L.Delete.Feature = L.Handler.extend({
 		this._deletableLayers.removeLayer(layer);
 
 		this._deletedLayers.addLayer(layer);
-	}
-});
-
-// TODO: do we need this? should this be added to Leaflet core?
-L.LayerGroup.include({
-	hasLayer: function (layer) {
-		return !!this._layers[L.Util.stamp(layer)];
 	}
 });
