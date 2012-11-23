@@ -3,12 +3,12 @@
 <head>
 	<title>Leaflet Draw</title>
 
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.css" />
-	<!--[if lte IE 8]><link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.ie.css" /><![endif]-->
+	<link rel="stylesheet" href="libs/leaflet.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="libs/leaflet.ie.css" /><![endif]-->
 	<link rel="stylesheet" href="../dist/leaflet.draw.css" />
 	<!--[if lte IE 8]><link rel="stylesheet" href="../dist/leaflet.draw.ie.css" /><![endif]-->
 
-	<script src="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet-src.js"></script>
+	<script src="libs/leaflet-src.js"></script>
 
 	<script src="../src/ext/LineUtil.Intersect.js"></script>
 	<script src="../src/ext/Polygon.Intersect.js"></script>
@@ -59,7 +59,7 @@
 		});
 		map.addControl(drawControl);
 		
-		var drawnItems = new L.LayerGroup();
+		var drawnItems = new L.FeatureGroup();
 		map.on('draw:poly-created', function (e) {
 			drawnItems.addLayer(e.poly);
 		});
@@ -76,7 +76,7 @@
 		map.addLayer(drawnItems);
 
 		var editControl = new L.Control.Edit({
-			layerGroup: drawnItems
+			featureGroup: drawnItems
 		});
 		map.addControl(editControl);
 	</script>
