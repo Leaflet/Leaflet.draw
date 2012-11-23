@@ -13,10 +13,10 @@ L.Delete.Feature = L.Handler.extend({
 		L.Util.setOptions(this, options);
 
 		// Store the selectable layer group for ease of access
-		this._deletableLayers = this.options.layerGroup;
+		this._deletableLayers = this.options.featureGroup;
 
-		if (!(this._deletableLayers instanceof L.LayerGroup) && !(this._deletableLayers instanceof L.FeatureGroup)) {
-			throw new Error('options.layerGroup must be a L.LayerGroup or L.FeatureGroup');
+		if (!(this._deletableLayers instanceof L.FeatureGroup)) {
+			throw new Error('options.featureGroup must be a L.FeatureGroup');
 		}
 
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
@@ -39,7 +39,7 @@ L.Delete.Feature = L.Handler.extend({
 				layer.on('click', this._removeLayer, this);
 			}, this);
 
-			this._deletedLayers = new L.layerGroup();
+			this._deletedLayers = new L.featureGroup();
 		}
 	},
 
@@ -55,7 +55,7 @@ L.Delete.Feature = L.Handler.extend({
 	},
 
 	revertLayers: function () {
-		// iterate of the deleted layers and add them back into the layergroup
+		// iterate of the deleted layers and add them back into the featureGroup
 		this._deletedLayers.eachLayer(function (layer) {
 			this._deletableLayers.addLayer(layer);
 		}, this);

@@ -11,7 +11,7 @@ L.Control.Edit = L.Control.Toolbar.extend({
 		remove: {
 			title: 'Delete layers'
 		},
-		layerGroup: null, /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
+		featureGroup: null, /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 		selectedPathOptions: null // See Edit handler options, this is used to customize the style of selected paths
 	},
 
@@ -32,7 +32,7 @@ L.Control.Edit = L.Control.Toolbar.extend({
 		if (this.options.edit) {
 			this._initModeHandler(
 				new L.Edit.Feature(map, {
-					layerGroup: this.options.layerGroup,
+					featureGroup: this.options.featureGroup,
 					selectedPathOptions: this.options.selectedPathOptions
 				}),
 				this._toolbarContainer,
@@ -44,7 +44,7 @@ L.Control.Edit = L.Control.Toolbar.extend({
 		if (this.options.remove) {
 			this._initModeHandler(
 				new L.Delete.Feature(map, {
-					layerGroup: this.options.layerGroup
+					featureGroup: this.options.featureGroup
 				}),
 				this._toolbarContainer,
 				buttonIndex++,

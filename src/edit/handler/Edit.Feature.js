@@ -28,10 +28,10 @@ L.Edit.Feature = L.Handler.extend({
 		L.Util.setOptions(this, options);
 
 		// Store the selectable layer group for ease of access
-		this._layerGroup = this.options.layerGroup;
+		this._featureGroup = this.options.featureGroup;
 
-		if (!(this._layerGroup instanceof L.LayerGroup) && !(this._layerGroup instanceof L.FeatureGroup)) {
-			throw new Error('options.layerGroup must be a L.LayerGroup or L.FeatureGroup');
+		if (!(this._featureGroup instanceof L.FeatureGroup)) {
+			throw new Error('options.featureGroup must be a L.FeatureGroup');
 		}
 
 		this._uneditedLayerProps = {};
@@ -53,7 +53,7 @@ L.Edit.Feature = L.Handler.extend({
 
 	addHooks: function () {
 		if (this._map) {
-			this._layerGroup.eachLayer(function (layer) {
+			this._featureGroup.eachLayer(function (layer) {
 				// Back up this layer (if haven't before)
 				this._backupLayer(layer);
 
@@ -73,7 +73,7 @@ L.Edit.Feature = L.Handler.extend({
 	removeHooks: function () {
 		if (this._map) {
 			// Clean up selected layers.
-			this._layerGroup.eachLayer(function (layer) {
+			this._featureGroup.eachLayer(function (layer) {
 				// Reset layer styles to that of before select
 				if (layer instanceof L.Marker) {
 					this._toggleMarkerHighlight(layer);
@@ -93,7 +93,7 @@ L.Edit.Feature = L.Handler.extend({
 	},
 
 	revertLayers: function () {
-		this._layerGroup.eachLayer(function (layer) {
+		this._featureGroup.eachLayer(function (layer) {
 			this._revertLayer(layer);
 		}, this);
 	},
