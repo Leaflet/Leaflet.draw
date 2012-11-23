@@ -43,49 +43,33 @@ L.Edit.Feature = L.Handler.extend({
 	enable: function () {
 		L.Handler.prototype.enable.call(this);
 
-		this.fire('enabled', { handler: this.type});
+		this._featureGroup
+			.on('layeradd', this._enableLayerEdit, this)
+			.on('layerremove', this._disableLayerEdit, this);
+
+		this.fire('enabled', { handler: this.type} );
 	},
 
 	disable: function () {
-		this.fire('disabled', { handler: this.type});
+		this.fire('disabled', { handler: this.type} );
+
+		this._featureGroup
+			.off('layeradd', this._enableLayerEdit)
+			.off('layerremove', this._disableLayerEdit);
+
 		L.Handler.prototype.disable.call(this);
 	},
 
 	addHooks: function () {
 		if (this._map) {
-			this._featureGroup.eachLayer(function (layer) {
-				// Back up this layer (if haven't before)
-				this._backupLayer(layer);
-
-				// Update layer style so appears editable
-				if (layer instanceof L.Marker) {
-					this._toggleMarkerHighlight(layer);
-				} else {
-					layer.options.previousOptions = layer.options;
-					layer.setStyle(this.options.selectedPathOptions);
-				}
-
-				this._enableLayerEdit(layer);
-			}, this);
+			this._featureGroup.eachLayer(this._enableLayerEdit, this);
 		}
 	},
 
 	removeHooks: function () {
 		if (this._map) {
 			// Clean up selected layers.
-			this._featureGroup.eachLayer(function (layer) {
-				// Reset layer styles to that of before select
-				if (layer instanceof L.Marker) {
-					this._toggleMarkerHighlight(layer);
-				} else {
-					// reset the layer style to what is was before being selected
-					layer.setStyle(layer.options.previousOptions);
-					// remove the cached options for the layer object
-					delete layer.options.previousOptions;
-				}
-
-				this._disableLayerEdit(layer);
-			}, this);
+			this._featureGroup.eachLayer(this._disableLayerEdit, this);
 
 			// Clear the backups of the original layers
 			this._uneditedLayerProps = {};
@@ -164,8 +148,21 @@ L.Edit.Feature = L.Handler.extend({
 		icon.style.marginLeft = iconMarginLeft + 'px';
 	},
 
-	_enableLayerEdit: function (layer) {
-		// currently only supports polygon & polylines
+	_enableLayerEdit: function (e) {
+		var layer = e.layer || e.target || e;
+
+		// Back up this layer (if haven't before)
+		this._backupLayer(layer);
+
+		// Update layer style so appears editable
+		if (layer instanceof L.Marker) {
+			this._toggleMarkerHighlight(layer);
+		} else {
+			layer.options.previousOptions = layer.options;
+			layer.setStyle(this.options.selectedPathOptions);
+		}
+
+		// currently only supports markers, polygon & polylines
 		if (layer instanceof L.Polyline || layer instanceof L.Polygon) {
 			layer.editing.enable();
 		} else if (layer instanceof L.Marker) {
@@ -175,8 +172,20 @@ L.Edit.Feature = L.Handler.extend({
 		// TODO: Rectangle and Circle
 	},
 
-	_disableLayerEdit: function (layer) {
-		// currently only supports polygon & polylines
+	_disableLayerEdit: function (e) {
+		var layer = e.layer || e.target || e;
+		
+		// Reset layer styles to that of before select
+		if (layer instanceof L.Marker) {
+			this._toggleMarkerHighlight(layer);
+		} else {
+			// reset the layer style to what is was before being selected
+			layer.setStyle(layer.options.previousOptions);
+			// remove the cached options for the layer object
+			delete layer.options.previousOptions;
+		}
+
+		// currently only supports markers, polygon & polylines
 		if (layer instanceof L.Polyline || layer instanceof L.Polygon) {
 			layer.editing.disable();
 		} else if (layer instanceof L.Marker) {
@@ -185,8 +194,6 @@ L.Edit.Feature = L.Handler.extend({
 
 		// TODO: Rectangle and Circle
 	},
-
-
 
 
 
