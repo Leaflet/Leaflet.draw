@@ -170,7 +170,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// Snapping
 		if (this._poly.options.snapping.enabled) {
 			latlng = this._poly.snapTo(latlng);
-			console.log(e.target);
 		}
 		
 		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
