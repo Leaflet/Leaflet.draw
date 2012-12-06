@@ -1,5 +1,3 @@
-console.log(L.Handler.PolyEdit);
-
 L.Handler.PolyEdit.include({
 	_onMarkerDrag: function (e) {
 		var marker = e.target;
