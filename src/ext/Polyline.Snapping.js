@@ -2,25 +2,26 @@ L.Polyline.include({
 	/**
 	 * Snap to function
 	 *
-	 * @param <LatLng> latlng -
-	 * @param <array> layers -
-	 * @param <numberic> sensitivity -
+	 * @param <LatLng> latlng - cursor click
 	 *
-	 * @return <LatLng>
+	 * @return <LatLng> - snapped to
 	 *
-	 * @todo find the nearest point before returning
+	 * @todo find the closest point before returning?
 	 */
-	snapTo: function (latlng, layers, sensitivity) {
-		var newLatLng = null;
-		var distance = 0;
+	snapTo: function (latlng) {
+		var newLatLng = null,
+			distance = 0,
+			layers = this.options.snapping.layers,
+			sensitivity = this.options.snapping.sensitivity;
 
 		// Loop through layers
 		for (var l in layers) {
-			var map = layers[l]._map;
+			var layer = layers[l],
+				map = layer._map;
 			
 			// Loop through features
-			for (var i in layers[0]._layers) {
-				var obj = layers[0]._layers[i];
+			for (var i in layer._layers) {
+				var obj = layer._layers[i];
 				
 				// Loop through points
 				var lastPoint = null;

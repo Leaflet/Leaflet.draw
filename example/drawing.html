@@ -29,6 +29,7 @@
 	<script src="../src/draw/handler/Draw.Marker.js"></script>
 
 	<script src="../src/edit/handler/Edit.Feature.js"></script>
+	<script src="../src/edit/handler/Edit.Polyline.js"></script>
 	<script src="../src/edit/handler/Delete.Feature.js"></script>
 </head>
 <body>
@@ -56,9 +57,16 @@
 		var drawControl = new L.Control.Draw({
 			position: 'topleft',
 			polyline: {
-				snappingEnabled: true,
-				snapToLayer: [snap2],
-				snapSensitivity: 20
+				shapeOptions: {
+					// This is a really akward place to snapping
+					// but, it is distributed allong with all new objects
+					// and that is needed for snapping while editing
+					snapping: {
+						enabled: true,		// snapping
+						layers: [snap2],	// snapping
+						sensitivity: 20		// snapping
+					}
+				}
 			},
 			polygon: {
 				title: 'Draw a sexy polygon!',
@@ -77,10 +85,10 @@
 				}
 			}
 		});
-		console.log(drawControl);
 		map.addControl(drawControl);
 		
 		var drawnItems = new L.FeatureGroup();
+		
 		map.on('draw:poly-created', function (e) {
 			drawnItems.addLayer(e.poly);
 		});

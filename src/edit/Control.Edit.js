@@ -11,6 +11,11 @@ L.Control.Edit = L.Control.Toolbar.extend({
 		remove: {
 			title: 'Delete layers'
 		},
+		snapping: {
+			enabled: false,
+			layer: [],
+			sensitivity: 10
+		},
 		featureGroup: null, /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 		selectedPathOptions: null // See Edit handler options, this is used to customize the style of selected paths
 	},

@@ -17,16 +17,19 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
 		guidelineDistance: 20,
-		snappingEnabled: false,
-		snapToLayer: [],
-		snapSensitivity: 10,
 		shapeOptions: {
 			stroke: true,
 			color: '#f06eaa',
 			weight: 4,
 			opacity: 0.5,
 			fill: false,
-			clickable: true
+			clickable: true,
+			
+			snapping: {
+				enabled: false, // snapping
+				layers: [], 	// snapping
+				sensitivity: 10 // snapping
+			}
 		},
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
@@ -136,10 +139,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// Save latlng
 		this._currentLatLng = latlng;
 		
-		//this._currentLatLng.lat += 0.5;
-		//this._currentLatLng.lng += 0.5;
-		//console.log(this._currentLatLng);
-
 		// update the label
 		this._updateLabelPosition(newPos);
 
@@ -164,8 +163,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			markerCount = this._markers.length;
 		
 		// Snapping
-		if (this.options.snappingEnabled) {
-			latlng = this._poly.snapTo(latlng, this.options.snapToLayer, this.options.snapSensitivity);
+		if (this._poly.options.snapping.enabled) {
+			latlng = this._poly.snapTo(latlng);
 		}
 		
 		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {

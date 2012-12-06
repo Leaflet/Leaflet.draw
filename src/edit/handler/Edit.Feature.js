@@ -45,11 +45,16 @@ L.Edit.Feature = L.Handler.extend({
 
 		this._featureGroup
 			.on('layeradd', this._enableLayerEdit, this)
-			.on('layerremove', this._disableLayerEdit, this);
+			.on('layerremove', this._disableLayerEdit, this)
+			.on('layermove', this._moveLayerEdit, this);
 
 		this.fire('enabled', { handler: this.type} );
 	},
-
+	
+	_moveLayerEdit: function(e, e2, e3) {
+		console.log(e, e2, e3);	
+	},
+	
 	disable: function () {
 		this.fire('disabled', { handler: this.type} );
 
@@ -149,6 +154,8 @@ L.Edit.Feature = L.Handler.extend({
 	},
 
 	_enableLayerEdit: function (e) {
+		console.log('_enableLayerEdit', e);
+	
 		var layer = e.layer || e.target || e;
 
 		// Back up this layer (if haven't before)
