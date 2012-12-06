@@ -135,7 +135,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var newPos = e.layerPoint,
 			latlng = e.latlng,
 			markerCount = this._markers.length;
-
+		
+		// Snapping the guideline in real time
+		if (this._poly.options.snapping.enabled) {
+			newPos = this._map.latLngToLayerPoint(this._poly.snapTo(latlng));
+		}
+		
 		// Save latlng
 		this._currentLatLng = latlng;
 		
@@ -165,6 +170,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// Snapping
 		if (this._poly.options.snapping.enabled) {
 			latlng = this._poly.snapTo(latlng);
+			console.log(e.target);
 		}
 		
 		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
