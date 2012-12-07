@@ -175,6 +175,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._updateMarkerHandler();
 
 		this._vertexAdded(latlng);
+		
+		this._clearGuides();
 	},
 
 	_updateMarkerHandler: function () {
