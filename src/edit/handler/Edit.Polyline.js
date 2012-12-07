@@ -7,9 +7,7 @@ L.Handler.PolyEdit.include({
 			marker._latlng = this._poly.snapTo(marker._latlng);
 			L.DomUtil.setPosition(marker._icon, map.latLngToLayerPoint(marker._latlng));
 		}
-		
-		console.log(marker);
-		
+				
 		L.extend(marker._origLatLng, marker._latlng);
 
 		if (marker._middleLeft) {

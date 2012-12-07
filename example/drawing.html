@@ -19,7 +19,7 @@
 	<script src="../src/Control.Toolbar.js"></script>
 	<script src="../src/draw/Control.Draw.js"></script>
 	<script src="../src/edit/Control.Edit.js"></script>
-	
+
 	<script src="../src/draw/handler/Draw.Feature.js"></script>
 	<script src="../src/draw/handler/Draw.Polyline.js"></script>
 	<script src="../src/draw/handler/Draw.Polygon.js"></script>
@@ -31,29 +31,30 @@
 	<script src="../src/edit/handler/Edit.Feature.js"></script>
 	<script src="../src/edit/handler/Edit.Polyline.js"></script>
 	<script src="../src/edit/handler/Delete.Feature.js"></script>
+
+	<script src="geojson.js"></script>
 </head>
 <body>
 	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
-	
+
 	<script>
-		
-		var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png',
+
+		var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/22677/256/{z}/{x}/{y}.png',
 			cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18}),
-			map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(51.505, -0.09), zoom: 13 });
+			map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(39.74739, -105), zoom: 15 }),
+			myStyle = {
+			    "color": "#ff7800",
+			    "weight": 5,
+			    "opacity": 0.65
+			},
+			snap2 = L.geoJson([freeBus, campus], { style: myStyle });
+			
+			snap2.addTo(map);	
 		
 		var polyline = L.polyline([
-		    [51.503, -0.124],
-		    [51.510, -0.12],
-		    [51.512, -0.10],
-		    [51.509, -0.08],
-		    [51.503, -0.06],
-		    [51.51, -0.047]
+		    
 		]);
 
-		var snap2 = new L.LayerGroup();
-			snap2.addTo(map);
-			snap2.addLayer(polyline);
-					
 		var drawControl = new L.Control.Draw({
 			position: 'topleft',
 			polyline: {
@@ -86,9 +87,9 @@
 			}
 		});
 		map.addControl(drawControl);
-		
+
 		var drawnItems = new L.FeatureGroup();
-		
+
 		map.on('draw:poly-created', function (e) {
 			drawnItems.addLayer(e.poly);
 		});
