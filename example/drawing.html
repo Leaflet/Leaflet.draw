@@ -40,6 +40,9 @@
 
 		var drawControl = new L.Control.Draw({
 			position: 'topleft',
+			polyline: {
+				autoCenter: 20
+			},
 			polygon: {
 				title: 'Draw a sexy polygon!',
 				allowIntersection: false,

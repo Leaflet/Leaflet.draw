@@ -6,6 +6,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	Poly: L.Polyline,
 
 	options: {
+		autoCenter: 0,
 		allowIntersection: true,
 		drawError: {
 			color: '#b00b00',
@@ -154,7 +155,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_onClick: function (e) {
 		var latlng = e.target.getLatLng(),
-			markerCount = this._markers.length;
+			markerCount = this._markers.length,
+			pp = this._map.latLngToContainerPoint(latlng),
+			pm = this._map.getSize();
 
 		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
 			this._showErrorLabel();
@@ -163,7 +166,14 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		else if (this._errorShown) {
 			this._hideErrorLabel();
 		}
-
+		
+		// Autocenter when drawing to close to the edges
+		if (this.options.autoCenter > 0 && (pp.x < this.options.autoCenter || pp.y < this.options.autoCenter 
+			|| pp.x > (pm.x-this.options.autoCenter) || pp.y > (pm.y-this.options.autoCenter))
+		) {
+			this._map.panTo(latlng);
+		}
+		
 		this._markers.push(this._createMarker(latlng));
 
 		this._poly.addLatLng(latlng);
