@@ -79,7 +79,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				.on('click', this._onClick, this)
 				.addTo(this._map);
 
-			this._map.on('mousemove', this._onMouseMove, this);
+			this._map
+				.on('mousemove', this._onMouseMove, this)
+				.on('zoomend', this._onZoomEnd, this);
 		}
 	},
 
@@ -105,7 +107,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// clean up DOM
 		this._clearGuides();
 
-		this._map.off('mousemove', this._onMouseMove);
+		this._map
+			.off('mousemove', this._onMouseMove)
+			.off('zoomend', this._onZoomEnd);
 	},
 
 	_finishShape: function () {
@@ -130,7 +134,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_shapeIsValid: function () {
 		return true;
 	},
-
+	
+	_onZoomEnd: function(e) {
+		this._updateGuide();
+	},
+	
 	_onMouseMove: function (e) {
 		var newPos = e.layerPoint,
 			latlng = e.latlng,
@@ -142,20 +150,14 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		}
 		
 		// Save latlng
+		// should this be moved to _updateGuide() ?
 		this._currentLatLng = latlng;
-		
-		// update the label
-		this._updateLabelPosition(newPos);
 
-		if (markerCount > 0) {
-			this._updateLabelText(this._getLabelText());
-			// draw the guide line
-			this._clearGuides();
-			this._drawGuide(
-				this._map.latLngToLayerPoint(this._markers[markerCount - 1].getLatLng()),
-				newPos
-			);
-		}
+		// Update the label
+		this._updateLabelPosition(newPos);
+		
+		// Update the guide line
+		this._updateGuide(newPos);
 
 		// Update the mouse marker position
 		this._mouseMarker.setLatLng(latlng);
@@ -191,6 +193,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._updateMarkerHandler();
 
 		this._vertexAdded(latlng);
+		
+		this._clearGuides();
 	},
 
 	_updateMarkerHandler: function () {
@@ -215,7 +219,23 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		return marker;
 	},
-
+	
+	_updateGuide: function(newPos) {
+		newPos = newPos || this._map.latLngToLayerPoint(this._currentLatLng);
+		
+		var markerCount = this._markers.length;
+		
+		if (markerCount > 0) {
+			this._updateLabelText(this._getLabelText());
+			// draw the guide line
+			this._clearGuides();
+			this._drawGuide(
+				this._map.latLngToLayerPoint(this._markers[markerCount - 1].getLatLng()),
+				newPos
+			);
+		}
+	},
+	
 	_drawGuide: function (pointA, pointB) {
 		var length = Math.floor(Math.sqrt(Math.pow((pointB.x - pointA.x), 2) + Math.pow((pointB.y - pointA.y), 2))),
 			i,
