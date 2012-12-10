@@ -101,7 +101,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._clearGuides();
 
 		this._map.off('mousemove', this._onMouseMove);
-		this._map.off('zoomend', this.__onZoomEnd);
+		this._map.off('zoomend', this._onZoomEnd);
 	},
 
 	_finishShape: function () {
