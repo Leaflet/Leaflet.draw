@@ -146,7 +146,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._updateLabelPosition(newPos);
 		
 		// Update the guide line
-		this._updateGuide(newPos);		
+		this._updateGuide(newPos);
 
 		// Update the mouse marker position
 		this._mouseMarker.setLatLng(latlng);
@@ -217,7 +217,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				this._map.latLngToLayerPoint(this._markers[markerCount - 1].getLatLng()),
 				newPos
 			);
-		}		
+		}
 	},
 	
 	_drawGuide: function (pointA, pointB) {
