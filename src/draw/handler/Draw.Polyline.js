@@ -164,7 +164,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			return;
 		}
 		else if (this._errorShown) {
-			this._hideErrorTimeout();
+			this._hideErrorTooltip();
 		}
 
 		this._markers.push(this._createMarker(latlng));
@@ -318,7 +318,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		// Hide the error after 2 seconds
 		this._clearHideErrorTimeout();
-		this._hideErrorTimeout = setTimeout(L.Util.bind(this._hideErrorTimeout, this), this.options.drawError.timeout);
+		this._hideErrorTimeout = setTimeout(L.Util.bind(this._hideErrorTooltip, this), this.options.drawError.timeout);
 	},
 
 	_hideErrorTooltip: function () {
