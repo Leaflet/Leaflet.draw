@@ -108,9 +108,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_finishShape: function () {
 		if (!this.options.allowIntersection && this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true)) {
-			this._showErrorLabel();
+			this._showErrorTooltip();
 			return;
 		}
+
 		if (!this._shapeIsValid()) {
 			this._showErrorLabel();
 			return;
@@ -159,11 +160,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			markerCount = this._markers.length;
 
 		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
-			this._showErrorLabel();
+			this._showErrorTooltip();
 			return;
 		}
 		else if (this._errorShown) {
-			this._hideErrorLabel();
+			this._hideErrorTimeout();
 		}
 
 		this._markers.push(this._createMarker(latlng));
@@ -303,7 +304,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		return labelText;
 	},
 
-	_showErrorLabel: function () {
+	_showErrorTooltip: function () {
 		this._errorShown = true;
 
 		// Update tooltip
@@ -317,10 +318,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		// Hide the error after 2 seconds
 		this._clearHideErrorTimeout();
-		this._hideErrorTimeout = setTimeout(L.Util.bind(this._hideErrorLabel, this), this.options.drawError.timeout);
+		this._hideErrorTimeout = setTimeout(L.Util.bind(this._hideErrorTimeout, this), this.options.drawError.timeout);
 	},
 
-	_hideErrorLabel: function () {
+	_hideErrorTooltip: function () {
 		this._errorShown = false;
 
 		this._clearHideErrorTimeout();
