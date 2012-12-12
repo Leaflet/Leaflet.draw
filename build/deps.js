@@ -1,52 +1,36 @@
 var deps = {
-	LeafletExtensions: {
+	Core: {
 		src: [
 			'ext/LineUtil.js',
 			'ext/Polyline.js',
-			'ext/Polygon.js'
+			'ext/Polygon.js',
+			'Tooltip.js',
+			'Control.Toolbar.js',
 		],
-		desc: 'Extensions to Leaflet to add intersection detection.'
+		desc: 'The core of the plugin.'
 	},
 
-	DrawHandler: {
-		src: ['draw/Handler.Draw.js'],
-		desc: 'The base class for drawing.',
-		deps: ['LeafletExtensions']
-	},
-
-	Polys: {
+	Draw: {
 		src: [
+			'draw/Control.Draw.js',
+			'draw/Handler.Draw.js',
 			'draw/shapes/Polyline.Draw.js',
-			'draw/shapes/Polygon.Draw.js'
-		],
-		desc: 'Polyline and Polygon drawing handlers.',
-		deps: ['DrawHandler']
-	},
-	
-	SimpleShapes: {
-		src: [
+			'draw/shapes/Polygon.Draw.js',
 			'draw/shapes/SimpleShape.Draw.js',
 			'draw/shapes/Circle.Draw.js',
-			'draw/shapes/Rectangle.Draw.js'
+			'draw/shapes/Rectangle.Draw.js',
+			'draw/shapes/Marker.Draw.js'
 		],
-		desc: 'Simple Shape drawing handlers.',
-		deps: ['DrawHandler']
+		desc: 'Drawing tools used to create vectors and markers.',
+		deps: ['Core']
 	},
-	
-	Markers: {
-		src: ['draw/shapes/Marker.Draw.js'],
-		desc: 'Marker drawing handlers.',
-		deps: ['DrawHandler']
-	},
-	
-	DrawingControl: {
-		src: ['draw/Control.Draw.js'],
-		desc: 'Drawing control.',
-		deps: [
-			'Polys',
-			'SimpleShapes',
-			'Markers'
-		]
+
+	Edit: {
+		src: [
+			'TODO'
+		],
+		desc: 'Editing tools used to edit and delete vectors and markers.',
+		deps: ['Core']
 	}
 };
 
