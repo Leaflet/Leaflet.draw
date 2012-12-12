@@ -32,7 +32,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		}
 	},
 
-	_getLabelText: function () {
+	_getTooltipText: function () {
 		var text;
 		if (this._markers.length === 0) {
 			text = 'Click to start drawing shape.';

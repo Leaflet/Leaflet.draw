@@ -50,7 +50,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 			this._poly = new L.Polyline([], this.options.shapeOptions);
 
-			this._updateLabelText(this._getLabelText());
+			this._tooltip.updateContent(this._getTooltipText());
 
 			// Make a transparent marker that will used to catch click events. These click
 			// events will create the vertices. We need to do this so we can ensure that
@@ -143,7 +143,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._currentLatLng = latlng;
 
 		// Update the label
-		this._updateLabelPosition(newPos);
+		this._tooltip.updatePosition(latlng);
 		
 		// Update the guide line
 		this._updateGuide(newPos);
@@ -210,7 +210,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var markerCount = this._markers.length;
 		
 		if (markerCount > 0) {
-			this._updateLabelText(this._getLabelText());
+			// Update the tooltip text, as long it's not showing and error
+			if (!this._errorShown) {
+				this._tooltip.updateContent(this._getTooltipText());
+			}
+
 			// draw the guide line
 			this._clearGuides();
 			this._drawGuide(
@@ -269,13 +273,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		}
 	},
 
-	_updateLabelText: function (labelText) {
-		if (!this._errorShown) {
-			L.Draw.Feature.prototype._updateLabelText.call(this, labelText);
-		}
-	},
-
-	_getLabelText: function () {
+	_getTooltipText: function () {
 		var labelText,
 			distance,
 			distanceStr;
@@ -308,10 +306,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_showErrorLabel: function () {
 		this._errorShown = true;
 
-		// Update label
-		L.DomUtil.addClass(this._label, 'leaflet-error-draw-label');
-		L.DomUtil.addClass(this._label, 'leaflet-flash-anim');
-		L.Draw.Feature.prototype._updateLabelText.call(this, { text: this.options.drawError.message });
+		// Update tooltip
+		this._tooltip
+			.showAsError()
+			.updateContent({ text: this.options.drawError.message });
 
 		// Update shape
 		this._updateGuideColor(this.options.drawError.color);
@@ -327,10 +325,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this._clearHideErrorTimeout();
 		
-		// Revert label
-		L.DomUtil.removeClass(this._label, 'leaflet-error-draw-label');
-		L.DomUtil.removeClass(this._label, 'leaflet-flash-anim');
-		this._updateLabelText(this._getLabelText());
+		// Revert tooltip
+		this._tooltip
+			.removeError()
+			.updateContent(this._getTooltipText());
 
 		// Revert shape
 		this._updateGuideColor(this.options.shapeOptions.color);
