@@ -107,13 +107,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_finishShape: function () {
-		if (!this.options.allowIntersection && this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true)) {
-			this._showErrorTooltip();
-			return;
-		}
+		var intersects = this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true);
 
-		if (!this._shapeIsValid()) {
-			this._showErrorLabel();
+		if ((!this.options.allowIntersection && intersects) || !this._shapeIsValid()) {
+			this._showErrorTooltip();
 			return;
 		}
 
