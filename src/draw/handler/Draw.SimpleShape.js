@@ -13,7 +13,6 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 			this._map
 				.on('mousedown', this._onMouseDown, this)
 				.on('mousemove', this._onMouseMove, this);
-
 		}
 	},
 
