@@ -25,17 +25,19 @@
  * ~~Fix the bottom border radius when the actions buttons are at the bottom~~
  * ~~Fix up the toolbar rounded corners when only 1 item in the toolbar.~~
  * ~~Handle layers being added/removed to the layergroup. i.e. need to be placed in edit mode or have a delete handler added~~
+ * ~Add support for tooltips for the edit mode.~
 
 ####Edit
  * Add a delete cursor. When mouseover the layer will have a trashcan cursor.
 
 ####Other
+ * Add handlers for Circle and Rectangle editing. (Needs a way to hook into L.Cicle and L.Rectangle)
  * Handle controls from being removed from map.
- * Add support for tooltips for the edit mode.
  * CSS classes should probably be stored in constants somewhere.
  * Move clone methods from Edit.Feature
  * Search for TODO
- * Add handlers for Circle and Rectangle editing.
+ * Fix styles to look more like new Leaflet zoom in/out.
+ * Polyline is styled as filled for edit mode.
 
  * Write up a breaking changes for when 0.2 goes live. (See below)
  * Add some proper documentation. I.e. for the events & methods
@@ -46,3 +48,4 @@
  * activated & deactivated events renamed to enabled/disabled.
  * renamed css classes.
  * drawing & drawing-disabled events renamed to: draw:enabled & draw:disabled.
+ * renamed the label css class to tooltip
