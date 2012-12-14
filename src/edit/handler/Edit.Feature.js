@@ -63,6 +63,11 @@ L.Edit.Feature = L.Handler.extend({
 	addHooks: function () {
 		if (this._map) {
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
+
+			this._tooltip = new L.Tooltip(this._map);
+			this._tooltip.updateContent({ text: 'Drag handles, or marker to edit feature.', subtext: 'Click cancel to undo changes.' });
+
+			this._map.on('mousemove', this._onMouseMove, this);
 		}
 	},
 
@@ -73,6 +78,11 @@ L.Edit.Feature = L.Handler.extend({
 
 			// Clear the backups of the original layers
 			this._uneditedLayerProps = {};
+
+			this._tooltip.dispose();
+			this._tooltip = null;
+
+			this._map.off('mousemove', this._onMouseMove);
 		}
 	},
 
@@ -193,6 +203,10 @@ L.Edit.Feature = L.Handler.extend({
 		}
 
 		// TODO: Rectangle and Circle
+	},
+
+	_onMouseMove: function (e) {
+		this._tooltip.updatePosition(e.latlng);
 	},
 
 
