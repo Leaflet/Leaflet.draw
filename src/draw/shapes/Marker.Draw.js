@@ -2,6 +2,7 @@ L.Marker.Draw = L.Handler.Draw.extend({
 	type: 'marker',
 
 	options: {
+		name: '',
 		icon: new L.Icon.Default(),
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
@@ -56,7 +57,7 @@ L.Marker.Draw = L.Handler.Draw.extend({
 	_onClick: function (e) {
 		this._map.fire(
 			'draw:marker-created',
-			{ marker: new L.Marker(this._marker.getLatLng(), { icon: this.options.icon }) }
+			{ name: this.options.name, marker: new L.Marker(this._marker.getLatLng(), { icon: this.options.icon }) }
 		);
 		this.disable();
 	}

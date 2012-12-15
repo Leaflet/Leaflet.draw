@@ -11,17 +11,17 @@ L.Handler.Draw = L.Handler.extend({
 		if (options && options.shapeOptions) {
 			options.shapeOptions = L.Util.extend({}, this.options.shapeOptions, options.shapeOptions);
 		}
-		L.Util.extend(this.options, options);
+		L.Util.setOptions(this, options);
 	},
 
 	enable: function () {
 		this.fire('activated');
-		this._map.fire('drawing', { drawingType: this.type });
+		this._map.fire('drawing', { name: this.options.name, drawingType: this.type });
 		L.Handler.prototype.enable.call(this);
 	},
 
 	disable: function () {
-		this._map.fire('drawing-disabled', { drawingType: this.type });
+		this._map.fire('drawing-disabled', { name: this.options.name, drawingType: this.type });
 		L.Handler.prototype.disable.call(this);
 	},
 	

@@ -6,91 +6,83 @@ L.Control.Draw = L.Control.extend({
 
 	options: {
 		position: 'topleft',
-		polyline: {
-			title: 'Draw a polyline'
-		},
-		polygon: {
-			title: 'Draw a polygon'
-		},
-		rectangle: {
-			title: 'Draw a rectangle'
-		},
-		circle: {
-			title: 'Draw a circle'
-		},
-		marker: {
-			title: 'Add a marker'
-		}
+		shapes: [
+			{
+				name: 'polyline',
+				type: 'polyline',
+				title: 'Draw a polyline'
+			},
+			{
+				name: 'polygon',
+				type: 'polygon',
+				title: 'Draw a polygon'
+			},
+			{
+				name: 'rectangle',
+				type: 'rectangle',
+				title: 'Draw a rectangle'
+			},
+			{
+				name: 'circle',
+				type: 'circle',
+				title: 'Draw a circle'
+			},
+			{
+				name: 'marker',
+				type: 'marker',
+				title: 'Add a marker'
+			}
+		]
 	},
 
 	initialize: function (options) {
 		L.Util.extend(this.options, options);
 	},
-	
+
 	onAdd: function (map) {
 		var className = 'leaflet-control-draw',
 			container = L.DomUtil.create('div', className);
-	
+
 		this.handlers = {};
-	
-		if (this.options.polyline) {
-			this.handlers.polyline = new L.Polyline.Draw(map, this.options.polyline);
-			this._createButton(
-				this.options.polyline.title,
-				className + '-polyline',
-				container,
-				this.handlers.polyline.enable,
-				this.handlers.polyline
-			);
-			this.handlers.polyline.on('activated', this._disableInactiveModes, this);
-		}
 
-		if (this.options.polygon) {
-			this.handlers.polygon = new L.Polygon.Draw(map, this.options.polygon);
-			this._createButton(
-				this.options.polygon.title,
-				className + '-polygon',
-				container,
-				this.handlers.polygon.enable,
-				this.handlers.polygon
-			);
-			this.handlers.polygon.on('activated', this._disableInactiveModes, this);
-		}
+		for (var i=0; i<this.options.shapes.length; i++) {
+			var options = this.options.shapes[i];
 
-		if (this.options.rectangle) {
-			this.handlers.rectangle = new L.Rectangle.Draw(map, this.options.rectangle);
-			this._createButton(
-				this.options.rectangle.title,
-				className + '-rectangle',
-				container,
-				this.handlers.rectangle.enable,
-				this.handlers.rectangle
-			);
-			this.handlers.rectangle.on('activated', this._disableInactiveModes, this);
-		}
+			if (options.type === 'polyline') {
+				handler = new L.Polyline.Draw(map, options);
 
-		if (this.options.circle) {
-			this.handlers.circle = new L.Circle.Draw(map, this.options.circle);
-			this._createButton(
-				this.options.circle.title,
-				className + '-circle',
-				container,
-				this.handlers.circle.enable,
-				this.handlers.circle
-			);
-			this.handlers.circle.on('activated', this._disableInactiveModes, this);
-		}
+			} else if (options.type === 'polygon') {
+				handler = new L.Polygon.Draw(map, options);
 
-		if (this.options.marker) {
-			this.handlers.marker = new L.Marker.Draw(map, this.options.marker);
+			} else if (options.type === 'rectangle') {
+				handler = new L.Rectangle.Draw(map, options);
+
+			} else if (options.type === 'circle') {
+				handler = new L.Circle.Draw(map, options);
+
+			} else if (options.type === 'marker') {
+				handler = new L.Marker.Draw(map, options);
+
+			} else {
+				continue;
+			}
+			var cls = className + '-' + options.type;
+			var identifier = options.type;
+			if (options.name) {
+				// add another class to distinguish items
+				cls += ' ' + options.type + '-' + options.name;
+				identifier += '-' + options.name;
+			}
+
+			this.handlers[identifier] = handler;
 			this._createButton(
-				this.options.marker.title,
-				className + '-marker',
+				options.title,
+				cls,
 				container,
-				this.handlers.marker.enable,
-				this.handlers.marker
+				this.handlers[identifier].enable,
+				this.handlers[identifier]
 			);
-			this.handlers.marker.on('activated', this._disableInactiveModes, this);
+			this.handlers[identifier].on('activated', this._disableInactiveModes, this);
 		}
 		
 		return container;

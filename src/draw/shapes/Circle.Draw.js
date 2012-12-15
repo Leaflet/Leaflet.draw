@@ -2,6 +2,7 @@ L.Circle.Draw = L.SimpleShape.Draw.extend({
 	type: 'circle',
 
 	options: {
+		name: '',
 		shapeOptions: {
 			stroke: true,
 			color: '#f06eaa',
@@ -28,7 +29,7 @@ L.Circle.Draw = L.SimpleShape.Draw.extend({
 	_fireCreatedEvent: function () {
 		this._map.fire(
 			'draw:circle-created',
-			{ circ: new L.Circle(this._startLatLng, this._shape.getRadius(), this.options.shapeOptions) }
+			{ name: this.options.name, circ: new L.Circle(this._startLatLng, this._shape.getRadius(), this.options.shapeOptions) }
 		);
 	}
 });
