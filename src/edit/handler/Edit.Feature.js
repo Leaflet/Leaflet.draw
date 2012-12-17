@@ -172,14 +172,11 @@ L.Edit.Feature = L.Handler.extend({
 			layer.setStyle(this.options.selectedPathOptions);
 		}
 
-		// currently only supports markers, polygon & polylines
-		if (layer instanceof L.Polyline || layer instanceof L.Polygon) {
-			layer.editing.enable();
-		} else if (layer instanceof L.Marker) {
+		if (layer instanceof L.Marker) {
 			layer.dragging.enable();
+		} else {
+			layer.editing.enable();
 		}
-
-		// TODO: Rectangle and Circle
 	},
 
 	_disableLayerEdit: function (e) {
@@ -195,14 +192,11 @@ L.Edit.Feature = L.Handler.extend({
 			delete layer.options.previousOptions;
 		}
 
-		// currently only supports markers, polygon & polylines
-		if (layer instanceof L.Polyline || layer instanceof L.Polygon) {
-			layer.editing.disable();
-		} else if (layer instanceof L.Marker) {
+		if (layer instanceof L.Marker) {
 			layer.dragging.disable();
+		} else {
+			layer.editing.disable();
 		}
-
-		// TODO: Rectangle and Circle
 	},
 
 	_onMouseMove: function (e) {
