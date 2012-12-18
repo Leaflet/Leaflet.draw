@@ -28,8 +28,8 @@ L.Edit.SimpleShape = L.Handler.extend({
 
 	removeHooks: function () {
 		if (this._shape._map) {
-			this._moveMarker.off('drag', this._onMarkerDrag);
-			this._moveMarker.off('dragend', this._fireEdit);
+			this._unbindMarker(this._moveMarker);
+			this._unbindMarker(this._resizeMarker);
 
 			this._resizeMarker.off('drag', this._onMarkerDrag);
 			this._resizeMarker.off('dragend', this._fireEdit);
@@ -71,16 +71,30 @@ L.Edit.SimpleShape = L.Handler.extend({
 			zIndexOffset: 10
 		});
 
-		marker.on('drag', this._onMarkerDrag, this);
-		marker.on('dragend', this._fireEdit, this);
+		this._bindMarker(marker);
 
 		this._markerGroup.addLayer(marker);
 
 		return marker;
 	},
 
-	_fireEdit: function () {
-		this._shape.fire('edit');
+	_bindMarker: function (marker) {
+		marker
+			.on('dragstart', this._onMarkerDragStart, this)
+			.on('drag', this._onMarkerDrag, this)
+			.on('dragend', this._onMarkerDragEnd, this);
+	},
+
+	_unbindMarker: function (marker) {
+		marker
+			.off('dragstart', this._onMarkerDragStart)
+			.off('drag', this._onMarkerDrag)
+			.off('dragend', this._onMarkerDragEnd);
+	},
+
+	_onMarkerDragStart: function (e) {
+		var marker = e.target;
+		marker.setOpacity(0);
 	},
 
 	_onMarkerDrag: function (e) {
@@ -94,6 +108,13 @@ L.Edit.SimpleShape = L.Handler.extend({
 		}
 
 		this._shape.redraw();
+	},
+
+	_onMarkerDragEnd: function (e) {
+		var marker = e.target;
+		marker.setOpacity(1);
+
+		this._shape.fire('edit');
 	},
 
 	_move: function (latlng) {
