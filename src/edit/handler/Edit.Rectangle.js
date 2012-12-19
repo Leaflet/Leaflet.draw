@@ -44,35 +44,22 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 	},
 
 	_resize: function (latlng) {
-		var latlngs = this._shape.getLatLngs(),
-			bounds = this._shape.getBounds(),
-			center = bounds.getCenter(),
+		var bounds = this._shape.getBounds(),
+			nw = bounds.getNorthWest(),
 			ne = bounds.getNorthEast(),
-			newLatLngs = [],
-			scale, p, relativePosition, newPosition;
+			se = bounds.getSouthEast(),
+			sw = bounds.getSouthWest();
 
-		// Turn the LatLng's into Points so we can use L.point methods
-		latlng = L.point(latlng.lat, latlng.lng);
-		center = L.point(center.lat, center.lng);
-		ne = L.point(ne.lat, ne.lng);
+		nw.lat = latlng.lat < sw.lat ? sw.lat : latlng.lat;
+		ne.lat = latlng.lat < sw.lat ? sw.lat : latlng.lat;
+		ne.lng = latlng.lng < sw.lng ? sw.lng : latlng.lng;
+		se.lng = latlng.lng < sw.lng ? sw.lng : latlng.lng;
 
-		// Calculate the scale by finding the difference between the center and new point and the center and the old north east point
-		scale = (center).distanceTo(latlng) / (center).distanceTo(ne);
+		this._shape.setLatLngs([nw, ne, se, sw]);
 
-		// Translate each of the four corners
-		for (var i = 0, l = latlngs.length; i < l; i++) {
-			p = L.point(latlngs[i].lat, latlngs[i].lng);
-
-			// Get the relative position (to the center) of the new point 
-			relativePosition = p.subtract(center);
-
-			// Calculate new position of point based on new scale
-			newPosition = relativePosition.multiplyBy(scale).add(center);
-
-			newLatLngs.push([newPosition.x, newPosition.y]);
-		}
-
-		this._shape.setLatLngs(newLatLngs);
+		// Respoition the move marker
+		bounds = this._shape.getBounds();
+		this._moveMarker.setLatLng(bounds.getCenter());
 	}
 });
 
