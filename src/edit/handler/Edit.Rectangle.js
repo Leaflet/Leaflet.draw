@@ -15,11 +15,16 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 
 	_onMarkerDragEnd: function (e) {
 		var marker = e.target,
-			bounds = this._shape.getBounds(),
-			ne = bounds.getNorthEast();
+			bounds, center;
 
-		// Reset marker position to the north east corner and 
-		marker.setLatLng(ne);
+		// Reset marker position to the center
+		if (marker === this._moveMarker) {
+			bounds = this._shape.getBounds();
+			center = bounds.getCenter();
+
+			marker.setLatLng(center);
+		}
+		
 
 		L.Edit.SimpleShape.prototype._onMarkerDragEnd.call(this, e);
 	},
