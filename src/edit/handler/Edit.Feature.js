@@ -159,7 +159,8 @@ L.Edit.Feature = L.Handler.extend({
 	},
 
 	_enableLayerEdit: function (e) {
-		var layer = e.layer || e.target || e;
+		var layer = e.layer || e.target || e,
+			options = L.Util.extend({}, this.options.selectedPathOptions);
 
 		// Back up this layer (if haven't before)
 		this._backupLayer(layer);
@@ -169,7 +170,13 @@ L.Edit.Feature = L.Handler.extend({
 			this._toggleMarkerHighlight(layer);
 		} else {
 			layer.options.previousOptions = layer.options;
-			layer.setStyle(this.options.selectedPathOptions);
+
+			// Make sure that Polylines are not filled
+			if (!(layer instanceof L.Circle) && !(layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {
+				options.fill = false;
+			}
+
+			layer.setStyle(options);
 		}
 
 		if (layer instanceof L.Marker) {
