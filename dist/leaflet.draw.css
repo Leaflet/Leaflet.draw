@@ -2,39 +2,71 @@
 /* Toolbars
 /* ================================================================== */
 
-/* TODO: join style to common class: leaflet-control-toolbar */
-.leaflet-control-toolbar,
+.leaflet-control-toolbar {
+	border: 1px solid #888;
+	-webkit-border-radius: 5px;
+	        border-radius: 5px;
+	box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+	margin-left: 3px;
+	margin-top: 2px;
+	width: 25px;
+}
+
 .leaflet-control-toolbar-actions {
-	background-color: rgba(0, 0, 0, 0.25);
-	-webkit-border-radius: 7px;
-	   -moz-border-radius: 7px;
-	        border-radius: 7px;
-	float: left;
-	padding: 5px;
+	display: none;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	left: 30px; /* leaflet-control-toolbar.left + leaflet-control-toolbar.width */
+	top: 0;
+}
+
+.leaflet-control-toolbar a {
+	background-color: rgba(255, 255, 255, 0.8);
+	border-bottom: 1px solid #AAA;
+	width: 25px;
+	height: 25px;
+}
+
+.leaflet-control-toolbar-actions a {
+	background-color: #919187;
+	border-left: 1px solid #AAA;
+	color: #FFF;
+	font: 11px/19px "Helvetica Neue", Arial, Helvetica, sans-serif;
+	line-height: 25px;
+	text-decoration: none;
+	width: 50px;
+	height: 25px;
 }
 
 .leaflet-control-toolbar a,
 .leaflet-control-toolbar-actions a {
-	background-color: rgba(255, 255, 255, 0.75);
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
-	-webkit-border-radius: 4px;
-	   -moz-border-radius: 4px;
-	        border-radius: 4px;
 	display: block;
-	margin-top: 5px;
-	width: 19px;
-	height: 19px;
+	text-align: center;
+	text-decoration: none;
 }
 
-.leaflet-control-toolbar a:first-child,
-.leaflet-control-toolbar-actions a:first-child {
+.leaflet-control-toolbar a:first-child {
+	-webkit-border-radius: 5px 5px 0 0;
+	        border-radius: 5px 5px 0 0;
 	margin-top: 0;
-} 	
+}
 
-.leaflet-control-toolbar a:hover,
+.leaflet-control-toolbar a:last-child {
+	border-bottom: none;
+	-webkit-border-radius: 0 0 5px 5px;
+	        border-radius: 0 0 5px 5px;
+}
+
+.leaflet-control-toolbar a:hover {
+	background-color: #FFF;
+}
+
 .leaflet-control-toolbar-actions a:hover {
-	background-color: #fff;
+	background-color: #A0A098;
 }
 
 .leaflet-control-toolbar-button-enabled {
@@ -46,39 +78,17 @@
 	cursor: not-allowed;
 }
 
-.leaflet-touch .leaflet-control-toolbar a {
-	width: 27px;
-	height: 27px;
-}
-
-.leaflet-control-toolbar-actions {
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
-	display: none;
-	list-style: none;
-	margin: 0;
-	padding-left: 0;
-}
-
 .leaflet-control-toolbar-actions li {
 	float: left;
-	margin-left: 5px;
 }
 
-.leaflet-control-toolbar-actions li:first-child {
-	margin-left: 0;
-} 
-
-.leaflet-control-toolbar-actions li a {
-	color: #000;
-	font: 11px/19px "Helvetica Neue", Arial, Helvetica, sans-serif;
-	padding: 0 4px;
-	text-decoration: none;
-	width: auto;
+.leaflet-control-toolbar-actions li:first-child a {
+	border-left: none;
 }
 
-.leaflet-touch .leaflet-control-toolbar-actions li a {
-	height: 27px;
+.leaflet-control-toolbar-actions li:last-child a {
+	-webkit-border-radius: 0 5px 5px 0;
+	        border-radius: 0 5px 5px 0;
 }
 
 .leaflet-control-toolbar-actions-top {
@@ -88,6 +98,22 @@
 .leaflet-control-toolbar-actions-bottom {
 	border-bottom-right-radius: 0;
 }
+
+.leaflet-touch .leaflet-control-toolbar {
+	width: 30px;
+}
+
+.leaflet-touch .leaflet-control-toolbar a {
+	width: 30px;
+	height: 30px;
+}
+
+.leaflet-touch .leaflet-control-toolbar-actions li a {
+	height: 30px;
+	line-height: 30px;
+}
+
+
 
 /* ================================================================== */
 /* Draw toolbar

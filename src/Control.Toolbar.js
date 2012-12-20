@@ -69,9 +69,12 @@ L.Control.Toolbar = L.Control.extend({
 
 	_createActions: function (buttons) {
 		var container = L.DomUtil.create('ul', 'leaflet-control-toolbar-actions'),
+			buttonWidth = 50,
+			l = buttons.length,
+			containerWidth = (l * buttonWidth) + (l - 1), //l - 1 = the borders
 			li;
 
-		for (var i = 0, l = buttons.length; i < l; i++) {
+		for (var i = 0; i < l; i++) {
 			li = L.DomUtil.create('li', '', container);
 
 			this._createButton({
@@ -83,18 +86,20 @@ L.Control.Toolbar = L.Control.extend({
 			});
 		}
 
+		container.style.width = containerWidth + 'px';
+
 		return container;
 	},
 
 	_showActionsToolbar: function () {
 		var buttonIndex = this._activeMode.buttonIndex,
 			lastButtonIndex = this._lastButtonIndex,
-			buttonHeight = 19, // TODO: this should be calculated
-			buttonMargin = 5, // TODO: this should also be calculated
-			toolbarPosition = (buttonIndex * buttonHeight) + (buttonIndex * buttonMargin);
+			buttonHeight = 25, // TODO: this should be calculated
+			borderHeight = 1, // TODO: this should also be calculated
+			toolbarPosition = 3 + (buttonIndex * buttonHeight) + (buttonIndex * borderHeight);
 		
 		// Correctly position the cancel button
-		this._actionsContainer.style.marginTop = toolbarPosition + 'px';
+		this._actionsContainer.style.top = toolbarPosition + 'px';
 
 		// TODO: remove the top and button rounded border if first or last button
 		if (buttonIndex === 0) {
