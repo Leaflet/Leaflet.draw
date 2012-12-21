@@ -24,6 +24,8 @@
 
 .leaflet-control-toolbar a {
 	background-color: rgba(255, 255, 255, 0.8);
+	background-image: url('images/spritesheet.png');
+	background-repeat: no-repeat;
 	border-bottom: 1px solid #AAA;
 	width: 25px;
 	height: 25px;
@@ -42,8 +44,6 @@
 
 .leaflet-control-toolbar a,
 .leaflet-control-toolbar-actions a {
-	background-position: 50% 50%;
-	background-repeat: no-repeat;
 	display: block;
 	text-align: center;
 	text-decoration: none;
@@ -120,39 +120,63 @@
 /* ================================================================== */
 
 .leaflet-control-draw-polyline {
-	background-image: url(images/draw-polyline.png);
+	background-position: 50% -100px;
+}
+
+.leaflet-control-draw-polyline:hover {
+	background-position: 50% -125px;
 }
 
 .leaflet-control-draw-polygon {
-	background-image: url(images/draw-polygon.png);
+	background-position: 50% -150px;
+}
+
+.leaflet-control-draw-polygon:hover {
+	background-position: 50% -175px;
 }
 
 .leaflet-control-draw-rectangle {
-	background-image: url(images/draw-rectangle.png);
+	background-position: 50% -50px;
+}
+
+.leaflet-control-draw-rectangle:hover {
+	background-position: 50% -75px;
 }
 
 .leaflet-control-draw-circle {
-	background-image: url(images/draw-circle.png);
+	background-position: 50% 0;
+}
+
+.leaflet-control-draw-circle:hover {
+	background-position: 50% -25px;
 }
 
 .leaflet-control-draw-marker {
-	background-image: url(images/draw-marker-icon.png);
+	background-position: 50% -200px;
+}
+
+.leaflet-control-draw-marker:hover {
+	background-position: 50% -225px;
 }
 
 /* ================================================================== */
 /* Edit toolbar
 /* ================================================================== */
 
-.leaflet-control-edit-select {
-	background-image: url(images/select.png);
+.leaflet-control-edit-edit {
+	background-position: 50% -250px;
 }
 
-.leaflet-control-edit-edit {
-	background-image: url(images/edit.png);
+.leaflet-control-edit-edit:hover {
+	background-position: 50% -275px;
 }
 
 .leaflet-control-edit-remove {
-	background-image: url(images/remove.png);
+	background-position: 50% -300px;
+}
+
+.leaflet-control-edit-remove:hover {
+	background-position: 50% -325px;
 }
 
 /* ================================================================== */
