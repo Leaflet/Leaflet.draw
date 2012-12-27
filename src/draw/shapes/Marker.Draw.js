@@ -56,7 +56,7 @@ L.Marker.Draw = L.Handler.Draw.extend({
 	_onClick: function (e) {
 		this._map.fire(
 			'draw:marker-created',
-			{ marker: new L.Marker(this._marker.getLatLng(), { icon: this.options.icon }) }
+			{ marker: new L.Marker(this._marker.getLatLng(), { icon: this.options.icon, draggable: this.options.draggable }) }
 		);
 		this.disable();
 	}
