@@ -105,11 +105,11 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._showErrorLabel();
 			return;
 		}
-
-		this._map.fire(
-			'draw:poly-created',
+                    this._onFinishShape(new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions))
+		/*this._map.fire(
+		          'draw:poly-created',
 			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions) }
-		);
+		)*/;
 		this.disable();
 	},
 

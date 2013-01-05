@@ -54,10 +54,11 @@ L.Marker.Draw = L.Handler.Draw.extend({
 	},
 
 	_onClick: function (e) {
-		this._map.fire(
+	           this._onFinishShape(new L.Marker(this._marker.getLatLng(), { icon: this.options.icon }));
+		/*this._map.fire(
 			'draw:marker-created',
 			{ marker: new L.Marker(this._marker.getLatLng(), { icon: this.options.icon }) }
-		);
+		);*/
 		this.disable();
 	}
 });

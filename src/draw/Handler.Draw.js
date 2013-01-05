@@ -46,7 +46,11 @@ L.Handler.Draw = L.Handler.extend({
 			L.DomEvent.removeListener(this._container, 'keyup', this._cancelDrawing);
 		}
 	},
-
+            _onFinishShape: function(shape) {
+                        this._map.fire(
+		          'draw:created',
+		          {shape: shape,type: this.type})  
+            },
 	_updateLabelText: function (labelText) {
 		labelText.subtext = labelText.subtext || '';
 
