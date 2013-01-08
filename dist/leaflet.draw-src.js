@@ -243,6 +243,9 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		},
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
+	
+	clicks:0,
+	
 
 	initialize: function (map, options) {
 		// Merge default drawError options with custom options
@@ -364,9 +367,64 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 		L.DomEvent.preventDefault(e.originalEvent);
 	},
 
-	_onClick: function (e) {
+_onClick: function (e) {
+	 
+
+	  that = this;
+	  that.clicks++;
+	  
+	  var latlng = e.target.getLatLng();
+	  
+      if (that.clicks == 1) {
+			setTimeout(function(){
+			  
+		
+			  // one click
+			  if(that.clicks == 1) {
+			  
+				that._click(e, latlng);
+				that.clicks = 0;
+			  } 
+			  
+			  //dblclick
+			  else if ( that.clicks == 2 ){
+				that._doubleClick(e, latlng);
+				that.clicks = 0;
+			  }
+			  
+			},  300);
+		}
+	},
+    
+	_click: function (e, latlng){
+	
+		
+		markerCount = this._markers.length;
+
+		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
+			this._showErrorLabel();
+			return;
+		}
+		else if (this._errorShown) {
+			this._hideErrorLabel();
+		}
+
+		this._markers.push(this._createMarker(latlng));
+
+		this._poly.addLatLng(latlng);
+
+		if (this._poly.getLatLngs().length === 2) {
+			this._map.addLayer(this._poly);
+		}
+		
+		this._updateMarkerHandler();
+
+		this._vertexAdded(latlng);
+	},
+	_doubleClick: function (e, latlng){
+	
 		var latlng = e.target.getLatLng(),
-			markerCount = this._markers.length;
+		markerCount = this._markers.length;
 
 		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
 			this._showErrorLabel();
@@ -384,9 +442,14 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 			this._map.addLayer(this._poly);
 		}
 
-		this._updateMarkerHandler();
+		
 
 		this._vertexAdded(latlng);
+		
+		this._finishShape();
+		
+		
+		
 	},
 
 	_updateMarkerHandler: function () {
