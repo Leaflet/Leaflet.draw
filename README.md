@@ -16,12 +16,11 @@ cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18}),
 map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(-37.7772, 175.2756), zoom: 15, drawControl: true });
 ````
 
-If you would like to reposition the control, turn off a type or customize the styles then add the control manually:
+If you would like to reposition the control, turn off a type or customize the styles (see next chapter) then add the control manually:
 
 ````
 var drawControl = new L.Control.Draw({
-	position: 'topright',
-	polyline: false
+    position: 'topright'
 });
 map.addControl(drawControl);
 ````
@@ -30,36 +29,64 @@ See [example/map-polydraw.html](https://github.com/leaflet/Leaflet.draw/blob/mas
 
 #Customize shape styles
 
-L.Control.Draw can take an options object. You can customize the look and behaviour like so:
+L.Control.Draw can take an options object. You can define which shapes (polyline, poligon, rectangle, circle or marker) will be displayed and its properties:
 
 ````
 var options = {
-	polyline: {
-		shapeOptions: {
-			color: '#f357a1',
-			weight: 10
-		}
-	},
-	polygon: {
-		allowIntersection: false, // Restricts shapes to simple polygons
-		drawError: {
-			color: '#e1e100, // Color the shape will turn when intersects
-			message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
-		},
-		shapeOptions: {
-			color: '#bada55'
-		}
-	},
-	circle: false, // Turns off this drawing tool
-	rectangle: {
-		shapeOptions: {
-			clickable: false
-		}
-	},
+    // overrids all default shapes
+    shapes: [
+        { // enable a circle
+            type: 'circle',
+            title: 'Add a circle'
+        },
+        { // add a simple marker
+            type: 'marker',
+            title: 'Add a marker'
+        },
+        { // add another marker with a custom icon
+            name: 'custom',  // name on events
+            type: 'marker',
+            title: 'Add a marker',
+            icon: new L.DivIcon() // use a custom icon
+        },
+        {
+            type: 'polygon',
+            allowIntersection: false, // Restricts shapes to simple polygons
+            drawError: {
+                color: '#e1e100, // Color the shape will turn when intersects
+                message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+            },
+            shapeOptions: {
+                color: '#bada55'
+            }
+        }
+    ]
 }
 ````
 
 The shape styles are the leaflet [Path](http://leaflet.cloudmade.com/reference.html#path-options) and [Polyline](http://leaflet.cloudmade.com/reference.html#polyline-options) options.
+
+# multiple shapes with same type
+
+Each event has a name attribute, which is empty or specified by the shape options to distinguish shapes with the same type:
+
+````
+map.on('draw:marker-created', function (e) {
+    if (e.name === '') {
+        // default marker
+    } else if (e.name === 'custom') {
+        // our custom marker
+    }
+});
+````
+
+If a name is specified, its corresponding button gets an additional css class for customization, e.g.
+````
+type: circle
+name: red
+
+class: circle-red
+````
 
 #Custom marker
 
@@ -68,18 +95,23 @@ To use a different image as the marker, simple override the icon option of optio
 ````
 // Declare a new Leaflet Icon
 var MyCustomMarker = L.Icon.extend({
-	options: {
-		shadowUrl: null,
-		iconAnchor: new L.Point(12, 12),
-		iconSize: new L.Point(24, 24),
-		iconUrl: 'link/to/image.png'
-	}
+    options: {
+        shadowUrl: null,
+        iconAnchor: new L.Point(12, 12),
+        iconSize: new L.Point(24, 24),
+        iconUrl: 'link/to/image.png'
+    }
 });
 
-// Pass this new icon in using options.marker
+// Pass this new icon to the options 
 var drawControl = new L.Control.Draw({
-	marker: {
-		icon: new MyCustomMarker()
-	}
+    shapes: [
+        /* .. */
+        {
+            type: 'marker',
+            icon: new MyCustomMarker()
+        },
+        /* .. */
+    }
 });
 ````

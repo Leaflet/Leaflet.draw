@@ -4,6 +4,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 	type: 'polyline',
 
 	options: {
+		name: '',
 		allowIntersection: true,
 		drawError: {
 			color: '#b00b00',
@@ -108,7 +109,7 @@ L.Polyline.Draw = L.Handler.Draw.extend({
 
 		this._map.fire(
 			'draw:poly-created',
-			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions) }
+			{ name: this.options.name, poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions) }
 		);
 		this.disable();
 	},

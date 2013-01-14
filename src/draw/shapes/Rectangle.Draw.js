@@ -2,6 +2,7 @@ L.Rectangle.Draw = L.SimpleShape.Draw.extend({
 	type: 'rectangle',
 
 	options: {
+		name: '',
 		shapeOptions: {
 			stroke: true,
 			color: '#f06eaa',
@@ -28,7 +29,7 @@ L.Rectangle.Draw = L.SimpleShape.Draw.extend({
 	_fireCreatedEvent: function () {
 		this._map.fire(
 			'draw:rectangle-created',
-			{ rect: new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions) }
+			{ name: this.options.name, rect: new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions) }
 		);
 	}
 });

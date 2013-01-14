@@ -8,6 +8,16 @@
 	<link rel="stylesheet" href="../dist/leaflet.draw.css" />
 	<!--[if lte IE 8]><link rel="stylesheet" href="../dist/leaflet.draw.ie.css" /><![endif]-->
 
+	<style type="text/css">
+		/* some custom style for additional shapes */
+		.leaflet-control-draw a.circle-blue {
+			background-color: rgba(0, 0, 255, 0.50); 
+		}
+		.leaflet-control-draw a.marker-leaflet {
+			background-color: rgba(39, 139, 34, 0.50); 
+		}
+	</style>
+
 	<script src="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet-src.js"></script>
 	<script src="../src/ext/LineUtil.js"></script>
 	<script src="../src/ext/Polygon.js"></script>
@@ -32,38 +42,76 @@
 
 		var drawControl = new L.Control.Draw({
 			position: 'topleft',
-			polygon: {
-				title: 'Draw a sexy polygon!',
-				allowIntersection: false,
-				drawError: {
-					color: '#b00b00',
-					timeout: 1000
+			shapes: [
+				{
+					type: 'polyline',
+					title: 'Draw a polyline'
 				},
-				shapeOptions: {
-					color: '#bada55'
+				{
+					type: 'polygon',
+					title: 'Draw a sexy polygon!',
+					allowIntersection: false,
+					drawError: {
+						color: '#b00b00',
+						timeout: 1000
+					},
+					shapeOptions: {
+						color: '#bada55'
+					}
+				},
+				{
+					type: 'rectangle',
+					title: 'Draw a rectangle'
+				},
+				{
+					name: 'blue',
+					type: 'circle',
+					title: 'Draw a red circle',
+					shapeOptions: {
+						color: '#0000ff'
+					}
+				},
+				{
+						type: 'circle',
+						title: 'Draw a circle',
+				},
+				{
+					type: 'marker',
+					title: 'Add a blue marker'
+				},
+				{
+					name: 'leaflet',
+					type: 'marker',
+					title: 'Add a leaflet marker',
+					icon: new L.DivIcon()
 				}
-			},
-			circle: {
-				shapeOptions: {
-					color: '#662d91'
-				}
-			}
+			]
 		});
 		map.addControl(drawControl);
 		
 		var drawnItems = new L.LayerGroup();
 		map.on('draw:poly-created', function (e) {
 			drawnItems.addLayer(e.poly);
+			console.log('New poly created: ' + e.name);
 		});
 		map.on('draw:rectangle-created', function (e) {
 			drawnItems.addLayer(e.rect);
+			console.log('New rectable created: ' + e.name);
 		});
 		map.on('draw:circle-created', function (e) {
 			drawnItems.addLayer(e.circ);
+			console.log('New circle created: ' + e.name);
 		});
 		map.on('draw:marker-created', function (e) {
 			e.marker.bindPopup('A popup!');
 			drawnItems.addLayer(e.marker);
+			console.log('New marker created: ' + e.name);
+		});
+		map.on('drawing', function (e) {
+			console.log('Started drawing for: ' + e.type + ',' + e.name);
+		});
+		map.on('drawing-disabled', function (e) {
+			console.log('Disabled drawing for: ' + e.type + ',' + e.name);
 		});
 		map.addLayer(drawnItems);
 		
