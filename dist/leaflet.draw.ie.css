@@ -1,10 +1,12 @@
 /* Conditional stylesheet for IE. */
-
 .leaflet-control-draw {
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#3F000000', EndColorStr='#3F000000');
+	border: 3px solid #999;
 }
 
 .leaflet-control-draw a {
 	background-color: #eee;
-	filter: alpha(opacity=90);
+}
+
+.leaflet-control-draw a:hover {
+	background-color: #fff;
 }

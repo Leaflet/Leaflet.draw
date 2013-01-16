@@ -28,71 +28,78 @@ L.Control.Draw = L.Control.extend({
 	},
 	
 	onAdd: function (map) {
-		var className = 'leaflet-control-draw',
-			container = L.DomUtil.create('div', className);
+		var drawName = 'leaflet-control-draw', //TODO
+			barName = 'leaflet-bar',
+			partName = barName + '-part',
+			container = L.DomUtil.create('div', drawName + ' ' + barName),
+			buttons = [];
 	
 		this.handlers = {};
 	
 		if (this.options.polyline) {
 			this.handlers.polyline = new L.Polyline.Draw(map, this.options.polyline);
-			this._createButton(
+			buttons.push(this._createButton(
 				this.options.polyline.title,
-				className + '-polyline',
+				drawName + '-polyline ' + partName,
 				container,
 				this.handlers.polyline.enable,
 				this.handlers.polyline
-			);
+			));
 			this.handlers.polyline.on('activated', this._disableInactiveModes, this);
 		}
 
 		if (this.options.polygon) {
 			this.handlers.polygon = new L.Polygon.Draw(map, this.options.polygon);
-			this._createButton(
+			buttons.push(this._createButton(
 				this.options.polygon.title,
-				className + '-polygon',
+				drawName + '-polygon ' + partName,
 				container,
 				this.handlers.polygon.enable,
 				this.handlers.polygon
-			);
+			));
 			this.handlers.polygon.on('activated', this._disableInactiveModes, this);
 		}
 
 		if (this.options.rectangle) {
 			this.handlers.rectangle = new L.Rectangle.Draw(map, this.options.rectangle);
-			this._createButton(
+			buttons.push(this._createButton(
 				this.options.rectangle.title,
-				className + '-rectangle',
+				drawName + '-rectangle ' + partName,
 				container,
 				this.handlers.rectangle.enable,
 				this.handlers.rectangle
-			);
+			));
 			this.handlers.rectangle.on('activated', this._disableInactiveModes, this);
 		}
 
 		if (this.options.circle) {
 			this.handlers.circle = new L.Circle.Draw(map, this.options.circle);
-			this._createButton(
+			buttons.push(this._createButton(
 				this.options.circle.title,
-				className + '-circle',
+				drawName + '-circle ' + partName,
 				container,
 				this.handlers.circle.enable,
 				this.handlers.circle
-			);
+			));
 			this.handlers.circle.on('activated', this._disableInactiveModes, this);
 		}
 
 		if (this.options.marker) {
 			this.handlers.marker = new L.Marker.Draw(map, this.options.marker);
-			this._createButton(
+			buttons.push(this._createButton(
 				this.options.marker.title,
-				className + '-marker',
+				drawName + '-marker ' + partName,
 				container,
 				this.handlers.marker.enable,
 				this.handlers.marker
-			);
+			));
 			this.handlers.marker.on('activated', this._disableInactiveModes, this);
 		}
 		
+		// Add in the top and bottom classes so we get the border radius
+		L.DomUtil.addClass(buttons[0], partName + '-top');
+		L.DomUtil.addClass(buttons[buttons.length - 1], partName + '-bottom');
+
 		return container;
 	},
 

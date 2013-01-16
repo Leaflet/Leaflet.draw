@@ -1,29 +1,17 @@
 /* Leaflet controls */
 
-.leaflet-control-draw {
-	background-color: rgba(0, 0, 0, 0.25);
-	-webkit-border-radius: 7px;
-	   -moz-border-radius: 7px;
-	        border-radius: 7px;
-	padding: 5px;
+.leaflet-container .leaflet-control-draw {
+	margin-left: 13px;
+	margin-top: 12px;
 }
 
 .leaflet-control-draw a {
-	background-color: rgba(255, 255, 255, 0.75);
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
-	-webkit-border-radius: 4px;
-	   -moz-border-radius: 4px;
-	        border-radius: 4px;
 	display: block;
-	margin-top: 5px;
-	width: 19px;
-	height: 19px;
+	width: 22px;
+	height: 22px;
 }
-
-.leaflet-control-draw a:first-child{
-	margin-top: 0;
-} 	
 
 .leaflet-control-draw a:hover {
 	background-color: #fff;
