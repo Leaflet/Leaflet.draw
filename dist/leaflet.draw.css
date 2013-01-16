@@ -273,5 +273,5 @@
 }
 
 .leaflet-edit-resize {
-	cursor: ne-resize;
+	cursor: pointer;
 }

@@ -29,10 +29,11 @@ L.Edit.SimpleShape = L.Handler.extend({
 	removeHooks: function () {
 		if (this._shape._map) {
 			this._unbindMarker(this._moveMarker);
-			this._unbindMarker(this._resizeMarker);
 
-			this._resizeMarker.off('drag', this._onMarkerDrag);
-			this._resizeMarker.off('dragend', this._fireEdit);
+			for (var i = 0, l = this._resizeMarkers.length; i < l; i++) {
+				this._unbindMarker(this._resizeMarkers[i]);
+			}
+			this._resizeMarkers = null;
 
 			this._shape._map.removeLayer(this._markerGroup);
 			delete this._markerGroup;
