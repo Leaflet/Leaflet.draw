@@ -30,6 +30,7 @@
  * ~Fix styles to look more like new Leaflet zoom in/out.~
  * ~Polyline is styled as filled for edit mode.~
  * ~Add visual style change to toolbar buttons on mouse over.~
+ * ~Add handlers to earch corner of the rectangle for resizing.~
 
 ####Edit
  * Add a delete cursor. When mouseover the layer will have a trashcan cursor.
@@ -41,9 +42,8 @@
  * Search for TODO
  * Renamed Edit.Feature -> Edit and Delete.Feature -> Delete, is confusing since Edit.feature is not the same as Edit.Circle etc
  * Bug: if you go edit mode, then go to draw mode.
- * Add handlers to earch corner of the rectangle for resizing.
- * Fix for touch devices.
  * When switching from edit to delete and having edit a feature it should reset/cancel instead of saving.
+ * Merge the event change pull and add edit/delete versions.
 
  * Write up a breaking changes for when 0.2 goes live. (See below)
  * Add some proper documentation. I.e. for the events & methods
