@@ -5,6 +5,10 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
+### Bugfixes
+
+ * Add sanity check for toolbar buttons when adding top and bottom classes. (by [@yohanboniface](https://github.com/yohanboniface)). [#60](https://github.com/Leaflet/Leaflet.draw/pull/60)
+
 ## 0.1.6 (January 17, 2013)
 
 * Updated toolbar styles to be in line with the new Leaflet zoom in/out styles.
