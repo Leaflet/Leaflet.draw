@@ -84,12 +84,6 @@ L.Control.Edit = L.Control.Toolbar.extend({
 
 	_save: function () {
 		this._activeMode.handler.disable();
-	},
-
-	_showCancelButton: function () {
-		// TODO: check to see if this is the top of bottom button and add in the classes
-
-		L.Control.Toolbar.prototype._showCancelButton.call(this);
 	}
 });
 
