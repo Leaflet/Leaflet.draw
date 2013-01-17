@@ -96,9 +96,11 @@ L.Control.Draw = L.Control.extend({
 			this.handlers.marker.on('activated', this._disableInactiveModes, this);
 		}
 		
-		// Add in the top and bottom classes so we get the border radius
-		L.DomUtil.addClass(buttons[0], partName + '-top');
-		L.DomUtil.addClass(buttons[buttons.length - 1], partName + '-bottom');
+		if (buttons.length) {
+			// Add in the top and bottom classes so we get the border radius
+			L.DomUtil.addClass(buttons[0], partName + '-top');
+			L.DomUtil.addClass(buttons[buttons.length - 1], partName + '-bottom');
+		}
 
 		return container;
 	},
