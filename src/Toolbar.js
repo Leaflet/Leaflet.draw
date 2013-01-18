@@ -19,6 +19,30 @@ L.Toolbar = L.Class.extend({
 		this._activeMode.handler.disable();
 	},
 
+	removeToolbar: function () {
+		// Dispose each handler
+		for (var handlerId in this._modes) {
+			// Make sure is disabled
+			this._modes[handlerId].handler.disable();
+
+			// Unbind handler
+			this._modes[handlerId].handler
+				.off('enabled', this._handlerActivated)
+				.off('disabled', this._handlerDeactivated);
+
+			// Unbind handler button
+			this._disposeButton(this._modes[handlerId].button);
+		}
+		this._modes = {};
+
+		// Dispose the actions toolbar
+		for (var i = 0, l = this._actionButtons.length; i < l; i++) {
+			this._disposeButton(this._actionButtons[i]);
+		}
+		this._actionButtons = [];
+		this._actionsContainer = null;
+	},
+
 	_initModeHandler: function (handler, container, buttonIndex, classNamePredix) {
 		var type = handler.type;
 
