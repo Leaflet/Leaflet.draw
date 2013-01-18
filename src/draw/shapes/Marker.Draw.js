@@ -3,7 +3,8 @@ L.Marker.Draw = L.Handler.Draw.extend({
 
 	options: {
 		icon: new L.Icon.Default(),
-		zIndexOffset: 2000 // This should be > than the highest z-index any markers
+		zIndexOffset: 2000, // This should be > than the highest z-index any markers
+		markerOffset: null
 	},
 	
 	addHooks: function () {
@@ -33,12 +34,19 @@ L.Marker.Draw = L.Handler.Draw.extend({
 
 	_onMouseMove: function (e) {
 		var newPos = e.layerPoint,
-			latlng = e.latlng;
+			latlng = e.latlng,
+			offsetLatlng = e.latlng;
+
+		if (this.options.markerOffset) {
+			offsetLatlng = this._map.unproject(
+				this._map.project(latlng).add(this.options.markerOffset)
+			);
+		}
 
 		this._updateLabelPosition(newPos);
 
 		if (!this._marker) {
-			this._marker = new L.Marker(latlng, {
+			this._marker = new L.Marker(offsetLatlng, {
 				icon: this.options.icon,
 				zIndexOffset: this.options.zIndexOffset
 			});
@@ -49,7 +57,7 @@ L.Marker.Draw = L.Handler.Draw.extend({
 				.addLayer(this._marker);
 		}
 		else {
-			this._marker.setLatLng(latlng);
+			this._marker.setLatLng(offsetLatlng);
 		}
 	},
 
