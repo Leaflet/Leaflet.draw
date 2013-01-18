@@ -31,19 +31,20 @@
  * ~Polyline is styled as filled for edit mode.~
  * ~Add visual style change to toolbar buttons on mouse over.~
  * ~Add handlers to earch corner of the rectangle for resizing.~
+ * ~Bug: if you go edit mode, then go to draw mode.~
+ * ~Handle controls from being removed from map.~
 
 ####Edit
  * Add a delete cursor. When mouseover the layer will have a trashcan cursor.
 
 ####Other
 
- * Handle controls from being removed from map.
+ * When switching from edit to delete and having edit a feature it should reset/cancel instead of saving.
  * Move clone methods from Edit.Feature
  * Search for TODO
  * Renamed Edit.Feature -> Edit and Delete.Feature -> Delete, is confusing since Edit.feature is not the same as Edit.Circle etc
- * Bug: if you go edit mode, then go to draw mode.
- * When switching from edit to delete and having edit a feature it should reset/cancel instead of saving.
  * Merge the event change pull and add edit/delete versions.
+ * Redo the select/delete icons.
 
  * Write up a breaking changes for when 0.2 goes live. (See below)
  * Add some proper documentation. I.e. for the events & methods
