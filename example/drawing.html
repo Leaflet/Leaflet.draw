@@ -14,9 +14,10 @@
 	<script src="../src/ext/Polygon.Intersect.js"></script>
 	<script src="../src/ext/Polyline.Intersect.js"></script>
 
-	<script src="../src/Control.Toolbar.js"></script>
-	<script src="../src/draw/Control.Draw.js"></script>
-	<script src="../src/edit/Control.Edit.js"></script>
+	<script src="../src/Control.Draw.js"></script>
+	<script src="../src/Toolbar.js"></script>
+	<script src="../src/draw/Toolbar.Draw.js"></script>
+	<script src="../src/edit/Toolbar.Edit.js"></script>
 
 	<script src="../src/Tooltip.js"></script>
 	
@@ -43,28 +44,35 @@
 			cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18}),
 			map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(-37.7772, 175.2756), zoom: 15 });
 
+		var drawnItems = new L.FeatureGroup();
+		map.addLayer(drawnItems);
+
 		var drawControl = new L.Control.Draw({
-			position: 'topleft',
-			polygon: {
-				title: 'Draw a sexy polygon!',
-				allowIntersection: false,
-				drawError: {
-					color: '#b00b00',
-					timeout: 1000
+			draw: {
+				position: 'topleft',
+				polygon: {
+					title: 'Draw a sexy polygon!',
+					allowIntersection: false,
+					drawError: {
+						color: '#b00b00',
+						timeout: 1000
+					},
+					shapeOptions: {
+						color: '#bada55'
+					}
 				},
-				shapeOptions: {
-					color: '#bada55'
+				circle: {
+					shapeOptions: {
+						color: '#662d91'
+					}
 				}
 			},
-			circle: {
-				shapeOptions: {
-					color: '#662d91'
-				}
+			edit: {
+				featureGroup: drawnItems
 			}
 		});
 		map.addControl(drawControl);
-		
-		var drawnItems = new L.FeatureGroup();
+
 		map.on('draw:poly-created', function (e) {
 			drawnItems.addLayer(e.poly);
 		});
@@ -78,12 +86,7 @@
 			e.marker.bindPopup('A popup!');
 			drawnItems.addLayer(e.marker);
 		});
-		map.addLayer(drawnItems);
 
-		var editControl = new L.Control.Edit({
-			featureGroup: drawnItems
-		});
-		map.addControl(editControl);
 	</script>
 </body>
 </html>

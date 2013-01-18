@@ -2,9 +2,8 @@
 	editControl: true
 });*/
 
-L.Control.Edit = L.Control.Toolbar.extend({
+L.Toolbar.Edit = L.Toolbar.extend({
 	options: {
-		position: 'topleft',
 		edit: {
 			title: 'Edit layers'
 		},
@@ -16,13 +15,13 @@ L.Control.Edit = L.Control.Toolbar.extend({
 	},
 
 	initialize: function (options) {
-		L.Control.Toolbar.prototype.initialize.call(this, options);
+		L.Toolbar.prototype.initialize.call(this, options);
 
 		this._selectedFeatureCount = 0;
 	},
 	
-	onAdd: function (map) {
-		var container = L.DomUtil.create('div', ''),
+	addToolbar: function (map) {
+		var container = L.DomUtil.create('div', 'leaflet-control-draw-section'),
 			buttonIndex = 0;
 
 		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-control-toolbar'),
@@ -65,7 +64,7 @@ L.Control.Edit = L.Control.Toolbar.extend({
 			},{
 				title: 'Cancel editing, discards all changes.',
 				text: 'Cancel',
-				callback: this._cancel,
+				callback: this.disable,
 				context: this
 			}
 		]);
@@ -77,20 +76,15 @@ L.Control.Edit = L.Control.Toolbar.extend({
 		return container;
 	},
 
-	_cancel: function () {
+	disable: function () {
+		if (!this.enabled()) { return; }
+
 		this._activeMode.handler.revertLayers();
-		this._activeMode.handler.disable();
+		
+		L.Toolbar.prototype.disable.call(this);
 	},
 
 	_save: function () {
 		this._activeMode.handler.disable();
 	}
 });
-
-/* need to sort out how to do layerGroup
-L.Map.addInitHook(function () {
-	if (this.options.editControl) {
-		this.editControl = new L.Control.Edit();
-		this.addControl(this.editControl);
-	}
-});*/

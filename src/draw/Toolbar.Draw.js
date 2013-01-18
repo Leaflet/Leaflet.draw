@@ -1,11 +1,6 @@
-L.Map.mergeOptions({
-	drawControl: false
-});
-
-L.Control.Draw = L.Control.Toolbar.extend({
+L.Toolbar.Draw = L.Toolbar.extend({
 
 	options: {
-		position: 'topleft',
 		polyline: {
 			title: 'Draw a polyline'
 		},
@@ -22,9 +17,13 @@ L.Control.Draw = L.Control.Toolbar.extend({
 			title: 'Add a marker'
 		}
 	},
+
+	initialize: function (options) {
+		L.Toolbar.prototype.initialize.call(this, options);
+	},
 	
-	onAdd: function (map) {
-		var container = L.DomUtil.create('div', ''),
+	addToolbar: function (map) {
+		var container = L.DomUtil.create('div', 'leaflet-control-draw-section'),
 			buttonIndex = 0;
 
 		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-control-toolbar');
@@ -83,7 +82,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 			{
 				title: 'Cancel drawing',
 				text: 'Cancel',
-				callback: this._cancel,
+				callback: this.disable,
 				context: this
 			}
 		]);
@@ -93,16 +92,5 @@ L.Control.Draw = L.Control.Toolbar.extend({
 		container.appendChild(this._actionsContainer);
 
 		return container;
-	},
-
-	_cancel: function (e) {
-		this._activeMode.handler.disable();
-	}
-});
-
-L.Map.addInitHook(function () {
-	if (this.options.drawControl) {
-		this.drawControl = new L.Control.Draw();
-		this.addControl(this.drawControl);
 	}
 });

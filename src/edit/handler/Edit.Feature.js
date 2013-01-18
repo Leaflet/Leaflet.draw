@@ -41,6 +41,8 @@ L.Edit.Feature = L.Handler.extend({
 	},
 
 	enable: function () {
+		if (this._enabled) { return; }
+
 		L.Handler.prototype.enable.call(this);
 
 		this._featureGroup
@@ -51,6 +53,8 @@ L.Edit.Feature = L.Handler.extend({
 	},
 
 	disable: function () {
+		if (!this._enabled) { return; }
+		
 		this.fire('disabled', { handler: this.type} );
 
 		this._featureGroup

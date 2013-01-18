@@ -12,6 +12,10 @@
 	width: 25px;
 }
 
+.leaflet-control-draw-section {
+	position: relative;
+}
+
 .leaflet-control-toolbar-actions {
 	display: none;
 	list-style: none;

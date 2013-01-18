@@ -1,8 +1,22 @@
-L.Control.Toolbar = L.Control.extend({
+L.Toolbar = L.Class.extend({
+	includes: [L.Mixin.Events],
+
 	initialize: function (options) {
-		L.Util.extend(this.options, options);
+		L.setOptions(this, options);
 
 		this._modes = {};
+		this._actionButtons = [];
+		this._activeMode = null;
+	},
+
+	enabled: function () {
+		return this._activeMode !== null;
+	},
+
+	disable: function () {
+		if (!this.enabled()) { return; }
+		
+		this._activeMode.handler.disable();
 	},
 
 	_initModeHandler: function (handler, container, buttonIndex, classNamePredix) {
@@ -45,6 +59,15 @@ L.Control.Toolbar = L.Control.extend({
 		return link;
 	},
 
+	_disposeButton: function (button) {
+		L.DomEvent
+			.off(button, 'click', L.DomEvent.stopPropagation)
+			.off(button, 'mousedown', L.DomEvent.stopPropagation)
+			.off(button, 'dblclick', L.DomEvent.stopPropagation)
+			.off(button, 'click', L.DomEvent.preventDefault)
+			.off(button, 'click', options.callback);
+	},
+
 	_handlerActivated: function (e) {
 		// Disable active mode (if present)
 		if (this._activeMode && this._activeMode.handler.enabled()) {
@@ -57,6 +80,8 @@ L.Control.Toolbar = L.Control.extend({
 		L.DomUtil.addClass(this._activeMode.button, 'leaflet-control-toolbar-button-enabled');
 
 		this._showActionsToolbar();
+
+		this.fire('enable');
 	},
 
 	_handlerDeactivated: function (e) {
@@ -65,6 +90,8 @@ L.Control.Toolbar = L.Control.extend({
 		L.DomUtil.removeClass(this._activeMode.button, 'leaflet-control-toolbar-button-enabled');
 
 		this._activeMode = null;
+
+		this.fire('disable');
 	},
 
 	_createActions: function (buttons) {
@@ -72,18 +99,20 @@ L.Control.Toolbar = L.Control.extend({
 			buttonWidth = 50,
 			l = buttons.length,
 			containerWidth = (l * buttonWidth) + (l - 1), //l - 1 = the borders
-			li;
+			li, button;
 
 		for (var i = 0; i < l; i++) {
 			li = L.DomUtil.create('li', '', container);
 
-			this._createButton({
+			button = this._createButton({
 				title: buttons[i].title,
 				text: buttons[i].text,
 				container: li,
 				callback: buttons[i].callback,
 				context: buttons[i].context
 			});
+
+			this._actionButtons.push(button);
 		}
 
 		container.style.width = containerWidth + 'px';

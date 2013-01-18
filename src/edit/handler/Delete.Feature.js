@@ -24,6 +24,8 @@ L.Delete.Feature = L.Handler.extend({
 	},
 
 	enable: function () {
+		if (this._enabled) { return; }
+
 		L.Handler.prototype.enable.call(this);
 
 		this._deletableLayers
@@ -34,6 +36,8 @@ L.Delete.Feature = L.Handler.extend({
 	},
 
 	disable: function (revert) {
+		if (!this._enabled) { return; }
+		
 		L.Handler.prototype.disable.call(this);
 
 		this._deletableLayers
