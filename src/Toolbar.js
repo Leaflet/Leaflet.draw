@@ -52,7 +52,7 @@ L.Toolbar = L.Class.extend({
 
 		this._modes[type].button = this._createButton({
 			title: this.options[type].title,
-			className: classNamePredix + '-' + type,
+			className: classNamePredix + '-' + type + ' leaflet-bar-part',
 			container: container,
 			callback: this._modes[type].handler.enable,
 			context: this._modes[type].handler
@@ -101,7 +101,7 @@ L.Toolbar = L.Class.extend({
 		// Cache new active feature
 		this._activeMode = this._modes[e.handler];
 
-		L.DomUtil.addClass(this._activeMode.button, 'leaflet-control-toolbar-button-enabled');
+		L.DomUtil.addClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
 
 		this._showActionsToolbar();
 
@@ -111,7 +111,7 @@ L.Toolbar = L.Class.extend({
 	_handlerDeactivated: function (e) {
 		this._hideActionsToolbar();
 
-		L.DomUtil.removeClass(this._activeMode.button, 'leaflet-control-toolbar-button-enabled');
+		L.DomUtil.removeClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
 
 		this._activeMode = null;
 
@@ -119,7 +119,7 @@ L.Toolbar = L.Class.extend({
 	},
 
 	_createActions: function (buttons) {
-		var container = L.DomUtil.create('ul', 'leaflet-control-toolbar-actions'),
+		var container = L.DomUtil.create('ul', 'leaflet-draw-actions'),
 			buttonWidth = 50,
 			l = buttons.length,
 			containerWidth = (l * buttonWidth) + (l - 1), //l - 1 = the borders
@@ -156,11 +156,11 @@ L.Toolbar = L.Class.extend({
 
 		// TODO: remove the top and button rounded border if first or last button
 		if (buttonIndex === 0) {
-			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-control-toolbar-actions-top');
+			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-actions-top');
 		}
 		
 		if (buttonIndex === lastButtonIndex) {
-			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-control-toolbar-actions-bottom');
+			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-actions-bottom');
 		}
 		
 		this._actionsContainer.style.display = 'block';
@@ -169,7 +169,21 @@ L.Toolbar = L.Class.extend({
 	_hideActionsToolbar: function () {
 		this._actionsContainer.style.display = 'none';
 
-		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-control-toolbar-actions-top');
-		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-control-toolbar-actions-bottom');
+		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-actions-top');
+		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-actions-bottom');
+	},
+
+	_setTopBottomClasses: function () {
+		var lastButtonIndex = this._lastButtonIndex;
+
+		for (var handlerId in this._modes) {
+			if (this._modes[handlerId].buttonIndex === 0) {
+				L.DomUtil.addClass(this._modes[handlerId].button, 'leaflet-bar-part-top');
+			}
+			
+			if (this._modes[handlerId].buttonIndex === lastButtonIndex) {
+				L.DomUtil.addClass(this._modes[handlerId].button, 'leaflet-bar-part-bottom');
+			}
+		}
 	}
 });

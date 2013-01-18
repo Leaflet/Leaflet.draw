@@ -21,10 +21,11 @@ L.Toolbar.Edit = L.Toolbar.extend({
 	},
 	
 	addToolbar: function (map) {
-		var container = L.DomUtil.create('div', 'leaflet-control-draw-section'),
-			buttonIndex = 0;
+		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
+			buttonIndex = 0,
+			buttonClassPrefix = 'leaflet-draw-edit';
 
-		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-control-toolbar'),
+		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar'),
 
 		this._map = map;
 
@@ -36,7 +37,7 @@ L.Toolbar.Edit = L.Toolbar.extend({
 				}),
 				this._toolbarContainer,
 				buttonIndex++,
-				'leaflet-control-edit'
+				buttonClassPrefix
 			);
 		}
 
@@ -47,12 +48,14 @@ L.Toolbar.Edit = L.Toolbar.extend({
 				}),
 				this._toolbarContainer,
 				buttonIndex++,
-				'leaflet-control-edit'
+				buttonClassPrefix
 			);
 		}
 
 		// Save button index of the last button, -1 as we would have ++ after the last button
 		this._lastButtonIndex = --buttonIndex;
+
+		this._setTopBottomClasses();
 
 		// Create the actions part of the toolbar
 		this._actionsContainer = this._createActions([

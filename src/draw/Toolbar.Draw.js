@@ -23,10 +23,11 @@ L.Toolbar.Draw = L.Toolbar.extend({
 	},
 	
 	addToolbar: function (map) {
-		var container = L.DomUtil.create('div', 'leaflet-control-draw-section'),
-			buttonIndex = 0;
+		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
+			buttonIndex = 0,
+			buttonClassPrefix = 'leaflet-draw-draw';
 
-		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-control-toolbar');
+		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
 
 
 		if (this.options.polyline) {
@@ -34,7 +35,7 @@ L.Toolbar.Draw = L.Toolbar.extend({
 				new L.Draw.Polyline(map, this.options.polyline),
 				this._toolbarContainer,
 				buttonIndex++,
-				'leaflet-control-draw'
+				buttonClassPrefix
 			);
 		}
 
@@ -43,7 +44,7 @@ L.Toolbar.Draw = L.Toolbar.extend({
 				new L.Draw.Polygon(map, this.options.polygon),
 				this._toolbarContainer,
 				buttonIndex++,
-				'leaflet-control-draw'
+				buttonClassPrefix
 			);
 		}
 
@@ -52,7 +53,7 @@ L.Toolbar.Draw = L.Toolbar.extend({
 				new L.Draw.Rectangle(map, this.options.rectangle),
 				this._toolbarContainer,
 				buttonIndex++,
-				'leaflet-control-draw'
+				buttonClassPrefix
 			);
 		}
 
@@ -61,7 +62,7 @@ L.Toolbar.Draw = L.Toolbar.extend({
 				new L.Draw.Circle(map, this.options.circle),
 				this._toolbarContainer,
 				buttonIndex++,
-				'leaflet-control-draw'
+				buttonClassPrefix
 			);
 		}
 
@@ -70,12 +71,14 @@ L.Toolbar.Draw = L.Toolbar.extend({
 				new L.Draw.Marker(map, this.options.marker),
 				this._toolbarContainer,
 				buttonIndex++,
-				'leaflet-control-draw'
+				buttonClassPrefix
 			);
 		}
 
 		// Save button index of the last button, -1 as we would have ++ after the last button
 		this._lastButtonIndex = --buttonIndex;
+
+		this._setTopBottomClasses();
 
 		// Create the actions part of the toolbar
 		this._actionsContainer = this._createActions([

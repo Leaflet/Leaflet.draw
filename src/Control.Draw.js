@@ -22,7 +22,6 @@ L.Control.Draw = L.Control.extend({
 			// Listen for when toolbar is enabled
 			this._toolbars[id].on('enable', this._toolbarEnabled, this);
 		}
-		
 
 		if (this.options.edit) {
 			toolbar = new L.Toolbar.Edit(this.options.edit);
@@ -35,10 +34,23 @@ L.Control.Draw = L.Control.extend({
 	},
 
 	onAdd: function (map) {
-		var container = L.DomUtil.create('div', '');
+		var container = L.DomUtil.create('div', 'leaflet-draw'),
+			addedTopClass = false,
+			topClassName = 'leaflet-draw-toolbar-top',
+			toolbarContainer;
 
 		for (var toolbarId in this._toolbars) {
-			container.appendChild(this._toolbars[toolbarId].addToolbar(map));
+			toolbarContainer = this._toolbars[toolbarId].addToolbar(map);
+
+			// Add class to the first toolbar to remove the margin
+			if (!addedTopClass) {
+				if (!L.DomUtil.hasClass(toolbarContainer, topClassName)) {
+					L.DomUtil.addClass(toolbarContainer.childNodes[0], topClassName);
+				}
+				addedTopClass = true;
+			}
+
+			container.appendChild(toolbarContainer);
 		}
 
 		return container;
