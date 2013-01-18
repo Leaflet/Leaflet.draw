@@ -149,7 +149,7 @@ L.Toolbar = L.Class.extend({
 			lastButtonIndex = this._lastButtonIndex,
 			buttonHeight = 25, // TODO: this should be calculated
 			borderHeight = 1, // TODO: this should also be calculated
-			toolbarPosition = 3 + (buttonIndex * buttonHeight) + (buttonIndex * borderHeight);
+			toolbarPosition = 1 + (buttonIndex * buttonHeight) + (buttonIndex * borderHeight);
 		
 		// Correctly position the cancel button
 		this._actionsContainer.style.top = toolbarPosition + 'px';

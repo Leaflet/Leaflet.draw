@@ -50,7 +50,7 @@
 	margin: 0;
 	padding: 0;
 	position: absolute;
-	left: 30px; /* leaflet-control-toolbar.left + leaflet-control-toolbar.width */
+	left: 27px; /* leaflet-draw-toolbar.left + leaflet-draw-toolbar.width */
 	top: 0;
 }
 
