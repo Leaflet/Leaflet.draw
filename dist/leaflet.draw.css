@@ -22,22 +22,12 @@
 .leaflet-draw-toolbar a {
 	background-image: url('images/spritesheet.png');
 	background-repeat: no-repeat;
-	width: 25px;
-	height: 25px;
 }
 
 .leaflet-draw a {
 	display: block;
 	text-align: center;
 	text-decoration: none;
-}
-
-.leaflet-draw-toolbar a:hover {
-	background-color: #FFF;
-}
-
-.leaflet-draw-toolbar-button-enabled {
-	background-color: #fff !important;
 }
 
 /* ================================================================== */
@@ -83,7 +73,7 @@
 	line-height: 25px;
 	text-decoration: none;
 	width: 50px;
-	height: 25px;
+	height: 26px;
 }
 
 .leaflet-draw-actions a:hover {
@@ -113,64 +103,36 @@
 /* Draw toolbar
 /* ================================================================== */
 
-.leaflet-draw-draw-polyline {
-	background-position: 50% -100px;
+.leaflet-draw-toolbar .leaflet-draw-draw-polyline {
+	background-position: -2px -2px;
 }
 
-.leaflet-draw-draw-polyline:hover {
-	background-position: 50% -125px;
+.leaflet-draw-toolbar .leaflet-draw-draw-polygon {
+	background-position: -31px -2px;
 }
 
-.leaflet-draw-draw-polygon {
-	background-position: 50% -150px;
+.leaflet-draw-toolbar .leaflet-draw-draw-rectangle {
+	background-position: -62px -2px;
 }
 
-.leaflet-draw-draw-polygon:hover {
-	background-position: 50% -175px;
+.leaflet-draw-toolbar .leaflet-draw-draw-circle {
+	background-position: -92px -2px;
 }
 
-.leaflet-draw-draw-rectangle {
-	background-position: 50% -50px;
-}
-
-.leaflet-draw-draw-rectangle:hover {
-	background-position: 50% -75px;
-}
-
-.leaflet-draw-draw-circle {
-	background-position: 50% 0;
-}
-
-.leaflet-draw-draw-circle:hover {
-	background-position: 50% -25px;
-}
-
-.leaflet-draw-draw-marker {
-	background-position: 50% -200px;
-}
-
-.leaflet-draw-draw-marker:hover {
-	background-position: 50% -225px;
+.leaflet-draw-toolbar .leaflet-draw-draw-marker {
+	background-position: -122px -2px;
 }
 
 /* ================================================================== */
 /* Edit toolbar
 /* ================================================================== */
 
-.leaflet-draw-edit-edit {
-	background-position: 50% -250px;
+.leaflet-draw-toolbar .leaflet-draw-edit-edit {
+	background-position: -152px -2px;
 }
 
-.leaflet-draw-edit-edit:hover {
-	background-position: 50% -275px;
-}
-
-.leaflet-draw-edit-remove {
-	background-position: 50% -300px;
-}
-
-.leaflet-draw-edit-remove:hover {
-	background-position: 50% -325px;
+.leaflet-draw-toolbar .leaflet-draw-edit-remove {
+	background-position: -182px -2px;
 }
 
 /* ================================================================== */

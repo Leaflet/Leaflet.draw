@@ -52,7 +52,7 @@ L.Toolbar = L.Class.extend({
 
 		this._modes[type].button = this._createButton({
 			title: this.options[type].title,
-			className: classNamePredix + '-' + type + ' leaflet-bar-part',
+			className: classNamePredix + '-' + type,
 			container: container,
 			callback: this._modes[type].handler.enable,
 			context: this._modes[type].handler
@@ -173,16 +173,12 @@ L.Toolbar = L.Class.extend({
 		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-actions-bottom');
 	},
 
-	_setTopBottomClasses: function () {
+	_setBottomClass: function () {
 		var lastButtonIndex = this._lastButtonIndex;
 
 		for (var handlerId in this._modes) {
-			if (this._modes[handlerId].buttonIndex === 0) {
-				L.DomUtil.addClass(this._modes[handlerId].button, 'leaflet-bar-part-top');
-			}
-			
 			if (this._modes[handlerId].buttonIndex === lastButtonIndex) {
-				L.DomUtil.addClass(this._modes[handlerId].button, 'leaflet-bar-part-bottom');
+				L.DomUtil.addClass(this._modes[handlerId].button, 'leaflet-bar-part-last');
 			}
 		}
 	}
