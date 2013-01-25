@@ -83,3 +83,7 @@ var drawControl = new L.Control.Draw({
 	}
 });
 ````
+
+#Icons by Glyphicons
+
+The icons used for the toolbars are either from http://glyphicons.com/ or inspired by them. <3 Glyphicons!

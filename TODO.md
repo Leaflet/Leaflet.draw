@@ -33,6 +33,7 @@
  * ~Add handlers to earch corner of the rectangle for resizing.~
  * ~Bug: if you go edit mode, then go to draw mode.~
  * ~Handle controls from being removed from map.~
+ * ~Add link to http://glyphicons.com/~
 
 ####Edit
  * Add a delete cursor. When mouseover the layer will have a trashcan cursor.
@@ -50,7 +51,6 @@
  * Add some proper documentation. I.e. for the events & methods
  * Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only? Also file names ahve changed.
  * Get Leaflet control-design branch merged to master.
- * Add link to http://glyphicons.com/
 
 ### Breaking changes
 
