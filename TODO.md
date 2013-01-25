@@ -49,7 +49,8 @@
  * Write up a breaking changes for when 0.2 goes live. (See below)
  * Add some proper documentation. I.e. for the events & methods
  * Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only? Also file names ahve changed.
- * Talk to @mourner about making the LEaflet zoom buttons bigger (22 -> 25).
+ * Get Leaflet control-design branch merged to master.
+ * Add link to http://glyphicons.com/
 
 ### Breaking changes
 
