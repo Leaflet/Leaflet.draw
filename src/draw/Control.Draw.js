@@ -105,6 +105,14 @@ L.Control.Draw = L.Control.extend({
 		return container;
 	},
 
+	onRemove: function () {
+		for (var i in this.handlers) {
+			if (this.handlers.hasOwnProperty(i)) {
+				this.handlers[i].off('activated');
+			}
+		}
+	},
+
 	_createButton: function (title, className, container, fn, context) {
 		var link = L.DomUtil.create('a', className, container);
 		link.href = '#';
