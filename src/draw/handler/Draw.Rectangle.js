@@ -35,9 +35,10 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	},
 
 	_fireCreatedEvent: function () {
-		this._map.fire(
+	           this._onFinishShape( new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions));
+		/*this._map.fire(
 			'draw:rectangle-created',
 			{ rect: new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions) }
-		);
+		);*/
 	}
 });
