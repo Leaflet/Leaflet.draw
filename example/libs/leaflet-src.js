@@ -23,7 +23,7 @@ if (typeof exports !== undefined + '') {
 	window.L = L;
 }
 
-L.version = '0.5';
+L.version = '0.6-dev';
 
 
 /*
@@ -2719,6 +2719,7 @@ L.TileLayer.Canvas = L.TileLayer.extend({
 				this._redrawTile(tiles[i]);
 			}
 		}
+		return this;
 	},
 
 	_redrawTile: function (tile) {
@@ -4818,7 +4819,7 @@ L.LineUtil = {
 
 
 /*
- * L.Polygon is used to display polylines on a map.
+ * L.Polyline is used to display polylines on a map.
  */
 
 L.Polyline = L.Path.extend({
@@ -5062,6 +5063,13 @@ L.Polygon = L.Polyline.extend({
 		if (latlngs && L.Util.isArray(latlngs[0]) && (typeof latlngs[0][0] !== 'number')) {
 			this._latlngs = this._convertLatLngs(latlngs[0]);
 			this._holes = latlngs.slice(1);
+		}
+
+		// filter out last point if its equal to the first one
+		latlngs = this._latlngs;
+
+		if (latlngs[0].equals(latlngs[latlngs.length - 1])) {
+			latlngs.pop();
 		}
 	},
 
@@ -6724,7 +6732,7 @@ L.Map.Keyboard = L.Handler.extend({
 		down:    [40],
 		up:      [38],
 		zoomIn:  [187, 107, 61],
-		zoomOut: [189, 109]
+		zoomOut: [189, 109, 173]
 	},
 
 	initialize: function (map) {
@@ -7278,23 +7286,14 @@ L.Control.Zoom = L.Control.extend({
 
 	onAdd: function (map) {
 		var zoomName = 'leaflet-control-zoom',
-		    barName = 'leaflet-bar',
-		    partName = barName + '-part',
-		    container = L.DomUtil.create('div', zoomName + ' ' + barName);
+		    container = L.DomUtil.create('div', zoomName + ' leaflet-bar');
 
 		this._map = map;
 
-		this._zoomInButton = this._createButton('+', 'Zoom in',
-		        zoomName + '-in ' +
-		        partName + ' ' +
-		        partName + '-top',
-		        container, this._zoomIn,  this);
-
-		this._zoomOutButton = this._createButton('-', 'Zoom out',
-		        zoomName + '-out ' +
-		        partName + ' ' +
-		        partName + '-bottom',
-		        container, this._zoomOut, this);
+		this._zoomInButton  = this._createButton(
+		        '+', 'Zoom in',  zoomName + '-in',  container, this._zoomIn,  this);
+		this._zoomOutButton = this._createButton(
+		        '-', 'Zoom out', zoomName + '-out', container, this._zoomOut, this);
 
 		map.on('zoomend', this._updateDisabled, this);
 
@@ -7333,7 +7332,7 @@ L.Control.Zoom = L.Control.extend({
 
 	_updateDisabled: function () {
 		var map = this._map,
-			className = 'leaflet-control-zoom-disabled';
+			className = 'leaflet-disabled';
 
 		L.DomUtil.removeClass(this._zoomInButton, className);
 		L.DomUtil.removeClass(this._zoomOutButton, className);
@@ -7812,9 +7811,12 @@ L.Control.Layers = L.Control.extend({
 				this._map.addLayer(obj.layer);
 				if (!obj.overlay) {
 					baseLayer = obj.layer;
+				} else {
+					this._map.fire('overlayadd', {layer: obj});
 				}
 			} else if (!input.checked && this._map.hasLayer(obj.layer)) {
 				this._map.removeLayer(obj.layer);
+				this._map.fire('overlayremove', {layer: obj});
 			}
 		}
 
