@@ -73,18 +73,15 @@
 		});
 		map.addControl(drawControl);
 
-		map.on('draw:poly-created', function (e) {
-			drawnItems.addLayer(e.poly);
-		});
-		map.on('draw:rectangle-created', function (e) {
-			drawnItems.addLayer(e.rect);
-		});
-		map.on('draw:circle-created', function (e) {
-			drawnItems.addLayer(e.circ);
-		});
-		map.on('draw:marker-created', function (e) {
-			e.marker.bindPopup('A popup!');
-			drawnItems.addLayer(e.marker);
+		map.on('draw:created', function (e) {
+			var type = e.layerType,
+				layer = e.layer;
+
+			if (type === 'marker') {
+				layer.bindPopup('A popup!');
+			}
+
+			drawnItems.addLayer(layer);
 		});
 
 	</script>
