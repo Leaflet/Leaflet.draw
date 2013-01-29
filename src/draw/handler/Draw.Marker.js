@@ -62,11 +62,14 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	},
 
 	_onClick: function (e) {
-	           this._onFinishShape(new L.Marker(this._marker.getLatLng(), { icon: this.options.icon }));
-		/*this._map.fire(
-			'draw:marker-created',
-			{ marker: new L.Marker(this._marker.getLatLng(), { icon: this.options.icon }) }
-		);*/
+		this._fireCreatedEvent();
+
 		this.disable();
+	},
+
+
+	_fireCreatedEvent: function () {
+		var marker = new L.Marker(this._marker.getLatLng(), { icon: this.options.icon });
+		L.Draw.Feature.prototype._fireCreatedEvent.call(this, marker);
 	}
 });

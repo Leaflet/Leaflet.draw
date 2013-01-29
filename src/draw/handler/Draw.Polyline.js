@@ -113,11 +113,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._showErrorTooltip();
 			return;
 		}
-                    this._onFinishShape(new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions))
-		/*this._map.fire(
-		          'draw:poly-created',
-			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions) }
-		)*/;
+
+		this._fireCreatedEvent();
 		this.disable();
 	},
 
@@ -354,5 +351,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		if (this._markers.length > 0) {
 			this._markers[this._markers.length - 1].off('click', this._finishShape);
 		}
+	},
+
+	_fireCreatedEvent: function () {
+		var poly = new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions);
+		L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
 	}
 });
