@@ -78,8 +78,6 @@ L.Toolbar.Draw = L.Toolbar.extend({
 		// Save button index of the last button, -1 as we would have ++ after the last button
 		this._lastButtonIndex = --buttonIndex;
 
-		this._setBottomClass();
-
 		// Create the actions part of the toolbar
 		this._actionsContainer = this._createActions([
 			{

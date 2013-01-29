@@ -171,15 +171,5 @@ L.Toolbar = L.Class.extend({
 
 		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-actions-top');
 		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-actions-bottom');
-	},
-
-	_setBottomClass: function () {
-		var lastButtonIndex = this._lastButtonIndex;
-
-		for (var handlerId in this._modes) {
-			if (this._modes[handlerId].buttonIndex === lastButtonIndex) {
-				L.DomUtil.addClass(this._modes[handlerId].button, 'leaflet-bar-part-last');
-			}
-		}
 	}
 });
