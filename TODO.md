@@ -55,3 +55,4 @@
  * renamed css classes.
  * drawing & drawing-disabled events renamed to: draw:enabled & draw:disabled.
  * renamed the label css class to tooltip
+ * new general created event + new event arguments
