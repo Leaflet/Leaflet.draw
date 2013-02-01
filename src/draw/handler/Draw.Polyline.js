@@ -56,7 +56,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 			this._poly = new L.Polyline([], this.options.shapeOptions);
 
-			this._updateLabelText(this._getLabelText());
+			this._tooltip.updateContent(this._getTooltipText());
 
 			// Make a transparent marker that will used to catch click events. These click
 			// events will create the vertices. We need to do this so we can ensure that
@@ -113,19 +113,14 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_finishShape: function () {
-		if (!this.options.allowIntersection && this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true)) {
-			this._showErrorLabel();
-			return;
-		}
-		if (!this._shapeIsValid()) {
-			this._showErrorLabel();
+		var intersects = this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true);
+
+		if ((!this.options.allowIntersection && intersects) || !this._shapeIsValid()) {
+			this._showErrorTooltip();
 			return;
 		}
 
-		this._map.fire(
-			'draw:poly-created',
-			{ poly: new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions) }
-		);
+		this._fireCreatedEvent();
 		this.disable();
 	},
 
@@ -154,7 +149,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._currentLatLng = latlng;
 
 		// Update the label
-		this._updateLabelPosition(newPos);
+		this._tooltip.updatePosition(latlng);
 		
 		// Update the guide line
 		this._updateGuide(newPos);
@@ -175,11 +170,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		}
 		
 		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
-			this._showErrorLabel();
+			this._showErrorTooltip();
 			return;
 		}
 		else if (this._errorShown) {
-			this._hideErrorLabel();
+			this._hideErrorTooltip();
 		}
 
 		this._markers.push(this._createMarker(latlng));
@@ -226,7 +221,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var markerCount = this._markers.length;
 		
 		if (markerCount > 0) {
-			this._updateLabelText(this._getLabelText());
+			// Update the tooltip text, as long it's not showing and error
+			if (!this._errorShown) {
+				this._tooltip.updateContent(this._getTooltipText());
+			}
+
 			// draw the guide line
 			this._clearGuides();
 			this._drawGuide(
@@ -285,13 +284,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		}
 	},
 
-	_updateLabelText: function (labelText) {
-		if (!this._errorShown) {
-			L.Draw.Feature.prototype._updateLabelText.call(this, labelText);
-		}
-	},
-
-	_getLabelText: function () {
+	_getTooltipText: function () {
 		var labelText,
 			distance,
 			distanceStr;
@@ -321,13 +314,13 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		return labelText;
 	},
 
-	_showErrorLabel: function () {
+	_showErrorTooltip: function () {
 		this._errorShown = true;
 
-		// Update label
-		L.DomUtil.addClass(this._label, 'leaflet-error-draw-label');
-		L.DomUtil.addClass(this._label, 'leaflet-flash-anim');
-		L.Draw.Feature.prototype._updateLabelText.call(this, { text: this.options.drawError.message });
+		// Update tooltip
+		this._tooltip
+			.showAsError()
+			.updateContent({ text: this.options.drawError.message });
 
 		// Update shape
 		this._updateGuideColor(this.options.drawError.color);
@@ -335,18 +328,18 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		// Hide the error after 2 seconds
 		this._clearHideErrorTimeout();
-		this._hideErrorTimeout = setTimeout(L.Util.bind(this._hideErrorLabel, this), this.options.drawError.timeout);
+		this._hideErrorTimeout = setTimeout(L.Util.bind(this._hideErrorTooltip, this), this.options.drawError.timeout);
 	},
 
-	_hideErrorLabel: function () {
+	_hideErrorTooltip: function () {
 		this._errorShown = false;
 
 		this._clearHideErrorTimeout();
 		
-		// Revert label
-		L.DomUtil.removeClass(this._label, 'leaflet-error-draw-label');
-		L.DomUtil.removeClass(this._label, 'leaflet-flash-anim');
-		this._updateLabelText(this._getLabelText());
+		// Revert tooltip
+		this._tooltip
+			.removeError()
+			.updateContent(this._getTooltipText());
 
 		// Revert shape
 		this._updateGuideColor(this.options.shapeOptions.color);
@@ -374,5 +367,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		if (this._markers.length > 0) {
 			this._markers[this._markers.length - 1].off('click', this._finishShape);
 		}
+	},
+
+	_fireCreatedEvent: function () {
+		var poly = new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions);
+		L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
 	}
 });

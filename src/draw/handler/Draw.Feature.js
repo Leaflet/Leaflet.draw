@@ -17,12 +17,16 @@ L.Draw.Feature = L.Handler.extend({
 	},
 
 	enable: function () {
+		if (this._enabled) { return; }
+
 		this.fire('enabled', { handler: this.type });
 		this._map.fire('draw:enabled', { drawingType: this.type });
 		L.Handler.prototype.enable.call(this);
 	},
 
 	disable: function () {
+		if (!this._enabled) { return; }
+
 		this.fire('disabled', { handler: this.type });
 		this._map.fire('draw:disabled', { drawingType: this.type });
 		L.Handler.prototype.disable.call(this);
@@ -32,8 +36,7 @@ L.Draw.Feature = L.Handler.extend({
 		if (this._map) {
 			L.DomUtil.disableTextSelection();
 
-			this._label = L.DomUtil.create('div', 'leaflet-draw-label', this._popupPane);
-			this._singleLineLabel = false;
+			this._tooltip = new L.Tooltip(this._map);
 
 			L.DomEvent.addListener(this._container, 'keyup', this._cancelDrawing, this);
 		}
@@ -43,33 +46,15 @@ L.Draw.Feature = L.Handler.extend({
 		if (this._map) {
 			L.DomUtil.enableTextSelection();
 
-			this._popupPane.removeChild(this._label);
-			delete this._label;
+			this._tooltip.dispose();
+			this._tooltip = null;
 
 			L.DomEvent.removeListener(this._container, 'keyup', this._cancelDrawing);
 		}
 	},
 
-	_updateLabelText: function (labelText) {
-		labelText.subtext = labelText.subtext || '';
-
-		// update the vertical position (only if changed)
-		if (labelText.subtext.length === 0 && !this._singleLineLabel) {
-			L.DomUtil.addClass(this._label, 'leaflet-draw-label-single');
-			this._singleLineLabel = true;
-		}
-		else if (labelText.subtext.length > 0 && this._singleLineLabel) {
-			L.DomUtil.removeClass(this._label, 'leaflet-draw-label-single');
-			this._singleLineLabel = false;
-		}
-
-		this._label.innerHTML =
-			(labelText.subtext.length > 0 ? '<span class="leaflet-draw-label-subtext">' + labelText.subtext + '</span>' + '<br />' : '') +
-			'<span>' + labelText.text + '</span>';
-	},
-
-	_updateLabelPosition: function (pos) {
-		L.DomUtil.setPosition(this._label, pos);
+	_fireCreatedEvent: function (layer) {
+		this._map.fire('draw:created', { layer: layer, layerType: this.type });
 	},
 
 	// Cancel drawing when the escape key is pressed

@@ -5,6 +5,10 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
+## 0.1.6 (January 17, 2013)
+
+* Updated toolbar styles to be in line with the new Leaflet zoom in/out styles.
+
 ## 0.1.5 (December 10, 2012)
 
 ### Features

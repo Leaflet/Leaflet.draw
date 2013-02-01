@@ -24,6 +24,8 @@ L.Delete.Feature = L.Handler.extend({
 	},
 
 	enable: function () {
+		if (this._enabled) { return; }
+
 		L.Handler.prototype.enable.call(this);
 
 		this._deletableLayers
@@ -34,6 +36,8 @@ L.Delete.Feature = L.Handler.extend({
 	},
 
 	disable: function (revert) {
+		if (!this._enabled) { return; }
+		
 		L.Handler.prototype.disable.call(this);
 
 		this._deletableLayers
@@ -47,6 +51,11 @@ L.Delete.Feature = L.Handler.extend({
 		if (this._map) {
 			this._deletableLayers.eachLayer(this._enableLayerDelete, this);
 			this._deletedLayers = new L.layerGroup();
+
+			this._tooltip = new L.Tooltip(this._map);
+			this._tooltip.updateContent({ text: 'Click on a feature to remove.' });
+
+			this._map.on('mousemove', this._onMouseMove, this);
 		}
 	},
 
@@ -54,6 +63,11 @@ L.Delete.Feature = L.Handler.extend({
 		if (this._map) {
 			this._deletableLayers.eachLayer(this._disableLayerDelete, this);
 			this._deletedLayers = null;
+
+			this._tooltip.dispose();
+			this._tooltip = null;
+
+			this._map.off('mousemove', this._onMouseMove);
 		}
 	},
 
@@ -85,5 +99,9 @@ L.Delete.Feature = L.Handler.extend({
 		this._deletableLayers.removeLayer(layer);
 
 		this._deletedLayers.addLayer(layer);
+	},
+
+	_onMouseMove: function (e) {
+		this._tooltip.updatePosition(e.latlng);
 	}
 });

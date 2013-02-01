@@ -8,12 +8,11 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
 
-			this._updateLabelText({ text: this._initialLabelText });
+			this._tooltip.updateContent({ text: this._initialLabelText });
 
 			this._map
 				.on('mousedown', this._onMouseDown, this)
 				.on('mousemove', this._onMouseMove, this);
-
 		}
 	},
 
@@ -49,12 +48,11 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	},
 
 	_onMouseMove: function (e) {
-		var layerPoint = e.layerPoint,
-				latlng = e.latlng;
+		var latlng = e.latlng;
 
-		this._updateLabelPosition(layerPoint);
+		this._tooltip.updatePosition(latlng);
 		if (this._isDrawing) {
-			this._updateLabelText({ text: 'Release mouse to finish drawing.' });
+			this._tooltip.updateContent({ text: 'Release mouse to finish drawing.' });
 			this._drawShape(latlng);
 		}
 	},

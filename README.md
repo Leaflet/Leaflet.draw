@@ -1,7 +1,7 @@
 #Leaflet.draw
 Adds support for drawing polys to Leaflet.
 
-Check out the [demo](http://jacobtoye.github.com/Leaflet.draw/)
+Check out the [demo](http://leaflet.github.com/Leaflet.draw/)
 
 This plugin was inspired by @brunob's [draw plugin](https://github.com/brunob/leaflet.draw). I decided to create a new repo rather than forking as I wanted to take the coding style and functionality in a different direction.
 
@@ -26,7 +26,7 @@ var drawControl = new L.Control.Draw({
 map.addControl(drawControl);
 ````
 
-See [example/map-polydraw.html](https://github.com/jacobtoye/Leaflet.draw/blob/master/example/drawing.html) for a working example.
+See [example/map-polydraw.html](https://github.com/leaflet/Leaflet.draw/blob/master/example/drawing.html) for a working example.
 
 #Customize shape styles
 
@@ -83,3 +83,7 @@ var drawControl = new L.Control.Draw({
 	}
 });
 ````
+
+#Icons by Glyphicons
+
+The icons used for the toolbars are either from http://glyphicons.com/ or inspired by them. <3 Glyphicons!

@@ -16,10 +16,13 @@
 	<script src="../src/ext/Polyline.Intersect.js"></script>
 	<script src="../src/ext/Polyline.Snapping.js"></script>
 
-	<script src="../src/Control.Toolbar.js"></script>
-	<script src="../src/draw/Control.Draw.js"></script>
-	<script src="../src/edit/Control.Edit.js"></script>
+	<script src="../src/Control.Draw.js"></script>
+	<script src="../src/Toolbar.js"></script>
+	<script src="../src/draw/Toolbar.Draw.js"></script>
+	<script src="../src/edit/Toolbar.Edit.js"></script>
 
+	<script src="../src/Tooltip.js"></script>
+	
 	<script src="../src/draw/handler/Draw.Feature.js"></script>
 	<script src="../src/draw/handler/Draw.Polyline.js"></script>
 	<script src="../src/draw/handler/Draw.Polygon.js"></script>
@@ -29,7 +32,9 @@
 	<script src="../src/draw/handler/Draw.Marker.js"></script>
 
 	<script src="../src/edit/handler/Edit.Feature.js"></script>
-	<script src="../src/edit/handler/Edit.Polyline.js"></script>
+	<script src="../src/edit/handler/Edit.SimpleShape.js"></script>
+	<script src="../src/edit/handler/Edit.Circle.js"></script>
+	<script src="../src/edit/handler/Edit.Rectangle.js"></script>
 	<script src="../src/edit/handler/Delete.Feature.js"></script>
 
 	<script src="geojson.js"></script>
@@ -55,60 +60,57 @@
 		    
 		]);
 
+		var drawnItems = new L.FeatureGroup();
+		map.addLayer(drawnItems);
+
 		var drawControl = new L.Control.Draw({
-			position: 'topleft',
-			polyline: {
-				shapeOptions: {
-					// This is a really akward place to snapping
-					// but, it is distributed allong with all new objects
-					// and that is needed for snapping while editing
-					snapping: {
-						enabled: true,		// snapping
-						layers: [snap2],	// snapping
-						sensitivity: 20		// snapping
+			draw: {
+			  position: 'topleft',
+		  	polyline: {
+			  	shapeOptions: {
+			  		// This is a really akward place to snapping
+			  		// but, it is distributed allong with all new objects
+			  		// and that is needed for snapping while editing
+			  		snapping: {
+			  			enabled: true,		// snapping
+			  			layers: [snap2],	// snapping
+			  			sensitivity: 20		// snapping
+			  		}
+			  	}
+		  	},
+				polygon: {
+					title: 'Draw a sexy polygon!',
+					allowIntersection: false,
+					drawError: {
+						color: '#b00b00',
+						timeout: 1000
+					},
+					shapeOptions: {
+						color: '#bada55'
+					}
+				},
+				circle: {
+					shapeOptions: {
+						color: '#662d91'
 					}
 				}
 			},
-			polygon: {
-				title: 'Draw a sexy polygon!',
-				allowIntersection: false,
-				drawError: {
-					color: '#b00b00',
-					timeout: 1000
-				},
-				shapeOptions: {
-					color: '#bada55'
-				}
-			},
-			circle: {
-				shapeOptions: {
-					color: '#662d91'
-				}
+			edit: {
+				featureGroup: drawnItems
 			}
 		});
 		map.addControl(drawControl);
+		map.on('draw:created', function (e) {
+			var type = e.layerType,
+				layer = e.layer;
 
-		var drawnItems = new L.FeatureGroup();
+			if (type === 'marker') {
+				layer.bindPopup('A popup!');
+			}
 
-		map.on('draw:poly-created', function (e) {
-			drawnItems.addLayer(e.poly);
+			drawnItems.addLayer(layer);
 		});
-		map.on('draw:rectangle-created', function (e) {
-			drawnItems.addLayer(e.rect);
-		});
-		map.on('draw:circle-created', function (e) {
-			drawnItems.addLayer(e.circ);
-		});
-		map.on('draw:marker-created', function (e) {
-			e.marker.bindPopup('A popup!');
-			drawnItems.addLayer(e.marker);
-		});
-		map.addLayer(drawnItems);
 
-		var editControl = new L.Control.Edit({
-			featureGroup: drawnItems
-		});
-		map.addControl(editControl);
 	</script>
 </body>
 </html>

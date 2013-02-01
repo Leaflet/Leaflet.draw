@@ -1,11 +1,6 @@
-L.Map.mergeOptions({
-	drawControl: false
-});
-
-L.Control.Draw = L.Control.Toolbar.extend({
+L.Toolbar.Draw = L.Toolbar.extend({
 
 	options: {
-		position: 'topleft',
 		polyline: {
 			title: 'Draw a polyline'
 		},
@@ -22,12 +17,17 @@ L.Control.Draw = L.Control.Toolbar.extend({
 			title: 'Add a marker'
 		}
 	},
-	
-	onAdd: function (map) {
-		var container = L.DomUtil.create('div', ''),
-			buttonIndex = 0;
 
-		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-control-toolbar');
+	initialize: function (options) {
+		L.Toolbar.prototype.initialize.call(this, options);
+	},
+	
+	addToolbar: function (map) {
+		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
+			buttonIndex = 0,
+			buttonClassPrefix = 'leaflet-draw-draw';
+
+		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
 
 
 		if (this.options.polyline) {
@@ -35,7 +35,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 				new L.Draw.Polyline(map, this.options.polyline),
 				this._toolbarContainer,
 				buttonIndex++,
-				'leaflet-control-draw'
+				buttonClassPrefix
 			);
 		}
 
@@ -44,7 +44,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 				new L.Draw.Polygon(map, this.options.polygon),
 				this._toolbarContainer,
 				buttonIndex++,
-				'leaflet-control-draw'
+				buttonClassPrefix
 			);
 		}
 
@@ -53,7 +53,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 				new L.Draw.Rectangle(map, this.options.rectangle),
 				this._toolbarContainer,
 				buttonIndex++,
-				'leaflet-control-draw'
+				buttonClassPrefix
 			);
 		}
 
@@ -62,7 +62,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 				new L.Draw.Circle(map, this.options.circle),
 				this._toolbarContainer,
 				buttonIndex++,
-				'leaflet-control-draw'
+				buttonClassPrefix
 			);
 		}
 
@@ -71,7 +71,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 				new L.Draw.Marker(map, this.options.marker),
 				this._toolbarContainer,
 				buttonIndex++,
-				'leaflet-control-draw'
+				buttonClassPrefix
 			);
 		}
 
@@ -83,7 +83,7 @@ L.Control.Draw = L.Control.Toolbar.extend({
 			{
 				title: 'Cancel drawing',
 				text: 'Cancel',
-				callback: this._cancel,
+				callback: this.disable,
 				context: this
 			}
 		]);
@@ -93,16 +93,5 @@ L.Control.Draw = L.Control.Toolbar.extend({
 		container.appendChild(this._actionsContainer);
 
 		return container;
-	},
-
-	_cancel: function (e) {
-		this._activeMode.handler.disable();
-	}
-});
-
-L.Map.addInitHook(function () {
-	if (this.options.drawControl) {
-		this.drawControl = new L.Control.Draw();
-		this.addControl(this.drawControl);
 	}
 });

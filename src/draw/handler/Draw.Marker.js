@@ -19,7 +19,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		L.Draw.Feature.prototype.addHooks.call(this);
 		
 		if (this._map) {
-			this._updateLabelText({ text: 'Click map to place marker.' });
+			this._tooltip.updateContent({ text: 'Click map to place marker.' });
 			this._map.on('mousemove', this._onMouseMove, this);
 		}
 	},
@@ -41,10 +41,9 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	},
 
 	_onMouseMove: function (e) {
-		var newPos = e.layerPoint,
-			latlng = e.latlng;
+		var latlng = e.latlng;
 
-		this._updateLabelPosition(newPos);
+		this._tooltip.updatePosition(latlng);
 
 		if (!this._marker) {
 			this._marker = new L.Marker(latlng, {
@@ -63,10 +62,14 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	},
 
 	_onClick: function (e) {
-		this._map.fire(
-			'draw:marker-created',
-			{ marker: new L.Marker(this._marker.getLatLng(), { icon: this.options.icon }) }
-		);
+		this._fireCreatedEvent();
+
 		this.disable();
+	},
+
+
+	_fireCreatedEvent: function () {
+		var marker = new L.Marker(this._marker.getLatLng(), { icon: this.options.icon });
+		L.Draw.Feature.prototype._fireCreatedEvent.call(this, marker);
 	}
 });

@@ -1,4 +1,4 @@
-### TODO
+### Done
 
  * ~~Tidy up css: include leaflet-control-toolbar for common styles~~
  * ~~Rename _shapes variable in Control.Draw to make better sense.~~
@@ -25,24 +25,34 @@
  * ~~Fix the bottom border radius when the actions buttons are at the bottom~~
  * ~~Fix up the toolbar rounded corners when only 1 item in the toolbar.~~
  * ~~Handle layers being added/removed to the layergroup. i.e. need to be placed in edit mode or have a delete handler added~~
+ * ~Add support for tooltips for the edit mode.~
+ * ~Add handlers for Circle and Rectangle editing. (Needs a way to hook into L.Cicle and L.Rectangle)~
+ * ~Fix styles to look more like new Leaflet zoom in/out.~
+ * ~Polyline is styled as filled for edit mode.~
+ * ~Add visual style change to toolbar buttons on mouse over.~
+ * ~Add handlers to earch corner of the rectangle for resizing.~
+ * ~Bug: if you go edit mode, then go to draw mode.~
+ * ~Handle controls from being removed from map.~
+ * ~Add link to http://glyphicons.com/~
+ * ~Redo the select/delete icons.~
 
-####Edit
- * Add a delete cursor. When mouseover the layer will have a trashcan cursor.
+### TODO
 
-####Other
- * Handle controls from being removed from map.
- * Add support for tooltips for the edit mode.
- * CSS classes should probably be stored in constants somewhere.
+ * When switching from edit to delete and having edit a feature it should reset/cancel instead of saving.
  * Move clone methods from Edit.Feature
  * Search for TODO
- * Add handlers for Circle and Rectangle editing.
+ * Renamed Edit.Feature -> Edit and Delete.Feature -> Delete, is confusing since Edit.feature is not the same as Edit.Circle etc
+ * Merge the event change pull and add edit/delete versions.
 
  * Write up a breaking changes for when 0.2 goes live. (See below)
  * Add some proper documentation. I.e. for the events & methods
  * Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only? Also file names ahve changed.
+ * Get Leaflet control-design branch merged to master.
 
 ### Breaking changes
 
  * activated & deactivated events renamed to enabled/disabled.
  * renamed css classes.
  * drawing & drawing-disabled events renamed to: draw:enabled & draw:disabled.
+ * renamed the label css class to tooltip
+ * new general created event + new event arguments

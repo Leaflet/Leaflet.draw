@@ -41,6 +41,8 @@ L.Edit.Feature = L.Handler.extend({
 	},
 
 	enable: function () {
+		if (this._enabled) { return; }
+
 		L.Handler.prototype.enable.call(this);
 
 		this._featureGroup
@@ -51,6 +53,8 @@ L.Edit.Feature = L.Handler.extend({
 	},
 
 	disable: function () {
+		if (!this._enabled) { return; }
+		
 		this.fire('disabled', { handler: this.type} );
 
 		this._featureGroup
@@ -63,6 +67,11 @@ L.Edit.Feature = L.Handler.extend({
 	addHooks: function () {
 		if (this._map) {
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
+
+			this._tooltip = new L.Tooltip(this._map);
+			this._tooltip.updateContent({ text: 'Drag handles, or marker to edit feature.', subtext: 'Click cancel to undo changes.' });
+
+			this._map.on('mousemove', this._onMouseMove, this);
 		}
 	},
 
@@ -73,6 +82,11 @@ L.Edit.Feature = L.Handler.extend({
 
 			// Clear the backups of the original layers
 			this._uneditedLayerProps = {};
+
+			this._tooltip.dispose();
+			this._tooltip = null;
+
+			this._map.off('mousemove', this._onMouseMove);
 		}
 	},
 
@@ -149,7 +163,8 @@ L.Edit.Feature = L.Handler.extend({
 	},
 
 	_enableLayerEdit: function (e) {
-		var layer = e.layer || e.target || e;
+		var layer = e.layer || e.target || e,
+			options = L.Util.extend({}, this.options.selectedPathOptions);
 
 		// Back up this layer (if haven't before)
 		this._backupLayer(layer);
@@ -159,17 +174,20 @@ L.Edit.Feature = L.Handler.extend({
 			this._toggleMarkerHighlight(layer);
 		} else {
 			layer.options.previousOptions = layer.options;
-			layer.setStyle(this.options.selectedPathOptions);
+
+			// Make sure that Polylines are not filled
+			if (!(layer instanceof L.Circle) && !(layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {
+				options.fill = false;
+			}
+
+			layer.setStyle(options);
 		}
 
-		// currently only supports markers, polygon & polylines
-		if (layer instanceof L.Polyline || layer instanceof L.Polygon) {
-			layer.editing.enable();
-		} else if (layer instanceof L.Marker) {
+		if (layer instanceof L.Marker) {
 			layer.dragging.enable();
+		} else {
+			layer.editing.enable();
 		}
-
-		// TODO: Rectangle and Circle
 	},
 
 	_disableLayerEdit: function (e) {
@@ -185,14 +203,15 @@ L.Edit.Feature = L.Handler.extend({
 			delete layer.options.previousOptions;
 		}
 
-		// currently only supports markers, polygon & polylines
-		if (layer instanceof L.Polyline || layer instanceof L.Polygon) {
-			layer.editing.disable();
-		} else if (layer instanceof L.Marker) {
+		if (layer instanceof L.Marker) {
 			layer.dragging.disable();
+		} else {
+			layer.editing.disable();
 		}
+	},
 
-		// TODO: Rectangle and Circle
+	_onMouseMove: function (e) {
+		this._tooltip.updatePosition(e.latlng);
 	},
 
 
