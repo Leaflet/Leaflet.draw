@@ -35,14 +35,17 @@
  * ~Handle controls from being removed from map.~
  * ~Add link to http://glyphicons.com/~
  * ~Redo the select/delete icons.~
+ * ~Merge the event change pull and add edit/delete versions.~
+ * ~When switching from edit to delete and having edit a feature it should reset/cancel instead of saving.~
+ * ~Move clone methods from Edit.Feature~
+ * ~Renamed Edit.Feature -> Edit and Delete.Feature -> Delete, is confusing since Edit.feature is not the same as Edit.Circle etc~
 
 ### TODO
 
- * When switching from edit to delete and having edit a feature it should reset/cancel instead of saving.
- * Move clone methods from Edit.Feature
+ * Fix action toolbar styles to match new toolbar height.
+ * Make Tooltip sexy!
+
  * Search for TODO
- * Renamed Edit.Feature -> Edit and Delete.Feature -> Delete, is confusing since Edit.feature is not the same as Edit.Circle etc
- * Merge the event change pull and add edit/delete versions.
 
  * Write up a breaking changes for when 0.2 goes live. (See below)
  * Add some proper documentation. I.e. for the events & methods
