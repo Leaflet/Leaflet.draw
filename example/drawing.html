@@ -53,8 +53,8 @@
 			    "weight": 5,
 			    "opacity": 0.65
 			};
-			//snap2 = L.geoJson([freeBus, campus], { style: myStyle });
-			//snap2.addTo(map);	
+			snap2 = L.geoJson([freeBus, campus], { style: myStyle });
+			snap2.addTo(map);	
 		
 		var polyline = L.polyline([
 		    
@@ -72,9 +72,9 @@
 			  		// but, it is distributed allong with all new objects
 			  		// and that is needed for snapping while editing
 			  		snapping: {
-			  			enabled: true,		// snapping
-			  			layers: [drawnItems],	// snapping
-			  			sensitivity: 20		// snapping
+			  			enabled: true,		            // snapping
+			  			layers: [snap2, drawnItems],	// snapping
+			  			sensitivity: 20		            // snapping
 			  		}
 			  	}
 		  	},
