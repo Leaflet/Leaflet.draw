@@ -1,3 +1,5 @@
+L.Edit = L.Edit || {};
+
 L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 	_createMoveMarker: function () {
 		var bounds = this._shape.getBounds(),

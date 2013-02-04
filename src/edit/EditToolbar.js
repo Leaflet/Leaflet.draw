@@ -2,7 +2,7 @@
 	editControl: true
 });*/
 
-L.Toolbar.Edit = L.Toolbar.extend({
+L.EditToolbar = L.Toolbar.extend({
 	options: {
 		edit: {
 			title: 'Edit layers'
@@ -31,7 +31,7 @@ L.Toolbar.Edit = L.Toolbar.extend({
 
 		if (this.options.edit) {
 			this._initModeHandler(
-				new L.Edit.Feature(map, {
+				new L.EditToolbar.Edit(map, {
 					featureGroup: this.options.featureGroup,
 					selectedPathOptions: this.options.selectedPathOptions
 				}),
@@ -43,7 +43,7 @@ L.Toolbar.Edit = L.Toolbar.extend({
 
 		if (this.options.remove) {
 			this._initModeHandler(
-				new L.Delete.Feature(map, {
+				new L.EditToolbar.Delete(map, {
 					featureGroup: this.options.featureGroup
 				}),
 				this._toolbarContainer,

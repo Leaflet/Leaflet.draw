@@ -1,3 +1,5 @@
+L.Edit = L.Edit || {};
+
 L.Edit.Circle = L.Edit.SimpleShape.extend({
 	_createMoveMarker: function () {
 		var center = this._shape.getLatLng();

@@ -1,4 +1,4 @@
-// Adapted from https://github.com/shramov/Leaflet/tree/circle-edit
+L.Edit = L.Edit || {};
 
 L.Edit.SimpleShape = L.Handler.extend({
 	options: {

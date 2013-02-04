@@ -1,6 +1,4 @@
-L.Edit = L.Edit || {};
-
-L.Edit.Feature = L.Handler.extend({
+L.EditToolbar.Edit = L.Handler.extend({
 	statics: {
 		TYPE: 'edit'
 	},
@@ -37,7 +35,7 @@ L.Edit.Feature = L.Handler.extend({
 		this._uneditedLayerProps = {};
 
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
-		this.type = L.Edit.Feature.TYPE;
+		this.type = L.EditToolbar.Edit.TYPE;
 	},
 
 	enable: function () {

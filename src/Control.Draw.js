@@ -15,7 +15,7 @@ L.Control.Draw = L.Control.extend({
 
 		// Initialize toolbars
 		if (this.options.draw) {
-			toolbar = new L.Toolbar.Draw(this.options.draw);
+			toolbar = new L.DrawToolbar(this.options.draw);
 			id = L.stamp(toolbar);
 			this._toolbars[id] = toolbar;
 
@@ -24,7 +24,7 @@ L.Control.Draw = L.Control.extend({
 		}
 
 		if (this.options.edit) {
-			toolbar = new L.Toolbar.Edit(this.options.edit);
+			toolbar = new L.EditToolbar(this.options.edit);
 			id = L.stamp(toolbar);
 			this._toolbars[id] = toolbar;
 

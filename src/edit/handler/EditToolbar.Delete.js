@@ -1,6 +1,4 @@
-L.Delete = L.Delete || {};
-
-L.Delete.Feature = L.Handler.extend({
+L.EditToolbar.Delete = L.Handler.extend({
 	statics: {
 		TYPE: 'remove' // not delete as delete is reserved in js
 	},
@@ -20,7 +18,7 @@ L.Delete.Feature = L.Handler.extend({
 		}
 
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
-		this.type = L.Delete.Feature.TYPE;
+		this.type = L.EditToolbar.Delete.TYPE;
 	},
 
 	enable: function () {
