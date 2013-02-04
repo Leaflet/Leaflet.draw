@@ -103,16 +103,16 @@ L.Edit.Feature = L.Handler.extend({
 			// Polyline, Polygon or Rectangle
 			if (layer instanceof L.Polyline || layer instanceof L.Polygon || layer instanceof L.Rectangle) {
 				this._uneditedLayerProps[id] = {
-					latlngs: this._cloneLatLngs(layer.getLatLngs())
+					latlngs: L.LatLngUtil.cloneLatLngs(layer.getLatLngs())
 				};
 			} else if (layer instanceof L.Circle) {
 				this._uneditedLayerProps[id] = {
-					latlng: this._cloneLatLng(layer.getLatLng()),
+					latlng: L.LatLngUtil.cloneLatLng(layer.getLatLng()),
 					radius: layer.getRadius()
 				};
 			} else { // Marker
 				this._uneditedLayerProps[id] = {
-					latlng: this._cloneLatLng(layer.getLatLng())
+					latlng: L.LatLngUtil.cloneLatLng(layer.getLatLng())
 				};
 			}
 		}
@@ -212,26 +212,5 @@ L.Edit.Feature = L.Handler.extend({
 
 	_onMouseMove: function (e) {
 		this._tooltip.updatePosition(e.latlng);
-	},
-
-
-
-	// TODO: move!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-	// Clones a LatLngs[], returns [][]
-	_cloneLatLngs: function (latlngs) {
-		var clone = [];
-		for (var i = 0, l = latlngs.length; i < l; i++) {
-			// NOTE: maybe should try to get a clone method added to L.LatLng
-			clone.push(this._cloneLatLng(latlngs[i]));
-		}
-		return clone;
-	},
-
-	// NOTE: maybe should get this added to Leaflet core? Also doesn't support if LatLng should be wrapped
-	_cloneLatLng: function (latlng) {
-		return L.latLng(latlng.lat, latlng.lng);
 	}
-
-	// TODO: move!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 });
