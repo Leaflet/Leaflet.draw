@@ -100,7 +100,6 @@
 }
 
 
-
 /* TODO
 .leaflet-touch .leaflet-control-toolbar {
 	width: 30px;
@@ -219,9 +218,10 @@
 /* ================================================================== */
 
 .leaflet-edit-marker-selected {
-	background-color: rgba(254, 87, 161, 0.1);
-	border-radius: 4px;
+	background: rgba(254, 87, 161, 0.1);
 	border: 4px dashed rgba(254, 87, 161, 0.6);
+	-webkit-border-radius: 4px;
+	        border-radius: 4px;
 }
 
 .leaflet-edit-move {

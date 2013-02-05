@@ -11,3 +11,7 @@
 .leaflet-draw-toolbar a:hover {
 	background-color: #fff;
 }
+
+.leaflet-edit-marker-selected {
+	border: 4px dashed #fe93c2;
+}
