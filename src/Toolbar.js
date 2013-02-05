@@ -22,16 +22,18 @@ L.Toolbar = L.Class.extend({
 	removeToolbar: function () {
 		// Dispose each handler
 		for (var handlerId in this._modes) {
-			// Make sure is disabled
-			this._modes[handlerId].handler.disable();
+			if (this._modes.hasOwnProperty(handlerId)) {
+				// Unbind handler button
+				this._disposeButton(this._modes[handlerId].button, this._modes[handlerId].handler.enable);
 
-			// Unbind handler
-			this._modes[handlerId].handler
-				.off('enabled', this._handlerActivated)
-				.off('disabled', this._handlerDeactivated);
+				// Make sure is disabled
+				this._modes[handlerId].handler.disable();
 
-			// Unbind handler button
-			this._disposeButton(this._modes[handlerId].button);
+				// Unbind handler
+				this._modes[handlerId].handler
+					.off('enabled', this._handlerActivated)
+					.off('disabled', this._handlerDeactivated);
+			}
 		}
 		this._modes = {};
 
@@ -69,9 +71,13 @@ L.Toolbar = L.Class.extend({
 		var link = L.DomUtil.create('a', options.className || '', options.container);
 		link.href = '#';
 
-		if (options.text) link.innerHTML = options.text;
+		if (options.text) {
+			link.innerHTML = options.text;
+		}
 
-		if (options.title) link.title = options.title;
+		if (options.title) {
+			link.title = options.title;
+		}
 
 		L.DomEvent
 			.on(link, 'click', L.DomEvent.stopPropagation)
@@ -83,13 +89,13 @@ L.Toolbar = L.Class.extend({
 		return link;
 	},
 
-	_disposeButton: function (button) {
+	_disposeButton: function (button, callback) {
 		L.DomEvent
 			.off(button, 'click', L.DomEvent.stopPropagation)
 			.off(button, 'mousedown', L.DomEvent.stopPropagation)
 			.off(button, 'dblclick', L.DomEvent.stopPropagation)
 			.off(button, 'click', L.DomEvent.preventDefault)
-			.off(button, 'click', options.callback);
+			.off(button, 'click', callback);
 	},
 
 	_handlerActivated: function (e) {

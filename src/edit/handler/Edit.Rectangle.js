@@ -71,6 +71,8 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 	},
 
 	_resize: function (latlng) {
+		var bounds;
+
 		// Update the shape based on the current position of this corner and the opposite point
 		this._shape.setBounds(L.latLngBounds(latlng, this._oppositeCorner));
 

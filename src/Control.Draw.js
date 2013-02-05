@@ -40,17 +40,19 @@ L.Control.Draw = L.Control.extend({
 			toolbarContainer;
 
 		for (var toolbarId in this._toolbars) {
-			toolbarContainer = this._toolbars[toolbarId].addToolbar(map);
+			if (this._toolbars.hasOwnProperty(toolbarId)) {
+				toolbarContainer = this._toolbars[toolbarId].addToolbar(map);
 
-			// Add class to the first toolbar to remove the margin
-			if (!addedTopClass) {
-				if (!L.DomUtil.hasClass(toolbarContainer, topClassName)) {
-					L.DomUtil.addClass(toolbarContainer.childNodes[0], topClassName);
+				// Add class to the first toolbar to remove the margin
+				if (!addedTopClass) {
+					if (!L.DomUtil.hasClass(toolbarContainer, topClassName)) {
+						L.DomUtil.addClass(toolbarContainer.childNodes[0], topClassName);
+					}
+					addedTopClass = true;
 				}
-				addedTopClass = true;
-			}
 
-			container.appendChild(toolbarContainer);
+				container.appendChild(toolbarContainer);
+			}
 		}
 
 		return container;
@@ -58,7 +60,9 @@ L.Control.Draw = L.Control.extend({
 
 	onRemove: function (map) {
 		for (var toolbarId in this._toolbars) {
-			this._toolbars[tolbarId].removeToolbar();
+			if (this._toolbars.hasOwnProperty(toolbarId)) {
+				this._toolbars[toolbarId].removeToolbar();
+			}
 		}
 	},
 
@@ -66,7 +70,7 @@ L.Control.Draw = L.Control.extend({
 		var id = '' + L.stamp(e.target);
 
 		for (var toolbarId in this._toolbars) {
-			if (toolbarId !== id) {
+			if (this._toolbars.hasOwnProperty(toolbarId) && toolbarId !== id) {
 				this._toolbars[toolbarId].disable();
 			}
 		}
