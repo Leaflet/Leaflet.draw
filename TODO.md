@@ -42,10 +42,11 @@
  * ~Get Leaflet control-design branch merged to master.~
  * ~Fix action toolbar styles to match new toolbar height.~
  * ~Make Tooltip sexy!~
+ * ~IE actions bar position.~
+ * ~IE editable marker background and border.~
+ * ~Search for TODO~
 
 ### TODO
-
- * Search for TODO
 
  * Write up a breaking changes for when 0.2 goes live. (See below)
  * Add some proper documentation. I.e. for the events & methods
