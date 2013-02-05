@@ -39,18 +39,17 @@
  * ~When switching from edit to delete and having edit a feature it should reset/cancel instead of saving.~
  * ~Move clone methods from Edit.Feature~
  * ~Renamed Edit.Feature -> Edit and Delete.Feature -> Delete, is confusing since Edit.feature is not the same as Edit.Circle etc~
+ * ~Get Leaflet control-design branch merged to master.~
+ * ~Fix action toolbar styles to match new toolbar height.~
+ * ~Make Tooltip sexy!~
 
 ### TODO
-
- * Fix action toolbar styles to match new toolbar height.
- * Make Tooltip sexy!
 
  * Search for TODO
 
  * Write up a breaking changes for when 0.2 goes live. (See below)
  * Add some proper documentation. I.e. for the events & methods
  * Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only? Also file names ahve changed.
- * Get Leaflet control-design branch merged to master.
 
 ### Breaking changes
 
