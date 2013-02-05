@@ -226,7 +226,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			dashPoint,
 			dash;
 
-		//create the guides container if we haven't yet (TODO: probaly shouldn't do this every time the user starts to draw?)
+		//create the guides container if we haven't yet
 		if (!this._guidesContainer) {
 			this._guidesContainer = L.DomUtil.create('div', 'leaflet-draw-guides', this._overlayPane);
 		}

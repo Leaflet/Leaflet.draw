@@ -154,7 +154,6 @@ L.Toolbar = L.Class.extend({
 		// Correctly position the cancel button
 		this._actionsContainer.style.top = toolbarPosition + 'px';
 
-		// TODO: remove the top and button rounded border if first or last button
 		if (buttonIndex === 0) {
 			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
 			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
