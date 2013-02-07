@@ -5,13 +5,13 @@
 L.EditToolbar = L.Toolbar.extend({
 	options: {
 		edit: {
-			title: 'Edit layers'
+			title: 'Edit layers',
+			selectedPathOptions: null // See Edit handler options, this is used to customize the style of selected paths
 		},
 		remove: {
 			title: 'Delete layers'
 		},
-		featureGroup: null, /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
-		selectedPathOptions: null // See Edit handler options, this is used to customize the style of selected paths
+		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
 	initialize: function (options) {
@@ -33,7 +33,7 @@ L.EditToolbar = L.Toolbar.extend({
 			this._initModeHandler(
 				new L.EditToolbar.Edit(map, {
 					featureGroup: this.options.featureGroup,
-					selectedPathOptions: this.options.selectedPathOptions
+					selectedPathOptions: this.options.edit.selectedPathOptions
 				}),
 				this._toolbarContainer,
 				buttonIndex++,
