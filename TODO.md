@@ -45,12 +45,16 @@
  * ~IE actions bar position.~
  * ~IE editable marker background and border.~
  * ~Search for TODO~
+ * ~Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only? Also file names ahve changed.~
+ * ~Add some proper documentation. I.e. for the events & methods.~
 
 ### TODO
 
  * Write up a breaking changes for when 0.2 goes live. (See below)
- * Add some proper documentation. I.e. for the events & methods
- * Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only? Also file names ahve changed.
+ * Check for FeatureGroup and throw excepotion if not set.
+ * Fix all the Show Code links in the ReadMe
+
+ * Add a thanks section to README. Shramov, BrunboB, tnightingale & Glyphicons. Others?
 
 ### Breaking changes
 
