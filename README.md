@@ -18,7 +18,7 @@ The default state for the control is the draw toolbar just below the zoom contro
 
 Too add the draw toolbar set the option `drawControl: true` in the map options.
 
-````
+````js
 // create a map in the "map" div, set the view to a given place and zoom
 var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
 
@@ -32,7 +32,7 @@ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 
 To use the edit toolbar you must initialise the Leaflet.draw control and manually add it to the map.
 
-````
+````js
 // create a map in the "map" div, set the view to a given place and zoom
 var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
 
@@ -168,7 +168,7 @@ The following example will show you how to:
 3. Use a custom marker.
 4. Disable the delete functionality.
 
-````
+````js
 var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png',
 	cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18}),
 	map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(-37.7772, 175.2756), zoom: 15 });
@@ -240,7 +240,7 @@ map.on('draw:created', function (e) {
 
 If you do not want a particular toolbar in your app you can turn it off by setting the toolbar to false.
 
-````
+````js
 var drawControl = new L.Control.Draw({
 	draw: false,
 	edit: {
@@ -253,7 +253,7 @@ var drawControl = new L.Control.Draw({
 
 If you want to turn off a particular toolbar item, set it to false. The following disables drawing polygons and markers. It also turns off the ability to edit layers.
 
-````
+````js
 var drawControl = new L.Control.Draw({
 	draw: {
 		polygon: false,
