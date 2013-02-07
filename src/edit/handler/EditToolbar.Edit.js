@@ -94,6 +94,11 @@ L.EditToolbar.Edit = L.Handler.extend({
 		}, this);
 	},
 
+	save: function () {
+		// TODO: pass on the edited layers
+		this._map.fire('draw:edited');
+	},
+
 	_backupLayer: function (layer) {
 		var id = L.Util.stamp(layer), latlng;
 

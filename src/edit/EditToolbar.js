@@ -87,6 +87,7 @@ L.EditToolbar = L.Toolbar.extend({
 	},
 
 	_save: function () {
+		this._activeMode.handler.save();
 		this._activeMode.handler.disable();
 	}
 });
