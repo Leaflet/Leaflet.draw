@@ -1,7 +1,11 @@
 #Leaflet.draw
 Adds support for drawing and editing vectors and markers on [Leaflet maps](https://github.com/Leaflet/Leaflet). Check out the [demo](http://leaflet.github.com/Leaflet.draw/)
 
-##### Table of Contents
+#### Upgrading from Leaflet.draw 0.1
+
+Leaflet.draw 0.2 changes a LOT of things from 0.1. Please see [BREAKING CHANGES](https://github.com/Leaflet/Leaflet.draw/blob/master/BREAKINGCHANGES.md) for how to upgrade.
+
+## Table of Contents
 [Using the plugin](#using)  
 [Advanced Options](#options)  
 [Command tasks](#tasks)  
