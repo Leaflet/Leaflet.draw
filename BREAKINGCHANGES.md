@@ -10,7 +10,7 @@ The vector or marker is accessed by the `layer` property of the event arguments,
 
 #### New way
 
-````
+````js
 map.on('draw:created', function (e) {
 	var type = e.layerType,
 		layer = e.layer;
@@ -25,7 +25,7 @@ map.on('draw:created', function (e) {
 
 #### Old way
 
-````
+````js
 map.on('draw:poly-created', function (e) {
 	map.addLayer(e.poly);
 });
