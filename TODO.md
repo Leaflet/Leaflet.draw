@@ -47,19 +47,11 @@
  * ~Search for TODO~
  * ~Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only? Also file names ahve changed.~
  * ~Add some proper documentation. I.e. for the events & methods.~
+ * ~Add a thanks section to README. Shramov, BrunboB, tnightingale & Glyphicons. Others?~
+ * ~Write up a breaking changes for when 0.2 goes live. (See below)~
+ * ~Add events to docs~
+ * ~Fix the draw:enabled event. This is not used for the edit toolbar. It is simply used to state that drawing has started then ended.~
 
 ### TODO
 
- * Write up a breaking changes for when 0.2 goes live. (See below)
- * Check for FeatureGroup and throw excepotion if not set.
  * Fix all the Show Code links in the ReadMe
-
- * Add a thanks section to README. Shramov, BrunboB, tnightingale & Glyphicons. Others?
-
-### Breaking changes
-
- * activated & deactivated events renamed to enabled/disabled.
- * renamed css classes.
- * drawing & drawing-disabled events renamed to: draw:enabled & draw:disabled.
- * renamed the label css class to tooltip
- * new general created event + new event arguments
