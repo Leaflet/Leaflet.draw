@@ -45,7 +45,9 @@ map.on('draw:marker-created', function (e) {
 
 Renamed the drawing started and stopped events to be the same as the created standard.
 
-`drawing` -> `draw:drawstart` and `drawing-disabled` -> `draw:drawstop`
+`drawing` -> `draw:drawstart` and `drawing-disabled` -> `draw:drawstop`.
+
+The event argument has also changed from `drawingType` -> `layerType`.
 
 ## CSS changes
 
