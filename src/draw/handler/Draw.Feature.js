@@ -20,7 +20,7 @@ L.Draw.Feature = L.Handler.extend({
 		if (this._enabled) { return; }
 
 		this.fire('enabled', { handler: this.type });
-		this._map.fire('draw:enabled', { drawingType: this.type });
+		this._map.fire('draw:drawstart', { drawingType: this.type });
 		L.Handler.prototype.enable.call(this);
 	},
 
@@ -28,7 +28,7 @@ L.Draw.Feature = L.Handler.extend({
 		if (!this._enabled) { return; }
 
 		this.fire('disabled', { handler: this.type });
-		this._map.fire('draw:disabled', { drawingType: this.type });
+		this._map.fire('draw:drawstop', { drawingType: this.type });
 		L.Handler.prototype.disable.call(this);
 	},
 	

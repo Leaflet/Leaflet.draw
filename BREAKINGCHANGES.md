@@ -41,11 +41,11 @@ map.on('draw:marker-created', function (e) {
 });
 ````
 
-## Draw handler enabled/disabled event change
+## Draw handler started/stopped event change
 
-Renamed the drawing enabled and disabled events to be the same as the created standard.
+Renamed the drawing started and stopped events to be the same as the created standard.
 
-`drawing` -> `draw:enabled` and `drawing-disabled` -> `draw:disabled`
+`drawing` -> `draw:drawstart` and `drawing-disabled` -> `draw:drawstop`
 
 ## CSS changes
 
