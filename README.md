@@ -70,7 +70,7 @@ Once you have successfully added the Leaflet.draw plugin your map you will want 
 
 Triggered when a new vector or marker has been created.
 
-````
+````js
 map.on('draw:created', function (e) {
 	var type = e.layerType,
 		layer = e.layer;
@@ -333,4 +333,4 @@ All the [contributors](https://github.com/Leaflet/Leaflet.draw/graphs/contributo
 
 The icons used for some of the toolbar buttons are either from http://glyphicons.com/ or inspired by them. <3 Glyphicons!
 
-Finally, [@mourner](https://github.com/mourner) is the man! Thanks for dedicating so much of your time to creating the gosh darn best JavaScript mapping library around.
+Finally, [@mourner](https://github.com/mourner) is the man! Thanks for dedicating so much of your time to create the gosh darn best JavaScript mapping library around.
