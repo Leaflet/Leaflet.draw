@@ -56,6 +56,64 @@ map.addControl(drawControl);
 
 The key here is the `featureGroup` option. This tells the plugin which `FeatureGroup` that contains the layers that should be editable.
 
+### Events
+
+Once you have successfully added the Leaflet.draw plugin your map you will want to respond to the different actions users can do. The following events will be triggered on the map:
+
+#### draw:created
+
+| Property | Type | Description
+| --- | --- | ---
+| layer | [Polyline](http://leafletjs.com/reference.html#polyline)/[Polygon](http://leafletjs.com/reference.html#polygon)/[Rectangle](http://leafletjs.com/reference.html#rectangle)/[Circle](http://leafletjs.com/reference.html#circle)/[Marker](http://leafletjs.com/reference.html#marker) | Layer that was just created.
+| layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
+
+
+Triggered when a new vector or marker has been created.
+
+````
+map.on('draw:created', function (e) {
+	var type = e.layerType,
+		layer = e.layer;
+
+	if (type === 'marker') {
+		// Do marker specific actions
+	}
+
+	// Do whatever else you need to. (save to db, add to map etc)
+	map.addLayer(layer);
+});
+````
+
+#### draw:edited
+
+Triggered when layers in the FeatureGroup, that the plugin was initialized with, have been edited and saved.
+
+*Note: the edited layers are not passed as an argument. Currently a TODO.*
+
+#### draw:deleted
+
+Triggered when layers have been layers have been removed (and saved) from the FeatureGroup.
+
+| Property | Type | Description
+| --- | --- | ---
+| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just removed from the map.
+
+#### draw:drawstart
+
+Triggered when the user has chosen to draw a particular vector or marker.
+
+| Property | Type | Description
+| --- | --- | ---
+| layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
+
+#### draw:drawstop
+
+Triggered when the user has finshed a particular vector or marker.
+
+| Property | Type | Description
+| --- | --- | ---
+| layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
+
 <a name="options" />
 ## Advanced options
 
