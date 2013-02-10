@@ -52,8 +52,8 @@
  * ~Add events to docs~
  * ~Fix the draw:enabled event. This is not used for the edit toolbar. It is simply used to state that drawing has started then ended.~
  * ~Custom build tool.~
+ * ~Move Poly.Edit.js~
 
 ### TODO
 
- * Move Poly.Edit.
  * Fix all the Show Code links in the ReadMe
