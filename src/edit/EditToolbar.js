@@ -12,9 +12,10 @@ L.EditToolbar = L.Toolbar.extend({
 			title: 'Delete layers'
 		},
 		snapping: {
-			enabled: false,
-			layer: [],
-			sensitivity: 10
+			enabled      : false,
+			layer        : [],
+			sensitivity  : 10,
+			vertexonly   : false
 		},
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},

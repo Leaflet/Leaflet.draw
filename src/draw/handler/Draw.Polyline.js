@@ -26,9 +26,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			clickable: true,
 			
 			snapping: {
-				enabled: false, // snapping
-				layers: [], 	// snapping
-				sensitivity: 10 // snapping
+				enabled     : false, // snapping
+				layers      : [], 	 // snapping
+				sensitivity : 10,    // snapping
+				vertexonly  : false  // snapping
 			}
 		},
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers

@@ -80,14 +80,12 @@ L.Polyline.include({
           lastPoint = null,
                 map = this._snapVars.map;
     
-    // this.options.snapping.vertexonly
-
     for (var j in latlngs) {
       var ll = latlngs[j],
           p1 = map.latLngToLayerPoint(latlng),
           p2 = map.latLngToLayerPoint(ll);
       
-      if (lastPoint != null) {
+      if (lastPoint != null && !this.options.snapping.vertexonly) {
         p3 = L.LineUtil.getClosestPoint(lastPoint, p2, p1, false);
         var tmpDist = p1.distanceTo(p3);
         if (tmpDist <= sensitivity && tmpDist < this._snapVars.minDist) {

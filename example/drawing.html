@@ -63,6 +63,9 @@
 			    "weight": 5,
 			    "opacity": 0.65
 			};
+			
+			console.log(campus);
+			
 			snap2 = L.geoJson([freeBus, campus], { style: myStyle });
 			snap2.addTo(map);	
 		
@@ -82,9 +85,10 @@
 			  		// but, it is distributed allong with all new objects
 			  		// and that is needed for snapping while editing
 			  		snapping: {
-			  			enabled: true,		            // snapping
-			  			layers: [snap2, drawnItems],	// snapping
-			  			sensitivity: 20		            // snapping
+			  			enabled      : true,		            // snapping
+			  			layers       : [snap2, drawnItems],	// snapping
+			  			sensitivity  : 20,	                // snapping
+			  			vertexonly   : false                // disable only snaping to vertexes
 			  		}
 			  	}
 		  	},
