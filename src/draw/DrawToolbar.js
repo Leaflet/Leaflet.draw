@@ -1,4 +1,4 @@
-L.Toolbar.Draw = L.Toolbar.extend({
+L.DrawToolbar = L.Toolbar.extend({
 
 	options: {
 		polyline: {

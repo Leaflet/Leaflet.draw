@@ -8,21 +8,16 @@
 	<link rel="stylesheet" href="../dist/leaflet.draw.css" />
 	<!--[if lte IE 8]><link rel="stylesheet" href="../dist/leaflet.draw.ie.css" /><![endif]-->
 
+	<script src="geojson.js"></script>
 	<script src="libs/leaflet-src.js"></script>
 
+	<script src="../src/ext/LatLngUtil.js"></script>
 	<script src="../src/ext/LineUtil.Intersect.js"></script>
 	<script src="../src/ext/LineUtil.Snapping.js"></script>
 	<script src="../src/ext/Polygon.Intersect.js"></script>
 	<script src="../src/ext/Polyline.Intersect.js"></script>
 	<script src="../src/ext/Polyline.Snapping.js"></script>
 
-	<script src="../src/Control.Draw.js"></script>
-	<script src="../src/Toolbar.js"></script>
-	<script src="../src/draw/Toolbar.Draw.js"></script>
-	<script src="../src/edit/Toolbar.Edit.js"></script>
-
-	<script src="../src/Tooltip.js"></script>
-	
 	<script src="../src/draw/handler/Draw.Feature.js"></script>
 	<script src="../src/draw/handler/Draw.Polyline.js"></script>
 	<script src="../src/draw/handler/Draw.Polygon.js"></script>
@@ -31,14 +26,18 @@
 	<script src="../src/draw/handler/Draw.Circle.js"></script>
 	<script src="../src/draw/handler/Draw.Marker.js"></script>
 
-	<script src="../src/edit/handler/Edit.Feature.js"></script>
 	<script src="../src/edit/handler/Edit.SimpleShape.js"></script>
 	<script src="../src/edit/handler/Edit.Circle.js"></script>
 	<script src="../src/edit/handler/Edit.Rectangle.js"></script>
-	<script src="../src/edit/handler/Edit.Polyline.js"></script>
-	<script src="../src/edit/handler/Delete.Feature.js"></script>
 
-	<script src="geojson.js"></script>
+	<script src="../src/Control.Draw.js"></script>
+	<script src="../src/Tooltip.js"></script>
+	<script src="../src/Toolbar.js"></script>
+
+	<script src="../src/draw/DrawToolbar.js"></script>
+	<script src="../src/edit/EditToolbar.js"></script>
+	<script src="../src/edit/handler/EditToolbar.Edit.js"></script>
+	<script src="../src/edit/handler/EditToolbar.Delete.js"></script>
 </head>
 <body>
 	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>

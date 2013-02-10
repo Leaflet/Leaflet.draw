@@ -22,16 +22,18 @@ L.Toolbar = L.Class.extend({
 	removeToolbar: function () {
 		// Dispose each handler
 		for (var handlerId in this._modes) {
-			// Make sure is disabled
-			this._modes[handlerId].handler.disable();
+			if (this._modes.hasOwnProperty(handlerId)) {
+				// Unbind handler button
+				this._disposeButton(this._modes[handlerId].button, this._modes[handlerId].handler.enable);
 
-			// Unbind handler
-			this._modes[handlerId].handler
-				.off('enabled', this._handlerActivated)
-				.off('disabled', this._handlerDeactivated);
+				// Make sure is disabled
+				this._modes[handlerId].handler.disable();
 
-			// Unbind handler button
-			this._disposeButton(this._modes[handlerId].button);
+				// Unbind handler
+				this._modes[handlerId].handler
+					.off('enabled', this._handlerActivated)
+					.off('disabled', this._handlerDeactivated);
+			}
 		}
 		this._modes = {};
 
@@ -69,9 +71,13 @@ L.Toolbar = L.Class.extend({
 		var link = L.DomUtil.create('a', options.className || '', options.container);
 		link.href = '#';
 
-		if (options.text) link.innerHTML = options.text;
+		if (options.text) {
+			link.innerHTML = options.text;
+		}
 
-		if (options.title) link.title = options.title;
+		if (options.title) {
+			link.title = options.title;
+		}
 
 		L.DomEvent
 			.on(link, 'click', L.DomEvent.stopPropagation)
@@ -83,13 +89,13 @@ L.Toolbar = L.Class.extend({
 		return link;
 	},
 
-	_disposeButton: function (button) {
+	_disposeButton: function (button, callback) {
 		L.DomEvent
 			.off(button, 'click', L.DomEvent.stopPropagation)
 			.off(button, 'mousedown', L.DomEvent.stopPropagation)
 			.off(button, 'dblclick', L.DomEvent.stopPropagation)
 			.off(button, 'click', L.DomEvent.preventDefault)
-			.off(button, 'click', options.callback);
+			.off(button, 'click', callback);
 	},
 
 	_handlerActivated: function (e) {
@@ -147,29 +153,32 @@ L.Toolbar = L.Class.extend({
 	_showActionsToolbar: function () {
 		var buttonIndex = this._activeMode.buttonIndex,
 			lastButtonIndex = this._lastButtonIndex,
-			buttonHeight = 25, // TODO: this should be calculated
+			buttonHeight = 26, // TODO: this should be calculated
 			borderHeight = 1, // TODO: this should also be calculated
-			toolbarPosition = 1 + (buttonIndex * buttonHeight) + (buttonIndex * borderHeight);
+			toolbarPosition = (buttonIndex * buttonHeight) + (buttonIndex * borderHeight) - 1;
 		
 		// Correctly position the cancel button
 		this._actionsContainer.style.top = toolbarPosition + 'px';
 
-		// TODO: remove the top and button rounded border if first or last button
 		if (buttonIndex === 0) {
-			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-actions-top');
+			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
+			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
 		}
 		
 		if (buttonIndex === lastButtonIndex) {
-			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-actions-bottom');
+			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
+			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
 		}
-		
+
 		this._actionsContainer.style.display = 'block';
 	},
 
 	_hideActionsToolbar: function () {
 		this._actionsContainer.style.display = 'none';
 
-		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-actions-top');
-		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-actions-bottom');
+		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
+		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
+		L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-top');
+		L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
 	}
 });

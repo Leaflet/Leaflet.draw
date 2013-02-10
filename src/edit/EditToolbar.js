@@ -2,10 +2,11 @@
 	editControl: true
 });*/
 
-L.Toolbar.Edit = L.Toolbar.extend({
+L.EditToolbar = L.Toolbar.extend({
 	options: {
 		edit: {
-			title: 'Edit layers'
+			title: 'Edit layers',
+			selectedPathOptions: null // See Edit handler options, this is used to customize the style of selected paths
 		},
 		remove: {
 			title: 'Delete layers'
@@ -15,8 +16,7 @@ L.Toolbar.Edit = L.Toolbar.extend({
 			layer: [],
 			sensitivity: 10
 		},
-		featureGroup: null, /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
-		selectedPathOptions: null // See Edit handler options, this is used to customize the style of selected paths
+		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
 	initialize: function (options) {
@@ -36,9 +36,9 @@ L.Toolbar.Edit = L.Toolbar.extend({
 
 		if (this.options.edit) {
 			this._initModeHandler(
-				new L.Edit.Feature(map, {
+				new L.EditToolbar.Edit(map, {
 					featureGroup: this.options.featureGroup,
-					selectedPathOptions: this.options.selectedPathOptions
+					selectedPathOptions: this.options.edit.selectedPathOptions
 				}),
 				this._toolbarContainer,
 				buttonIndex++,
@@ -48,7 +48,7 @@ L.Toolbar.Edit = L.Toolbar.extend({
 
 		if (this.options.remove) {
 			this._initModeHandler(
-				new L.Delete.Feature(map, {
+				new L.EditToolbar.Delete(map, {
 					featureGroup: this.options.featureGroup
 				}),
 				this._toolbarContainer,
@@ -67,7 +67,8 @@ L.Toolbar.Edit = L.Toolbar.extend({
 				text: 'Save',
 				callback: this._save,
 				context: this
-			},{
+			},
+			{
 				title: 'Cancel editing, discards all changes.',
 				text: 'Cancel',
 				callback: this.disable,
@@ -91,6 +92,7 @@ L.Toolbar.Edit = L.Toolbar.extend({
 	},
 
 	_save: function () {
+		this._activeMode.handler.save();
 		this._activeMode.handler.disable();
 	}
 });

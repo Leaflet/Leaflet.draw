@@ -1,4 +1,4 @@
-// Adapted from https://github.com/shramov/Leaflet/tree/circle-edit
+L.Edit = L.Edit || {};
 
 L.Edit.SimpleShape = L.Handler.extend({
 	options: {
@@ -19,10 +19,12 @@ L.Edit.SimpleShape = L.Handler.extend({
 
 	addHooks: function () {
 		if (this._shape._map) {
+			this._map = this._shape._map;
+
 			if (!this._markerGroup) {
 				this._initMarkers();
 			}
-			this._shape._map.addLayer(this._markerGroup);
+			this._map.addLayer(this._markerGroup);
 		}
 	},
 
@@ -35,9 +37,11 @@ L.Edit.SimpleShape = L.Handler.extend({
 			}
 			this._resizeMarkers = null;
 
-			this._shape._map.removeLayer(this._markerGroup);
+			this._map.removeLayer(this._markerGroup);
 			delete this._markerGroup;
 		}
+
+		this._map = null;
 	},
 
 	updateMarkers: function () {

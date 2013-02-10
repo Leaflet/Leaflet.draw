@@ -1,3 +1,5 @@
+L.Edit = L.Edit || {};
+
 L.Edit.Circle = L.Edit.SimpleShape.extend({
 	_createMoveMarker: function () {
 		var center = this._shape.getLatLng();
@@ -15,9 +17,9 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
 
 	_getResizeMarkerPoint: function (latlng) {
 		// From L.shape.getBounds()
-		var delta = this._shape._radius * Math.cos(Math.PI / 4);
-			point = map.project(latlng);
-		return map.unproject([point.x + delta, point.y - delta]);
+		var delta = this._shape._radius * Math.cos(Math.PI / 4),
+			point = this._map.project(latlng);
+		return this._map.unproject([point.x + delta, point.y - delta]);
 	},
 
 	_move: function (latlng) {

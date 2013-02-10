@@ -1,6 +1,4 @@
-L.Edit = L.Edit || {};
-
-L.Edit.Feature = L.Handler.extend({
+L.EditToolbar.Edit = L.Handler.extend({
 	statics: {
 		TYPE: 'edit'
 	},
@@ -37,7 +35,7 @@ L.Edit.Feature = L.Handler.extend({
 		this._uneditedLayerProps = {};
 
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
-		this.type = L.Edit.Feature.TYPE;
+		this.type = L.EditToolbar.Edit.TYPE;
 	},
 
 	enable: function () {
@@ -49,13 +47,13 @@ L.Edit.Feature = L.Handler.extend({
 			.on('layeradd', this._enableLayerEdit, this)
 			.on('layerremove', this._disableLayerEdit, this);
 
-		this.fire('enabled', { handler: this.type} );
+		this.fire('enabled', {handler: this.type});
 	},
 
 	disable: function () {
 		if (!this._enabled) { return; }
 		
-		this.fire('disabled', { handler: this.type} );
+		this.fire('disabled', {handler: this.type});
 
 		this._featureGroup
 			.off('layeradd', this._enableLayerEdit)
@@ -96,6 +94,11 @@ L.Edit.Feature = L.Handler.extend({
 		}, this);
 	},
 
+	save: function () {
+		// TODO: pass on the edited layers
+		this._map.fire('draw:edited');
+	},
+
 	_backupLayer: function (layer) {
 		var id = L.Util.stamp(layer), latlng;
 
@@ -103,16 +106,16 @@ L.Edit.Feature = L.Handler.extend({
 			// Polyline, Polygon or Rectangle
 			if (layer instanceof L.Polyline || layer instanceof L.Polygon || layer instanceof L.Rectangle) {
 				this._uneditedLayerProps[id] = {
-					latlngs: this._cloneLatLngs(layer.getLatLngs())
+					latlngs: L.LatLngUtil.cloneLatLngs(layer.getLatLngs())
 				};
 			} else if (layer instanceof L.Circle) {
 				this._uneditedLayerProps[id] = {
-					latlng: this._cloneLatLng(layer.getLatLng()),
+					latlng: L.LatLngUtil.cloneLatLng(layer.getLatLng()),
 					radius: layer.getRadius()
 				};
 			} else { // Marker
 				this._uneditedLayerProps[id] = {
-					latlng: this._cloneLatLng(layer.getLatLng())
+					latlng: L.LatLngUtil.cloneLatLng(layer.getLatLng())
 				};
 			}
 		}
@@ -212,26 +215,5 @@ L.Edit.Feature = L.Handler.extend({
 
 	_onMouseMove: function (e) {
 		this._tooltip.updatePosition(e.latlng);
-	},
-
-
-
-	// TODO: move!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-	// Clones a LatLngs[], returns [][]
-	_cloneLatLngs: function (latlngs) {
-		var clone = [];
-		for (var i = 0, l = latlngs.length; i < l; i++) {
-			// NOTE: maybe should try to get a clone method added to L.LatLng
-			clone.push(this._cloneLatLng(latlngs[i]));
-		}
-		return clone;
-	},
-
-	// NOTE: maybe should get this added to Leaflet core? Also doesn't support if LatLng should be wrapped
-	_cloneLatLng: function (latlng) {
-		return L.latLng(latlng.lat, latlng.lng);
 	}
-
-	// TODO: move!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 });

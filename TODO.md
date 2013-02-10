@@ -35,24 +35,23 @@
  * ~Handle controls from being removed from map.~
  * ~Add link to http://glyphicons.com/~
  * ~Redo the select/delete icons.~
+ * ~Merge the event change pull and add edit/delete versions.~
+ * ~When switching from edit to delete and having edit a feature it should reset/cancel instead of saving.~
+ * ~Move clone methods from Edit.Feature~
+ * ~Renamed Edit.Feature -> Edit and Delete.Feature -> Delete, is confusing since Edit.feature is not the same as Edit.Circle etc~
+ * ~Get Leaflet control-design branch merged to master.~
+ * ~Fix action toolbar styles to match new toolbar height.~
+ * ~Make Tooltip sexy!~
+ * ~IE actions bar position.~
+ * ~IE editable marker background and border.~
+ * ~Search for TODO~
+ * ~Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only? Also file names ahve changed.~
+ * ~Add some proper documentation. I.e. for the events & methods.~
+ * ~Add a thanks section to README. Shramov, BrunboB, tnightingale & Glyphicons. Others?~
+ * ~Write up a breaking changes for when 0.2 goes live. (See below)~
+ * ~Add events to docs~
+ * ~Fix the draw:enabled event. This is not used for the edit toolbar. It is simply used to state that drawing has started then ended.~
 
 ### TODO
 
- * When switching from edit to delete and having edit a feature it should reset/cancel instead of saving.
- * Move clone methods from Edit.Feature
- * Search for TODO
- * Renamed Edit.Feature -> Edit and Delete.Feature -> Delete, is confusing since Edit.feature is not the same as Edit.Circle etc
- * Merge the event change pull and add edit/delete versions.
-
- * Write up a breaking changes for when 0.2 goes live. (See below)
- * Add some proper documentation. I.e. for the events & methods
- * Update Deps. Maybe should make it more advanced to allow people to custom build without parts? Like edit only or draw only? Also file names ahve changed.
- * Get Leaflet control-design branch merged to master.
-
-### Breaking changes
-
- * activated & deactivated events renamed to enabled/disabled.
- * renamed css classes.
- * drawing & drawing-disabled events renamed to: draw:enabled & draw:disabled.
- * renamed the label css class to tooltip
- * new general created event + new event arguments
+ * Fix all the Show Code links in the ReadMe

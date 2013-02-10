@@ -42,13 +42,11 @@ L.Tooltip = L.Class.extend({
 
 	showAsError: function () {
 		L.DomUtil.addClass(this._container, 'leaflet-error-draw-tooltip');
-		L.DomUtil.addClass(this._container, 'leaflet-flash-anim');
 		return this;
 	},
 
 	removeError: function () {
 		L.DomUtil.removeClass(this._container, 'leaflet-error-draw-tooltip');
-		L.DomUtil.removeClass(this._container, 'leaflet-flash-anim');
 		return this;
 	}
 });
