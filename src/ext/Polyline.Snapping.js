@@ -3,9 +3,9 @@ L.Polyline.include({
    * Temporarily snapping variables
    */
   _snapVars: {
-    map : null,
-    minPoint : null,
-    minDist : null    
+    map       : null,
+    minPoint  : null,
+    minDist   : null    
   },
 
   /**
@@ -24,16 +24,37 @@ L.Polyline.include({
     
     // Loop through layers
     for (var l1 in layers) {
+      //console.log(layers[l1]);
       for (var l2 in layers[l1]._layers) {
         this._snapVars.map = layers[l1]._layers[l2]._map;
         if (typeof layers[l1]._layers[l2]._latlngs !== "undefined") {
           if (layers[l1]._layers[l2]._leaflet_id !== this._leaflet_id) {
-            this._snapToObject(latlng, layers[l1]._layers[l2]);
+            // Polygon
+            if (typeof layers[l1]._layers[l2]._holes !== 'undefined') {
+              this._snapToObject(latlng, layers[l1]._layers[l2]._latlngs, true);
+              // Polygon Holes
+              for (var i in layers[l1]._layers[l2]._holes) {
+                this._snapToObject(latlng, layers[l1]._layers[l2]._holes[i], true);
+              }
+            // Polyline
+            } else {
+              this._snapToObject(latlng, layers[l1]._layers[l2]._latlngs, false);
+            }
           }
         } else if (typeof layers[l1]._layers[l2]._layers !== "undefined") {
           for (var l3 in layers[l1]._layers[l2]._layers) {
             if (layers[l1]._layers[l2]._layers[l3]._leaflet_id !== this._leaflet_id) {
-              this._snapToObject(latlng, layers[l1]._layers[l2]._layers[l3]);
+              // Polygon
+              if (typeof layers[l1]._layers[l2]._layers[l3]._holes !== 'undefined') {
+                this._snapToObject(latlng, layers[l1]._layers[l2]._layers[l3]._latlngs, true);
+                // Polygon Holes
+                for (var i in layers[l1]._layers[l2]._layers[l3]._holes) {
+                  this._snapToObject(latlng, layers[l1]._layers[l2]._layers[l3]._holes[i], true);
+                }
+              // Polyline
+              } else {
+                this._snapToObject(latlng, layers[l1]._layers[l2]._layers[l3]._latlngs, false);
+              }
             }
           }
         } 
@@ -47,18 +68,23 @@ L.Polyline.include({
    * Snap to object
    *
    * @param <LatLng> latlng - cursor click
-   * @param <FeatureLayer> object - layer to snap to
+   * @param <Array> latlngs - array of <L.LatLngs> to snap to
+   * @param <Boolean> isPolygon - if feature is a polygon
   */
-  _snapToObject: function (latlng, obj) {
+  _snapToObject: function (latlng, latlngs, isPolygon) {
     var sensitivity = this.options.snapping.sensitivity
-                map = this._snapVars.map,
-          lastPoint = null;
+          lastPoint = null,
+                map = this._snapVars.map;
     
-    // Loop through points
-    for (var j in obj._latlngs) {
-      var ll = obj._latlngs[j],
-        p1 = map.latLngToLayerPoint(latlng),
-        p2 = map.latLngToLayerPoint(ll);
+    // this.options.snapping.vertexonly
+    // isPolygon (close polygons)
+    
+    // console.log(latlngs);
+    
+    for (var j in latlngs) {
+      var ll = latlngs[j],
+          p1 = map.latLngToLayerPoint(latlng),
+          p2 = map.latLngToLayerPoint(ll);
       
       if (lastPoint != null) {
         p3 = L.LineUtil.getClosestPoint(lastPoint, p2, p1, false);
