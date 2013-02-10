@@ -7,7 +7,17 @@
 	<!--[if lte IE 8]><link rel="stylesheet" href="libs/leaflet.ie.css" /><![endif]-->
 	<link rel="stylesheet" href="../dist/leaflet.draw.css" />
 	<!--[if lte IE 8]><link rel="stylesheet" href="../dist/leaflet.draw.ie.css" /><![endif]-->
-
+	
+	<style type="text/css">
+    body {
+      padding: 0;
+      margin: 0;
+    }
+    html, body, #map {
+      height: 100%;
+    }
+	</style>
+	
 	<script src="geojson.js"></script>
 	<script src="libs/leaflet-src.js"></script>
 
@@ -29,6 +39,7 @@
 	<script src="../src/edit/handler/Edit.SimpleShape.js"></script>
 	<script src="../src/edit/handler/Edit.Circle.js"></script>
 	<script src="../src/edit/handler/Edit.Rectangle.js"></script>
+	<script src="../src/edit/handler/Edit.Polyline.js"></script>
 
 	<script src="../src/Control.Draw.js"></script>
 	<script src="../src/Tooltip.js"></script>
@@ -40,7 +51,7 @@
 	<script src="../src/edit/handler/EditToolbar.Delete.js"></script>
 </head>
 <body>
-	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
+	<div id="map"></div>
 
 	<script>
 
