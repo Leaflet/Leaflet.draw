@@ -100,7 +100,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	_backupLayer: function (layer) {
-		var id = L.Util.stamp(layer), latlng;
+		var id = L.Util.stamp(layer);
 
 		if (!this._uneditedLayerProps[id]) {
 			// Polyline, Polygon or Rectangle
