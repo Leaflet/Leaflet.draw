@@ -61,12 +61,11 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		}
 	},
 
-	_onClick: function (e) {
+	_onClick: function () {
 		this._fireCreatedEvent();
 
 		this.disable();
 	},
-
 
 	_fireCreatedEvent: function () {
 		var marker = new L.Marker(this._marker.getLatLng(), { icon: this.options.icon });

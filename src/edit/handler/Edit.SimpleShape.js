@@ -122,11 +122,11 @@ L.Edit.SimpleShape = L.Handler.extend({
 		this._shape.fire('edit');
 	},
 
-	_move: function (latlng) {
+	_move: function () {
 		// Children override
 	},
 
-	_resize: function (latlng) {
+	_resize: function () {
 		// Children override
 	}
 });

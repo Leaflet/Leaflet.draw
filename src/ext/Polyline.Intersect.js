@@ -4,7 +4,7 @@ L.Polyline.include({
 	intersects: function () {
 		var points = this._originalPoints,
 			len = points ? points.length : 0,
-			i, p, p1, p2;
+			i, p, p1;
 
 		if (this._tooFewPointsForIntersection()) {
 			return false;

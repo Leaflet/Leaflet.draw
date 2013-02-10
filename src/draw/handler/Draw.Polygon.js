@@ -50,7 +50,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		return this._markers.length >= 3;
 	},
 
-	_vertexAdded: function (latlng) {
+	_vertexAdded: function () {
 		//calc area here
 	},
 

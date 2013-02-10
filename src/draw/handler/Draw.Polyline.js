@@ -124,7 +124,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		return true;
 	},
 	
-	_onZoomEnd: function (e) {
+	_onZoomEnd: function () {
 		this._updateGuide();
 	},
 	

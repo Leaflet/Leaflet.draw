@@ -114,7 +114,7 @@ L.Toolbar = L.Class.extend({
 		this.fire('enable');
 	},
 
-	_handlerDeactivated: function (e) {
+	_handlerDeactivated: function () {
 		this._hideActionsToolbar();
 
 		L.DomUtil.removeClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');

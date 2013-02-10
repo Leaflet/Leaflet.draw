@@ -57,7 +57,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		}
 	},
 
-	_onMouseUp: function (e) {
+	_onMouseUp: function () {
 		if (this._shape) {
 			this._fireCreatedEvent();
 		}
