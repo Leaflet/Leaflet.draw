@@ -140,7 +140,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			markerCount = this._markers.length;
 		
 		// Snapping the guideline in real time
-		if (this._poly.options.snapping.enabled) {
+		if (typeof this._poly.options.snapping !== 'undefined' && this._poly.options.snapping.enabled) {
 			latlng = this._poly.snapTo(latlng);
 			newPos = this._map.latLngToLayerPoint(latlng);
 		}
@@ -166,7 +166,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			markerCount = this._markers.length;
 		
 		// Snapping
-		if (this._poly.options.snapping.enabled) {
+		if (typeof this._poly.options.snapping !== 'undefined' && this._poly.options.snapping.enabled) {
 			latlng = this._poly.snapTo(latlng);
 		}
 		
