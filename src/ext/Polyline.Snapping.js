@@ -31,7 +31,9 @@ L.Polyline.include({
           if (layers[l1]._layers[l2]._leaflet_id !== this._leaflet_id) {
             // Polygon
             if (typeof layers[l1]._layers[l2]._holes !== 'undefined') {
-              this._snapToObject(latlng, layers[l1]._layers[l2]._latlngs, true);
+              var latlngs = layers[l1]._layers[l2]._latlngs.slice(0);
+              latlngs.push(latlngs[0]);
+              this._snapToObject(latlng, latlngs, true);
               // Polygon Holes
               for (var i in layers[l1]._layers[l2]._holes) {
                 this._snapToObject(latlng, layers[l1]._layers[l2]._holes[i], true);
@@ -46,7 +48,9 @@ L.Polyline.include({
             if (layers[l1]._layers[l2]._layers[l3]._leaflet_id !== this._leaflet_id) {
               // Polygon
               if (typeof layers[l1]._layers[l2]._layers[l3]._holes !== 'undefined') {
-                this._snapToObject(latlng, layers[l1]._layers[l2]._layers[l3]._latlngs, true);
+                var latlngs = layers[l1]._layers[l2]._layers[l3]._latlngs.slice(0);
+                latlngs.push(latlngs[0]);
+                this._snapToObject(latlng, latlngs, true);
                 // Polygon Holes
                 for (var i in layers[l1]._layers[l2]._layers[l3]._holes) {
                   this._snapToObject(latlng, layers[l1]._layers[l2]._layers[l3]._holes[i], true);
@@ -77,10 +81,7 @@ L.Polyline.include({
                 map = this._snapVars.map;
     
     // this.options.snapping.vertexonly
-    // isPolygon (close polygons)
-    
-    // console.log(latlngs);
-    
+
     for (var j in latlngs) {
       var ll = latlngs[j],
           p1 = map.latLngToLayerPoint(latlng),
