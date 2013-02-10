@@ -141,7 +141,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		
 		// Snapping the guideline in real time
 		if (this._poly.options.snapping.enabled) {
-			newPos = this._map.latLngToLayerPoint(this._poly.snapTo(latlng));
+			latlng = this._poly.snapTo(latlng);
+			newPos = this._map.latLngToLayerPoint(latlng);
 		}
 		
 		// Save latlng
