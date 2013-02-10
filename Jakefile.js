@@ -1,65 +1,23 @@
-var build = require('./build/build.js'),
-	lint = require('./build/hint.js');
+/*
+Leaflet.draw building and linting scripts.
 
-var COPYRIGHT = '/*\n Copyright (c) 2012, Smartrak, Jacob Toye\n' +
-	' Leaflet.draw is an open-source JavaScript library for drawing shapes/markers on leaflet powered maps.\n' +
-	' https://github.com/jacobtoye/Leaflet.draw\n*/\n';
+To use, install Node, then run the following commands in the project root:
 
-desc('Check source for errors with JSHint');
-task('lint', function () {
-	var files = build.getFiles();
+    npm install -g jake
+    npm install uglify-js
+    npm install jshint
 
-	console.log('Checking for JS errors...');
+To check the code and build Leaflet from source, run "jake"
 
-	var errorsFound = lint.jshint(files);
+For a custom build, open build/build.html in the browser and follow the instructions.
+*/
 
-	if (errorsFound > 0) {
-		console.log(errorsFound + ' error(s) found.\n');
-		fail();
-	} else {
-		console.log('\tCheck passed');
-	}
-});
+var build = require('./build/build.js');
 
-desc('Combine and compress source files');
-task('build', ['lint'], function () {
-	var pathPart = 'dist/leaflet.draw',
-		srcPath = pathPart + '-src.js',
-		path = pathPart + '.js';
+desc('Check Leaflet source for errors with JSHint');
+task('lint', build.lint);
 
-	var files = build.getFiles();
-
-	console.log('Concatenating ' + files.length + ' files...');
-	
-	var content = build.combineFiles(files);
-
-	var oldSrc = build.load(srcPath),
-		newSrc = COPYRIGHT + content,
-		srcDelta = build.getSizeDelta(newSrc, oldSrc);
-
-	console.log('\tUncompressed size: ' + newSrc.length + ' bytes (' + srcDelta + ')');
-
-	if (newSrc === oldSrc) {
-		console.log('\tNo changes');
-	} else {
-		build.save(srcPath, newSrc);
-		console.log('\tSaved to ' + srcPath);
-	}
-
-	console.log('Compressing...');
-
-	var oldCompressed = build.load(path),
-		newCompressed = COPYRIGHT + build.uglify(content),
-		delta = build.getSizeDelta(newCompressed, oldCompressed);
-
-	console.log('\tCompressed size: ' + newCompressed.length + ' bytes (' + delta + ')');
-
-	if (newCompressed === oldCompressed) {
-		console.log('\tNo changes');
-	} else {
-		build.save(path, newCompressed);
-		console.log('\tSaved to ' + path);
-	}
-});
+desc('Combine and compress Leaflet source files');
+task('build', ['lint'], build.build);
 
 task('default', ['build']);

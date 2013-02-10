@@ -47,7 +47,7 @@ var deps = {
 			'draw/DrawToolbar.js'
 		],
 		desc: 'Draw toolbar.',
-		deps: ['Extensions', 'CommonUI']
+		deps: ['DrawHandlers', 'CommonUI']
 	},
 
 	EditUI: {
@@ -57,7 +57,7 @@ var deps = {
 			'edit/handler/EditToolbar.Delete.js'
 		],
 		desc: 'Edit toolbar.',
-		deps: ['Extensions', 'CommonUI']
+		deps: ['EditHandlers', 'CommonUI']
 	}
 };
 
