@@ -1,4 +1,11 @@
 var deps = {
+	Core: {
+		src: [
+			'Leaflet.draw.js'
+		],
+		desc: 'The core of the plugin. Currently only includes the version.'
+	},
+
 	DrawHandlers: {
 		src: [
 			'draw/handler/Draw.Feature.js',
@@ -9,7 +16,8 @@ var deps = {
 			'draw/handler/Draw.Circle.js',
 			'draw/handler/Draw.Marker.js'
 		],
-		desc: 'Drawing handlers for: polylines, polygons, rectangles, circles and markers.'
+		desc: 'Drawing handlers for: polylines, polygons, rectangles, circles and markers.',
+		deps: ['Core']
 	},
 
 	EditHandlers: {
@@ -19,7 +27,8 @@ var deps = {
 			'edit/handler/Edit.Rectangle.js',
 			'edit/handler/Edit.Circle.js'
 		],
-		desc: 'Editing handlers for: polylines, polygons, rectangles, and circles.'
+		desc: 'Editing handlers for: polylines, polygons, rectangles, and circles.',
+		deps: ['Core']
 	},
 
 	Extensions: {
