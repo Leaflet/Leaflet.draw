@@ -54,8 +54,10 @@
  * ~Custom build tool.~
  * ~Move Poly.Edit.js~
  * ~Add ability to update the options after control is initialized.~
+ * ~Make a git tag of Leaflet.draw 0.1~
+ * ~Document changing the options of a draw handler.~
 
 ### TODO
 
- * Fix all the Show Code links in the ReadMe
- * Make a git tag of Leaflet.draw 0.1
+ * Fix all the Show Code links in the ReadMe.
+ * Update the CHANGELOG with contributors for 0.2
