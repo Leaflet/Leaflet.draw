@@ -7,6 +7,12 @@
 	https://github.com/jacobtoye
 */
 (function (window, document, undefined) {
+/*
+ * Leaflet.draw assumes that you have already included the Leaflet library.
+ */
+
+L.drawVersion = '0.2-dev';
+
 L.Draw = {};
 
 L.Draw.Feature = L.Handler.extend({
