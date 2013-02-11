@@ -41,7 +41,7 @@
 </head>
 <body>
 	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
-	
+	<button id="changeColor">Rectangle -> Blue</button>
 	<script>
 		
 		var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png',
@@ -87,6 +87,10 @@
 
 			drawnItems.addLayer(layer);
 		});
+
+		L.DomUtil.get('changeColor').onclick = function () {
+			drawControl.setDrawingOptions({ rectangle: { shapeOptions: { color: '#004a80' } } });
+		};
 
 	</script>
 </body>
