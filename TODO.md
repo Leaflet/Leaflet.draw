@@ -53,7 +53,9 @@
  * ~Fix the draw:enabled event. This is not used for the edit toolbar. It is simply used to state that drawing has started then ended.~
  * ~Custom build tool.~
  * ~Move Poly.Edit.js~
+ * ~Add ability to update the options after control is initialized.~
 
 ### TODO
 
  * Fix all the Show Code links in the ReadMe
+ * Make a git tag of Leaflet.draw 0.1
