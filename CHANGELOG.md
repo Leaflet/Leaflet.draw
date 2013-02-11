@@ -5,7 +5,13 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
+## 0.2 (February ??, 2013)
+
+Major new version. Added Edit toolbar which allows editing and deleting shapes.
+
 ### Bugfixes
+
+## 0.1.7 (February 11, 2013)
 
  * Add sanity check for toolbar buttons when adding top and bottom classes. (by [@yohanboniface](https://github.com/yohanboniface)). [#60](https://github.com/Leaflet/Leaflet.draw/pull/60)
 

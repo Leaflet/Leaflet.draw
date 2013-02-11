@@ -60,4 +60,3 @@
 ### TODO
 
  * Fix all the Show Code links in the ReadMe.
- * Update the CHANGELOG with contributors for 0.2
