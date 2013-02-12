@@ -105,15 +105,15 @@ L.Control.Draw = L.Control.extend({
 		return container;
 	},
 
-	enable: function(buttonType){
+	enable: function (buttonType) {
 		this._toggle(true, buttonType);
 	},
 
-	disable: function(buttonType){
+	disable: function (buttonType) {
 		this._toggle(false, buttonType);
 	},
 
-	_toggle: function(enable, buttonType){
+	_toggle: function (enable, buttonType) {
 		var buttons = this.buttons,
 			drawName = 'leaflet-control-draw',
 			buttonName = drawName + '-' + buttonType;
@@ -121,7 +121,7 @@ L.Control.Draw = L.Control.extend({
 		for (var i in buttons) {
 			// Check if is a property of this object and is enabled
 			if (buttons.hasOwnProperty(i) && L.DomUtil.hasClass(buttons[i], buttonName)) {
-				if(enable){
+				if (enable) {
 					// enable button
 					L.DomEvent.on(buttons[i], 'click', this.handlers[buttonType].enable, this.handlers[buttonType]);
 					L.DomUtil.removeClass(buttons[i], drawName + '-disabled');
