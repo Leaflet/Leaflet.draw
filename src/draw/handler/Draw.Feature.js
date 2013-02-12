@@ -53,6 +53,10 @@ L.Draw.Feature = L.Handler.extend({
 		}
 	},
 
+	setOptions: function (options) {
+		L.setOptions(this, options);
+	},
+
 	_fireCreatedEvent: function (layer) {
 		this._map.fire('draw:created', { layer: layer, layerType: this.type });
 	},

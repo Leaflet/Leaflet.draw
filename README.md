@@ -324,6 +324,20 @@ var drawControl = new L.Control.Draw({
 });
 ````
 
+### Changing a drawing handlers options
+
+You can change a draw handlers options after initialization by using the `setDrawingOptions` method on the Leaflet.draw control.
+
+E.g. to change the colour of the rectangle:
+
+````js
+drawControl.setDrawingOptions(
+    rectangle: {
+        color: '#0000FF'
+    }
+);
+````
+
 <a name="thanks" />
 ## Thanks
 

@@ -33,7 +33,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 		this.fire('enabled', { handler: this.type});
 	},
 
-	disable: function (revert) {
+	disable: function () {
 		if (!this._enabled) { return; }
 		
 		L.Handler.prototype.disable.call(this);

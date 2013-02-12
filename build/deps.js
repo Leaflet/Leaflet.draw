@@ -1,12 +1,9 @@
 var deps = {
-	Extensions: {
+	Core: {
 		src: [
-			'ext/LatLngUtil.js',
-			'ext/LineUtil.Intersect.js',
-			'ext/Polyline.Intersect.js',
-			'ext/Polygon.Intersect.js'
+			'Leaflet.draw.js'
 		],
-		desc: 'Extensions of leaflet classes.'
+		desc: 'The core of the plugin. Currently only includes the version.'
 	},
 
 	DrawHandlers: {
@@ -20,17 +17,28 @@ var deps = {
 			'draw/handler/Draw.Marker.js'
 		],
 		desc: 'Drawing handlers for: polylines, polygons, rectangles, circles and markers.',
-		deps: ['Extensions']
+		deps: ['Core']
 	},
 
 	EditHandlers: {
 		src: [
+			'edit/handler/Edit.Poly.js',
 			'edit/handler/Edit.SimpleShape.js',
 			'edit/handler/Edit.Rectangle.js',
 			'edit/handler/Edit.Circle.js'
 		],
-		desc: 'Editing handlers for: polylines, polygons, rectangles, circles and markers.',
-		deps: ['Extensions']
+		desc: 'Editing handlers for: polylines, polygons, rectangles, and circles.',
+		deps: ['Core']
+	},
+
+	Extensions: {
+		src: [
+			'ext/LatLngUtil.js',
+			'ext/LineUtil.Intersect.js',
+			'ext/Polyline.Intersect.js',
+			'ext/Polygon.Intersect.js'
+		],
+		desc: 'Extensions of leaflet classes.'
 	},
 
 	CommonUI: {
@@ -39,7 +47,8 @@ var deps = {
 			'Toolbar.js',
 			'Tooltip.js'
 		],
-		desc: 'Common UI components used.'
+		desc: 'Common UI components used.',
+		deps: ['Extensions']
 	},
 
 	DrawUI: {
@@ -47,7 +56,7 @@ var deps = {
 			'draw/DrawToolbar.js'
 		],
 		desc: 'Draw toolbar.',
-		deps: ['Extensions', 'CommonUI']
+		deps: ['DrawHandlers', 'CommonUI']
 	},
 
 	EditUI: {
@@ -57,7 +66,7 @@ var deps = {
 			'edit/handler/EditToolbar.Delete.js'
 		],
 		desc: 'Edit toolbar.',
-		deps: ['Extensions', 'CommonUI']
+		deps: ['EditHandlers', 'CommonUI']
 	}
 };
 

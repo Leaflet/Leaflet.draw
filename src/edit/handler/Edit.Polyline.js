@@ -1,4 +1,4 @@
-L.Handler.PolyEdit.include({
+L.Edit.Poly.include({
 	_onMarkerDrag: function (e) {
 		var marker = e.target;
 		

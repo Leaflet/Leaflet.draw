@@ -1,160 +1,17 @@
 /*
- Copyright (c) 2012, Smartrak, Jacob Toye
- Leaflet.draw is an open-source JavaScript library for drawing shapes/markers on leaflet powered maps.
- https://github.com/jacobtoye/Leaflet.draw
+	Leaflet.draw, a plugin that adds drawing and editing tools to Leaflet powered maps.
+	(c) 2012-2013, Jacob Toye, Smartrak
+
+	https://github.com/Leaflet/Leaflet.draw
+	http://leafletjs.com
+	https://github.com/jacobtoye
 */
-(function (window, undefined) {
-
-L.drawVersion = '0.1.6';
-
+(function (window, document, undefined) {
 /*
- * L.LatLngUtil contains different utility functions for LatLngs.
+ * Leaflet.draw assumes that you have already included the Leaflet library.
  */
 
-L.LatLngUtil = {
-	// Clones a LatLngs[], returns [][]
-	cloneLatLngs: function (latlngs) {
-		var clone = [];
-		for (var i = 0, l = latlngs.length; i < l; i++) {
-			clone.push(this.cloneLatLng(latlngs[i]));
-		}
-		return clone;
-	},
-
-	cloneLatLng: function (latlng) {
-		return L.latLng(latlng.lat, latlng.lng);
-	}
-};
-
-L.Util.extend(L.LineUtil, {
-	// Checks to see if two line segments intersect. Does not handle degenerate cases.
-	// http://compgeom.cs.uiuc.edu/~jeffe/teaching/373/notes/x06-sweepline.pdf
-	segmentsIntersect: function (/*Point*/ p, /*Point*/ p1, /*Point*/ p2, /*Point*/ p3) {
-		return	this._checkCounterclockwise(p, p2, p3) !==
-				this._checkCounterclockwise(p1, p2, p3) &&
-				this._checkCounterclockwise(p, p1, p2) !==
-				this._checkCounterclockwise(p, p1, p3);
-	},
-
-	// check to see if points are in counterclockwise order
-	_checkCounterclockwise: function (/*Point*/ p, /*Point*/ p1, /*Point*/ p2) {
-		return (p2.y - p.y) * (p1.x - p.x) > (p1.y - p.y) * (p2.x - p.x);
-	}
-});
-
-L.Polyline.include({
-	// Check to see if this polyline has any linesegments that intersect.
-	// NOTE: does not support detecting intersection for degenerate cases.
-	intersects: function () {
-		var points = this._originalPoints,
-			len = points ? points.length : 0,
-			i, j, p, p1, p2, p3;
-
-		if (this._tooFewPointsForIntersection()) {
-			return false;
-		}
-
-		for (i = len - 1; i >= 3; i--) {
-			p = points[i - 1];
-			p1 = points[i];
-
-			
-			if (this._lineSegmentsIntersectsRange(p, p1, i - 2)) {
-				return true;
-			}
-		}
-
-		return false;
-	},
-
-	// Check for intersection if new latlng was added to this polyline.
-	// NOTE: does not support detecting intersection for degenerate cases.
-	newLatLngIntersects: function (latlng, skipFirst) {
-		// Cannot check a polyline for intersecting lats/lngs when not added to the map
-		if (!this._map) {
-			return false;
-		}
-
-		return this.newPointIntersects(this._map.latLngToLayerPoint(latlng), skipFirst);
-	},
-
-	// Check for intersection if new point was added to this polyline.
-	// newPoint must be a layer point.
-	// NOTE: does not support detecting intersection for degenerate cases.
-	newPointIntersects: function (newPoint, skipFirst) {
-		var points = this._originalPoints,
-			len = points ? points.length : 0,
-			lastPoint = points ? points[len - 1] : null,
-			// The previous previous line segment. Previous line segement doesn't need testing.
-			maxIndex = len - 2;
-
-		if (this._tooFewPointsForIntersection(1)) {
-			return false;
-		}
-
-		return this._lineSegmentsIntersectsRange(lastPoint, newPoint, maxIndex, skipFirst ? 1 : 0);
-	},
-
-	// Polylines with 2 sides can only intersect in cases where points are collinear (we don't support detecting these).
-	// Cannot have intersection when < 3 line segments (< 4 points)
-	_tooFewPointsForIntersection: function (extraPoints) {
-		var points = this._originalPoints,
-			len = points ? points.length : 0;
-		// Increment length by extraPoints if present
-		len += extraPoints || 0;
-
-		return !this._originalPoints || len <= 3;
-	},
-
-	// Checks a line segment intersections with any line segements before its predecessor.
-	// Don't need to check the predecessor as will never intersect.
-	_lineSegmentsIntersectsRange: function (p, p1, maxIndex, minIndex) {
-		var points = this._originalPoints,
-			p2, p3;
-
-		minIndex = minIndex || 0;
-
-		// Check all previous line segments (beside the immediately previous) for intersections
-		for (var j = maxIndex; j > minIndex; j--) {
-			p2 = points[j - 1];
-			p3 = points[j];
-
-			if (L.LineUtil.segmentsIntersect(p, p1, p2, p3)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-});
-
-L.Polygon.include({
-	// Checks a polygon for any intersecting line segments. Ignores holes.
-	intersects: function () {
-		var polylineIntersects,
-			points = this._originalPoints,
-			len, firstPoint, lastPoint, maxIndex;
-
-		if (this._tooFewPointsForIntersection()) {
-			return false;
-		}
-
-		polylineIntersects = L.Polyline.prototype.intersects.call(this);
-
-		// If already found an intersection don't need to check for any more.
-		if (polylineIntersects) {
-			return true;
-		}
-
-		len = points.length;
-		firstPoint = points[0];
-		lastPoint = points[len - 1];
-		maxIndex = len - 2;
-
-		// Check the line segment between last and first point. Don't need to check the first line segment (minIndex = 1)
-		return this._lineSegmentsIntersectsRange(lastPoint, firstPoint, maxIndex, 1);
-	}
-});
+L.drawVersion = '0.2-dev';
 
 L.Draw = {};
 
@@ -178,7 +35,7 @@ L.Draw.Feature = L.Handler.extend({
 		if (this._enabled) { return; }
 
 		this.fire('enabled', { handler: this.type });
-		this._map.fire('draw:enabled', { drawingType: this.type });
+		this._map.fire('draw:drawstart', { layerType: this.type });
 		L.Handler.prototype.enable.call(this);
 	},
 
@@ -186,7 +43,7 @@ L.Draw.Feature = L.Handler.extend({
 		if (!this._enabled) { return; }
 
 		this.fire('disabled', { handler: this.type });
-		this._map.fire('draw:disabled', { drawingType: this.type });
+		this._map.fire('draw:drawstop', { layerType: this.type });
 		L.Handler.prototype.disable.call(this);
 	},
 	
@@ -349,14 +206,13 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		return true;
 	},
 	
-	_onZoomEnd: function (e) {
+	_onZoomEnd: function () {
 		this._updateGuide();
 	},
 	
 	_onMouseMove: function (e) {
 		var newPos = e.layerPoint,
-			latlng = e.latlng,
-			markerCount = this._markers.length;
+			latlng = e.latlng;
 
 		// Save latlng
 		// should this be moved to _updateGuide() ?
@@ -636,7 +492,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		return this._markers.length >= 3;
 	},
 
-	_vertexAdded: function (latlng) {
+	_vertexAdded: function () {
 		//calc area here
 	},
 
@@ -706,7 +562,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		}
 	},
 
-	_onMouseUp: function (e) {
+	_onMouseUp: function () {
 		if (this._shape) {
 			this._fireCreatedEvent();
 		}
@@ -862,18 +718,270 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		}
 	},
 
-	_onClick: function (e) {
+	_onClick: function () {
 		this._fireCreatedEvent();
 
 		this.disable();
 	},
-
 
 	_fireCreatedEvent: function () {
 		var marker = new L.Marker(this._marker.getLatLng(), { icon: this.options.icon });
 		L.Draw.Feature.prototype._fireCreatedEvent.call(this, marker);
 	}
 });
+
+L.Edit = L.Edit || {};
+
+/*
+ * L.Edit.Poly is an editing handler for polylines and polygons.
+ */
+
+L.Edit.Poly = L.Handler.extend({
+	options: {
+		icon: new L.DivIcon({
+			iconSize: new L.Point(8, 8),
+			className: 'leaflet-div-icon leaflet-editing-icon'
+		})
+	},
+
+	initialize: function (poly, options) {
+		this._poly = poly;
+		L.setOptions(this, options);
+	},
+
+	addHooks: function () {
+		if (this._poly._map) {
+			if (!this._markerGroup) {
+				this._initMarkers();
+			}
+			this._poly._map.addLayer(this._markerGroup);
+		}
+	},
+
+	removeHooks: function () {
+		if (this._poly._map) {
+			this._poly._map.removeLayer(this._markerGroup);
+			delete this._markerGroup;
+			delete this._markers;
+		}
+	},
+
+	updateMarkers: function () {
+		this._markerGroup.clearLayers();
+		this._initMarkers();
+	},
+
+	_initMarkers: function () {
+		if (!this._markerGroup) {
+			this._markerGroup = new L.LayerGroup();
+		}
+		this._markers = [];
+
+		var latlngs = this._poly._latlngs,
+		    i, j, len, marker;
+
+		// TODO refactor holes implementation in Polygon to support it here
+
+		for (i = 0, len = latlngs.length; i < len; i++) {
+
+			marker = this._createMarker(latlngs[i], i);
+			marker.on('click', this._onMarkerClick, this);
+			this._markers.push(marker);
+		}
+
+		var markerLeft, markerRight;
+
+		for (i = 0, j = len - 1; i < len; j = i++) {
+			if (i === 0 && !(L.Polygon && (this._poly instanceof L.Polygon))) {
+				continue;
+			}
+
+			markerLeft = this._markers[j];
+			markerRight = this._markers[i];
+
+			this._createMiddleMarker(markerLeft, markerRight);
+			this._updatePrevNext(markerLeft, markerRight);
+		}
+	},
+
+	_createMarker: function (latlng, index) {
+		var marker = new L.Marker(latlng, {
+			draggable: true,
+			icon: this.options.icon
+		});
+
+		marker._origLatLng = latlng;
+		marker._index = index;
+
+		marker.on('drag', this._onMarkerDrag, this);
+		marker.on('dragend', this._fireEdit, this);
+
+		this._markerGroup.addLayer(marker);
+
+		return marker;
+	},
+
+	_fireEdit: function () {
+		this._poly.fire('edit');
+	},
+
+	_onMarkerDrag: function (e) {
+		var marker = e.target;
+
+		L.extend(marker._origLatLng, marker._latlng);
+
+		if (marker._middleLeft) {
+			marker._middleLeft.setLatLng(this._getMiddleLatLng(marker._prev, marker));
+		}
+		if (marker._middleRight) {
+			marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next));
+		}
+
+		this._poly.redraw();
+	},
+
+	_onMarkerClick: function (e) {
+		// we want to remove the marker on click, but if latlng count < 3, polyline would be invalid
+		if (this._poly._latlngs.length < 3) { return; }
+
+		var marker = e.target,
+		    i = marker._index;
+
+		// remove the marker
+		this._markerGroup.removeLayer(marker);
+		this._markers.splice(i, 1);
+		this._poly.spliceLatLngs(i, 1);
+		this._updateIndexes(i, -1);
+
+		// update prev/next links of adjacent markers
+		this._updatePrevNext(marker._prev, marker._next);
+
+		// remove ghost markers near the removed marker
+		if (marker._middleLeft) {
+			this._markerGroup.removeLayer(marker._middleLeft);
+		}
+		if (marker._middleRight) {
+			this._markerGroup.removeLayer(marker._middleRight);
+		}
+
+		// create a ghost marker in place of the removed one
+		if (marker._prev && marker._next) {
+			this._createMiddleMarker(marker._prev, marker._next);
+
+		} else if (!marker._prev) {
+			marker._next._middleLeft = null;
+
+		} else if (!marker._next) {
+			marker._prev._middleRight = null;
+		}
+
+		this._poly.fire('edit');
+	},
+
+	_updateIndexes: function (index, delta) {
+		this._markerGroup.eachLayer(function (marker) {
+			if (marker._index > index) {
+				marker._index += delta;
+			}
+		});
+	},
+
+	_createMiddleMarker: function (marker1, marker2) {
+		var latlng = this._getMiddleLatLng(marker1, marker2),
+		    marker = this._createMarker(latlng),
+		    onClick,
+		    onDragStart,
+		    onDragEnd;
+
+		marker.setOpacity(0.6);
+
+		marker1._middleRight = marker2._middleLeft = marker;
+
+		onDragStart = function () {
+			var i = marker2._index;
+
+			marker._index = i;
+
+			marker
+			    .off('click', onClick)
+			    .on('click', this._onMarkerClick, this);
+
+			latlng.lat = marker.getLatLng().lat;
+			latlng.lng = marker.getLatLng().lng;
+			this._poly.spliceLatLngs(i, 0, latlng);
+			this._markers.splice(i, 0, marker);
+
+			marker.setOpacity(1);
+
+			this._updateIndexes(i, 1);
+			marker2._index++;
+			this._updatePrevNext(marker1, marker);
+			this._updatePrevNext(marker, marker2);
+		};
+
+		onDragEnd = function () {
+			marker.off('dragstart', onDragStart, this);
+			marker.off('dragend', onDragEnd, this);
+
+			this._createMiddleMarker(marker1, marker);
+			this._createMiddleMarker(marker, marker2);
+		};
+
+		onClick = function () {
+			onDragStart.call(this);
+			onDragEnd.call(this);
+			this._poly.fire('edit');
+		};
+
+		marker
+		    .on('click', onClick, this)
+		    .on('dragstart', onDragStart, this)
+		    .on('dragend', onDragEnd, this);
+
+		this._markerGroup.addLayer(marker);
+	},
+
+	_updatePrevNext: function (marker1, marker2) {
+		if (marker1) {
+			marker1._next = marker2;
+		}
+		if (marker2) {
+			marker2._prev = marker1;
+		}
+	},
+
+	_getMiddleLatLng: function (marker1, marker2) {
+		var map = this._poly._map,
+		    p1 = map.latLngToLayerPoint(marker1.getLatLng()),
+		    p2 = map.latLngToLayerPoint(marker2.getLatLng());
+
+		return map.layerPointToLatLng(p1._add(p2)._divideBy(2));
+	}
+});
+
+L.Polyline.addInitHook(function () {
+
+	if (L.Edit.Poly) {
+		this.editing = new L.Edit.Poly(this);
+
+		if (this.options.editable) {
+			this.editing.enable();
+		}
+	}
+
+	this.on('add', function () {
+		if (this.editing && this.editing.enabled()) {
+			this.editing.addHooks();
+		}
+	});
+
+	this.on('remove', function () {
+		if (this.editing && this.editing.enabled()) {
+			this.editing.removeHooks();
+		}
+	});
+});
+
 
 L.Edit = L.Edit || {};
 
@@ -999,11 +1107,11 @@ L.Edit.SimpleShape = L.Handler.extend({
 		this._shape.fire('edit');
 	},
 
-	_move: function (latlng) {
+	_move: function () {
 		// Children override
 	},
 
-	_resize: function (latlng) {
+	_resize: function () {
 		// Children override
 	}
 });
@@ -1190,6 +1298,155 @@ L.Circle.addInitHook(function () {
 	});
 });
 
+/*
+ * L.LatLngUtil contains different utility functions for LatLngs.
+ */
+
+L.LatLngUtil = {
+	// Clones a LatLngs[], returns [][]
+	cloneLatLngs: function (latlngs) {
+		var clone = [];
+		for (var i = 0, l = latlngs.length; i < l; i++) {
+			clone.push(this.cloneLatLng(latlngs[i]));
+		}
+		return clone;
+	},
+
+	cloneLatLng: function (latlng) {
+		return L.latLng(latlng.lat, latlng.lng);
+	}
+};
+
+L.Util.extend(L.LineUtil, {
+	// Checks to see if two line segments intersect. Does not handle degenerate cases.
+	// http://compgeom.cs.uiuc.edu/~jeffe/teaching/373/notes/x06-sweepline.pdf
+	segmentsIntersect: function (/*Point*/ p, /*Point*/ p1, /*Point*/ p2, /*Point*/ p3) {
+		return	this._checkCounterclockwise(p, p2, p3) !==
+				this._checkCounterclockwise(p1, p2, p3) &&
+				this._checkCounterclockwise(p, p1, p2) !==
+				this._checkCounterclockwise(p, p1, p3);
+	},
+
+	// check to see if points are in counterclockwise order
+	_checkCounterclockwise: function (/*Point*/ p, /*Point*/ p1, /*Point*/ p2) {
+		return (p2.y - p.y) * (p1.x - p.x) > (p1.y - p.y) * (p2.x - p.x);
+	}
+});
+
+L.Polyline.include({
+	// Check to see if this polyline has any linesegments that intersect.
+	// NOTE: does not support detecting intersection for degenerate cases.
+	intersects: function () {
+		var points = this._originalPoints,
+			len = points ? points.length : 0,
+			i, p, p1;
+
+		if (this._tooFewPointsForIntersection()) {
+			return false;
+		}
+
+		for (i = len - 1; i >= 3; i--) {
+			p = points[i - 1];
+			p1 = points[i];
+
+			
+			if (this._lineSegmentsIntersectsRange(p, p1, i - 2)) {
+				return true;
+			}
+		}
+
+		return false;
+	},
+
+	// Check for intersection if new latlng was added to this polyline.
+	// NOTE: does not support detecting intersection for degenerate cases.
+	newLatLngIntersects: function (latlng, skipFirst) {
+		// Cannot check a polyline for intersecting lats/lngs when not added to the map
+		if (!this._map) {
+			return false;
+		}
+
+		return this.newPointIntersects(this._map.latLngToLayerPoint(latlng), skipFirst);
+	},
+
+	// Check for intersection if new point was added to this polyline.
+	// newPoint must be a layer point.
+	// NOTE: does not support detecting intersection for degenerate cases.
+	newPointIntersects: function (newPoint, skipFirst) {
+		var points = this._originalPoints,
+			len = points ? points.length : 0,
+			lastPoint = points ? points[len - 1] : null,
+			// The previous previous line segment. Previous line segement doesn't need testing.
+			maxIndex = len - 2;
+
+		if (this._tooFewPointsForIntersection(1)) {
+			return false;
+		}
+
+		return this._lineSegmentsIntersectsRange(lastPoint, newPoint, maxIndex, skipFirst ? 1 : 0);
+	},
+
+	// Polylines with 2 sides can only intersect in cases where points are collinear (we don't support detecting these).
+	// Cannot have intersection when < 3 line segments (< 4 points)
+	_tooFewPointsForIntersection: function (extraPoints) {
+		var points = this._originalPoints,
+			len = points ? points.length : 0;
+		// Increment length by extraPoints if present
+		len += extraPoints || 0;
+
+		return !this._originalPoints || len <= 3;
+	},
+
+	// Checks a line segment intersections with any line segements before its predecessor.
+	// Don't need to check the predecessor as will never intersect.
+	_lineSegmentsIntersectsRange: function (p, p1, maxIndex, minIndex) {
+		var points = this._originalPoints,
+			p2, p3;
+
+		minIndex = minIndex || 0;
+
+		// Check all previous line segments (beside the immediately previous) for intersections
+		for (var j = maxIndex; j > minIndex; j--) {
+			p2 = points[j - 1];
+			p3 = points[j];
+
+			if (L.LineUtil.segmentsIntersect(p, p1, p2, p3)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+});
+
+L.Polygon.include({
+	// Checks a polygon for any intersecting line segments. Ignores holes.
+	intersects: function () {
+		var polylineIntersects,
+			points = this._originalPoints,
+			len, firstPoint, lastPoint, maxIndex;
+
+		if (this._tooFewPointsForIntersection()) {
+			return false;
+		}
+
+		polylineIntersects = L.Polyline.prototype.intersects.call(this);
+
+		// If already found an intersection don't need to check for any more.
+		if (polylineIntersects) {
+			return true;
+		}
+
+		len = points.length;
+		firstPoint = points[0];
+		lastPoint = points[len - 1];
+		maxIndex = len - 2;
+
+		// Check the line segment between last and first point. Don't need to check the first line segment (minIndex = 1)
+		return this._lineSegmentsIntersectsRange(lastPoint, firstPoint, maxIndex, 1);
+	}
+});
+
 L.Control.Draw = L.Control.extend({
 
 	options: {
@@ -1206,7 +1463,7 @@ L.Control.Draw = L.Control.extend({
 		this._toolbars = {};
 
 		// Initialize toolbars
-		if (this.options.draw) {
+		if (L.DrawToolbar && this.options.draw) {
 			toolbar = new L.DrawToolbar(this.options.draw);
 			id = L.stamp(toolbar);
 			this._toolbars[id] = toolbar;
@@ -1215,7 +1472,7 @@ L.Control.Draw = L.Control.extend({
 			this._toolbars[id].on('enable', this._toolbarEnabled, this);
 		}
 
-		if (this.options.edit) {
+		if (L.EditToolbar && this.options.edit) {
 			toolbar = new L.EditToolbar(this.options.edit);
 			id = L.stamp(toolbar);
 			this._toolbars[id] = toolbar;
@@ -1250,7 +1507,7 @@ L.Control.Draw = L.Control.extend({
 		return container;
 	},
 
-	onRemove: function (map) {
+	onRemove: function () {
 		for (var toolbarId in this._toolbars) {
 			if (this._toolbars.hasOwnProperty(toolbarId)) {
 				this._toolbars[toolbarId].removeToolbar();
@@ -1396,7 +1653,7 @@ L.Toolbar = L.Class.extend({
 		this.fire('enable');
 	},
 
-	_handlerDeactivated: function (e) {
+	_handlerDeactivated: function () {
 		this._hideActionsToolbar();
 
 		L.DomUtil.removeClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
@@ -1623,13 +1880,13 @@ L.DrawToolbar = L.Toolbar.extend({
 L.EditToolbar = L.Toolbar.extend({
 	options: {
 		edit: {
-			title: 'Edit layers'
+			title: 'Edit layers',
+			selectedPathOptions: null // See Edit handler options, this is used to customize the style of selected paths
 		},
 		remove: {
 			title: 'Delete layers'
 		},
-		featureGroup: null, /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
-		selectedPathOptions: null // See Edit handler options, this is used to customize the style of selected paths
+		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
 	initialize: function (options) {
@@ -1651,7 +1908,7 @@ L.EditToolbar = L.Toolbar.extend({
 			this._initModeHandler(
 				new L.EditToolbar.Edit(map, {
 					featureGroup: this.options.featureGroup,
-					selectedPathOptions: this.options.selectedPathOptions
+					selectedPathOptions: this.options.edit.selectedPathOptions
 				}),
 				this._toolbarContainer,
 				buttonIndex++,
@@ -1705,6 +1962,7 @@ L.EditToolbar = L.Toolbar.extend({
 	},
 
 	_save: function () {
+		this._activeMode.handler.save();
 		this._activeMode.handler.disable();
 	}
 });
@@ -1805,8 +2063,13 @@ L.EditToolbar.Edit = L.Handler.extend({
 		}, this);
 	},
 
+	save: function () {
+		// TODO: pass on the edited layers
+		this._map.fire('draw:edited');
+	},
+
 	_backupLayer: function (layer) {
-		var id = L.Util.stamp(layer), latlng;
+		var id = L.Util.stamp(layer);
 
 		if (!this._uneditedLayerProps[id]) {
 			// Polyline, Polygon or Rectangle
@@ -1959,7 +2222,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 		this.fire('enabled', { handler: this.type});
 	},
 
-	disable: function (revert) {
+	disable: function () {
 		if (!this._enabled) { return; }
 		
 		L.Handler.prototype.disable.call(this);
@@ -2002,6 +2265,10 @@ L.EditToolbar.Delete = L.Handler.extend({
 		}, this);
 	},
 
+	save: function () {
+		this._map.fire('draw:deleted', { layers: this._deletedLayers });
+	},
+
 	_enableLayerDelete: function (e) {
 		var layer = e.layer || e.target || e;
 
@@ -2031,6 +2298,4 @@ L.EditToolbar.Delete = L.Handler.extend({
 });
 
 
-
-
-}(this));
+}(this, document));

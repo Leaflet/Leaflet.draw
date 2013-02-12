@@ -131,14 +131,13 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		return true;
 	},
 	
-	_onZoomEnd: function (e) {
+	_onZoomEnd: function () {
 		this._updateGuide();
 	},
 	
 	_onMouseMove: function (e) {
 		var newPos = e.layerPoint,
-			latlng = e.latlng,
-			markerCount = this._markers.length;
+			latlng = e.latlng;
 		
 		// Snapping the guideline in real time
 		if (typeof this._poly.options.snapping !== 'undefined' && this._poly.options.snapping.enabled) {

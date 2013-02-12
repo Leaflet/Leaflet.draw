@@ -93,5 +93,15 @@ L.DrawToolbar = L.Toolbar.extend({
 		container.appendChild(this._actionsContainer);
 
 		return container;
+	},
+
+	setOptions: function (options) {
+		L.setOptions(this, options);
+
+		for (var type in this._modes) {
+			if (this._modes.hasOwnProperty(type) && options.hasOwnProperty(type)) {
+				this._modes[type].handler.setOptions(options[type]);
+			}
+		}
 	}
 });

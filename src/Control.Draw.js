@@ -14,7 +14,7 @@ L.Control.Draw = L.Control.extend({
 		this._toolbars = {};
 
 		// Initialize toolbars
-		if (this.options.draw) {
+		if (L.DrawToolbar && this.options.draw) {
 			toolbar = new L.DrawToolbar(this.options.draw);
 			id = L.stamp(toolbar);
 			this._toolbars[id] = toolbar;
@@ -23,7 +23,7 @@ L.Control.Draw = L.Control.extend({
 			this._toolbars[id].on('enable', this._toolbarEnabled, this);
 		}
 
-		if (this.options.edit) {
+		if (L.EditToolbar && this.options.edit) {
 			toolbar = new L.EditToolbar(this.options.edit);
 			id = L.stamp(toolbar);
 			this._toolbars[id] = toolbar;
@@ -58,10 +58,18 @@ L.Control.Draw = L.Control.extend({
 		return container;
 	},
 
-	onRemove: function (map) {
+	onRemove: function () {
 		for (var toolbarId in this._toolbars) {
 			if (this._toolbars.hasOwnProperty(toolbarId)) {
 				this._toolbars[toolbarId].removeToolbar();
+			}
+		}
+	},
+
+	setDrawingOptions: function (options) {
+		for (var toolbarId in this._toolbars) {
+			if (this._toolbars[toolbarId] instanceof L.DrawToolbar) {
+				this._toolbars[toolbarId].setOptions(options);
 			}
 		}
 	},
