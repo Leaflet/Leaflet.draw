@@ -31,14 +31,14 @@ L.Control.Draw = L.Control.extend({
 		var drawName = 'leaflet-control-draw', //TODO
 			barName = 'leaflet-bar',
 			partName = barName + '-part',
-			container = L.DomUtil.create('div', drawName + ' ' + barName),
-			buttons = [];
+			container = L.DomUtil.create('div', drawName + ' ' + barName);
 	
 		this.handlers = {};
+		this.buttons = [];
 	
 		if (this.options.polyline) {
 			this.handlers.polyline = new L.Polyline.Draw(map, this.options.polyline);
-			buttons.push(this._createButton(
+			this.buttons.push(this._createButton(
 				this.options.polyline.title,
 				drawName + '-polyline ' + partName,
 				container,
@@ -50,7 +50,7 @@ L.Control.Draw = L.Control.extend({
 
 		if (this.options.polygon) {
 			this.handlers.polygon = new L.Polygon.Draw(map, this.options.polygon);
-			buttons.push(this._createButton(
+			this.buttons.push(this._createButton(
 				this.options.polygon.title,
 				drawName + '-polygon ' + partName,
 				container,
@@ -62,7 +62,7 @@ L.Control.Draw = L.Control.extend({
 
 		if (this.options.rectangle) {
 			this.handlers.rectangle = new L.Rectangle.Draw(map, this.options.rectangle);
-			buttons.push(this._createButton(
+			this.buttons.push(this._createButton(
 				this.options.rectangle.title,
 				drawName + '-rectangle ' + partName,
 				container,
@@ -74,7 +74,7 @@ L.Control.Draw = L.Control.extend({
 
 		if (this.options.circle) {
 			this.handlers.circle = new L.Circle.Draw(map, this.options.circle);
-			buttons.push(this._createButton(
+			this.buttons.push(this._createButton(
 				this.options.circle.title,
 				drawName + '-circle ' + partName,
 				container,
@@ -86,7 +86,7 @@ L.Control.Draw = L.Control.extend({
 
 		if (this.options.marker) {
 			this.handlers.marker = new L.Marker.Draw(map, this.options.marker);
-			buttons.push(this._createButton(
+			this.buttons.push(this._createButton(
 				this.options.marker.title,
 				drawName + '-marker ' + partName,
 				container,
@@ -96,13 +96,42 @@ L.Control.Draw = L.Control.extend({
 			this.handlers.marker.on('activated', this._disableInactiveModes, this);
 		}
 		
-		if (buttons.length) {
+		if (this.buttons.length) {
 			// Add in the top and bottom classes so we get the border radius
-			L.DomUtil.addClass(buttons[0], partName + '-top');
-			L.DomUtil.addClass(buttons[buttons.length - 1], partName + '-bottom');
+			L.DomUtil.addClass(this.buttons[0], partName + '-top');
+			L.DomUtil.addClass(this.buttons[this.buttons.length - 1], partName + '-bottom');
 		}
 
 		return container;
+	},
+
+	enable: function(buttonType){
+		this._toggle(true, buttonType);
+	},
+
+	disable: function(buttonType){
+		this._toggle(false, buttonType);
+	},
+
+	_toggle: function(enable, buttonType){
+		var buttons = this.buttons,
+			drawName = 'leaflet-control-draw',
+			buttonName = drawName + '-' + buttonType;
+
+		for (var i in buttons) {
+			// Check if is a property of this object and is enabled
+			if (buttons.hasOwnProperty(i) && L.DomUtil.hasClass(buttons[i], buttonName)) {
+				if(enable){
+					// enable button
+					L.DomEvent.on(buttons[i], 'click', this.handlers[buttonType].enable, this.handlers[buttonType]);
+					L.DomUtil.removeClass(buttons[i], drawName + '-disabled');
+				} else {
+					// disable button
+					L.DomEvent.off(buttons[i], 'click', this.handlers[buttonType].enable);
+					L.DomUtil.addClass(buttons[i], drawName + '-disabled');
+				}
+			}
+		}
 	},
 
 	_createButton: function (title, className, container, fn, context) {
@@ -125,6 +154,7 @@ L.Control.Draw = L.Control.extend({
 		for (var i in this.handlers) {
 			// Check if is a property of this object and is enabled
 			if (this.handlers.hasOwnProperty(i) && this.handlers[i].enabled()) {
+				console.log('_disableInactiveModes', i);
 				this.handlers[i].disable();
 			}
 		}
