@@ -11,6 +11,12 @@
 	display: block;
 	width: 22px;
 	height: 22px;
+
+	-webkit-transition: opacity 0.66s ease;
+	-moz-transition: opacity 0.66s ease;
+	-ms-transition: opacity 0.66s ease;
+	-o-transition: opacity 0.66s ease;
+	transition: opacity 0.66s ease;
 }
 
 .leaflet-control-draw a:hover {
@@ -40,6 +46,17 @@
 
 .leaflet-control-draw-marker {
 	background-image: url(images/draw-marker-icon.png);
+}
+
+.leaflet-control-draw-disabled{
+	cursor: default;
+	opacity: 0.30;
+
+	-webkit-transition: opacity 0.66s ease;
+	-moz-transition: opacity 0.66s ease;
+	-ms-transition: opacity 0.66s ease;
+	-o-transition: opacity 0.66s ease;
+	transition: opacity 0.66s ease;
 }
 
 .leaflet-mouse-marker {
