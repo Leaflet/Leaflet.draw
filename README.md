@@ -34,7 +34,7 @@ To use the edit toolbar you must initialise the Leaflet.draw control and manuall
 
 ````js
 // create a map in the "map" div, set the view to a given place and zoom
-var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
+var map = L.map('map').setView([51.505, -0.09], 13);
 
 // add an OpenStreetMap tile layer
 L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
