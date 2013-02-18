@@ -26,16 +26,16 @@ L.Control.Draw = L.Control.extend({
 	initialize: function (options) {
 		L.Util.extend(this.options, options);
 	},
-	
+
 	onAdd: function (map) {
 		var drawName = 'leaflet-control-draw', //TODO
 			barName = 'leaflet-bar',
 			partName = barName + '-part',
 			container = L.DomUtil.create('div', drawName + ' ' + barName),
 			buttons = [];
-	
+
 		this.handlers = {};
-	
+
 		if (this.options.polyline) {
 			this.handlers.polyline = new L.Polyline.Draw(map, this.options.polyline);
 			buttons.push(this._createButton(
@@ -95,7 +95,7 @@ L.Control.Draw = L.Control.extend({
 			));
 			this.handlers.marker.on('activated', this._disableInactiveModes, this);
 		}
-		
+
 		if (buttons.length) {
 			// Add in the top and bottom classes so we get the border radius
 			L.DomUtil.addClass(buttons[0], partName + '-top');

@@ -5,10 +5,10 @@ L.Marker.Draw = L.Handler.Draw.extend({
 		icon: new L.Icon.Default(),
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
-	
+
 	addHooks: function () {
 		L.Handler.Draw.prototype.addHooks.call(this);
-		
+
 		if (this._map) {
 			this._updateLabelText({ text: 'Click map to place marker.' });
 			this._map.on('mousemove', this._onMouseMove, this);
@@ -17,7 +17,7 @@ L.Marker.Draw = L.Handler.Draw.extend({
 
 	removeHooks: function () {
 		L.Handler.Draw.prototype.removeHooks.call(this);
-		
+
 		if (this._map) {
 			if (this._marker) {
 				this._marker.off('click', this._onClick);

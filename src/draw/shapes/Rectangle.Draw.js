@@ -13,7 +13,7 @@ L.Rectangle.Draw = L.SimpleShape.Draw.extend({
 			clickable: true
 		}
 	},
-	
+
 	_initialLabelText: 'Click and drag to draw rectangle.',
 
 	_drawShape: function (latlng) {
