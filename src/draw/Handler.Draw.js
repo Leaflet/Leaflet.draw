@@ -24,7 +24,7 @@ L.Handler.Draw = L.Handler.extend({
 		this._map.fire('drawing-disabled', { drawingType: this.type });
 		L.Handler.prototype.disable.call(this);
 	},
-	
+
 	addHooks: function () {
 		if (this._map) {
 			L.DomUtil.disableTextSelection();

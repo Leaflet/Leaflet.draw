@@ -63,7 +63,7 @@ L.SimpleShape.Draw = L.Handler.Draw.extend({
 		if (this._shape) {
 			this._fireCreatedEvent();
 		}
-		
+
 		this.disable();
 	}
 });
