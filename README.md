@@ -1,3 +1,5 @@
+**N.B. Leaflet.draw 0.2 requires the latest Leaflet master. You will need to download it from the [Github repo](https://github.com/Leaflet/Leaflet).**
+
 #Leaflet.draw
 Adds support for drawing and editing vectors and markers on [Leaflet maps](https://github.com/Leaflet/Leaflet). Check out the [demo](http://leaflet.github.com/Leaflet.draw/)
 
