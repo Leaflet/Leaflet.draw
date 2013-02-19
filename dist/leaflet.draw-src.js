@@ -34,17 +34,21 @@ L.Draw.Feature = L.Handler.extend({
 	enable: function () {
 		if (this._enabled) { return; }
 
-		this.fire('enabled', { handler: this.type });
-		this._map.fire('draw:drawstart', { layerType: this.type });
 		L.Handler.prototype.enable.call(this);
+
+		this.fire('enabled', { handler: this.type });
+		
+		this._map.fire('draw:drawstart', { layerType: this.type });
 	},
 
 	disable: function () {
 		if (!this._enabled) { return; }
 
-		this.fire('disabled', { handler: this.type });
-		this._map.fire('draw:drawstop', { layerType: this.type });
 		L.Handler.prototype.disable.call(this);
+
+		this.fire('disabled', { handler: this.type });
+
+		this._map.fire('draw:drawstop', { layerType: this.type });
 	},
 	
 	addHooks: function () {
@@ -66,6 +70,10 @@ L.Draw.Feature = L.Handler.extend({
 
 			L.DomEvent.removeListener(this._container, 'keyup', this._cancelDrawing);
 		}
+	},
+
+	setOptions: function (options) {
+		L.setOptions(this, options);
 	},
 
 	_fireCreatedEvent: function (layer) {
@@ -961,6 +969,11 @@ L.Edit.Poly = L.Handler.extend({
 
 L.Polyline.addInitHook(function () {
 
+	// Check to see if handler has already been initialized. This is to support versions of Leaflet that still have L.Handler.PolyEdit
+	if (this.editing) {
+		return;
+	}
+
 	if (L.Edit.Poly) {
 		this.editing = new L.Edit.Poly(this);
 
@@ -1515,6 +1528,14 @@ L.Control.Draw = L.Control.extend({
 		}
 	},
 
+	setDrawingOptions: function (options) {
+		for (var toolbarId in this._toolbars) {
+			if (this._toolbars[toolbarId] instanceof L.DrawToolbar) {
+				this._toolbars[toolbarId].setOptions(options);
+			}
+		}
+	},
+
 	_toolbarEnabled: function (e) {
 		var id = '' + L.stamp(e.target);
 
@@ -1870,6 +1891,16 @@ L.DrawToolbar = L.Toolbar.extend({
 		container.appendChild(this._actionsContainer);
 
 		return container;
+	},
+
+	setOptions: function (options) {
+		L.setOptions(this, options);
+
+		for (var type in this._modes) {
+			if (this._modes.hasOwnProperty(type) && options.hasOwnProperty(type)) {
+				this._modes[type].handler.setOptions(options[type]);
+			}
+		}
 	}
 });
 
