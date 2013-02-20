@@ -230,8 +230,9 @@ L.Edit.Poly = L.Handler.extend({
 L.Polyline.addInitHook(function () {
 
 	// Check to see if handler has already been initialized. This is to support versions of Leaflet that still have L.Handler.PolyEdit
-	if (this.editing)
+	if (this.editing) {
 		return;
+	}
 
 	if (L.Edit.Poly) {
 		this.editing = new L.Edit.Poly(this);
