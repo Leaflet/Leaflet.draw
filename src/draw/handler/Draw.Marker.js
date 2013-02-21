@@ -56,14 +56,14 @@ L.Draw.Marker = L.Draw.Feature.extend({
 				delete this._marker;
 			}
 
-  		this._mouseMarker.off('click', this._onClick);
-  		this._map.removeLayer(this._mouseMarker);
-  		delete this._mouseMarker;
-  
-  		this._map
-  			.off('mousemove', this._onMouseMove)
-  			.off('zoomend', this._onZoomEnd);
-    }
+			this._mouseMarker.off('click', this._onClick);
+			this._map.removeLayer(this._mouseMarker);
+			delete this._mouseMarker;
+
+			this._map
+				.off('mousemove', this._onMouseMove)
+				.off('zoomend', this._onZoomEnd);
+		}
 	},
 
 	_onMouseMove: function (e) {
