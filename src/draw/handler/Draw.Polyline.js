@@ -7,6 +7,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	options: {
 		allowIntersection: true,
+		allowMiddleMarkers: true,
 		drawError: {
 			color: '#b00b00',
 			message: '<strong>Error:</strong> shape edges cannot cross!',
@@ -48,6 +49,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._markerGroup = new L.LayerGroup();
 			this._map.addLayer(this._markerGroup);
 
+			this.options.shapeOptions.allowMiddleMarkers = this.options.allowMiddleMarkers;
 			this._poly = new L.Polyline([], this.options.shapeOptions);
 
 			this._tooltip.updateContent(this._getTooltipText());
