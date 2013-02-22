@@ -11,7 +11,7 @@
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
 
-L.drawVersion = '0.2.0';
+L.drawVersion = '0.2.0-dev';
 
 L.Draw = {};
 
@@ -703,9 +703,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 				.on('click', this._onClick, this)
 				.addTo(this._map);
 
-			this._map
-				.on('mousemove', this._onMouseMove, this)
-				.on('zoomend', this._onZoomEnd, this);
+			this._map.on('mousemove', this._onMouseMove, this);
 		}
 	},
 
@@ -725,9 +723,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 			this._map.removeLayer(this._mouseMarker);
 			delete this._mouseMarker;
 
-			this._map
-				.off('mousemove', this._onMouseMove)
-				.off('zoomend', this._onZoomEnd);
+			this._map.off('mousemove', this._onMouseMove);
 		}
 	},
 
