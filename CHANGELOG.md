@@ -5,11 +5,17 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
-## 0.2 (February ??, 2013)
+## 0.2 (February 20, 2013)
 
 Major new version. Added Edit toolbar which allows editing and deleting shapes.
 
+### Features
+
+ * Consistant event for shape creation. (by [@krikrou](https://github.com/krikrou)). [#58](https://github.com/Leaflet/Leaflet.draw/pull/58)
+
 ### Bugfixes
+
+ * Fixed adding markers over vector layers. (by [@Starefossen](https://github.com/Starefossen)). [#82](https://github.com/Leaflet/Leaflet.draw/pull/82)
 
 ## 0.1.7 (February 11, 2013)
 

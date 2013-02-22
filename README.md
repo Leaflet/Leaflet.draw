@@ -1,3 +1,5 @@
+**N.B. Leaflet.draw 0.2 requires the latest Leaflet master. You will need to download it from the [Github repo](https://github.com/Leaflet/Leaflet).**
+
 #Leaflet.draw
 Adds support for drawing and editing vectors and markers on [Leaflet maps](https://github.com/Leaflet/Leaflet). Check out the [demo](http://leaflet.github.com/Leaflet.draw/)
 
@@ -34,7 +36,7 @@ To use the edit toolbar you must initialise the Leaflet.draw control and manuall
 
 ````js
 // create a map in the "map" div, set the view to a given place and zoom
-var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
+var map = L.map('map').setView([51.505, -0.09], 13);
 
 // add an OpenStreetMap tile layer
 L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -156,9 +158,9 @@ Polyline and Polygon drawing handlers take the same options.
 | --- | --- | --- | ---
 | title | String | `'Draw a Polyline (Polygon)'` | The title used for the polyline/polygon button.
 | allowIntersection | Bool | `true` | Determines if line segements can cross.
-| drawError | Object | [See code]() | Configuration options for the error that displays if an intersection is detected.
+| drawError | Object | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Polyline.js#L10) | Configuration options for the error that displays if an intersection is detected.
 | guidelineDistance | Number | `20` | Distance in pixels between each guide dash.
-| shapeOptions | [Leaflet Polyline options](http://leafletjs.com/reference.html#polyline-options) | [See code]() | The options used when drawing the polyline/polygon on the map.
+| shapeOptions | [Leaflet Polyline options](http://leafletjs.com/reference.html#polyline-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Polyline.js#L20) | The options used when drawing the polyline/polygon on the map.
 | zIndexOffset | Number | `2000` | This should be a high number to ensure that you can draw over all other layers on the map.
 
 <a name="rectangleoptions" />
@@ -167,7 +169,7 @@ Polyline and Polygon drawing handlers take the same options.
 | Option | Type | Default | Description
 | --- | --- | --- | ---
 | title | String | `'Draw a rectangle.'` | The title used for the rectangle button.
-| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code]() | The options used when drawing the rectangle on the map.
+| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Rectangle.js#L7) | The options used when drawing the rectangle on the map.
 
 <a name="circleoptions" />
 #### CircleOptions
@@ -175,7 +177,7 @@ Polyline and Polygon drawing handlers take the same options.
 | Option | Type | Default | Description
 | --- | --- | --- | ---
 | title | String | `'Draw a circle.'` | The title used for the circle button.
-| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code]() | The options used when drawing the circle on the map.
+| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map. 
 
 <a name="markeroptions" />
 #### MarkerOptions
@@ -203,7 +205,7 @@ These options will allow you to configure the draw toolbar and its handlers.
 | Option | Type | Default | Description
 | --- | --- | --- | ---
 | title | String | `'Edit Layers'` | The title used for the edit button.
-| selectedPathOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code]() | The path options for how the layers will look like while in edit mode.
+| selectedPathOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/edit/handler/EditToolbar.Edit.js#L9) | The path options for how the layers will look like while in edit mode.
 
 <a name="deletehandleroptions" />
 #### DeleteHandlerOptions

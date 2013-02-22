@@ -11,7 +11,7 @@
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
 
-L.drawVersion = '0.2-dev';
+L.drawVersion = '0.2.0-dev';
 
 L.Draw = {};
 
@@ -34,17 +34,21 @@ L.Draw.Feature = L.Handler.extend({
 	enable: function () {
 		if (this._enabled) { return; }
 
-		this.fire('enabled', { handler: this.type });
-		this._map.fire('draw:drawstart', { layerType: this.type });
 		L.Handler.prototype.enable.call(this);
+
+		this.fire('enabled', { handler: this.type });
+		
+		this._map.fire('draw:drawstart', { layerType: this.type });
 	},
 
 	disable: function () {
 		if (!this._enabled) { return; }
 
-		this.fire('disabled', { handler: this.type });
-		this._map.fire('draw:drawstop', { layerType: this.type });
 		L.Handler.prototype.disable.call(this);
+
+		this.fire('disabled', { handler: this.type });
+
+		this._map.fire('draw:drawstop', { layerType: this.type });
 	},
 	
 	addHooks: function () {
@@ -66,6 +70,10 @@ L.Draw.Feature = L.Handler.extend({
 
 			L.DomEvent.removeListener(this._container, 'keyup', this._cancelDrawing);
 		}
+	},
+
+	setOptions: function (options) {
+		L.setOptions(this, options);
 	},
 
 	_fireCreatedEvent: function (layer) {
@@ -677,6 +685,24 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		
 		if (this._map) {
 			this._tooltip.updateContent({ text: 'Click map to place marker.' });
+
+			// Same mouseMarker as in Draw.Polyline
+			if (!this._mouseMarker) {
+				this._mouseMarker = L.marker(this._map.getCenter(), {
+					icon: L.divIcon({
+						className: 'leaflet-mouse-marker',
+						iconAnchor: [20, 20],
+						iconSize: [40, 40]
+					}),
+					opacity: 0,
+					zIndexOffset: this.options.zIndexOffset
+				});
+			}
+
+			this._mouseMarker
+				.on('click', this._onClick, this)
+				.addTo(this._map);
+
 			this._map.on('mousemove', this._onMouseMove, this);
 		}
 	},
@@ -693,6 +719,10 @@ L.Draw.Marker = L.Draw.Feature.extend({
 				delete this._marker;
 			}
 
+			this._mouseMarker.off('click', this._onClick);
+			this._map.removeLayer(this._mouseMarker);
+			delete this._mouseMarker;
+
 			this._map.off('mousemove', this._onMouseMove);
 		}
 	},
@@ -701,7 +731,8 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		var latlng = e.latlng;
 
 		this._tooltip.updatePosition(latlng);
-
+		this._mouseMarker.setLatLng(latlng);
+		
 		if (!this._marker) {
 			this._marker = new L.Marker(latlng, {
 				icon: this.options.icon,
@@ -960,6 +991,11 @@ L.Edit.Poly = L.Handler.extend({
 });
 
 L.Polyline.addInitHook(function () {
+
+	// Check to see if handler has already been initialized. This is to support versions of Leaflet that still have L.Handler.PolyEdit
+	if (this.editing) {
+		return;
+	}
 
 	if (L.Edit.Poly) {
 		this.editing = new L.Edit.Poly(this);
@@ -1515,6 +1551,14 @@ L.Control.Draw = L.Control.extend({
 		}
 	},
 
+	setDrawingOptions: function (options) {
+		for (var toolbarId in this._toolbars) {
+			if (this._toolbars[toolbarId] instanceof L.DrawToolbar) {
+				this._toolbars[toolbarId].setOptions(options);
+			}
+		}
+	},
+
 	_toolbarEnabled: function (e) {
 		var id = '' + L.stamp(e.target);
 
@@ -1870,6 +1914,16 @@ L.DrawToolbar = L.Toolbar.extend({
 		container.appendChild(this._actionsContainer);
 
 		return container;
+	},
+
+	setOptions: function (options) {
+		L.setOptions(this, options);
+
+		for (var type in this._modes) {
+			if (this._modes.hasOwnProperty(type) && options.hasOwnProperty(type)) {
+				this._modes[type].handler.setOptions(options[type]);
+			}
+		}
 	}
 });
 

@@ -20,6 +20,24 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		
 		if (this._map) {
 			this._tooltip.updateContent({ text: 'Click map to place marker.' });
+
+			// Same mouseMarker as in Draw.Polyline
+			if (!this._mouseMarker) {
+				this._mouseMarker = L.marker(this._map.getCenter(), {
+					icon: L.divIcon({
+						className: 'leaflet-mouse-marker',
+						iconAnchor: [20, 20],
+						iconSize: [40, 40]
+					}),
+					opacity: 0,
+					zIndexOffset: this.options.zIndexOffset
+				});
+			}
+
+			this._mouseMarker
+				.on('click', this._onClick, this)
+				.addTo(this._map);
+
 			this._map.on('mousemove', this._onMouseMove, this);
 		}
 	},
@@ -36,6 +54,10 @@ L.Draw.Marker = L.Draw.Feature.extend({
 				delete this._marker;
 			}
 
+			this._mouseMarker.off('click', this._onClick);
+			this._map.removeLayer(this._mouseMarker);
+			delete this._mouseMarker;
+
 			this._map.off('mousemove', this._onMouseMove);
 		}
 	},
@@ -44,7 +66,8 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		var latlng = e.latlng;
 
 		this._tooltip.updatePosition(latlng);
-
+		this._mouseMarker.setLatLng(latlng);
+		
 		if (!this._marker) {
 			this._marker = new L.Marker(latlng, {
 				icon: this.options.icon,
