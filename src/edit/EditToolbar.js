@@ -5,11 +5,11 @@
 L.EditToolbar = L.Toolbar.extend({
 	options: {
 		edit: {
-			title: 'Edit layers',
+			title: L.drawLocal.edit.toolbar.edit.title,
 			selectedPathOptions: null // See Edit handler options, this is used to customize the style of selected paths
 		},
 		remove: {
-			title: 'Delete layers'
+			title: L.drawLocal.edit.toolbar.remove.title
 		},
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
@@ -58,14 +58,14 @@ L.EditToolbar = L.Toolbar.extend({
 		// Create the actions part of the toolbar
 		this._actionsContainer = this._createActions([
 			{
-				title: 'Save changes.',
-				text: 'Save',
+				title: L.drawLocal.edit.toolbar.edit.save.title,
+				text: L.drawLocal.edit.toolbar.edit.save.text,
 				callback: this._save,
 				context: this
 			},
 			{
-				title: 'Cancel editing, discards all changes.',
-				text: 'Cancel',
+				title: L.drawLocal.edit.toolbar.edit.cancel.title,
+				text: L.drawLocal.edit.toolbar.edit.cancel.text,
 				callback: this.disable,
 				context: this
 			}

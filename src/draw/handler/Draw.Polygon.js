@@ -35,11 +35,11 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 	_getTooltipText: function () {
 		var text;
 		if (this._markers.length === 0) {
-			text = 'Click to start drawing shape.';
+			text = draw.poly.tooltip.start;
 		} else if (this._markers.length < 3) {
-			text = 'Click to continue drawing shape.';
+			text = draw.poly.tooltip.cont;
 		} else {
-			text = 'Click first point to close this shape.';
+			text = draw.poly.tooltip.end;
 		}
 		return {
 			text: text
