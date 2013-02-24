@@ -17,15 +17,15 @@
 </head>
 <body>
 	<h1>Using a fixed aspect ratio while editing a <code>L.Rectangle</code>.</h1>
-	The red rectangle should maintain (after first resize) a 1:1.5 aspect ratio, the yellow one a 1:4 aspect ratio and the blue one can be resized arbitrary.
+	The red rectangle should maintain a 1:1.5 aspect ratio, the yellow one a 1:4 aspect ratio and the blue one can be resized arbitrary.
 	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
 
 	<script>
 		// add an OpenStreetMap tile layer
 		var map = new L.Map('map').setView([51.505, -0.04], 13);
-		// L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-  //   		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-		// }).addTo(map);
+		L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
+			attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data {attribution.OpenStreetMap}',
+		}).addTo(map);
 
 		L.rectangle([
 			[51.49, -0.1], 
@@ -53,8 +53,6 @@
 		})	
 			.addTo(map)
 			.editing.enable();
-			
-
 	</script>
 </body>
 </html>

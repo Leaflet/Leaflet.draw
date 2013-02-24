@@ -135,7 +135,6 @@ L.Rectangle.addInitHook(function () {
 			this.editing.enable();
 		}
 
-		//
 		if (this.options.aspectRatio !== undefined) {
 			this.editing.setAspectRatio(this.options.aspectRatio);
 		}
