@@ -73,6 +73,23 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 	_resize: function (latlng) {
 		var bounds;
 
+		if (this.options.aspectRatio !== undefined) {
+			bounds = this._shape.getBounds();
+
+			var topLeft = this._map.project(bounds.getNorthWest()).round(),
+				bottomRight = this._map.project(bounds.getSouthEast()).round(),
+				dragPoint = this._map.project(latlng).round(),
+				ydiff = (bottomRight.y - topLeft.y) * this.options.aspectRatio;
+
+			if (topLeft.x === dragPoint.x) {
+				dragPoint.x = topLeft.x - ydiff;
+			} else {
+				dragPoint.x = topLeft.x + ydiff;
+			}
+
+			latlng = this._map.unproject(dragPoint);
+		}
+
 		// Update the shape based on the current position of this corner and the opposite point
 		this._shape.setBounds(L.latLngBounds(latlng, this._oppositeCorner));
 
@@ -103,6 +120,10 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 		for (var i = 0, l = this._resizeMarkers.length; i < l; i++) {
 			this._resizeMarkers[i].setLatLng(corners[i]);
 		}
+	},
+
+	setAspectRatio: function (ratio) {
+		this.options.aspectRatio = ratio;
 	}
 });
 
@@ -112,6 +133,11 @@ L.Rectangle.addInitHook(function () {
 
 		if (this.options.editable) {
 			this.editing.enable();
+		}
+
+		//
+		if (this.options.aspectRatio !== undefined) {
+			this.editing.setAspectRatio(this.options.aspectRatio);
 		}
 	}
 });
