@@ -1,6 +1,6 @@
 {
   "name": "leaflet-draw",
-  "version": "0.0.0",
+  "version": "0.2.0",
   "description": "Vector drawing plugin for Leaflet",
   "main": "dist/leaflet.draw.js",
   "directories": {
