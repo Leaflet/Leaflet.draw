@@ -1,17 +1,17 @@
-**N.B. Leaflet.draw 0.2 requires the latest Leaflet master. You will need to download it from the [Github repo](https://github.com/Leaflet/Leaflet).**
+**N.B. Leaflet.draw 0.2.0 requires the latest Leaflet master. You will need to download it from the [Github repo](https://github.com/Leaflet/Leaflet).**
 
 #Leaflet.draw
 Adds support for drawing and editing vectors and markers on [Leaflet maps](https://github.com/Leaflet/Leaflet). Check out the [demo](http://leaflet.github.com/Leaflet.draw/)
 
 #### Upgrading from Leaflet.draw 0.1
 
-Leaflet.draw 0.2 changes a LOT of things from 0.1. Please see [BREAKING CHANGES](https://github.com/Leaflet/Leaflet.draw/blob/master/BREAKINGCHANGES.md) for how to upgrade.
+Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGES](https://github.com/Leaflet/Leaflet.draw/blob/master/BREAKINGCHANGES.md) for how to upgrade.
 
 ## Table of Contents
-[Using the plugin](#using)  
-[Advanced Options](#options)  
-[Command tasks](#tasks)  
-[Thanks](#thanks)  
+[Using the plugin](#using)
+[Advanced Options](#options)
+[Command tasks](#tasks)
+[Thanks](#thanks)
 
 <a name="using" />
 ## Using the plugin
