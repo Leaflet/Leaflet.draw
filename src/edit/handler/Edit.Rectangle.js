@@ -73,20 +73,19 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 	_resize: function (latlng) {
 		var bounds;
 
-		if (this.options.aspectRatio !== undefined) {
+		if (this._shape.options.aspectRatio !== undefined) {
 			bounds = this._shape.getBounds();
 
-			var topLeft = this._map.project(bounds.getNorthWest()).round(),
-				bottomRight = this._map.project(bounds.getSouthEast()).round(),
+			var opposite = this._map.project(this._oppositeCorner).round(),
 				dragPoint = this._map.project(latlng).round(),
-				ydiff = (bottomRight.y - topLeft.y) * this.options.aspectRatio;
+				ydiff = Math.abs(opposite.y - dragPoint.y) * this._shape.options.aspectRatio;
 
-			if (topLeft.x === dragPoint.x) {
-				dragPoint.x = topLeft.x - ydiff;
+			if (opposite.x < dragPoint.x) {
+				dragPoint.x = opposite.x + ydiff;
 			} else {
-				dragPoint.x = topLeft.x + ydiff;
+				dragPoint.x = opposite.x - ydiff;
 			}
-
+			
 			latlng = this._map.unproject(dragPoint);
 		}
 
@@ -120,10 +119,6 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 		for (var i = 0, l = this._resizeMarkers.length; i < l; i++) {
 			this._resizeMarkers[i].setLatLng(corners[i]);
 		}
-	},
-
-	setAspectRatio: function (ratio) {
-		this.options.aspectRatio = ratio;
 	}
 });
 
@@ -133,10 +128,6 @@ L.Rectangle.addInitHook(function () {
 
 		if (this.options.editable) {
 			this.editing.enable();
-		}
-
-		if (this.options.aspectRatio !== undefined) {
-			this.editing.setAspectRatio(this.options.aspectRatio);
 		}
 	}
 });
