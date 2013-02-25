@@ -5,7 +5,7 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
-## 0.2 (February 20, 2013)
+## 0.2.0 (February 20, 2013)
 
 Major new version. Added Edit toolbar which allows editing and deleting shapes.
 
