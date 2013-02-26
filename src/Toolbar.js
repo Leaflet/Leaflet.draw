@@ -15,7 +15,7 @@ L.Toolbar = L.Class.extend({
 
 	disable: function () {
 		if (!this.enabled()) { return; }
-		
+
 		this._activeMode.handler.disable();
 	},
 
@@ -103,7 +103,7 @@ L.Toolbar = L.Class.extend({
 		if (this._activeMode && this._activeMode.handler.enabled()) {
 			this._activeMode.handler.disable();
 		}
-		
+
 		// Cache new active feature
 		this._activeMode = this._modes[e.handler];
 
@@ -156,7 +156,7 @@ L.Toolbar = L.Class.extend({
 			buttonHeight = 26, // TODO: this should be calculated
 			borderHeight = 1, // TODO: this should also be calculated
 			toolbarPosition = (buttonIndex * buttonHeight) + (buttonIndex * borderHeight) - 1;
-		
+
 		// Correctly position the cancel button
 		this._actionsContainer.style.top = toolbarPosition + 'px';
 
@@ -164,7 +164,7 @@ L.Toolbar = L.Class.extend({
 			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
 			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
 		}
-		
+
 		if (buttonIndex === lastButtonIndex) {
 			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
 			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');

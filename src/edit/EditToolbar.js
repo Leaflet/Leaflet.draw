@@ -19,7 +19,7 @@ L.EditToolbar = L.Toolbar.extend({
 
 		this._selectedFeatureCount = 0;
 	},
-	
+
 	addToolbar: function (map) {
 		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
 			buttonIndex = 0,
@@ -82,7 +82,7 @@ L.EditToolbar = L.Toolbar.extend({
 		if (!this.enabled()) { return; }
 
 		this._activeMode.handler.revertLayers();
-		
+
 		L.Toolbar.prototype.disable.call(this);
 	},
 

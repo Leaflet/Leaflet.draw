@@ -14,10 +14,10 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
-	
+
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
-		
+
 		if (this._map) {
 			this._tooltip.updateContent({ text: 'Click map to place marker.' });
 
@@ -44,7 +44,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
-		
+
 		if (this._map) {
 			if (this._marker) {
 				this._marker.off('click', this._onClick);
@@ -67,7 +67,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 		this._tooltip.updatePosition(latlng);
 		this._mouseMarker.setLatLng(latlng);
-		
+
 		if (!this._marker) {
 			this._marker = new L.Marker(latlng, {
 				icon: this.options.icon,

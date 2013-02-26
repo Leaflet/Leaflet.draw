@@ -20,7 +20,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 
 	initialize: function (map, options) {
 		L.Draw.Polyline.prototype.initialize.call(this, map, options);
-		
+
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Polygon.TYPE;
 	},

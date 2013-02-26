@@ -22,7 +22,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 
 		L.Draw.SimpleShape.prototype.initialize.call(this, map, options);
 	},
-	
+
 	_initialLabelText: 'Click and drag to draw rectangle.',
 
 	_drawShape: function (latlng) {
