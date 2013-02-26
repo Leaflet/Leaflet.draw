@@ -39,7 +39,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
-	
+
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
@@ -85,7 +85,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._clearHideErrorTimeout();
 
 		this._cleanUpShape();
-		
+
 		// remove markers from map
 		this._map.removeLayer(this._markerGroup);
 		delete this._markerGroup;
@@ -123,11 +123,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_shapeIsValid: function () {
 		return true;
 	},
-	
+
 	_onZoomEnd: function () {
 		this._updateGuide();
 	},
-	
+
 	_onMouseMove: function (e) {
 		var newPos = e.layerPoint,
 			latlng = e.latlng;
@@ -138,7 +138,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		// Update the label
 		this._tooltip.updatePosition(latlng);
-		
+
 		// Update the guide line
 		this._updateGuide(newPos);
 
@@ -171,7 +171,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._updateMarkerHandler();
 
 		this._vertexAdded(latlng);
-		
+
 		this._clearGuides();
 	},
 
@@ -180,29 +180,29 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		if (this._markers.length > 1) {
 			this._markers[this._markers.length - 1].on('click', this._finishShape, this);
 		}
-		
+
 		// Remove the old marker click handler (as only the last point should close the polyline)
 		if (this._markers.length > 2) {
 			this._markers[this._markers.length - 2].off('click', this._finishShape);
 		}
 	},
-	
+
 	_createMarker: function (latlng) {
 		var marker = new L.Marker(latlng, {
 			icon: this.options.icon,
 			zIndexOffset: this.options.zIndexOffset * 2
 		});
-		
+
 		this._markerGroup.addLayer(marker);
 
 		return marker;
 	},
-	
+
 	_updateGuide: function (newPos) {
 		newPos = newPos || this._map.latLngToLayerPoint(this._currentLatLng);
-		
+
 		var markerCount = this._markers.length;
-		
+
 		if (markerCount > 0) {
 			// Update the tooltip text, as long it's not showing and error
 			if (!this._errorShown) {
@@ -217,7 +217,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			);
 		}
 	},
-	
+
 	_drawGuide: function (pointA, pointB) {
 		var length = Math.floor(Math.sqrt(Math.pow((pointB.x - pointA.x), 2) + Math.pow((pointB.y - pointA.y), 2))),
 			i,
@@ -229,7 +229,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		if (!this._guidesContainer) {
 			this._guidesContainer = L.DomUtil.create('div', 'leaflet-draw-guides', this._overlayPane);
 		}
-	
+
 		//draw a dash every GuildeLineDistance
 		for (i = this.options.guidelineDistance; i < length; i += this.options.guidelineDistance) {
 			//work out fraction along line we are
@@ -281,7 +281,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			distance = this._measurementRunningTotal + this._currentLatLng.distanceTo(this._markers[this._markers.length - 1].getLatLng());
 			// show metres when distance is < 1km, then show km
 			distanceStr = distance  > 1000 ? (distance  / 1000).toFixed(2) + ' km' : Math.ceil(distance) + ' m';
-			
+
 			if (this._markers.length === 1) {
 				labelText = {
 					text: 'Click to continue drawing line.',
@@ -318,7 +318,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._errorShown = false;
 
 		this._clearHideErrorTimeout();
-		
+
 		// Revert tooltip
 		this._tooltip
 			.removeError()

@@ -102,6 +102,11 @@ L.Edit.SimpleShape = L.Handler.extend({
 		marker.setOpacity(0);
 	},
 
+	_fireEdit: function () {
+		this._shape.edited = true;
+		this._shape.fire('edit');
+	},
+
 	_onMarkerDrag: function (e) {
 		var marker = e.target,
 			latlng = marker.getLatLng();
@@ -120,6 +125,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		marker.setOpacity(1);
 
 		this._shape.fire('edit');
+		this._fireEdit();
 	},
 
 	_move: function () {
