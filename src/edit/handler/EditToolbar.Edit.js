@@ -95,8 +95,18 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	save: function () {
-		// TODO: pass on the edited layers
-		this._map.fire('draw:edited');
+		var editedLayers = new L.LayerGroup();
+		this._featureGroup.eachLayer(function (layer) {
+			if (layer.edited) {
+				editedLayers.addLayer(layer);
+			}
+		});
+		this._map.fire('draw:edited', {layerGroup: editedLayers});
+    
+		//reset all layers back to unedited
+		editedLayers.eachLayer(function (layer) {
+			layer.edited = false;
+		});
 	},
 
 	_backupLayer: function (layer) {
@@ -195,6 +205,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_disableLayerEdit: function (e) {
 		var layer = e.layer || e.target || e;
+		layer.edited = false;
 		
 		// Reset layer styles to that of before select
 		if (layer instanceof L.Marker) {
