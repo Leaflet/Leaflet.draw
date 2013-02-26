@@ -89,8 +89,14 @@ map.on('draw:created', function (e) {
 #### draw:edited
 
 Triggered when layers in the FeatureGroup, that the plugin was initialized with, have been edited and saved.
-
-*Note: the edited layers are not passed as an argument. Currently a TODO.*
+````js
+map.on('draw:edited', function (e) {
+	var layers = e.layers;
+	layers.eachLayer(function (layer) {
+		//do whatever you want, most likely save back to db
+	});
+});
+````
 
 #### draw:deleted
 
