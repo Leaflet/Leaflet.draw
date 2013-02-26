@@ -194,6 +194,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (layer instanceof L.Marker) {
 			layer.dragging.enable();
+			layer.edited = true;
 		} else {
 			layer.editing.enable();
 		}
