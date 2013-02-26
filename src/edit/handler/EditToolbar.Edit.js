@@ -52,7 +52,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	disable: function () {
 		if (!this._enabled) { return; }
-		
+
 		this.fire('disabled', {handler: this.type});
 
 		this._featureGroup
@@ -203,7 +203,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 	_disableLayerEdit: function (e) {
 		var layer = e.layer || e.target || e;
 		layer.edited = false;
-		
+
 		// Reset layer styles to that of before select
 		if (layer instanceof L.Marker) {
 			this._toggleMarkerHighlight(layer);

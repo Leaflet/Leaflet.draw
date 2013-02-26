@@ -35,7 +35,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 	disable: function () {
 		if (!this._enabled) { return; }
-		
+
 		L.Handler.prototype.disable.call(this);
 
 		this._deletableLayers
