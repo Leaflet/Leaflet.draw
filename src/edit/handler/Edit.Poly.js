@@ -90,6 +90,7 @@ L.Edit.Poly = L.Handler.extend({
 	},
 
 	_fireEdit: function () {
+		this._poly.edited = true;
 		this._poly.fire('edit');
 	},
 

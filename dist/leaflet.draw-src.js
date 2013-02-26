@@ -37,7 +37,7 @@ L.Draw.Feature = L.Handler.extend({
 		L.Handler.prototype.enable.call(this);
 
 		this.fire('enabled', { handler: this.type });
-		
+
 		this._map.fire('draw:drawstart', { layerType: this.type });
 	},
 
@@ -50,7 +50,7 @@ L.Draw.Feature = L.Handler.extend({
 
 		this._map.fire('draw:drawstop', { layerType: this.type });
 	},
-	
+
 	addHooks: function () {
 		if (this._map) {
 			L.DomUtil.disableTextSelection();
@@ -129,7 +129,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
-	
+
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
@@ -175,7 +175,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._clearHideErrorTimeout();
 
 		this._cleanUpShape();
-		
+
 		// remove markers from map
 		this._map.removeLayer(this._markerGroup);
 		delete this._markerGroup;
@@ -213,11 +213,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_shapeIsValid: function () {
 		return true;
 	},
-	
+
 	_onZoomEnd: function () {
 		this._updateGuide();
 	},
-	
+
 	_onMouseMove: function (e) {
 		var newPos = e.layerPoint,
 			latlng = e.latlng;
@@ -228,7 +228,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		// Update the label
 		this._tooltip.updatePosition(latlng);
-		
+
 		// Update the guide line
 		this._updateGuide(newPos);
 
@@ -261,7 +261,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._updateMarkerHandler();
 
 		this._vertexAdded(latlng);
-		
+
 		this._clearGuides();
 	},
 
@@ -270,29 +270,29 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		if (this._markers.length > 1) {
 			this._markers[this._markers.length - 1].on('click', this._finishShape, this);
 		}
-		
+
 		// Remove the old marker click handler (as only the last point should close the polyline)
 		if (this._markers.length > 2) {
 			this._markers[this._markers.length - 2].off('click', this._finishShape);
 		}
 	},
-	
+
 	_createMarker: function (latlng) {
 		var marker = new L.Marker(latlng, {
 			icon: this.options.icon,
 			zIndexOffset: this.options.zIndexOffset * 2
 		});
-		
+
 		this._markerGroup.addLayer(marker);
 
 		return marker;
 	},
-	
+
 	_updateGuide: function (newPos) {
 		newPos = newPos || this._map.latLngToLayerPoint(this._currentLatLng);
-		
+
 		var markerCount = this._markers.length;
-		
+
 		if (markerCount > 0) {
 			// Update the tooltip text, as long it's not showing and error
 			if (!this._errorShown) {
@@ -307,7 +307,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			);
 		}
 	},
-	
+
 	_drawGuide: function (pointA, pointB) {
 		var length = Math.floor(Math.sqrt(Math.pow((pointB.x - pointA.x), 2) + Math.pow((pointB.y - pointA.y), 2))),
 			i,
@@ -319,7 +319,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		if (!this._guidesContainer) {
 			this._guidesContainer = L.DomUtil.create('div', 'leaflet-draw-guides', this._overlayPane);
 		}
-	
+
 		//draw a dash every GuildeLineDistance
 		for (i = this.options.guidelineDistance; i < length; i += this.options.guidelineDistance) {
 			//work out fraction along line we are
@@ -371,7 +371,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			distance = this._measurementRunningTotal + this._currentLatLng.distanceTo(this._markers[this._markers.length - 1].getLatLng());
 			// show metres when distance is < 1km, then show km
 			distanceStr = distance  > 1000 ? (distance  / 1000).toFixed(2) + ' km' : Math.ceil(distance) + ' m';
-			
+
 			if (this._markers.length === 1) {
 				labelText = {
 					text: 'Click to continue drawing line.',
@@ -408,7 +408,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._errorShown = false;
 
 		this._clearHideErrorTimeout();
-		
+
 		// Revert tooltip
 		this._tooltip
 			.removeError()
@@ -470,7 +470,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 
 	initialize: function (map, options) {
 		L.Draw.Polyline.prototype.initialize.call(this, map, options);
-		
+
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Polygon.TYPE;
 	},
@@ -574,7 +574,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		if (this._shape) {
 			this._fireCreatedEvent();
 		}
-		
+
 		this.disable();
 	}
 });
@@ -603,7 +603,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 
 		L.Draw.SimpleShape.prototype.initialize.call(this, map, options);
 	},
-	
+
 	_initialLabelText: 'Click and drag to draw rectangle.',
 
 	_drawShape: function (latlng) {
@@ -679,10 +679,10 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
-	
+
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
-		
+
 		if (this._map) {
 			this._tooltip.updateContent({ text: 'Click map to place marker.' });
 
@@ -709,7 +709,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
-		
+
 		if (this._map) {
 			if (this._marker) {
 				this._marker.off('click', this._onClick);
@@ -732,7 +732,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 		this._tooltip.updatePosition(latlng);
 		this._mouseMarker.setLatLng(latlng);
-		
+
 		if (!this._marker) {
 			this._marker = new L.Marker(latlng, {
 				icon: this.options.icon,
@@ -853,6 +853,7 @@ L.Edit.Poly = L.Handler.extend({
 	},
 
 	_fireEdit: function () {
+		this._poly.edited = true;
 		this._poly.fire('edit');
 	},
 
@@ -1123,6 +1124,11 @@ L.Edit.SimpleShape = L.Handler.extend({
 		marker.setOpacity(0);
 	},
 
+	_fireEdit: function () {
+		this._shape.edited = true;
+		this._shape.fire('edit');
+	},
+
 	_onMarkerDrag: function (e) {
 		var marker = e.target,
 			latlng = marker.getLatLng();
@@ -1141,6 +1147,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		marker.setOpacity(1);
 
 		this._shape.fire('edit');
+		this._fireEdit();
 	},
 
 	_move: function () {
@@ -1198,7 +1205,7 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 
 			marker.setLatLng(center);
 		}
-		
+
 		this._toggleCornerMarkers(1);
 
 		this._repositionCornerMarkers();
@@ -1385,7 +1392,7 @@ L.Polyline.include({
 			p = points[i - 1];
 			p1 = points[i];
 
-			
+
 			if (this._lineSegmentsIntersectsRange(p, p1, i - 2)) {
 				return true;
 			}
@@ -1598,7 +1605,7 @@ L.Toolbar = L.Class.extend({
 
 	disable: function () {
 		if (!this.enabled()) { return; }
-		
+
 		this._activeMode.handler.disable();
 	},
 
@@ -1686,7 +1693,7 @@ L.Toolbar = L.Class.extend({
 		if (this._activeMode && this._activeMode.handler.enabled()) {
 			this._activeMode.handler.disable();
 		}
-		
+
 		// Cache new active feature
 		this._activeMode = this._modes[e.handler];
 
@@ -1739,7 +1746,7 @@ L.Toolbar = L.Class.extend({
 			buttonHeight = 26, // TODO: this should be calculated
 			borderHeight = 1, // TODO: this should also be calculated
 			toolbarPosition = (buttonIndex * buttonHeight) + (buttonIndex * borderHeight) - 1;
-		
+
 		// Correctly position the cancel button
 		this._actionsContainer.style.top = toolbarPosition + 'px';
 
@@ -1747,7 +1754,7 @@ L.Toolbar = L.Class.extend({
 			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
 			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
 		}
-		
+
 		if (buttonIndex === lastButtonIndex) {
 			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
 			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
@@ -1842,7 +1849,7 @@ L.DrawToolbar = L.Toolbar.extend({
 	initialize: function (options) {
 		L.Toolbar.prototype.initialize.call(this, options);
 	},
-	
+
 	addToolbar: function (map) {
 		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
 			buttonIndex = 0,
@@ -1908,7 +1915,7 @@ L.DrawToolbar = L.Toolbar.extend({
 				context: this
 			}
 		]);
-		
+
 		// Add draw and cancel containers to the control container
 		container.appendChild(this._toolbarContainer);
 		container.appendChild(this._actionsContainer);
@@ -1948,7 +1955,7 @@ L.EditToolbar = L.Toolbar.extend({
 
 		this._selectedFeatureCount = 0;
 	},
-	
+
 	addToolbar: function (map) {
 		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
 			buttonIndex = 0,
@@ -2011,7 +2018,7 @@ L.EditToolbar = L.Toolbar.extend({
 		if (!this.enabled()) { return; }
 
 		this._activeMode.handler.revertLayers();
-		
+
 		L.Toolbar.prototype.disable.call(this);
 	},
 
@@ -2075,7 +2082,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	disable: function () {
 		if (!this._enabled) { return; }
-		
+
 		this.fire('disabled', {handler: this.type});
 
 		this._featureGroup
@@ -2118,8 +2125,14 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	save: function () {
-		// TODO: pass on the edited layers
-		this._map.fire('draw:edited');
+		var editedLayers = new L.LayerGroup();
+		this._featureGroup.eachLayer(function (layer) {
+			if (layer.edited) {
+				editedLayers.addLayer(layer);
+				layer.edited = false;
+			}
+		});
+		this._map.fire('draw:edited', {layers: editedLayers});
 	},
 
 	_backupLayer: function (layer) {
@@ -2146,7 +2159,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_revertLayer: function (layer) {
 		var id = L.Util.stamp(layer);
-
+		layer.edited = false;
 		if (this._uneditedLayerProps.hasOwnProperty(id)) {
 			// Polyline, Polygon or Rectangle
 			if (layer instanceof L.Polyline || layer instanceof L.Polygon || layer instanceof L.Rectangle) {
@@ -2211,6 +2224,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (layer instanceof L.Marker) {
 			layer.dragging.enable();
+			layer.on('dragend', this._onMarkerDragEnd);
 		} else {
 			layer.editing.enable();
 		}
@@ -2218,7 +2232,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_disableLayerEdit: function (e) {
 		var layer = e.layer || e.target || e;
-		
+		layer.edited = false;
+
 		// Reset layer styles to that of before select
 		if (layer instanceof L.Marker) {
 			this._toggleMarkerHighlight(layer);
@@ -2231,9 +2246,15 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (layer instanceof L.Marker) {
 			layer.dragging.disable();
+			layer.off('dragend', this._onMarkerDragEnd);
 		} else {
 			layer.editing.disable();
 		}
+	},
+
+	_onMarkerDragEnd: function (e) {
+		var layer = e.target;
+		layer.edited = true;
 	},
 
 	_onMouseMove: function (e) {
@@ -2278,7 +2299,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 	disable: function () {
 		if (!this._enabled) { return; }
-		
+
 		L.Handler.prototype.disable.call(this);
 
 		this._deletableLayers

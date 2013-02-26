@@ -52,7 +52,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	disable: function () {
 		if (!this._enabled) { return; }
-		
+
 		this.fire('disabled', {handler: this.type});
 
 		this._featureGroup
@@ -95,8 +95,14 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	save: function () {
-		// TODO: pass on the edited layers
-		this._map.fire('draw:edited');
+		var editedLayers = new L.LayerGroup();
+		this._featureGroup.eachLayer(function (layer) {
+			if (layer.edited) {
+				editedLayers.addLayer(layer);
+				layer.edited = false;
+			}
+		});
+		this._map.fire('draw:edited', {layers: editedLayers});
 	},
 
 	_backupLayer: function (layer) {
@@ -123,7 +129,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_revertLayer: function (layer) {
 		var id = L.Util.stamp(layer);
-
+		layer.edited = false;
 		if (this._uneditedLayerProps.hasOwnProperty(id)) {
 			// Polyline, Polygon or Rectangle
 			if (layer instanceof L.Polyline || layer instanceof L.Polygon || layer instanceof L.Rectangle) {
@@ -188,6 +194,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (layer instanceof L.Marker) {
 			layer.dragging.enable();
+			layer.on('dragend', this._onMarkerDragEnd);
 		} else {
 			layer.editing.enable();
 		}
@@ -195,7 +202,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_disableLayerEdit: function (e) {
 		var layer = e.layer || e.target || e;
-		
+		layer.edited = false;
+
 		// Reset layer styles to that of before select
 		if (layer instanceof L.Marker) {
 			this._toggleMarkerHighlight(layer);
@@ -208,9 +216,15 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (layer instanceof L.Marker) {
 			layer.dragging.disable();
+			layer.off('dragend', this._onMarkerDragEnd);
 		} else {
 			layer.editing.disable();
 		}
+	},
+
+	_onMarkerDragEnd: function (e) {
+		var layer = e.target;
+		layer.edited = true;
 	},
 
 	_onMouseMove: function (e) {

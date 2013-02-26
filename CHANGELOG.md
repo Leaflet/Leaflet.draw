@@ -5,6 +5,10 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
+### Features
+
+ * `draw:edited` no returns a `FeatureGroup` of features edited. (by [@krikrou](https://github.com/jmkelly)). [#95](https://github.com/Leaflet/Leaflet.draw/pull/95)
+
 ## 0.2.0 (February 20, 2013)
 
 Major new version. Added Edit toolbar which allows editing and deleting shapes.
