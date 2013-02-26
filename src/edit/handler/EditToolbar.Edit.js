@@ -99,14 +99,10 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this._featureGroup.eachLayer(function (layer) {
 			if (layer.edited) {
 				editedLayers.addLayer(layer);
+				layer.edited = false;
 			}
 		});
 		this._map.fire('draw:edited', {layerGroup: editedLayers});
-    
-		//reset all layers back to unedited
-		editedLayers.eachLayer(function (layer) {
-			layer.edited = false;
-		});
 	},
 
 	_backupLayer: function (layer) {
