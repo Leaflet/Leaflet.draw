@@ -194,7 +194,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (layer instanceof L.Marker) {
 			layer.dragging.enable();
-			layer.edited = true;
+			layer.on('dragend',this._onMarkerDragEnd);
 		} else {
 			layer.editing.enable();
 		}
@@ -216,9 +216,15 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (layer instanceof L.Marker) {
 			layer.dragging.disable();
+			layer.off('dragend', this._onMarkerDragEnd)
 		} else {
 			layer.editing.disable();
 		}
+	},
+
+	_onMarkerDragEnd: function (e) {
+		var layer = e.target;
+		layer.edited = true;
 	},
 
 	_onMouseMove: function (e) {
