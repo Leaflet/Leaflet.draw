@@ -9,10 +9,10 @@ Adds support for drawing and editing vectors and markers on [Leaflet maps](https
 Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGES](https://github.com/Leaflet/Leaflet.draw/blob/master/BREAKINGCHANGES.md) for how to upgrade.
 
 ## Table of Contents
-[Using the plugin](#using)
-[Advanced Options](#options)
-[Command tasks](#tasks)
-[Thanks](#thanks)
+[Using the plugin](#using)  
+[Advanced Options](#options)  
+[Command tasks](#tasks)  
+[Thanks](#thanks)  
 
 <a name="using" />
 ## Using the plugin
