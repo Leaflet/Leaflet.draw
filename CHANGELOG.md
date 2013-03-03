@@ -9,6 +9,10 @@ An in-progress version being developed on the master branch.
 
  * `draw:edited` now returns a `FeatureGroup` of features edited. (by [@jmkelly](https://github.com/jmkelly)). [#95](https://github.com/Leaflet/Leaflet.draw/pull/95)
 
+### Bugfixes
+
+ * Fixed issue where removing a vertex or adding a new one via midpoints would not update the edited state for polylines and polygons.
+
 ## 0.2.0 (February 20, 2013)
 
 Major new version. Added Edit toolbar which allows editing and deleting shapes.
