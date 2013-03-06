@@ -50,11 +50,19 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	_onMouseMove: function (e) {
 		var latlng = e.latlng;
 
+		// Save latlng
+		// should this be moved to _updateGuide() ?
+		this._currentLatLng = latlng;
+
 		this._tooltip.updatePosition(latlng);
 		if (this._isDrawing) {
-			this._tooltip.updateContent({ text: 'Release mouse to finish drawing.' });
+			this._tooltip.updateContent(this._getTooltipText());
 			this._drawShape(latlng);
 		}
+	},
+
+	_getTooltipText: function () {
+		return { text: 'Release mouse to finish drawing.' };
 	},
 
 	_onMouseUp: function () {

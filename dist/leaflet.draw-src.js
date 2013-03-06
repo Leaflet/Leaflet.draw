@@ -80,6 +80,25 @@ L.Draw.Feature = L.Handler.extend({
 		this._map.fire('draw:created', { layer: layer, layerType: this.type });
 	},
 
+	_getDistanceText: function (meters) {
+		var distanceStr;
+		var isMetric =  this._map.options.isMetric !== false;
+
+
+		if (isMetric)
+		{
+			// show metres when distance is < 1km, then show km
+			distanceStr = (meters > 1000 ? (meters / 1000).toFixed(2) + ' km' : Math.ceil(meters) + ' m');
+		}
+		else
+		{
+			var feets = meters * 3.2808;
+			// show metres when distance is < 1mile, then show miles
+			distanceStr = (feets > 5280 ? (feets * 0.00018939).toFixed(2) + ' mile' : Math.ceil(feets) + ' feet');
+		}
+		return distanceStr;
+	},
+
 	// Cancel drawing when the escape key is pressed
 	_cancelDrawing: function (e) {
 		if (e.keyCode === 27) {
@@ -369,8 +388,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		} else {
 			// calculate the distance from the last fixed point to the mouse position
 			distance = this._measurementRunningTotal + this._currentLatLng.distanceTo(this._markers[this._markers.length - 1].getLatLng());
-			// show metres when distance is < 1km, then show km
-			distanceStr = distance  > 1000 ? (distance  / 1000).toFixed(2) + ' km' : Math.ceil(distance) + ' m';
+			distanceStr = this._getDistanceText(distance);
 
 			if (this._markers.length === 1) {
 				labelText = {
@@ -563,11 +581,19 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	_onMouseMove: function (e) {
 		var latlng = e.latlng;
 
+		// Save latlng
+		// should this be moved to _updateGuide() ?
+		this._currentLatLng = latlng;
+
 		this._tooltip.updatePosition(latlng);
 		if (this._isDrawing) {
-			this._tooltip.updateContent({ text: 'Release mouse to finish drawing.' });
+			this._tooltip.updateContent(this._getTooltipText());
 			this._drawShape(latlng);
 		}
+	},
+
+	_getTooltipText: function () {
+		return { text: 'Release mouse to finish drawing.' };
 	},
 
 	_onMouseUp: function () {
@@ -655,6 +681,17 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 		} else {
 			this._shape.setRadius(this._startLatLng.distanceTo(latlng));
 		}
+	},
+
+	_getTooltipText: function () {
+		var radius = this._startLatLng.distanceTo(this._currentLatLng);
+
+		var labelText = {
+			text: 'Release mouse to finish drawing.',
+			subtext: this._getDistanceText(radius)
+		};
+
+		return labelText;
 	},
 
 	_fireCreatedEvent: function () {
