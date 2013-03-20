@@ -51,31 +51,37 @@
 		var drawnItems = new L.FeatureGroup();
 		map.addLayer(drawnItems);
 
-		var drawControl = new L.Control.Draw({
-			draw: {
-				position: 'topleft',
-				polygon: {
-					title: 'Draw a sexy polygon!',
-					allowIntersection: false,
-					drawError: {
-						color: '#b00b00',
-						timeout: 1000
-					},
-					shapeOptions: {
-						color: '#bada55'
-					}
+		
+		var drawingToolbar = new L.DrawToolbar({
+			position: 'topleft',
+			polygon: {
+				title: 'Draw a sexy polygon!',
+				allowIntersection: false,
+				drawError: {
+					color: '#b00b00',
+					timeout: 1000
 				},
-				circle: {
-					shapeOptions: {
-						color: '#662d91'
-					}
+				shapeOptions: {
+					color: '#bada55'
 				}
 			},
-			edit: {
-				featureGroup: drawnItems
+			circle: {
+				shapeOptions: {
+					color: '#662d91'
+				}
 			}
 		});
-		map.addControl(drawControl);
+
+		var editingToolbar = new L.EditToolbar({
+			featureGroup: drawnItems
+		});
+
+		var controls = new L.Control.Draw({
+			draw: drawingToolbar,
+			edit: editingToolbar	
+		});
+
+		map.addControl(controls);
 
 		map.on('draw:created', function (e) {
 			var type = e.layerType,
