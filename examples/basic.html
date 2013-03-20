@@ -38,6 +38,8 @@
 	<script src="../src/edit/EditToolbar.js"></script>
 	<script src="../src/edit/handler/EditToolbar.Edit.js"></script>
 	<script src="../src/edit/handler/EditToolbar.Delete.js"></script>
+	<script src="../src/split/SplitToolbar.js"></script>
+	<script src="../src/split/handler/SplitToolbar.Split.js"></script>
 </head>
 <body>
 	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
@@ -51,31 +53,42 @@
 		var drawnItems = new L.FeatureGroup();
 		map.addLayer(drawnItems);
 
-		var drawControl = new L.Control.Draw({
-			draw: {
-				position: 'topleft',
-				polygon: {
-					title: 'Draw a sexy polygon!',
-					allowIntersection: false,
-					drawError: {
-						color: '#b00b00',
-						timeout: 1000
-					},
-					shapeOptions: {
-						color: '#bada55'
-					}
+		
+		var drawingToolbar = new L.DrawToolbar({
+			position: 'topleft',
+			polygon: {
+				title: 'Draw a sexy polygon!',
+				allowIntersection: false,
+				drawError: {
+					color: '#b00b00',
+					timeout: 1000
 				},
-				circle: {
-					shapeOptions: {
-						color: '#662d91'
-					}
+				shapeOptions: {
+					color: '#bada55'
 				}
 			},
-			edit: {
-				featureGroup: drawnItems
+			circle: {
+				shapeOptions: {
+					color: '#662d91'
+				}
 			}
 		});
-		map.addControl(drawControl);
+
+		var editingToolbar = new L.EditToolbar({
+			featureGroup: drawnItems
+		});
+
+		var splitToolbar = new L.SplitToolbar({
+			featureGroup: drawnItems
+		});
+
+		var controls = new L.Control.Draw({
+			draw: drawingToolbar,
+			edit: editingToolbar,
+			split: splitToolbar	
+		});
+
+		map.addControl(controls);
 
 		map.on('draw:created', function (e) {
 			var type = e.layerType,
@@ -95,6 +108,11 @@
 				countOfEditedLayers++;
 			});
 			console.log("Edited " + countOfEditedLayers + " layers");
+		});
+
+		map.on('draw:split', function (e) {
+			console.log('You have been doing some splitting work!');
+			console.log(e);
 		});
 
 		L.DomUtil.get('changeColor').onclick = function () {
