@@ -15,10 +15,12 @@ L.Control.Draw = L.Control.extend({
 				
 		// Initialize toolbars
 		for (var name in options) {
-			var toolbar = options[name];
-			var id = L.stamp(toolbar);
-			this._toolbars[id] = toolbar;
-			this._toolbars[id].on('enable',this._toolbarEnabled,this);
+			if (options.hasOwnProperty(name)) {
+				toolbar = options[name];
+				id = L.stamp(toolbar);
+				this._toolbars[id] = toolbar;
+				this._toolbars[id].on('enable', this._toolbarEnabled, this);
+			}
 		}
 		
 	},
