@@ -38,6 +38,8 @@
 	<script src="../src/edit/EditToolbar.js"></script>
 	<script src="../src/edit/handler/EditToolbar.Edit.js"></script>
 	<script src="../src/edit/handler/EditToolbar.Delete.js"></script>
+	<script src="../src/split/SplitToolbar.js"></script>
+	<script src="../src/split/handler/SplitToolbar.Split.js"></script>
 </head>
 <body>
 	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
@@ -76,9 +78,14 @@
 			featureGroup: drawnItems
 		});
 
+		var splitToolbar = new L.SplitToolbar({
+			featureGroup: drawnItems
+		});
+
 		var controls = new L.Control.Draw({
 			draw: drawingToolbar,
-			edit: editingToolbar	
+			edit: editingToolbar,
+			split: splitToolbar	
 		});
 
 		map.addControl(controls);
@@ -101,6 +108,11 @@
 				countOfEditedLayers++;
 			});
 			console.log("Edited " + countOfEditedLayers + " layers");
+		});
+
+		map.on('draw:split', function (e) {
+			console.log('You have been doing some splitting work!');
+			console.log(e);
 		});
 
 		L.DomUtil.get('changeColor').onclick = function () {
