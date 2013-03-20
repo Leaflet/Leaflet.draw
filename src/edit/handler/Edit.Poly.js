@@ -144,7 +144,7 @@ L.Edit.Poly = L.Handler.extend({
 			marker._prev._middleRight = null;
 		}
 
-		this._poly.fire('edit');
+		this._fireEdit();
 	},
 
 	_updateIndexes: function (index, delta) {
@@ -199,7 +199,7 @@ L.Edit.Poly = L.Handler.extend({
 		onClick = function () {
 			onDragStart.call(this);
 			onDragEnd.call(this);
-			this._poly.fire('edit');
+			this._fireEdit();
 		};
 
 		marker

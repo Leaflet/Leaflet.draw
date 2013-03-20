@@ -5,9 +5,14 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
-### Features
+### Improvements
 
  * `draw:edited` now returns a `FeatureGroup` of features edited. (by [@jmkelly](https://github.com/jmkelly)). [#95](https://github.com/Leaflet/Leaflet.draw/pull/95)
+ * Circle tooltip shows the radius (in m) while drawing.
+
+### Bugfixes
+
+ * Fixed issue where removing a vertex or adding a new one via midpoints would not update the edited state for polylines and polygons.
 
 ## 0.2.0 (February 20, 2013)
 
