@@ -109,8 +109,6 @@ L.SplitToolbar.Split = L.Handler.extend({
 		var layersToRevert = this._splitFeatures;
 		var featureGroup = this._featureGroup;
 
-		//need to reverse the order, so we unsplit each segment, building back to the original
-
 		for (var i=0; i < layersToRevert.length; i++) {
 			var childLayers = layersToRevert[i].childLayers;
 			for (var j=0; j < childLayers.length; j++) {
