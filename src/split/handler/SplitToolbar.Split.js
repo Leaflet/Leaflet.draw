@@ -146,30 +146,12 @@ L.SplitToolbar.Split = L.Handler.extend({
 			coords.push(latlngs[i]);
 		}
 		
-		var first, second;
-		
-		for (i = 0; i < coords.length - 1; i++) {
-			var line = [];
-			line[0] = coords[i];
-			line[1] = coords[i + 1];
-			
-			//not a huge fan of this method, ideally we want to make the split point
-			//on the normal (90 degrees) from the e.latlng down to the line.  At the moment
-			//this will fail if two lines are within the tolerance supplied of the e.latlng
-			if (this._isOnLine(line, e.latlng, 0.000075)) {
-				//we have found the segment to split at
+		var closestPoint = this._closestPointOnLine(coords, e.latlng);
+		var first = coords.splice(0,closestPoint.index + 1);
+		first.push(closestPoint.latlng);
 
-				first = coords.splice(0, i + 1);
-				first.push(e.latlng);
-
-				second = coords;
-				second.unshift(e.latlng);
-				
-				break;
-			}
-			
-		}
-
+		var second = coords;
+		second.unshift(closestPoint.latlng);		
 
 		var firstSection = new L.Polyline(first);
 		var secondSection = new L.Polyline(second);
@@ -183,6 +165,34 @@ L.SplitToolbar.Split = L.Handler.extend({
 
 	},
 
+	_closestPointOnLine: function (latlngs, latlng) {
+		
+		var closestPoint = {};
+		var smallestDistance = 0;
+		var savedIndex = 0;
+
+		for (var i = 0; i < latlngs.length - 1; i++) {
+			p = new L.Point(latlng.lng, latlng.lat);
+			p1 = new L.Point(latlngs[i].lng, latlngs[i].lat);
+			p2 = new L.Point(latlngs[i + 1].lng, latlngs[i + 1].lat);
+		
+			if (i === 0) {
+				smallestDistance = L.LineUtil.pointToSegmentDistance(p, p1, p2);
+				closestPoint = L.LineUtil.closestPointOnSegment(p, p1, p2);
+			} else {
+				if (L.LineUtil.pointToSegmentDistance(p,p1,p2) < smallestDistance) {
+					smallestDistance = L.LineUtil.pointToSegmentDistance(p,p1,p2);
+					closestPoint = L.LineUtil.closestPointOnSegment(p,p1,p2);
+					savedIndex = i;
+				}
+			}
+			
+		}
+		
+		var closestLatLng = new L.LatLng(closestPoint.y, closestPoint.x);
+		return { latlng: closestLatLng, index : savedIndex };
+	},
+
 	_addToTrackingLayer: function (preSplitLayer, firstSection, secondSection) {
 		var splitFeature = {};
 		splitFeature.childLayers = [];
@@ -190,19 +200,6 @@ L.SplitToolbar.Split = L.Handler.extend({
 		splitFeature.childLayers.push(firstSection);
 		splitFeature.childLayers.push(secondSection);
 		this._splitFeatures.push(splitFeature);
-	},
-
-
-	_isOnLine: function (line, latlng, tolerance) {
-		var p1 = new L.Point(line[0].lng, line[0].lat);
-		var p2 = new L.Point(line[1].lng, line[1].lat);
-		var p = new L.Point(latlng.lng, latlng.lat);
-		var distance = L.LineUtil.pointToSegmentDistance(p, p1, p2);
-		if (distance < tolerance) {
-			return true;
-		} else {
-			return false;
-		}
 	},
 
 	_disableLayerSplit: function (e) {
