@@ -5,7 +5,7 @@
 L.SplitToolbar = L.Toolbar.extend({
 	options: {
 		split: {
-			title: 'Split the layers',	
+			title: 'Split the layers'
 		},
 		
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
@@ -27,35 +27,33 @@ L.SplitToolbar = L.Toolbar.extend({
 		this._map = map;
 
 		
-			this._initModeHandler(
-				new L.SplitToolbar.Split(map, {
-					featureGroup: this.options.featureGroup,
-				}),
-				this._toolbarContainer,
-				buttonIndex++,
-				buttonClassPrefix
-			);
+		this._initModeHandler(
+			new L.SplitToolbar.Split(map, {
+				featureGroup: this.options.featureGroup
+			}),
+			this._toolbarContainer,
+			buttonIndex++,
+			buttonClassPrefix
+		);
 		
 
 		// Save button index of the last button, -1 as we would have ++ after the last button
 		this._lastButtonIndex = --buttonIndex;
 
 		// Create the actions part of the toolbar
-		this._actionsContainer = this._createActions([
-			{
+		this._actionsContainer = this._createActions(
+			[{
 				title: 'Save changes.',
 				text: 'Save',
 				callback: this._save,
 				context: this
-			},
-			{
+			}, {
 				title: 'Cancel editing, discards all changes.',
 				text: 'Cancel',
 				callback: this.disable,
 				context: this
-			}
-		]);
-
+			}]
+		);
 		// Add draw and cancel containers to the control container
 		container.appendChild(this._toolbarContainer);
 		container.appendChild(this._actionsContainer);

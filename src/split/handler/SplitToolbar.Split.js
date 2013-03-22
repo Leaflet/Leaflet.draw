@@ -53,7 +53,7 @@ L.SplitToolbar.Split = L.Handler.extend({
 		var backupLayerGroup = this._backupLayerGroup;
 
 		//backup the current layers
-		this._featureGroup.eachLayer( function (layer) {
+		this._featureGroup.eachLayer(function (layer) {
 			backupLayerGroup.addLayer(layer);
 		});
 
@@ -109,21 +109,21 @@ L.SplitToolbar.Split = L.Handler.extend({
 		var layersToRevert = this._splitFeatures;
 		var featureGroup = this._featureGroup;
 
-		for (var i=0; i < layersToRevert.length; i++) {
+		for (var i = 0; i < layersToRevert.length; i++) {
 			var childLayers = layersToRevert[i].childLayers;
-			for (var j=0; j < childLayers.length; j++) {
-				featureGroup.removeLayer(childLayers[j]);	
+			for (var j = 0; j < childLayers.length; j++) {
+				featureGroup.removeLayer(childLayers[j]);
 			}
 		}
 
 		this._backupLayerGroup.eachLayer(function (layer) {
 			featureGroup.addLayer(layer);
-		});		
+		});
 
 	
 	},
 
-	save: function () {		
+	save: function () {
 		this._map.fire('draw:split', {splitLayers: this._splitFeatures});
 
 	},
@@ -142,21 +142,24 @@ L.SplitToolbar.Split = L.Handler.extend({
 		
 		var coords = [];
 		var latlngs = layer.getLatLngs();
-		for (var i=0; i< latlngs.length;i++) {
+		for (var i = 0; i < latlngs.length;i++) {
 			coords.push(latlngs[i]);
 		}
 		
-				
-		for (var i=0; i<coords.length - 1; i++) {		
+		var first, second;
+		
+		for (i = 0; i < coords.length - 1; i++) {
 			var line = [];
 			line[0] = coords[i];
-			line[1] = coords[i+1];
+			line[1] = coords[i + 1];
+			
 			//not a huge fan of this method, ideally we want to make the split point
 			//on the normal (90 degrees) from the e.latlng down to the line.  At the moment
 			//this will fail if two lines are within the tolerance supplied of the e.latlng
-			if (this._isOnLine(line, e.latlng,0.000075)) {
+			if (this._isOnLine(line, e.latlng, 0.000075)) {
 				//we have found the segment to split at
-				first = coords.splice(0,i + 1);
+
+				first = coords.splice(0, i + 1);
 				first.push(e.latlng);
 
 				second = coords;
@@ -176,7 +179,7 @@ L.SplitToolbar.Split = L.Handler.extend({
 		
 		this._addToTrackingLayer(layer, firstSection, secondSection);
 		
-		this._featureGroup.removeLayer(layer);	
+		this._featureGroup.removeLayer(layer);
 
 	},
 
@@ -186,15 +189,15 @@ L.SplitToolbar.Split = L.Handler.extend({
 		splitFeature.parentLayer = preSplitLayer;
 		splitFeature.childLayers.push(firstSection);
 		splitFeature.childLayers.push(secondSection);
-		this._splitFeatures.push(splitFeature);	
+		this._splitFeatures.push(splitFeature);
 	},
 
 
 	_isOnLine: function (line, latlng, tolerance) {
-		var p1 = new L.Point(line[0].lng,line[0].lat);
-		var p2 = new L.Point(line[1].lng,line[1].lat);
-		var p = new L.Point(latlng.lng,latlng.lat);
-		var distance = L.LineUtil.pointToSegmentDistance(p,p1,p2);
+		var p1 = new L.Point(line[0].lng, line[0].lat);
+		var p2 = new L.Point(line[1].lng, line[1].lat);
+		var p = new L.Point(latlng.lng, latlng.lat);
+		var distance = L.LineUtil.pointToSegmentDistance(p, p1, p2);
 		if (distance < tolerance) {
 			return true;
 		} else {
