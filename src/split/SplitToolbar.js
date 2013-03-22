@@ -20,7 +20,7 @@ L.SplitToolbar = L.Toolbar.extend({
 	addToolbar: function (map) {
 		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
 			buttonIndex = 0,
-			buttonClassPrefix = 'leaflet-draw-edit';
+			buttonClassPrefix = 'leaflet-draw-split';
 
 		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar'),
 
