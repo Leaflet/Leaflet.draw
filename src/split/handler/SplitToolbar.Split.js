@@ -147,11 +147,11 @@ L.SplitToolbar.Split = L.Handler.extend({
 		}
 		
 		var closestPoint = this._closestPointOnLine(coords, e.latlng);
-		var first = coords.splice(0,closestPoint.index + 1);
+		var first = coords.splice(0, closestPoint.index + 1);
 		first.push(closestPoint.latlng);
 
 		var second = coords;
-		second.unshift(closestPoint.latlng);		
+		second.unshift(closestPoint.latlng);
 
 		var firstSection = new L.Polyline(first);
 		var secondSection = new L.Polyline(second);
@@ -172,17 +172,17 @@ L.SplitToolbar.Split = L.Handler.extend({
 		var savedIndex = 0;
 
 		for (var i = 0; i < latlngs.length - 1; i++) {
-			p = new L.Point(latlng.lng, latlng.lat);
-			p1 = new L.Point(latlngs[i].lng, latlngs[i].lat);
-			p2 = new L.Point(latlngs[i + 1].lng, latlngs[i + 1].lat);
+			var p = new L.Point(latlng.lng, latlng.lat);
+			var p1 = new L.Point(latlngs[i].lng, latlngs[i].lat);
+			var p2 = new L.Point(latlngs[i + 1].lng, latlngs[i + 1].lat);
 		
 			if (i === 0) {
 				smallestDistance = L.LineUtil.pointToSegmentDistance(p, p1, p2);
 				closestPoint = L.LineUtil.closestPointOnSegment(p, p1, p2);
 			} else {
-				if (L.LineUtil.pointToSegmentDistance(p,p1,p2) < smallestDistance) {
-					smallestDistance = L.LineUtil.pointToSegmentDistance(p,p1,p2);
-					closestPoint = L.LineUtil.closestPointOnSegment(p,p1,p2);
+				if (L.LineUtil.pointToSegmentDistance(p, p1, p2) < smallestDistance) {
+					smallestDistance = L.LineUtil.pointToSegmentDistance(p, p1, p2);
+					closestPoint = L.LineUtil.closestPointOnSegment(p, p1, p2);
 					savedIndex = i;
 				}
 			}
