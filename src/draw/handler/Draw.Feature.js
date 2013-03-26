@@ -78,7 +78,7 @@ L.Draw.Feature = L.Handler.extend({
 		else
 		{
 			var feets = meters * 3.2808;
-			// show metres when distance is < 1mile, then show miles
+			// show feets when distance is < 1mile, then show miles
 			distanceStr = (feets > 5280 ? (feets * 0.00018939).toFixed(2) + ' mile' : Math.ceil(feets) + ' feet');
 		}
 		return distanceStr;

@@ -48,9 +48,9 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 	_fireCreatedEvent: function () {
 		var circle = new L.Circle(this._startLatLng, this._shape.getRadius(), this.options.shapeOptions);
 		L.Draw.SimpleShape.prototype._fireCreatedEvent.call(this, circle);
-	},
+	}
 
-	_onMouseMove: function (e) {
+	/*_onMouseMove: function (e) {
 		var latlng = e.latlng,
 			radius;
 
@@ -66,5 +66,5 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 				subtext: 'Radius: ' + radius + ' m'
 			});
 		}
-	}
+	}*/
 });

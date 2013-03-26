@@ -93,7 +93,7 @@ L.Draw.Feature = L.Handler.extend({
 		else
 		{
 			var feets = meters * 3.2808;
-			// show metres when distance is < 1mile, then show miles
+			// show feets when distance is < 1mile, then show miles
 			distanceStr = (feets > 5280 ? (feets * 0.00018939).toFixed(2) + ' mile' : Math.ceil(feets) + ' feet');
 		}
 		return distanceStr;
@@ -697,9 +697,9 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 	_fireCreatedEvent: function () {
 		var circle = new L.Circle(this._startLatLng, this._shape.getRadius(), this.options.shapeOptions);
 		L.Draw.SimpleShape.prototype._fireCreatedEvent.call(this, circle);
-	},
+	}
 
-	_onMouseMove: function (e) {
+	/*_onMouseMove: function (e) {
 		var latlng = e.latlng,
 			radius;
 
@@ -715,7 +715,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 				subtext: 'Radius: ' + radius + ' m'
 			});
 		}
-	}
+	}*/
 });
 
 L.Draw.Marker = L.Draw.Feature.extend({
