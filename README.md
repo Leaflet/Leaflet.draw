@@ -91,7 +91,7 @@ map.on('draw:created', function (e) {
 
 | Property | Type | Description
 | --- | --- | ---
-| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just removed from the map.
+| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just edited on the map.
 
 Triggered when layers in the FeatureGroup, that the plugin was initialized with, have been edited and saved.
 
@@ -104,9 +104,26 @@ map.on('draw:edited', function (e) {
 });
 ````
 
+#### draw:editcancelled
+
+Triggered when start edit mode and cancelled then.
+
+| Property | Type | Description
+| --- | --- | ---
+| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just edited on the map.
+
+
 #### draw:deleted
 
-Triggered when layers have been layers have been removed (and saved) from the FeatureGroup.
+Triggered when layers have been removed (and saved) from the FeatureGroup.
+
+| Property | Type | Description
+| --- | --- | ---
+| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just removed from the map.
+
+#### draw:deletecancelled
+
+Triggered when start delete mode and cancelled then.
 
 | Property | Type | Description
 | --- | --- | ---

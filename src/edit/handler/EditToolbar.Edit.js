@@ -60,6 +60,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			.off('layerremove', this._disableLayerEdit);
 
 		L.Handler.prototype.disable.call(this);
+		this._map.fire('draw:editcancelled', { layers: this._getEditedLayers() });
 	},
 
 	addHooks: function () {
@@ -94,7 +95,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		}, this);
 	},
 
-	save: function () {
+	_getEditedLayers: function () {
 		var editedLayers = new L.LayerGroup();
 		this._featureGroup.eachLayer(function (layer) {
 			if (layer.edited) {
@@ -102,7 +103,11 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.edited = false;
 			}
 		});
-		this._map.fire('draw:edited', {layers: editedLayers});
+		return editedLayers;
+	},
+
+	save: function () {
+		this._map.fire('draw:edited', {layers: this._getEditedLayers()});
 	},
 
 	_backupLayer: function (layer) {
