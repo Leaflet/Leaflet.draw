@@ -2138,6 +2138,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 	disable: function () {
 		if (!this._enabled) { return; }
 
+		this._map.fire('draw:editcancelled', { layers: this._getEditedLayers() });
+
 		this.fire('disabled', {handler: this.type});
 
 		this._featureGroup
@@ -2145,7 +2147,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 			.off('layerremove', this._disableLayerEdit);
 
 		L.Handler.prototype.disable.call(this);
-		this._map.fire('draw:editcancelled', { layers: this._getEditedLayers() });
 	},
 
 	addHooks: function () {
@@ -2360,6 +2361,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 	disable: function () {
 		if (!this._enabled) { return; }
 
+		this._map.fire('draw:deletecancelled', { layers: this._deletedLayers });
 		L.Handler.prototype.disable.call(this);
 
 		this._deletableLayers
@@ -2367,7 +2369,6 @@ L.EditToolbar.Delete = L.Handler.extend({
 			.off('layerremove', this._disableLayerDelete);
 
 		this.fire('disabled', { handler: this.type});
-		this._map.fire('draw:deletecancelled', { layers: this._deletedLayers });
 	},
 
 	addHooks: function () {
