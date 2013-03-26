@@ -53,6 +53,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 	disable: function () {
 		if (!this._enabled) { return; }
 
+		this._map.fire('draw:editcancelled', { layers: this._getEditedLayers() });
+
 		this.fire('disabled', {handler: this.type});
 
 		this._featureGroup
@@ -60,7 +62,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 			.off('layerremove', this._disableLayerEdit);
 
 		L.Handler.prototype.disable.call(this);
-		this._map.fire('draw:editcancelled', { layers: this._getEditedLayers() });
 	},
 
 	addHooks: function () {
