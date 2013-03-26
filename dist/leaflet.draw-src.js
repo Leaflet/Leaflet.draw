@@ -697,6 +697,24 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 	_fireCreatedEvent: function () {
 		var circle = new L.Circle(this._startLatLng, this._shape.getRadius(), this.options.shapeOptions);
 		L.Draw.SimpleShape.prototype._fireCreatedEvent.call(this, circle);
+	},
+
+	_onMouseMove: function (e) {
+		var latlng = e.latlng,
+			radius;
+
+		this._tooltip.updatePosition(latlng);
+		if (this._isDrawing) {
+			this._drawShape(latlng);
+
+			// Get the new radius (rouded to 1 dp)
+			radius = this._shape.getRadius().toFixed(1);
+
+			this._tooltip.updateContent({
+				text: 'Release mouse to finish drawing.',
+				subtext: 'Radius: ' + radius + ' m'
+			});
+		}
 	}
 });
 

@@ -5,9 +5,10 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
-### Features
+### Improvements
 
  * `draw:edited` now returns a `FeatureGroup` of features edited. (by [@jmkelly](https://github.com/jmkelly)). [#95](https://github.com/Leaflet/Leaflet.draw/pull/95)
+ * Circle tooltip shows the radius (in m) while drawing.
 
 ### Bugfixes
 
