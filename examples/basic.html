@@ -7,6 +7,15 @@
 	<!--[if lte IE 8]><link rel="stylesheet" href="libs/leaflet.ie.css" /><![endif]-->
 	<link rel="stylesheet" href="../dist/leaflet.draw.css" />
 	<!--[if lte IE 8]><link rel="stylesheet" href="../dist/leaflet.draw.ie.css" /><![endif]-->
+	<style type="text/css">
+		/* some custom style for additional shapes */
+		.leaflet-draw-draw-polygon-sexypolygon {
+			background-color: rgba(39, 139, 34, 0.70) !important;
+		}
+		.leaflet-draw-draw-marker-bluemarker {
+			background-color: rgba(0, 0, 255, 0.70) !important;
+		}
+	</style>
 
 	<script src="libs/leaflet-src.js"></script>
 
@@ -54,22 +63,51 @@
 		var drawControl = new L.Control.Draw({
 			draw: {
 				position: 'topleft',
-				polygon: {
-					title: 'Draw a sexy polygon!',
-					allowIntersection: false,
-					drawError: {
-						color: '#b00b00',
-						timeout: 1000
+				shapes: [
+					{
+						type: 'polyline',
+						title: 'Draw a polyline'
 					},
-					shapeOptions: {
-						color: '#bada55'
+					{
+						type: 'polygon',
+						title: 'Draw a polygon!',
+					},
+					{
+						type: 'polygon',
+						customType: 'sexypolygon',
+						title: 'Draw a sexy polygon!',
+						allowIntersection: false,
+						drawError: {
+							color: '#b00b00',
+							timeout: 1000
+						},
+						shapeOptions: {
+							color: '#bada55'
+						}
+					},
+					{
+						type: 'rectangle',
+						title: 'Draw a rectangle'
+					},
+					{
+						type: 'circle',
+						title: 'Draw a circle',
+						shapeOptions: {
+							color: '#662d91'
+						}
+					},
+					{
+						type: 'marker',
+						customType: 'bluemarker',
+						title: 'Add a marker'
+					},
+					{
+						type: 'marker',
+						customType: 'divmarker',
+						title: 'Add a blue-marker',
+						icon: new L.DivIcon()
 					}
-				},
-				circle: {
-					shapeOptions: {
-						color: '#662d91'
-					}
-				}
+				]
 			},
 			edit: {
 				featureGroup: drawnItems
@@ -82,7 +120,10 @@
 				layer = e.layer;
 
 			if (type === 'marker') {
-				layer.bindPopup('A popup!');
+				if (e.customType === 'divmarker')
+					layer.bindPopup('A DIV popup!');
+				else
+					layer.bindPopup('A popup!');
 			}
 
 			drawnItems.addLayer(layer);

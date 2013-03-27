@@ -1,21 +1,28 @@
 L.DrawToolbar = L.Toolbar.extend({
 
 	options: {
-		polyline: {
-			title: 'Draw a polyline'
-		},
-		polygon: {
-			title: 'Draw a polygon'
-		},
-		rectangle: {
-			title: 'Draw a rectangle'
-		},
-		circle: {
-			title: 'Draw a circle'
-		},
-		marker: {
-			title: 'Add a marker'
-		}
+		shapes: [
+			{
+				type: 'polyline',
+				title: 'Draw a polyline'
+			},
+			{
+				type: 'polygon',
+				title: 'Draw a polygon'
+			},
+			{
+				type: 'rectangle',
+				title: 'Draw a rectangle'
+			},
+			{
+				type: 'circle',
+				title: 'Draw a circle'
+			},
+			{
+				type: 'marker',
+				title: 'Add a marker'
+			}
+		]
 	},
 
 	initialize: function (options) {
@@ -30,49 +37,30 @@ L.DrawToolbar = L.Toolbar.extend({
 		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
 
 
-		if (this.options.polyline) {
-			this._initModeHandler(
-				new L.Draw.Polyline(map, this.options.polyline),
-				this._toolbarContainer,
-				buttonIndex++,
-				buttonClassPrefix
-			);
-		}
+		for (var i=0; i<this.options.shapes.length; i++) {
+			var shapeOptions = this.options.shapes[i],
+				drawObj = null;
 
-		if (this.options.polygon) {
-			this._initModeHandler(
-				new L.Draw.Polygon(map, this.options.polygon),
-				this._toolbarContainer,
-				buttonIndex++,
-				buttonClassPrefix
-			);
-		}
+			if (shapeOptions.typeOptions == 'polyline') {
+				drawObj = new L.Draw.Polyline(map, shapeOptions);
+			} else if (shapeOptions.type == 'polygon') {
+				drawObj = new L.Draw.Polygon(map, shapeOptions);
+			} else if (shapeOptions.type == 'rectangle') {
+				drawObj = new L.Draw.Rectangle(map, shapeOptions);
+			} else if (shapeOptions.type == 'circle') {
+				drawObj = new L.Draw.Circle(map, shapeOptions);
+			} else if (shapeOptions.type == 'marker') {
+				drawObj = new L.Draw.Marker(map, shapeOptions);
+			}
 
-		if (this.options.rectangle) {
-			this._initModeHandler(
-				new L.Draw.Rectangle(map, this.options.rectangle),
-				this._toolbarContainer,
-				buttonIndex++,
-				buttonClassPrefix
-			);
-		}
-
-		if (this.options.circle) {
-			this._initModeHandler(
-				new L.Draw.Circle(map, this.options.circle),
-				this._toolbarContainer,
-				buttonIndex++,
-				buttonClassPrefix
-			);
-		}
-
-		if (this.options.marker) {
-			this._initModeHandler(
-				new L.Draw.Marker(map, this.options.marker),
-				this._toolbarContainer,
-				buttonIndex++,
-				buttonClassPrefix
-			);
+			if (drawObj != null) {
+				this._initModeHandler(
+					drawObj,
+					this._toolbarContainer,
+					buttonIndex++,
+					buttonClassPrefix
+				);
+			}
 		}
 
 		// Save button index of the last button, -1 as we would have ++ after the last button

@@ -9,10 +9,10 @@ Adds support for drawing and editing vectors and markers on [Leaflet maps](https
 Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGES](https://github.com/Leaflet/Leaflet.draw/blob/master/BREAKINGCHANGES.md) for how to upgrade.
 
 ## Table of Contents
-[Using the plugin](#using)  
-[Advanced Options](#options)  
-[Command tasks](#tasks)  
-[Thanks](#thanks)  
+[Using the plugin](#using)
+[Advanced Options](#options)
+[Command tasks](#tasks)
+[Thanks](#thanks)
 
 <a name="using" />
 ## Using the plugin
@@ -27,7 +27,7 @@ var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
 
 // add an OpenStreetMap tile layer
 L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 ````
 
@@ -41,7 +41,7 @@ var map = L.map('map').setView([51.505, -0.09], 13);
 
 // add an OpenStreetMap tile layer
 L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
 // Initialize the FeatureGroup to store editable layers
@@ -69,6 +69,7 @@ Once you have successfully added the Leaflet.draw plugin your map you will want 
 | --- | --- | ---
 | layer | [Polyline](http://leafletjs.com/reference.html#polyline)/[Polygon](http://leafletjs.com/reference.html#polygon)/[Rectangle](http://leafletjs.com/reference.html#rectangle)/[Circle](http://leafletjs.com/reference.html#circle)/[Marker](http://leafletjs.com/reference.html#marker) | Layer that was just created.
 | layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
+| customType | String | The the custom type specified in the shape options.
 
 
 Triggered when a new vector or marker has been created.
@@ -76,10 +77,14 @@ Triggered when a new vector or marker has been created.
 ````js
 map.on('draw:created', function (e) {
 	var type = e.layerType,
+		customType = e.customType,
 		layer = e.layer;
 
 	if (type === 'marker') {
 		// Do marker specific actions
+		if (customType == 'bluemarker') {
+			// do some special things
+		}
 	}
 
 	// Do whatever else you need to. (save to db, add to map etc)
@@ -119,6 +124,7 @@ Triggered when the user has chosen to draw a particular vector or marker.
 | Property | Type | Description
 | --- | --- | ---
 | layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
+| customType | String | The the custom type specified in the shape options.
 
 #### draw:drawstop
 
@@ -127,6 +133,7 @@ Triggered when the user has finshed a particular vector or marker.
 | Property | Type | Description
 | --- | --- | ---
 | layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
+| customType | String | The the custom type specified in the shape options.
 
 <a name="options" />
 ## Advanced options
@@ -148,13 +155,18 @@ These options make up the root object that is used when initializing the Leaflet
 
 These options will allow you to configure the draw toolbar and it's handlers.
 
-| Option | Type | Default | Description
-| --- | --- | --- | ---
-| polyline | [PolylineOptions](#polylineoptions) | `{ title: 'Draw a polyline' }` | Polyline draw handler options.
-| polygon | [PolygonOptions](#polygonoptions) | `{ title: 'Draw a polygon' }` | Polygon draw handler options.
-| rectangle | [RectangleOptions](#rectangleoptions) | `{ title: 'Draw a rectangle' }` | Rectangle draw handler options.
-| circle | [CircleOptions](#circleoptions) | `{ title: 'Draw a circle' }` | Circle draw handler options.
-| marker | [MarkerOptions](#markeroptions) | `{ title: 'Add a marker' }` | Marker draw handler options.
+| Option | Type | Description
+| --- | --- | ---
+| shapes | Array | List of Shapes
+
+Each shape is a dictionary and must have the following options defined.
+There are additional options for [PolylineOptions](#polylineoptions), [PolygonOptions](#polygonoptions), [RectangleOptions](#rectangleoptions), [CircleOptions](#circleoptions), [MarkerOptions](#markeroptions).
+
+| Option | Type | Description
+| --- | --- | ---
+| title | String | The title used for the shape button.
+| type | String | Defines type of shape: polyline, polygon, rectangle, circle, marker
+| customType | String | (optional) Value to distinguish multiple shapes of same type
 
 ### Draw handler options
 
@@ -168,7 +180,6 @@ Polyline and Polygon drawing handlers take the same options.
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| title | String | `'Draw a Polyline (Polygon)'` | The title used for the polyline/polygon button.
 | allowIntersection | Bool | `true` | Determines if line segements can cross.
 | drawError | Object | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Polyline.js#L10) | Configuration options for the error that displays if an intersection is detected.
 | guidelineDistance | Number | `20` | Distance in pixels between each guide dash.
@@ -180,7 +191,6 @@ Polyline and Polygon drawing handlers take the same options.
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| title | String | `'Draw a rectangle.'` | The title used for the rectangle button.
 | shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Rectangle.js#L7) | The options used when drawing the rectangle on the map.
 
 <a name="circleoptions" />
@@ -188,15 +198,13 @@ Polyline and Polygon drawing handlers take the same options.
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| title | String | `'Draw a circle.'` | The title used for the circle button.
-| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map. 
+| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map.
 
 <a name="markeroptions" />
 #### MarkerOptions
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| title | String | `'Add a marker.'` | The title used for the marker button.
 | icon | [Leaflet Icon](http://leafletjs.com/reference.html#icon) | `L.Icon.Default()` | The icon displayed when drawing a marker.
 | zIndexOffset | Number | `2000` | This should be a high number to ensure that you can draw over all other layers on the map.
 
@@ -346,9 +354,9 @@ E.g. to change the colour of the rectangle:
 
 ````js
 drawControl.setDrawingOptions(
-    rectangle: {
-        color: '#0000FF'
-    }
+	rectangle: {
+		color: '#0000FF'
+	}
 );
 ````
 
