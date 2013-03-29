@@ -91,7 +91,7 @@ map.on('draw:created', function (e) {
 
 | Property | Type | Description
 | --- | --- | ---
-| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just removed from the map.
+| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just edited on the map.
 
 Triggered when layers in the FeatureGroup, that the plugin was initialized with, have been edited and saved.
 
