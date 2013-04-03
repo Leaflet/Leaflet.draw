@@ -687,6 +687,8 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	},
 
 	options: {
+		markerType: 'Marker',
+		shapeOptions: {},
 		icon: new L.Icon.Default(),
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
@@ -696,6 +698,25 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		this.type = L.Draw.Marker.TYPE;
 
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
+	},
+
+	buildMarker: function (latlng) {
+		var options;
+
+		if (this.options.markerType === 'Marker') {
+			console.log('Marker -- Yep');
+
+			options = {
+				icon: this.options.icon,
+				zIndexOffset: this.options.zIndexOffset
+			};
+		} else if (this.options.markerType === 'CircleMarker') {
+			console.log('CircleMarker -- Yep');
+
+			options = this.options.shapeOptions;
+		}
+
+		return new L[this.options.markerType](latlng, options);
 	},
 
 	addHooks: function () {
@@ -752,10 +773,8 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		this._mouseMarker.setLatLng(latlng);
 
 		if (!this._marker) {
-			this._marker = new L.Marker(latlng, {
-				icon: this.options.icon,
-				zIndexOffset: this.options.zIndexOffset
-			});
+			//this._marker = new L[this.options.markerType](latlng, this.options.markerOptions);
+			this._marker = this.buildMarker(latlng);
 			// Bind to both marker and map to make sure we get the click event.
 			this._marker.on('click', this._onClick, this);
 			this._map
@@ -774,10 +793,12 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	},
 
 	_fireCreatedEvent: function () {
-		var marker = new L.Marker(this._marker.getLatLng(), { icon: this.options.icon });
+		//var marker = new L[this.options.markerType](this._marker.getLatLng(), this.options.markerOptions);
+		var marker = this.buildMarker(this._marker.getLatLng());
 		L.Draw.Feature.prototype._fireCreatedEvent.call(this, marker);
 	}
 });
+
 
 L.Edit = L.Edit || {};
 
