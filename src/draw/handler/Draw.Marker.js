@@ -47,18 +47,18 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 		if (this._map) {
 			if (this._marker) {
-				this._marker.off('click', this._onClick);
+				this._marker.off('click', this._onClick, this);
 				this._map
-					.off('click', this._onClick)
+					.off('click', this._onClick, this)
 					.removeLayer(this._marker);
 				delete this._marker;
 			}
 
-			this._mouseMarker.off('click', this._onClick);
+			this._mouseMarker.off('click', this._onClick, this);
 			this._map.removeLayer(this._mouseMarker);
 			delete this._mouseMarker;
 
-			this._map.off('mousemove', this._onMouseMove);
+			this._map.off('mousemove', this._onMouseMove, this);
 		}
 	},
 
