@@ -279,8 +279,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		} else {
 			// calculate the distance from the last fixed point to the mouse position
 			distance = this._measurementRunningTotal + this._currentLatLng.distanceTo(this._markers[this._markers.length - 1].getLatLng());
-			// show metres when distance is < 1km, then show km
-			distanceStr = distance  > 1000 ? (distance  / 1000).toFixed(2) + ' km' : Math.ceil(distance) + ' m';
+			distanceStr = this._getDistanceText(distance);
 
 			if (this._markers.length === 1) {
 				labelText = {
