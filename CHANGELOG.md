@@ -9,10 +9,14 @@ An in-progress version being developed on the master branch.
 
  * `draw:edited` now returns a `FeatureGroup` of features edited. (by [@jmkelly](https://github.com/jmkelly)). [#95](https://github.com/Leaflet/Leaflet.draw/pull/95)
  * Circle tooltip shows the radius (in m) while drawing.
+ * Added Leaflet version check to inform developers that Leaflet 0.6+ is required.
 
 ### Bugfixes
 
  * Fixed issue where removing a vertex or adding a new one via midpoints would not update the edited state for polylines and polygons.
+ * Fixed issue where not passing in the context to `off()` would result in the event from not being unbound.(by [@koppelbakje](https://github.com/koppelbakje)). [#95](https://github.com/Leaflet/Leaflet.draw/pull/112)
+ * Fixed issue where removing the draw control from the map would result in an error.
+
 
 ## 0.2.0 (February 20, 2013)
 
