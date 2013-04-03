@@ -184,7 +184,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._map.removeLayer(this._poly);
 		delete this._poly;
 
-		this._mouseMarker.off('click', this._onClick);
+		this._mouseMarker.off('click', this._onClick, this);
 		this._map.removeLayer(this._mouseMarker);
 		delete this._mouseMarker;
 
@@ -192,8 +192,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._clearGuides();
 
 		this._map
-			.off('mousemove', this._onMouseMove)
-			.off('zoomend', this._onZoomEnd);
+			.off('mousemove', this._onMouseMove, this)
+			.off('zoomend', this._onZoomEnd, this);
 	},
 
 	_finishShape: function () {
@@ -273,7 +273,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		// Remove the old marker click handler (as only the last point should close the polyline)
 		if (this._markers.length > 2) {
-			this._markers[this._markers.length - 2].off('click', this._finishShape);
+			this._markers[this._markers.length - 2].off('click', this._finishShape, this);
 		}
 	},
 
@@ -438,7 +438,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_cleanUpShape: function () {
 		if (this._markers.length > 0) {
-			this._markers[this._markers.length - 1].off('click', this._finishShape);
+			this._markers[this._markers.length - 1].off('click', this._finishShape, this);
 		}
 	},
 
@@ -730,18 +730,18 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 		if (this._map) {
 			if (this._marker) {
-				this._marker.off('click', this._onClick);
+				this._marker.off('click', this._onClick, this);
 				this._map
-					.off('click', this._onClick)
+					.off('click', this._onClick, this)
 					.removeLayer(this._marker);
 				delete this._marker;
 			}
 
-			this._mouseMarker.off('click', this._onClick);
+			this._mouseMarker.off('click', this._onClick, this);
 			this._map.removeLayer(this._mouseMarker);
 			delete this._mouseMarker;
 
-			this._map.off('mousemove', this._onMouseMove);
+			this._map.off('mousemove', this._onMouseMove, this);
 		}
 	},
 
@@ -1517,6 +1517,10 @@ L.Control.Draw = L.Control.extend({
 	},
 
 	initialize: function (options) {
+		if (L.version <= "0.5.1") {
+			throw new Error('Leaflet.draw 0.2.0+ requires Leaflet 0.6.0+. Download latest from https://github.com/Leaflet/Leaflet/');
+		}
+
 		L.Control.prototype.initialize.call(this, options);
 
 		var id, toolbar;
@@ -1647,7 +1651,7 @@ L.Toolbar = L.Class.extend({
 
 		// Dispose the actions toolbar
 		for (var i = 0, l = this._actionButtons.length; i < l; i++) {
-			this._disposeButton(this._actionButtons[i]);
+			this._disposeButton(this._actionButtons[i].button, this._actionButtons[i].callback);
 		}
 		this._actionButtons = [];
 		this._actionsContainer = null;
@@ -1750,7 +1754,10 @@ L.Toolbar = L.Class.extend({
 				context: buttons[i].context
 			});
 
-			this._actionButtons.push(button);
+			this._actionButtons.push({
+				button: button,
+				callback: buttons[i].callback
+			});
 		}
 
 		container.style.width = containerWidth + 'px';
@@ -2104,8 +2111,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this.fire('disabled', {handler: this.type});
 
 		this._featureGroup
-			.off('layeradd', this._enableLayerEdit)
-			.off('layerremove', this._disableLayerEdit);
+			.off('layeradd', this._enableLayerEdit, this)
+			.off('layerremove', this._disableLayerEdit, this);
 
 		L.Handler.prototype.disable.call(this);
 	},
@@ -2132,7 +2139,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._tooltip.dispose();
 			this._tooltip = null;
 
-			this._map.off('mousemove', this._onMouseMove);
+			this._map.off('mousemove', this._onMouseMove, this);
 		}
 	},
 
@@ -2264,7 +2271,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (layer instanceof L.Marker) {
 			layer.dragging.disable();
-			layer.off('dragend', this._onMarkerDragEnd);
+			layer.off('dragend', this._onMarkerDragEnd, this);
 		} else {
 			layer.editing.disable();
 		}
@@ -2321,8 +2328,8 @@ L.EditToolbar.Delete = L.Handler.extend({
 		L.Handler.prototype.disable.call(this);
 
 		this._deletableLayers
-			.off('layeradd', this._enableLayerDelete)
-			.off('layerremove', this._disableLayerDelete);
+			.off('layeradd', this._enableLayerDelete, this)
+			.off('layerremove', this._disableLayerDelete, this);
 
 		this.fire('disabled', { handler: this.type});
 	},
@@ -2347,7 +2354,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 			this._tooltip.dispose();
 			this._tooltip = null;
 
-			this._map.off('mousemove', this._onMouseMove);
+			this._map.off('mousemove', this._onMouseMove, this);
 		}
 	},
 
@@ -2371,7 +2378,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 	_disableLayerDelete: function (e) {
 		var layer = e.layer || e.target || e;
 
-		layer.off('click', this._removeLayer);
+		layer.off('click', this._removeLayer, this);
 
 		// Remove from the deleted layers so we can't accidently revert if the user presses cancel
 		this._deletedLayers.removeLayer(layer);
