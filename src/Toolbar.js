@@ -39,7 +39,7 @@ L.Toolbar = L.Class.extend({
 
 		// Dispose the actions toolbar
 		for (var i = 0, l = this._actionButtons.length; i < l; i++) {
-			this._disposeButton(this._actionButtons[i]);
+			this._disposeButton(this._actionButtons[i].button, this._actionButtons[i].callback);
 		}
 		this._actionButtons = [];
 		this._actionsContainer = null;
@@ -142,7 +142,10 @@ L.Toolbar = L.Class.extend({
 				context: buttons[i].context
 			});
 
-			this._actionButtons.push(button);
+			this._actionButtons.push({
+				button: button,
+				callback: buttons[i].callback
+			});
 		}
 
 		container.style.width = containerWidth + 'px';
