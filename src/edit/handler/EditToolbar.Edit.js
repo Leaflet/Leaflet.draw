@@ -56,8 +56,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this.fire('disabled', {handler: this.type});
 
 		this._featureGroup
-			.off('layeradd', this._enableLayerEdit)
-			.off('layerremove', this._disableLayerEdit);
+			.off('layeradd', this._enableLayerEdit, this)
+			.off('layerremove', this._disableLayerEdit, this);
 
 		L.Handler.prototype.disable.call(this);
 	},
@@ -84,7 +84,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._tooltip.dispose();
 			this._tooltip = null;
 
-			this._map.off('mousemove', this._onMouseMove);
+			this._map.off('mousemove', this._onMouseMove, this);
 		}
 	},
 
@@ -216,7 +216,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (layer instanceof L.Marker) {
 			layer.dragging.disable();
-			layer.off('dragend', this._onMarkerDragEnd);
+			layer.off('dragend', this._onMarkerDragEnd, this);
 		} else {
 			layer.editing.disable();
 		}

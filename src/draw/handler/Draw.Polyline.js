@@ -94,7 +94,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._map.removeLayer(this._poly);
 		delete this._poly;
 
-		this._mouseMarker.off('click', this._onClick);
+		this._mouseMarker.off('click', this._onClick, this);
 		this._map.removeLayer(this._mouseMarker);
 		delete this._mouseMarker;
 
@@ -102,8 +102,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._clearGuides();
 
 		this._map
-			.off('mousemove', this._onMouseMove)
-			.off('zoomend', this._onZoomEnd);
+			.off('mousemove', this._onMouseMove, this)
+			.off('zoomend', this._onZoomEnd, this);
 	},
 
 	_finishShape: function () {
@@ -183,7 +183,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		// Remove the old marker click handler (as only the last point should close the polyline)
 		if (this._markers.length > 2) {
-			this._markers[this._markers.length - 2].off('click', this._finishShape);
+			this._markers[this._markers.length - 2].off('click', this._finishShape, this);
 		}
 	},
 
@@ -348,7 +348,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_cleanUpShape: function () {
 		if (this._markers.length > 0) {
-			this._markers[this._markers.length - 1].off('click', this._finishShape);
+			this._markers[this._markers.length - 1].off('click', this._finishShape, this);
 		}
 	},
 
