@@ -27,7 +27,7 @@
 		for (var i = 0; i < scripts.length; i++) {
 			var src = scripts[i].src;
 			if (src) {
-				var res = src.match(/^(.*)leaflet-include\.js$/);
+				var res = src.match(/^(.*)leaflet.draw-include\.js$/);
 				if (res) {
 					return res[1] + '../src/';
 				}
