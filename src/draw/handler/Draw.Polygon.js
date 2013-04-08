@@ -52,6 +52,11 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 
 	_vertexAdded: function () {
 		//calc area here
+		var marker_amount = this._markers.length;
+		if (marker_amount >= 3) {
+			this._markers[marker_amount-2].off('dblclick', this._finishShape, this);
+			this._markers[marker_amount-1].on('dblclick', this._finishShape, this);
+		}
 	},
 
 	_cleanUpShape: function () {
