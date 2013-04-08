@@ -2,12 +2,18 @@
   "name": "leaflet-draw",
   "version": "0.2.0",
   "description": "Vector drawing plugin for Leaflet",
+  "devDependencies": {
+    "jshint": "~1.1.0",
+    "uglify-js": "~2.2.5",
+    "jake": "~0.5.10"
+  },
   "main": "dist/leaflet.draw.js",
   "directories": {
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "jake"
   },
   "repository": {
     "type": "git",
