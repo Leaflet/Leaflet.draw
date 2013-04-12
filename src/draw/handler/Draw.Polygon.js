@@ -50,7 +50,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		} else if (this._markers.length < 3) {
 			text = 'Click to continue drawing shape.';
 		} else {
-			text = 'Click first point to close this shape.';
+			text = 'Double click to close this shape.';
 		}
 		return {
 			text: text
