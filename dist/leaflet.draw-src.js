@@ -258,22 +258,23 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map.addLayer(this._poly);
 		}
 
-		this._updateMarkerHandler();
+		this._updateFinishHandler();
 
 		this._vertexAdded(latlng);
 
 		this._clearGuides();
 	},
 
-	_updateMarkerHandler: function () {
-		// The last marker shold have a click handler to close the polyline
-		if (this._markers.length > 1) {
-			this._markers[this._markers.length - 1].on('click', this._finishShape, this);
+	_updateFinishHandler: function () {
+		var markerCount = this._markers.length;
+		// The last marker should have a click handler to close the polyline
+		if (markerCount > 1) {
+			this._markers[markerCount - 1].on('click', this._finishShape, this);
 		}
 
 		// Remove the old marker click handler (as only the last point should close the polyline)
-		if (this._markers.length > 2) {
-			this._markers[this._markers.length - 2].off('click', this._finishShape, this);
+		if (markerCount > 2) {
+			this._markers[markerCount - 2].off('click', this._finishShape, this);
 		}
 	},
 
@@ -475,10 +476,21 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		this.type = L.Draw.Polygon.TYPE;
 	},
 
-	_updateMarkerHandler: function () {
+	_updateFinishHandler: function () {
+		var markerCount = this._markers.length;
+
 		// The first marker shold have a click handler to close the polygon
-		if (this._markers.length === 1) {
+		if (markerCount === 1) {
 			this._markers[0].on('click', this._finishShape, this);
+		}
+
+		// Add and update the double click handler
+		if (markerCount > 2) {
+			this._markers[markerCount - 1].on('dblclick', this._finishShape, this);
+			// Only need to remove handler if has been added before
+			if (markerCount > 3) {
+				this._markers[markerCount - 2].off('dblclick', this._finishShape, this);
+			}
 		}
 	},
 
@@ -489,7 +501,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		} else if (this._markers.length < 3) {
 			text = 'Click to continue drawing shape.';
 		} else {
-			text = 'Click first point to close this shape.';
+			text = 'Double click to close this shape.';
 		}
 		return {
 			text: text
@@ -505,8 +517,14 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 	},
 
 	_cleanUpShape: function () {
-		if (this._markers.length > 0) {
+		var markerCount = this._markers.length;
+
+		if (markerCount > 0) {
 			this._markers[0].off('click', this._finishShape);
+
+			if (markerCount > 2) {
+				this._markers[markerCount - 1].off('dblclick', this._finishShape, this);
+			}
 		}
 	}
 });
