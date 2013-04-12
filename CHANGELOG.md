@@ -10,6 +10,8 @@ An in-progress version being developed on the master branch.
  * `draw:edited` now returns a `FeatureGroup` of features edited. (by [@jmkelly](https://github.com/jmkelly)). [#95](https://github.com/Leaflet/Leaflet.draw/pull/95)
  * Circle tooltip shows the radius (in m) while drawing.
  * Added Leaflet version check to inform developers that Leaflet 0.6+ is required.
+ * Added ability to finish drawing polygons by double clicking. (inspired by [@snkashis](https://github.com/snkashis)). [#121](https://github.com/Leaflet/Leaflet.label/pull/121)
+ * Added test environment. (by [@iirvine](https://github.com/iirvine)). [#123](https://github.com/Leaflet/Leaflet.draw/pull/123)
 
 ### Bugfixes
 
