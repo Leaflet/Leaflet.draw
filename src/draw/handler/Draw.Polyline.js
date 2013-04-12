@@ -168,22 +168,23 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map.addLayer(this._poly);
 		}
 
-		this._updateMarkerHandler();
+		this._updateFinishHandler();
 
 		this._vertexAdded(latlng);
 
 		this._clearGuides();
 	},
 
-	_updateMarkerHandler: function () {
-		// The last marker shold have a click handler to close the polyline
-		if (this._markers.length > 1) {
-			this._markers[this._markers.length - 1].on('click', this._finishShape, this);
+	_updateFinishHandler: function () {
+		var markerCount = this._markers.length;
+		// The last marker should have a click handler to close the polyline
+		if (markerCount > 1) {
+			this._markers[markerCount - 1].on('click', this._finishShape, this);
 		}
 
 		// Remove the old marker click handler (as only the last point should close the polyline)
-		if (this._markers.length > 2) {
-			this._markers[this._markers.length - 2].off('click', this._finishShape, this);
+		if (markerCount > 2) {
+			this._markers[markerCount - 2].off('click', this._finishShape, this);
 		}
 	},
 
