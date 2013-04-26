@@ -182,7 +182,7 @@ L.Edit.Poly = L.Handler.extend({
 			marker._index = i;
 
 			marker
-			    .off('click', onClick)
+			    .off('click', onClick, this)
 			    .on('click', this._onMarkerClick, this);
 
 			latlng.lat = marker.getLatLng().lat;
