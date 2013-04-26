@@ -69,7 +69,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		var markerCount = this._markers.length;
 
 		if (markerCount > 0) {
-			this._markers[0].off('click', this._finishShape);
+			this._markers[0].off('click', this._finishShape, this);
 
 			if (markerCount > 2) {
 				this._markers[markerCount - 1].off('dblclick', this._finishShape, this);

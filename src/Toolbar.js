@@ -31,8 +31,8 @@ L.Toolbar = L.Class.extend({
 
 				// Unbind handler
 				this._modes[handlerId].handler
-					.off('enabled', this._handlerActivated)
-					.off('disabled', this._handlerDeactivated);
+					.off('enabled', this._handlerActivated, this)
+					.off('disabled', this._handlerDeactivated, this);
 			}
 		}
 		this._modes = {};

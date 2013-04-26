@@ -92,9 +92,9 @@ L.Edit.SimpleShape = L.Handler.extend({
 
 	_unbindMarker: function (marker) {
 		marker
-			.off('dragstart', this._onMarkerDragStart)
-			.off('drag', this._onMarkerDrag)
-			.off('dragend', this._onMarkerDragEnd);
+			.off('dragstart', this._onMarkerDragStart, this)
+			.off('drag', this._onMarkerDrag, this)
+			.off('dragend', this._onMarkerDragEnd, this);
 	},
 
 	_onMarkerDragStart: function (e) {
