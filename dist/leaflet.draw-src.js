@@ -520,7 +520,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		var markerCount = this._markers.length;
 
 		if (markerCount > 0) {
-			this._markers[0].off('click', this._finishShape);
+			this._markers[0].off('click', this._finishShape, this);
 
 			if (markerCount > 2) {
 				this._markers[markerCount - 1].off('dblclick', this._finishShape, this);
@@ -888,6 +888,20 @@ L.Edit.Poly = L.Handler.extend({
 		return marker;
 	},
 
+	_removeMarker: function (marker) {
+		var i = marker._index;
+
+		this._markerGroup.removeLayer(marker);
+		this._markers.splice(i, 1);
+		this._poly.spliceLatLngs(i, 1);
+		this._updateIndexes(i, -1);
+
+		marker
+			.off('drag', this._onMarkerDrag, this)
+			.off('dragend', this._fireEdit, this)
+			.off('click', this._onMarkerClick, this);
+	},
+
 	_fireEdit: function () {
 		this._poly.edited = true;
 		this._poly.fire('edit');
@@ -912,14 +926,10 @@ L.Edit.Poly = L.Handler.extend({
 		// we want to remove the marker on click, but if latlng count < 3, polyline would be invalid
 		if (this._poly._latlngs.length < 3) { return; }
 
-		var marker = e.target,
-		    i = marker._index;
+		var marker = e.target;
 
 		// remove the marker
-		this._markerGroup.removeLayer(marker);
-		this._markers.splice(i, 1);
-		this._poly.spliceLatLngs(i, 1);
-		this._updateIndexes(i, -1);
+		this._removeMarker(marker);
 
 		// update prev/next links of adjacent markers
 		this._updatePrevNext(marker._prev, marker._next);
@@ -971,7 +981,7 @@ L.Edit.Poly = L.Handler.extend({
 			marker._index = i;
 
 			marker
-			    .off('click', onClick)
+			    .off('click', onClick, this)
 			    .on('click', this._onMarkerClick, this);
 
 			latlng.lat = marker.getLatLng().lat;
@@ -1150,9 +1160,9 @@ L.Edit.SimpleShape = L.Handler.extend({
 
 	_unbindMarker: function (marker) {
 		marker
-			.off('dragstart', this._onMarkerDragStart)
-			.off('drag', this._onMarkerDrag)
-			.off('dragend', this._onMarkerDragEnd);
+			.off('dragstart', this._onMarkerDragStart, this)
+			.off('drag', this._onMarkerDrag, this)
+			.off('dragend', this._onMarkerDragEnd, this);
 	},
 
 	_onMarkerDragStart: function (e) {
@@ -1661,8 +1671,8 @@ L.Toolbar = L.Class.extend({
 
 				// Unbind handler
 				this._modes[handlerId].handler
-					.off('enabled', this._handlerActivated)
-					.off('disabled', this._handlerDeactivated);
+					.off('enabled', this._handlerActivated, this)
+					.off('disabled', this._handlerDeactivated, this);
 			}
 		}
 		this._modes = {};
