@@ -89,6 +89,20 @@ L.Edit.Poly = L.Handler.extend({
 		return marker;
 	},
 
+	_removeMarker: function (marker) {
+		var i = marker._index;
+
+		this._markerGroup.removeLayer(marker);
+		this._markers.splice(i, 1);
+		this._poly.spliceLatLngs(i, 1);
+		this._updateIndexes(i, -1);
+
+		marker
+			.off('drag', this._onMarkerDrag, this)
+			.off('dragend', this._fireEdit, this)
+			.off('click', this._onMarkerClick, this);
+	},
+
 	_fireEdit: function () {
 		this._poly.edited = true;
 		this._poly.fire('edit');
@@ -113,14 +127,10 @@ L.Edit.Poly = L.Handler.extend({
 		// we want to remove the marker on click, but if latlng count < 3, polyline would be invalid
 		if (this._poly._latlngs.length < 3) { return; }
 
-		var marker = e.target,
-		    i = marker._index;
+		var marker = e.target;
 
 		// remove the marker
-		this._markerGroup.removeLayer(marker);
-		this._markers.splice(i, 1);
-		this._poly.spliceLatLngs(i, 1);
-		this._updateIndexes(i, -1);
+		this._removeMarker(marker);
 
 		// update prev/next links of adjacent markers
 		this._updatePrevNext(marker._prev, marker._next);
