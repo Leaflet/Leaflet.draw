@@ -45,7 +45,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		if (this._map) {
 			this._markers = [];
 
-			this._markerGroup = new L.LayerGroup();
+			this._markerGroup = new L.FeatureGroup();
 			this._map.addLayer(this._markerGroup);
 
 			this._poly = new L.Polyline([], this.options.shapeOptions);
