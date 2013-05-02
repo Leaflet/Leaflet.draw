@@ -39,7 +39,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	enable: function () {
-		if (this._enabled) { return; }
+		if (this._enabled || !this._hasAvailableLayers()) { return; }
 
 		L.Handler.prototype.enable.call(this);
 
@@ -229,5 +229,17 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_onMouseMove: function (e) {
 		this._tooltip.updatePosition(e.latlng);
+	},
+
+	_hasAvailableLayers: function () {
+		var availableStatus = false;
+		var obj = this._featureGroup._layers;
+		for (var prop in obj) {
+			if (obj.hasOwnProperty(prop)) {
+				availableStatus = true;
+				break;
+			}
+		}
+		return availableStatus;
 	}
 });
