@@ -15,7 +15,7 @@ L.Toolbar = L.Class.extend({
 
 	disable: function () {
 		if (!this.enabled()) { return; }
-		
+
 		this._activeMode.handler.disable();
 	},
 
@@ -31,15 +31,15 @@ L.Toolbar = L.Class.extend({
 
 				// Unbind handler
 				this._modes[handlerId].handler
-					.off('enabled', this._handlerActivated)
-					.off('disabled', this._handlerDeactivated);
+					.off('enabled', this._handlerActivated, this)
+					.off('disabled', this._handlerDeactivated, this);
 			}
 		}
 		this._modes = {};
 
 		// Dispose the actions toolbar
 		for (var i = 0, l = this._actionButtons.length; i < l; i++) {
-			this._disposeButton(this._actionButtons[i]);
+			this._disposeButton(this._actionButtons[i].button, this._actionButtons[i].callback);
 		}
 		this._actionButtons = [];
 		this._actionsContainer = null;
@@ -103,7 +103,7 @@ L.Toolbar = L.Class.extend({
 		if (this._activeMode && this._activeMode.handler.enabled()) {
 			this._activeMode.handler.disable();
 		}
-		
+
 		// Cache new active feature
 		this._activeMode = this._modes[e.handler];
 
@@ -142,7 +142,10 @@ L.Toolbar = L.Class.extend({
 				context: buttons[i].context
 			});
 
-			this._actionButtons.push(button);
+			this._actionButtons.push({
+				button: button,
+				callback: buttons[i].callback
+			});
 		}
 
 		container.style.width = containerWidth + 'px';
@@ -156,7 +159,7 @@ L.Toolbar = L.Class.extend({
 			buttonHeight = 26, // TODO: this should be calculated
 			borderHeight = 1, // TODO: this should also be calculated
 			toolbarPosition = (buttonIndex * buttonHeight) + (buttonIndex * borderHeight) - 1;
-		
+
 		// Correctly position the cancel button
 		this._actionsContainer.style.top = toolbarPosition + 'px';
 
@@ -164,7 +167,7 @@ L.Toolbar = L.Class.extend({
 			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
 			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
 		}
-		
+
 		if (buttonIndex === lastButtonIndex) {
 			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
 			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');

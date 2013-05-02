@@ -1,11 +1,12 @@
-**N.B. Leaflet.draw 0.2 requires the latest Leaflet master. You will need to download it from the [Github repo](https://github.com/Leaflet/Leaflet).**
+# Important
+You will need to download the latest Leaflet from master in the [Github repo](https://github.com/Leaflet/Leaflet) before Leaflet.draw 0.2.0 will work.
 
 #Leaflet.draw
 Adds support for drawing and editing vectors and markers on [Leaflet maps](https://github.com/Leaflet/Leaflet). Check out the [demo](http://leaflet.github.com/Leaflet.draw/)
 
 #### Upgrading from Leaflet.draw 0.1
 
-Leaflet.draw 0.2 changes a LOT of things from 0.1. Please see [BREAKING CHANGES](https://github.com/Leaflet/Leaflet.draw/blob/master/BREAKINGCHANGES.md) for how to upgrade.
+Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGES](https://github.com/Leaflet/Leaflet.draw/blob/master/BREAKINGCHANGES.md) for how to upgrade.
 
 ## Table of Contents
 [Using the plugin](#using)  
@@ -88,9 +89,20 @@ map.on('draw:created', function (e) {
 
 #### draw:edited
 
+| Property | Type | Description
+| --- | --- | ---
+| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just edited on the map.
+
 Triggered when layers in the FeatureGroup, that the plugin was initialized with, have been edited and saved.
 
-*Note: the edited layers are not passed as an argument. Currently a TODO.*
+````js
+map.on('draw:edited', function (e) {
+	var layers = e.layers;
+	layers.eachLayer(function (layer) {
+		//do whatever you want, most likely save back to db
+	});
+});
+````
 
 #### draw:deleted
 

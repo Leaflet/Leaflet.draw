@@ -1,0 +1,37 @@
+{
+  "name": "leaflet-draw",
+  "version": "0.2.0",
+  "description": "Vector drawing plugin for Leaflet",
+  "devDependencies": {
+    "leaflet:": "git://github.com/Leaflet/Leaflet.git",
+    "jshint": "~1.1.0",
+    "uglify-js": "~2.2.5",
+    "jake": "~0.5.10",
+    "mocha": "~1.9.0",
+    "karma": "~0.8.0"
+  },
+  "main": "dist/leaflet.draw.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "build": "jake",
+    "test": "jake test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Leaflet/Leaflet.draw.git"
+  },
+  "keywords": [
+    "maps",
+    "leaflet",
+    "client",
+    "vector",
+    "drawing",
+    "draw"
+  ],
+  "author": "Jacob Toye",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "d856454e7ddbead9f5e87dd5c20cb6713a7564a9"
+}

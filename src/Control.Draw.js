@@ -7,6 +7,10 @@ L.Control.Draw = L.Control.extend({
 	},
 
 	initialize: function (options) {
+		if (L.version <= "0.5.1") {
+			throw new Error('Leaflet.draw 0.2.0+ requires Leaflet 0.6.0+. Download latest from https://github.com/Leaflet/Leaflet/');
+		}
+
 		L.Control.prototype.initialize.call(this, options);
 
 		var id, toolbar;

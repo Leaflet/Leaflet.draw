@@ -14,10 +14,10 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
-	
+
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
-		
+
 		if (this._map) {
 			this._tooltip.updateContent({ text: L.drawLocal.draw.marker.toolbar.start });
 
@@ -44,21 +44,21 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
-		
+
 		if (this._map) {
 			if (this._marker) {
-				this._marker.off('click', this._onClick);
+				this._marker.off('click', this._onClick, this);
 				this._map
-					.off('click', this._onClick)
+					.off('click', this._onClick, this)
 					.removeLayer(this._marker);
 				delete this._marker;
 			}
 
-			this._mouseMarker.off('click', this._onClick);
+			this._mouseMarker.off('click', this._onClick, this);
 			this._map.removeLayer(this._mouseMarker);
 			delete this._mouseMarker;
 
-			this._map.off('mousemove', this._onMouseMove);
+			this._map.off('mousemove', this._onMouseMove, this);
 		}
 	},
 
@@ -67,7 +67,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 		this._tooltip.updatePosition(latlng);
 		this._mouseMarker.setLatLng(latlng);
-		
+
 		if (!this._marker) {
 			this._marker = new L.Marker(latlng, {
 				icon: this.options.icon,

@@ -89,6 +89,15 @@
 			drawnItems.addLayer(layer);
 		});
 
+		map.on('draw:edited', function (e) {
+			var layers = e.layers;
+			var countOfEditedLayers = 0;
+			layers.eachLayer(function(layer) {
+				countOfEditedLayers++;
+			});
+			console.log("Edited " + countOfEditedLayers + " layers");
+		});
+
 		L.DomUtil.get('changeColor').onclick = function () {
 			drawControl.setDrawingOptions({ rectangle: { shapeOptions: { color: '#004a80' } } });
 		};

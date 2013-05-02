@@ -21,7 +21,7 @@ L.DrawToolbar = L.Toolbar.extend({
 	initialize: function (options) {
 		L.Toolbar.prototype.initialize.call(this, options);
 	},
-	
+
 	addToolbar: function (map) {
 		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
 			buttonIndex = 0,
@@ -87,7 +87,7 @@ L.DrawToolbar = L.Toolbar.extend({
 				context: this
 			}
 		]);
-		
+
 		// Add draw and cancel containers to the control container
 		container.appendChild(this._toolbarContainer);
 		container.appendChild(this._actionsContainer);

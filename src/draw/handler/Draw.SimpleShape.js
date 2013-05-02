@@ -61,7 +61,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		if (this._shape) {
 			this._fireCreatedEvent();
 		}
-		
+
 		this.disable();
 	}
 });

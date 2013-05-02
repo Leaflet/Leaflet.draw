@@ -22,7 +22,6 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 
 		L.Draw.SimpleShape.prototype.initialize.call(this, map, options);
 	},
-	
 	_initialLabelText: L.drawLocal.draw.rectangle.tooltip.start,
 
 	_drawShape: function (latlng) {

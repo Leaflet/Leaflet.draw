@@ -14,7 +14,7 @@ L.Polyline.include({
 			p = points[i - 1];
 			p1 = points[i];
 
-			
+
 			if (this._lineSegmentsIntersectsRange(p, p1, i - 2)) {
 				return true;
 			}

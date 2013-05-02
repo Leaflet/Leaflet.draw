@@ -92,14 +92,19 @@ L.Edit.SimpleShape = L.Handler.extend({
 
 	_unbindMarker: function (marker) {
 		marker
-			.off('dragstart', this._onMarkerDragStart)
-			.off('drag', this._onMarkerDrag)
-			.off('dragend', this._onMarkerDragEnd);
+			.off('dragstart', this._onMarkerDragStart, this)
+			.off('drag', this._onMarkerDrag, this)
+			.off('dragend', this._onMarkerDragEnd, this);
 	},
 
 	_onMarkerDragStart: function (e) {
 		var marker = e.target;
 		marker.setOpacity(0);
+	},
+
+	_fireEdit: function () {
+		this._shape.edited = true;
+		this._shape.fire('edit');
 	},
 
 	_onMarkerDrag: function (e) {
@@ -120,6 +125,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		marker.setOpacity(1);
 
 		this._shape.fire('edit');
+		this._fireEdit();
 	},
 
 	_move: function () {
