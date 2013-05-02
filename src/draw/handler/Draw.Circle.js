@@ -23,7 +23,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 		L.Draw.SimpleShape.prototype.initialize.call(this, map, options);
 	},
 
-	_initialLabelText: 'Click and drag to draw circle.',
+	_initialLabelText: L.drawLocal.draw.circle.tooltip.start,
 
 	_drawShape: function (latlng) {
 		if (!this._shape) {

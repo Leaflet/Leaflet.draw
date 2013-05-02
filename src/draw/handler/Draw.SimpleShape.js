@@ -52,7 +52,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 
 		this._tooltip.updatePosition(latlng);
 		if (this._isDrawing) {
-			this._tooltip.updateContent({ text: 'Release mouse to finish drawing.' });
+			this._tooltip.updateContent({ text: L.drawLocal.draw.simpleshape.tooltip.end });
 			this._drawShape(latlng);
 		}
 	},

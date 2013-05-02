@@ -19,7 +19,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		L.Draw.Feature.prototype.addHooks.call(this);
 
 		if (this._map) {
-			this._tooltip.updateContent({ text: 'Click map to place marker.' });
+			this._tooltip.updateContent({ text: L.drawLocal.draw.marker.toolbar.start });
 
 			// Same mouseMarker as in Draw.Polyline
 			if (!this._mouseMarker) {
