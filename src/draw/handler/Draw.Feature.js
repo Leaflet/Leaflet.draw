@@ -13,7 +13,7 @@ L.Draw.Feature = L.Handler.extend({
 		if (options && options.shapeOptions) {
 			options.shapeOptions = L.Util.extend({}, this.options.shapeOptions, options.shapeOptions);
 		}
-		L.Util.extend(this.options, options);
+		L.Util.setOptions(this, options);
 	},
 
 	enable: function () {
@@ -21,9 +21,9 @@ L.Draw.Feature = L.Handler.extend({
 
 		L.Handler.prototype.enable.call(this);
 
-		this.fire('enabled', { handler: this.type });
+		this.fire('enabled', { handler: this.type, customType: this.options.customType || "" });
 
-		this._map.fire('draw:drawstart', { layerType: this.type });
+		this._map.fire('draw:drawstart', { layerType: this.type, customType: this.options.customType || "" });
 	},
 
 	disable: function () {
@@ -31,9 +31,9 @@ L.Draw.Feature = L.Handler.extend({
 
 		L.Handler.prototype.disable.call(this);
 
-		this.fire('disabled', { handler: this.type });
+		this.fire('disabled', { handler: this.type, customType: this.options.customType || "" });
 
-		this._map.fire('draw:drawstop', { layerType: this.type });
+		this._map.fire('draw:drawstop', { layerType: this.type, customType: this.options.customType || "" });
 	},
 
 	addHooks: function () {
@@ -62,7 +62,7 @@ L.Draw.Feature = L.Handler.extend({
 	},
 
 	_fireCreatedEvent: function (layer) {
-		this._map.fire('draw:created', { layer: layer, layerType: this.type });
+		this._map.fire('draw:created', { layer: layer, layerType: this.type, customType: this.options.customType || "" });
 	},
 
 	// Cancel drawing when the escape key is pressed

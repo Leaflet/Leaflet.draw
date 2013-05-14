@@ -46,15 +46,19 @@ L.Toolbar = L.Class.extend({
 	},
 
 	_initModeHandler: function (handler, container, buttonIndex, classNamePredix) {
-		var type = handler.type;
+		var type = handler.options.customType || handler.type,
+			classNames = [classNamePredix + '-' + handler.type];
+
+		if (typeof(handler.options.customType) != 'undefined') {
+			classNames.push(classNames[0] + "-" + handler.options.customType);
+		}
 
 		this._modes[type] = {};
-
 		this._modes[type].handler = handler;
 
 		this._modes[type].button = this._createButton({
-			title: this.options[type].title,
-			className: classNamePredix + '-' + type,
+			title: handler.options.title,
+			className: classNames.join(" "),
 			container: container,
 			callback: this._modes[type].handler.enable,
 			context: this._modes[type].handler
@@ -105,7 +109,7 @@ L.Toolbar = L.Class.extend({
 		}
 
 		// Cache new active feature
-		this._activeMode = this._modes[e.handler];
+		this._activeMode = this._modes[e.customType || e.handler];
 
 		L.DomUtil.addClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
 
