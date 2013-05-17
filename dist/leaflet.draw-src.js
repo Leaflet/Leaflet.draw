@@ -1995,7 +1995,8 @@ L.EditToolbar = L.Toolbar.extend({
 	options: {
 		edit: {
 			title: 'Edit layers',
-			selectedPathOptions: null // See Edit handler options, this is used to customize the style of selected paths
+			selectedPathOptions: null, // See Edit handler options, this is used to customize the style of selected paths
+			disableMarkerToggle: false
 		},
 		remove: {
 			title: 'Delete layers'
@@ -2022,7 +2023,8 @@ L.EditToolbar = L.Toolbar.extend({
 			this._initModeHandler(
 				new L.EditToolbar.Edit(map, {
 					featureGroup: this.options.featureGroup,
-					selectedPathOptions: this.options.edit.selectedPathOptions
+					selectedPathOptions: this.options.edit.selectedPathOptions,
+					disableMarkerToggle: this.options.edit.disableMarkerToggle
 				}),
 				this._toolbarContainer,
 				buttonIndex++,
@@ -2097,7 +2099,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 			fill: true,
 			fillColor: '#fe57a1',
 			fillOpacity: 0.1
-		}
+		},
+		disableMarkerToggle: false
 	},
 
 	initialize: function (map, options) {
@@ -2105,6 +2108,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		// Set options to the default unless already set
 		options.selectedPathOptions = options.selectedPathOptions || this.options.selectedPathOptions;
+		options.disableMarkerToggle = options.disableMarkerToggle || this.options.disableMarkerToggle;
 
 		L.Util.setOptions(this, options);
 
@@ -2263,7 +2267,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		// Update layer style so appears editable
 		if (layer instanceof L.Marker) {
-			this._toggleMarkerHighlight(layer);
+		    if (!this.options.disableMarkerToggle) {
+		        this._toggleMarkerHighlight(layer);
+		    }
 		} else {
 			layer.options.previousOptions = layer.options;
 
@@ -2289,7 +2295,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		// Reset layer styles to that of before select
 		if (layer instanceof L.Marker) {
-			this._toggleMarkerHighlight(layer);
+		    if (!this.options.disableMarkerToggle) {
+		        this._toggleMarkerHighlight(layer);
+		    }
 		} else {
 			// reset the layer style to what is was before being selected
 			layer.setStyle(layer.options.previousOptions);
