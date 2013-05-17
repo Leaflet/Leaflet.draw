@@ -14,7 +14,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 			fill: true,
 			fillColor: '#fe57a1',
 			fillOpacity: 0.1
-		}
+		},
+		disableMarkerToggle: false
 	},
 
 	initialize: function (map, options) {
@@ -22,6 +23,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		// Set options to the default unless already set
 		options.selectedPathOptions = options.selectedPathOptions || this.options.selectedPathOptions;
+		options.disableMarkerToggle = options.disableMarkerToggle || this.options.disableMarkerToggle;
 
 		L.Util.setOptions(this, options);
 
@@ -180,7 +182,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		// Update layer style so appears editable
 		if (layer instanceof L.Marker) {
-			this._toggleMarkerHighlight(layer);
+		    if (!this.options.disableMarkerToggle) {
+		        this._toggleMarkerHighlight(layer);
+		    }
 		} else {
 			layer.options.previousOptions = layer.options;
 
@@ -206,7 +210,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		// Reset layer styles to that of before select
 		if (layer instanceof L.Marker) {
-			this._toggleMarkerHighlight(layer);
+		    if (!this.options.disableMarkerToggle) {
+		        this._toggleMarkerHighlight(layer);
+		    }
 		} else {
 			// reset the layer style to what is was before being selected
 			layer.setStyle(layer.options.previousOptions);
