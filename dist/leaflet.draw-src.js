@@ -1854,8 +1854,8 @@ L.Tooltip = L.Class.extend({
 		}
 
 		this._container.innerHTML =
-			(labelText.subtext.length > 0 ? '<span class="leaflet-draw-tooltip-subtext">' + labelText.subtext + '</span>' + '<br />' : '') +
-			'<span>' + labelText.text + '</span>';
+			'<span>' + labelText.text + '</span>' +
+			(labelText.subtext.length > 0 ? '<br /><span class="leaflet-draw-tooltip-subtext">' + labelText.subtext + '</span>' : '');
 
 		return this;
 	},
@@ -1995,7 +1995,9 @@ L.EditToolbar = L.Toolbar.extend({
 	options: {
 		edit: {
 			title: 'Edit layers',
-			selectedPathOptions: null // See Edit handler options, this is used to customize the style of selected paths
+			selectedPathOptions: null, // See Edit handler options, this is used to customize the style of selected paths
+			disableMarkerToggle: false,
+		    tooltipText: null
 		},
 		remove: {
 			title: 'Delete layers'
@@ -2022,7 +2024,9 @@ L.EditToolbar = L.Toolbar.extend({
 			this._initModeHandler(
 				new L.EditToolbar.Edit(map, {
 					featureGroup: this.options.featureGroup,
-					selectedPathOptions: this.options.edit.selectedPathOptions
+					selectedPathOptions: this.options.edit.selectedPathOptions,
+					disableMarkerToggle: this.options.edit.disableMarkerToggle,
+					tooltipText: this.options.edit.tooltipText
 				}),
 				this._toolbarContainer,
 				buttonIndex++,
@@ -2097,7 +2101,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 			fill: true,
 			fillColor: '#fe57a1',
 			fillOpacity: 0.1
-		}
+		},
+		disableMarkerToggle: false,
+		tooltipText: { text: 'Drag handles, or marker to edit feature.', subtext: 'Click cancel to undo changes.' }
 	},
 
 	initialize: function (map, options) {
@@ -2105,6 +2111,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		// Set options to the default unless already set
 		options.selectedPathOptions = options.selectedPathOptions || this.options.selectedPathOptions;
+		options.disableMarkerToggle = options.disableMarkerToggle || this.options.disableMarkerToggle;
+		options.tooltipText = options.tooltipText || this.options.tooltipText;
 
 		L.Util.setOptions(this, options);
 
@@ -2150,7 +2158,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
 
 			this._tooltip = new L.Tooltip(this._map);
-			this._tooltip.updateContent({ text: 'Drag handles, or marker to edit feature.', subtext: 'Click cancel to undo changes.' });
+			this._tooltip.updateContent(this.options.tooltipText);
 
 			this._map.on('mousemove', this._onMouseMove, this);
 		}
@@ -2263,7 +2271,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		// Update layer style so appears editable
 		if (layer instanceof L.Marker) {
-			this._toggleMarkerHighlight(layer);
+		    if (!this.options.disableMarkerToggle) {
+		        this._toggleMarkerHighlight(layer);
+		    }
 		} else {
 			layer.options.previousOptions = layer.options;
 
@@ -2289,7 +2299,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		// Reset layer styles to that of before select
 		if (layer instanceof L.Marker) {
-			this._toggleMarkerHighlight(layer);
+		    if (!this.options.disableMarkerToggle) {
+		        this._toggleMarkerHighlight(layer);
+		    }
 		} else {
 			// reset the layer style to what is was before being selected
 			layer.setStyle(layer.options.previousOptions);

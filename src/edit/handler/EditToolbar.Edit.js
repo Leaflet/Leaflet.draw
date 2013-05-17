@@ -14,7 +14,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 			fill: true,
 			fillColor: '#fe57a1',
 			fillOpacity: 0.1
-		}
+		},
+		disableMarkerToggle: false,
+		tooltipText: { text: 'Drag handles, or marker to edit feature.', subtext: 'Click cancel to undo changes.' }
 	},
 
 	initialize: function (map, options) {
@@ -22,6 +24,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		// Set options to the default unless already set
 		options.selectedPathOptions = options.selectedPathOptions || this.options.selectedPathOptions;
+		options.disableMarkerToggle = options.disableMarkerToggle || this.options.disableMarkerToggle;
+		options.tooltipText = options.tooltipText || this.options.tooltipText;
 
 		L.Util.setOptions(this, options);
 
@@ -67,7 +71,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
 
 			this._tooltip = new L.Tooltip(this._map);
-			this._tooltip.updateContent({ text: 'Drag handles, or marker to edit feature.', subtext: 'Click cancel to undo changes.' });
+			this._tooltip.updateContent(this.options.tooltipText);
 
 			this._map.on('mousemove', this._onMouseMove, this);
 		}
@@ -180,7 +184,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		// Update layer style so appears editable
 		if (layer instanceof L.Marker) {
-			this._toggleMarkerHighlight(layer);
+		    if (!this.options.disableMarkerToggle) {
+		        this._toggleMarkerHighlight(layer);
+		    }
 		} else {
 			layer.options.previousOptions = layer.options;
 
@@ -206,7 +212,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		// Reset layer styles to that of before select
 		if (layer instanceof L.Marker) {
-			this._toggleMarkerHighlight(layer);
+		    if (!this.options.disableMarkerToggle) {
+		        this._toggleMarkerHighlight(layer);
+		    }
 		} else {
 			// reset the layer style to what is was before being selected
 			layer.setStyle(layer.options.previousOptions);
