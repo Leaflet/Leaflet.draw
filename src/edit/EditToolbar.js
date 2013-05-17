@@ -7,7 +7,8 @@ L.EditToolbar = L.Toolbar.extend({
 		edit: {
 			title: 'Edit layers',
 			selectedPathOptions: null, // See Edit handler options, this is used to customize the style of selected paths
-			disableMarkerToggle: false
+			disableMarkerToggle: false,
+		    tooltipText: null
 		},
 		remove: {
 			title: 'Delete layers'
@@ -35,7 +36,8 @@ L.EditToolbar = L.Toolbar.extend({
 				new L.EditToolbar.Edit(map, {
 					featureGroup: this.options.featureGroup,
 					selectedPathOptions: this.options.edit.selectedPathOptions,
-					disableMarkerToggle: this.options.edit.disableMarkerToggle
+					disableMarkerToggle: this.options.edit.disableMarkerToggle,
+					tooltipText: this.options.edit.tooltipText
 				}),
 				this._toolbarContainer,
 				buttonIndex++,
