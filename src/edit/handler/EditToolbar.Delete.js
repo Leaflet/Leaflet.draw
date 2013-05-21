@@ -51,7 +51,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 			this._deletedLayers = new L.layerGroup();
 
 			this._tooltip = new L.Tooltip(this._map);
-			this._tooltip.updateContent({ text: 'Click on a feature to remove.' });
+			this._tooltip.updateContent({ text: L.drawLocal.edit.toolbar.remove.tooltip });
 
 			this._map.on('mousemove', this._onMouseMove, this);
 		}

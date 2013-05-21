@@ -2,19 +2,19 @@ L.DrawToolbar = L.Toolbar.extend({
 
 	options: {
 		polyline: {
-			title: 'Draw a polyline'
+			title: L.drawLocal.draw.toolbar.polyline
 		},
 		polygon: {
-			title: 'Draw a polygon'
+			title: L.drawLocal.draw.toolbar.polygon
 		},
 		rectangle: {
-			title: 'Draw a rectangle'
+			title: L.drawLocal.draw.toolbar.rectangle
 		},
 		circle: {
-			title: 'Draw a circle'
+			title: L.drawLocal.draw.toolbar.circle
 		},
 		marker: {
-			title: 'Add a marker'
+			title: L.drawLocal.draw.toolbar.marker
 		}
 	},
 
