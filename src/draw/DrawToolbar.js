@@ -20,8 +20,10 @@ L.DrawToolbar = L.Toolbar.extend({
 
 	initialize: function (options) {
 		// Ensure that the options are merged correctly since L.extend is only shallow
-		for(var type in this.options) {
-			options[type] = L.extend({}, this.options[type], options[type]);
+		for (var type in this.options) {
+			if (this.options.hasOwnProperty(type)) {
+				options[type] = L.extend({}, this.options[type], options[type]);
+			}
 		}
 
 		L.Toolbar.prototype.initialize.call(this, options);

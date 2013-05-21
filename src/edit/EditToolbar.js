@@ -24,7 +24,7 @@ L.EditToolbar = L.Toolbar.extend({
 
 	initialize: function (options) {
 		// Need to set this manually since null is an acceptable value here
-		if (options.edit && typeof options.edit.selectedPathOptions == 'undefined') {
+		if (options.edit && typeof options.edit.selectedPathOptions === 'undefined') {
 			options.edit.selectedPathOptions = this.options.edit.selectedPathOptions;
 		}
 
