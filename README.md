@@ -217,7 +217,7 @@ These options will allow you to configure the draw toolbar and its handlers.
 | Option | Type | Default | Description
 | --- | --- | --- | ---
 | title | String | `'Edit Layers'` | The title used for the edit button.
-| selectedPathOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/edit/handler/EditToolbar.Edit.js#L9) | The path options for how the layers will look like while in edit mode.
+| selectedPathOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/edit/handler/EditToolbar.Edit.js#L9) | The path options for how the layers will look like while in edit mode. If this is set to null the editable path options will not be set.
 
 <a name="deletehandleroptions" />
 #### DeleteHandlerOptions

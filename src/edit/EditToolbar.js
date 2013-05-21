@@ -6,7 +6,15 @@ L.EditToolbar = L.Toolbar.extend({
 	options: {
 		edit: {
 			title: L.drawLocal.edit.toolbar.edit.title,
-			selectedPathOptions: null // See Edit handler options, this is used to customize the style of selected paths
+			selectedPathOptions: {
+				color: '#fe57a1', /* Hot pink all the things! */
+				opacity: 0.6,
+				dashArray: '10, 10',
+
+				fill: true,
+				fillColor: '#fe57a1',
+				fillOpacity: 0.1
+			}
 		},
 		remove: {
 			title: L.drawLocal.edit.toolbar.remove.title
@@ -15,6 +23,14 @@ L.EditToolbar = L.Toolbar.extend({
 	},
 
 	initialize: function (options) {
+		// Need to set this manually since null is an acceptable value here
+		if (options.edit && typeof options.edit.selectedPathOptions == 'undefined') {
+			options.edit.selectedPathOptions = this.options.edit.selectedPathOptions;
+		}
+
+		options.edit = L.extend({}, this.options.edit, options.edit);
+		options.remove = L.extend({}, this.options.remove, options.remove);
+
 		L.Toolbar.prototype.initialize.call(this, options);
 
 		this._selectedFeatureCount = 0;

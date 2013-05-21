@@ -5,28 +5,14 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	includes: L.Mixin.Events,
 
-	options: {
-		selectedPathOptions: {
-			color: '#fe57a1', /* Hot pink all the things! */
-			opacity: 0.6,
-			dashArray: '10, 10',
-
-			fill: true,
-			fillColor: '#fe57a1',
-			fillOpacity: 0.1
-		}
-	},
-
 	initialize: function (map, options) {
 		L.Handler.prototype.initialize.call(this, map);
 
 		// Set options to the default unless already set
-		options.selectedPathOptions = options.selectedPathOptions || this.options.selectedPathOptions;
-
-		L.Util.setOptions(this, options);
+		this._selectedPathOptions = options.selectedPathOptions;
 
 		// Store the selectable layer group for ease of access
-		this._featureGroup = this.options.featureGroup;
+		this._featureGroup = options.featureGroup;
 
 		if (!(this._featureGroup instanceof L.FeatureGroup)) {
 			throw new Error('options.featureGroup must be a L.FeatureGroup');
@@ -173,23 +159,27 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_enableLayerEdit: function (e) {
 		var layer = e.layer || e.target || e,
-			options = L.Util.extend({}, this.options.selectedPathOptions);
+			pathOptions;
 
 		// Back up this layer (if haven't before)
 		this._backupLayer(layer);
 
 		// Update layer style so appears editable
-		if (layer instanceof L.Marker) {
-			this._toggleMarkerHighlight(layer);
-		} else {
-			layer.options.previousOptions = layer.options;
+		if (this._selectedPathOptions) {
+			pathOptions = L.Util.extend({}, this._selectedPathOptions);
 
-			// Make sure that Polylines are not filled
-			if (!(layer instanceof L.Circle) && !(layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {
-				options.fill = false;
+			if (layer instanceof L.Marker) {
+				this._toggleMarkerHighlight(layer);
+			} else {
+				layer.options.previousOptions = layer.options;
+
+				// Make sure that Polylines are not filled
+				if (!(layer instanceof L.Circle) && !(layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {
+					pathOptions.fill = false;
+				}
+
+				layer.setStyle(pathOptions);
 			}
-
-			layer.setStyle(options);
 		}
 
 		if (layer instanceof L.Marker) {
@@ -205,13 +195,15 @@ L.EditToolbar.Edit = L.Handler.extend({
 		layer.edited = false;
 
 		// Reset layer styles to that of before select
-		if (layer instanceof L.Marker) {
-			this._toggleMarkerHighlight(layer);
-		} else {
-			// reset the layer style to what is was before being selected
-			layer.setStyle(layer.options.previousOptions);
-			// remove the cached options for the layer object
-			delete layer.options.previousOptions;
+		if (this._selectedPathOptions) {
+			if (layer instanceof L.Marker) {
+				this._toggleMarkerHighlight(layer);
+			} else {
+				// reset the layer style to what is was before being selected
+				layer.setStyle(layer.options.previousOptions);
+				// remove the cached options for the layer object
+				delete layer.options.previousOptions;
+			}
 		}
 
 		if (layer instanceof L.Marker) {
