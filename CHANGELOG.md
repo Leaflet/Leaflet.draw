@@ -12,6 +12,8 @@ An in-progress version being developed on the master branch.
  * Added Leaflet version check to inform developers that Leaflet 0.6+ is required.
  * Added ability to finish drawing polygons by double clicking. (inspired by [@snkashis](https://github.com/snkashis)). [#121](https://github.com/Leaflet/Leaflet.label/pull/121)
  * Added test environment. (by [@iirvine](https://github.com/iirvine)). [#123](https://github.com/Leaflet/Leaflet.draw/pull/123)
+ * Added `L.drawLocal` object to allow users to customize the text used in the plugin. Addresses localization issues. (by [@Starefossen](https://github.com/Starefossen)). [#87](https://github.com/Leaflet/Leaflet.draw/pull/87)
+ * Added ability to disable edit mode path and marker styles. (inspired by [@markgibbons25](https://github.com/markgibbons25)). [#121](https://github.com/Leaflet/Leaflet.label/pull/137)
 
 ### Bugfixes
 
