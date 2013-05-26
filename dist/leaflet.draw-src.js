@@ -1974,7 +1974,9 @@ L.DrawToolbar = L.Toolbar.extend({
 		// Ensure that the options are merged correctly since L.extend is only shallow
 		for (var type in this.options) {
 			if (this.options.hasOwnProperty(type)) {
-				options[type] = L.extend({}, this.options[type], options[type]);
+				if (options[type]) {
+					options[type] = L.extend({}, this.options[type], options[type]);
+				}
 			}
 		}
 

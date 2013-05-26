@@ -21,6 +21,7 @@ An in-progress version being developed on the master branch.
  * Fixed issue where not passing in the context to `off()` would result in the event from not being unbound.(by [@koppelbakje](https://github.com/koppelbakje)). [#95](https://github.com/Leaflet/Leaflet.draw/pull/112)
  * Fixed issue where removing the draw control from the map would result in an error.
  * Fixed bug where removing points created by dragging midpoints would cause the polyline to not reflect any newly created points.
+ * Fixed regression where handlers were not able to be disabled.(by [@yohanboniface](https://github.com/yohanboniface)). [#139](https://github.com/Leaflet/Leaflet.draw/pull/139)
 
 ## 0.2.0 (February 20, 2013)
 
