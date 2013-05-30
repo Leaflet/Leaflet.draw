@@ -61,11 +61,16 @@
 		var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/22677/256/{z}/{x}/{y}.png',
 			cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18}),
 			map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(39.74739, -105), zoom: 15 }),
-			snap2 = L.geoJson([freeBus, campus], { style: {
+			snap2 = L.geoJson([freeBus, lightRailStop, bicycleRental, campus, coorsField], { 
+			  style: {
 			    "color": "#ff7800",
 			    "weight": 5,
 			    "opacity": 0.65
-			}});
+        }
+        ,onEachFeature: function (feature, layer) {
+          console.log(feature, layer);
+        }
+      });
 			snap2.addTo(map);	
 		
 		var drawnItems = new L.FeatureGroup();
@@ -74,7 +79,13 @@
 		var drawControl = new L.Control.Draw({
 			draw: {
 			  position: 'topleft',
-		  	polyline: {
+        marker: {
+          snapping: {
+            enabled   : true,
+            layers    : [drawnItems]
+          }
+        },
+        polyline: {
 			  	shapeOptions: {
 			  		// This is a really akward place to snapping
 			  		// but, it is distributed allong with all new objects
