@@ -2,11 +2,6 @@
 /* Toolbars
 /* ================================================================== */
 
-.leaflet-container .leaflet-draw {
-	margin-left: 13px;
-	margin-top: 12px;
-}
-
 .leaflet-draw-section {
 	position: relative;
 }

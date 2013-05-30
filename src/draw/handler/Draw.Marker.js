@@ -5,7 +5,14 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 	options: {
 		icon: new L.Icon.Default(),
-		zIndexOffset: 2000 // This should be > than the highest z-index any markers
+		zIndexOffset: 2000, // This should be > than the highest z-index any markers
+	
+		snapping: {
+			enabled			: false, // snapping
+			layers			: [],		 // snapping
+			sensitivity : 10,		 // snapping
+			vertexonly	: false	 // snapping
+		}
 	},
 
 	initialize: function (map, options) {
@@ -14,42 +21,70 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
-	
+
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
-		
+
 		if (this._map) {
-			this._tooltip.updateContent({ text: 'Click map to place marker.' });
+			this._tooltip.updateContent({ text: L.drawLocal.draw.marker.tooltip.start });
+
+			// Same mouseMarker as in Draw.Polyline
+			if (!this._mouseMarker) {
+				this._mouseMarker = L.marker(this._map.getCenter(), {
+					icon: L.divIcon({
+						className: 'leaflet-mouse-marker',
+						iconAnchor: [20, 20],
+						iconSize: [40, 40]
+					}),
+					opacity: 0,
+					zIndexOffset: this.options.zIndexOffset
+				});
+			}
+
+			this._mouseMarker
+				.on('click', this._onClick, this)
+				.addTo(this._map);
+
 			this._map.on('mousemove', this._onMouseMove, this);
 		}
 	},
 
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
-		
+
 		if (this._map) {
 			if (this._marker) {
-				this._marker.off('click', this._onClick);
+				this._marker.off('click', this._onClick, this);
 				this._map
-					.off('click', this._onClick)
+					.off('click', this._onClick, this)
 					.removeLayer(this._marker);
 				delete this._marker;
 			}
 
-			this._map.off('mousemove', this._onMouseMove);
+			this._mouseMarker.off('click', this._onClick, this);
+			this._map.removeLayer(this._mouseMarker);
+			delete this._mouseMarker;
+
+			this._map.off('mousemove', this._onMouseMove, this);
 		}
 	},
 
 	_onMouseMove: function (e) {
 		var latlng = e.latlng;
+	 
+		if (this._marker && typeof this._marker.options.snapping !== 'undefined' && this._marker.options.snapping.enabled) {
+			latlng = this._marker.snapTo(latlng);
+		}
 
 		this._tooltip.updatePosition(latlng);
+		this._mouseMarker.setLatLng(latlng);
 
 		if (!this._marker) {
 			this._marker = new L.Marker(latlng, {
 				icon: this.options.icon,
 				zIndexOffset: this.options.zIndexOffset
 			});
+			this._marker.options.snapping = this.options.snapping;
 			// Bind to both marker and map to make sure we get the click event.
 			this._marker.on('click', this._onClick, this);
 			this._map

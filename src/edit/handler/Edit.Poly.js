@@ -89,7 +89,22 @@ L.Edit.Poly = L.Handler.extend({
 		return marker;
 	},
 
+	_removeMarker: function (marker) {
+		var i = marker._index;
+
+		this._markerGroup.removeLayer(marker);
+		this._markers.splice(i, 1);
+		this._poly.spliceLatLngs(i, 1);
+		this._updateIndexes(i, -1);
+
+		marker
+			.off('drag', this._onMarkerDrag, this)
+			.off('dragend', this._fireEdit, this)
+			.off('click', this._onMarkerClick, this);
+	},
+
 	_fireEdit: function () {
+		this._poly.edited = true;
 		this._poly.fire('edit');
 	},
 
@@ -112,14 +127,10 @@ L.Edit.Poly = L.Handler.extend({
 		// we want to remove the marker on click, but if latlng count < 3, polyline would be invalid
 		if (this._poly._latlngs.length < 3) { return; }
 
-		var marker = e.target,
-		    i = marker._index;
+		var marker = e.target;
 
 		// remove the marker
-		this._markerGroup.removeLayer(marker);
-		this._markers.splice(i, 1);
-		this._poly.spliceLatLngs(i, 1);
-		this._updateIndexes(i, -1);
+		this._removeMarker(marker);
 
 		// update prev/next links of adjacent markers
 		this._updatePrevNext(marker._prev, marker._next);
@@ -143,7 +154,7 @@ L.Edit.Poly = L.Handler.extend({
 			marker._prev._middleRight = null;
 		}
 
-		this._poly.fire('edit');
+		this._fireEdit();
 	},
 
 	_updateIndexes: function (index, delta) {
@@ -171,7 +182,7 @@ L.Edit.Poly = L.Handler.extend({
 			marker._index = i;
 
 			marker
-			    .off('click', onClick)
+			    .off('click', onClick, this)
 			    .on('click', this._onMarkerClick, this);
 
 			latlng.lat = marker.getLatLng().lat;
@@ -198,7 +209,7 @@ L.Edit.Poly = L.Handler.extend({
 		onClick = function () {
 			onDragStart.call(this);
 			onDragEnd.call(this);
-			this._poly.fire('edit');
+			this._fireEdit();
 		};
 
 		marker
@@ -230,8 +241,9 @@ L.Edit.Poly = L.Handler.extend({
 L.Polyline.addInitHook(function () {
 
 	// Check to see if handler has already been initialized. This is to support versions of Leaflet that still have L.Handler.PolyEdit
-	if (this.editing)
+	if (this.editing) {
 		return;
+	}
 
 	if (L.Edit.Poly) {
 		this.editing = new L.Edit.Poly(this);

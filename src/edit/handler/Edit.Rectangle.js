@@ -44,7 +44,7 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 
 			marker.setLatLng(center);
 		}
-		
+
 		this._toggleCornerMarkers(1);
 
 		this._repositionCornerMarkers();

@@ -7,7 +7,18 @@
 	<!--[if lte IE 8]><link rel="stylesheet" href="libs/leaflet.ie.css" /><![endif]-->
 	<link rel="stylesheet" href="../dist/leaflet.draw.css" />
 	<!--[if lte IE 8]><link rel="stylesheet" href="../dist/leaflet.draw.ie.css" /><![endif]-->
+
+	<style rel="text/css">	
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		html, body, #map {
+			height: 100%;
+		}
+	</style>
 	
+	<script src="geojson.js"></script>
 	<script src="libs/leaflet-src.js"></script>
 
 	<script src="../src/Leaflet.draw.js"></script>
@@ -32,6 +43,7 @@
 	<script src="../src/ext/Polygon.Intersect.js"></script>
 	<script src="../src/ext/Polyline.Intersect.js"></script>
 	<script src="../src/ext/Polyline.Snapping.js"></script>
+	<script src="../src/ext/Marker.Snapping.js"></script>
 
 	<script src="../src/Control.Draw.js"></script>
 	<script src="../src/Tooltip.js"></script>
@@ -43,13 +55,24 @@
 	<script src="../src/edit/handler/EditToolbar.Delete.js"></script>
 </head>
 <body>
-	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
+	<div id="map"></div>
 	<button id="changeColor">Rectangle -> Blue</button>
 	<script>
 
 		var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/22677/256/{z}/{x}/{y}.png',
 			cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18}),
-			map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(39.74739, -105), zoom: 15 });			
+			map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(39.74739, -105), zoom: 15 }),
+			snap2 = L.geoJson([freeBus, lightRailStop, bicycleRental, campus, coorsField], { 
+			  style: {
+			    "color": "#ff7800",
+			    "weight": 5,
+			    "opacity": 0.65
+        }
+        ,onEachFeature: function (feature, layer) {
+          // console.log(feature, layer);
+        }
+      });
+			snap2.addTo(map);	
 		
 		var drawnItems = new L.FeatureGroup();
 		map.addLayer(drawnItems);
@@ -57,16 +80,34 @@
 		var drawControl = new L.Control.Draw({
 			draw: {
 			  position: 'topleft',
+        marker: {
+          snapping: {
+            enabled   : true,
+            layers    : [snap2, drawnItems]
+          }
+        },
+        polyline: {
+			  	shapeOptions: {
+			  		// This is a really akward place to snapping
+			  		// but, it is distributed allong with all new objects
+			  		// and that is needed for snapping while editing
+			  		snapping: {
+			  			enabled      : true,		            // snapping
+			  			layers       : [snap2, drawnItems],	// snapping
+			  			sensitivity  : 20,	                // snapping
+			  			vertexonly   : false                // disable only snaping to vertexes
+			  		}
+			  	}
+		  	},
 				polygon: {
-					title: 'Draw a sexy polygon!',
-					allowIntersection: false,
-					drawError: {
-						color: '#b00b00',
-						timeout: 1000
-					},
-					shapeOptions: {
-						color: '#bada55'
-					}
+			  	shapeOptions: {
+			  		snapping: {
+			  			enabled      : true,
+			  			layers       : [drawnItems],
+			  			sensitivity  : 20,
+			  			vertexonly   : true
+			  		}
+			  	}
 				},
 				circle: {
 					shapeOptions: {
@@ -84,25 +125,14 @@
 				 layer = e.layer;
 				
 			if (type === 'marker') {
+				layer.on('drag', function(e) {
+  			  this.setLatLng(L.LineUtil.snapToLayers(this.getLatLng(), this._leaflet_id, {enabled: true, layers: [snap2, drawnItems]}));	
+				});
 				layer.bindPopup('A popup!');
 			}
 
 			drawnItems.addLayer(layer);
 		});
-
-		map.on('draw:edited', function (e) {
-			var layers = e.layers;
-			var countOfEditedLayers = 0;
-			layers.eachLayer(function(layer) {
-				countOfEditedLayers++;
-			});
-			console.log("Edited " + countOfEditedLayers + " layers");
-		});
-
-		L.DomUtil.get('changeColor').onclick = function () {
-			drawControl.setDrawingOptions({ rectangle: { shapeOptions: { color: '#004a80' } } });
-		};
-
 	</script>
 </body>
 </html>

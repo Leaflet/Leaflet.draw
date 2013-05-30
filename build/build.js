@@ -64,6 +64,8 @@ function getFiles(compsBase32) {
 	return files;
 }
 
+exports.getFiles = getFiles;
+
 exports.lint = function () {
 
 	var files = getFiles();
@@ -151,5 +153,37 @@ exports.build = function (compsBase32, buildName) {
 	} else {
 		fs.writeFileSync(path, newCompressed);
 		console.log('\tSaved to ' + path);
+	}
+
+};
+
+exports.test = function() {
+	var karma = require('karma'),
+	    testConfig = {configFile : __dirname + '/../spec/karma.conf.js'};
+
+	testConfig.browsers = ['PhantomJS'];
+
+	if (isArgv('--chrome')) {
+		testConfig.browsers.push('Chrome');
+	}
+	if (isArgv('--ff')) {
+		testConfig.browsers.push('Firefox');
+	}
+
+	if (isArgv('--cov')) {
+		testConfig.preprocessors = {
+			'../src/**/*.js': 'coverage'
+		};
+		testConfig.coverageReporter = {
+			type : 'html',
+			dir : 'coverage/'
+		};
+		testConfig.reporters = ['coverage'];
+	}
+
+	karma.server.start(testConfig);
+
+	function isArgv(optName) {
+		return process.argv.indexOf(optName) !== -1;
 	}
 };

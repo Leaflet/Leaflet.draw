@@ -36,7 +36,11 @@ var deps = {
 			'ext/LatLngUtil.js',
 			'ext/LineUtil.Intersect.js',
 			'ext/Polyline.Intersect.js',
-			'ext/Polygon.Intersect.js'
+			'ext/Polygon.Intersect.js',
+
+      'ext/LineUtil.Snapping.js',
+      'ext/Polyline.Snapping.js',
+      'ext/Marker.Snapping.js'
 		],
 		desc: 'Extensions of leaflet classes.'
 	},

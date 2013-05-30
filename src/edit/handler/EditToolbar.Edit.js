@@ -5,28 +5,14 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	includes: L.Mixin.Events,
 
-	options: {
-		selectedPathOptions: {
-			color: '#fe57a1', /* Hot pink all the things! */
-			opacity: 0.6,
-			dashArray: '10, 10',
-
-			fill: true,
-			fillColor: '#fe57a1',
-			fillOpacity: 0.1
-		}
-	},
-
 	initialize: function (map, options) {
 		L.Handler.prototype.initialize.call(this, map);
 
 		// Set options to the default unless already set
-		options.selectedPathOptions = options.selectedPathOptions || this.options.selectedPathOptions;
-
-		L.Util.setOptions(this, options);
+		this._selectedPathOptions = options.selectedPathOptions;
 
 		// Store the selectable layer group for ease of access
-		this._featureGroup = this.options.featureGroup;
+		this._featureGroup = options.featureGroup;
 
 		if (!(this._featureGroup instanceof L.FeatureGroup)) {
 			throw new Error('options.featureGroup must be a L.FeatureGroup');
@@ -52,12 +38,12 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	disable: function () {
 		if (!this._enabled) { return; }
-		
+
 		this.fire('disabled', {handler: this.type});
 
 		this._featureGroup
-			.off('layeradd', this._enableLayerEdit)
-			.off('layerremove', this._disableLayerEdit);
+			.off('layeradd', this._enableLayerEdit, this)
+			.off('layerremove', this._disableLayerEdit, this);
 
 		L.Handler.prototype.disable.call(this);
 	},
@@ -67,7 +53,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
 
 			this._tooltip = new L.Tooltip(this._map);
-			this._tooltip.updateContent({ text: 'Drag handles, or marker to edit feature.', subtext: 'Click cancel to undo changes.' });
+			this._tooltip.updateContent({ text: L.drawLocal.edit.tooltip.text, subtext: L.drawLocal.edit.tooltip.subtext });
 
 			this._map.on('mousemove', this._onMouseMove, this);
 		}
@@ -84,7 +70,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._tooltip.dispose();
 			this._tooltip = null;
 
-			this._map.off('mousemove', this._onMouseMove);
+			this._map.off('mousemove', this._onMouseMove, this);
 		}
 	},
 
@@ -95,8 +81,14 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	save: function () {
-		// TODO: pass on the edited layers
-		this._map.fire('draw:edited');
+		var editedLayers = new L.LayerGroup();
+		this._featureGroup.eachLayer(function (layer) {
+			if (layer.edited) {
+				editedLayers.addLayer(layer);
+				layer.edited = false;
+			}
+		});
+		this._map.fire('draw:edited', {layers: editedLayers});
 	},
 
 	_backupLayer: function (layer) {
@@ -123,7 +115,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_revertLayer: function (layer) {
 		var id = L.Util.stamp(layer);
-
+		layer.edited = false;
 		if (this._uneditedLayerProps.hasOwnProperty(id)) {
 			// Polyline, Polygon or Rectangle
 			if (layer instanceof L.Polyline || layer instanceof L.Polygon || layer instanceof L.Rectangle) {
@@ -167,27 +159,32 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_enableLayerEdit: function (e) {
 		var layer = e.layer || e.target || e,
-			options = L.Util.extend({}, this.options.selectedPathOptions);
+			pathOptions;
 
 		// Back up this layer (if haven't before)
 		this._backupLayer(layer);
 
 		// Update layer style so appears editable
-		if (layer instanceof L.Marker) {
-			this._toggleMarkerHighlight(layer);
-		} else {
-			layer.options.previousOptions = layer.options;
+		if (this._selectedPathOptions) {
+			pathOptions = L.Util.extend({}, this._selectedPathOptions);
 
-			// Make sure that Polylines are not filled
-			if (!(layer instanceof L.Circle) && !(layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {
-				options.fill = false;
+			if (layer instanceof L.Marker) {
+				this._toggleMarkerHighlight(layer);
+			} else {
+				layer.options.previousOptions = layer.options;
+
+				// Make sure that Polylines are not filled
+				if (!(layer instanceof L.Circle) && !(layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {
+					pathOptions.fill = false;
+				}
+
+				layer.setStyle(pathOptions);
 			}
-
-			layer.setStyle(options);
 		}
 
 		if (layer instanceof L.Marker) {
 			layer.dragging.enable();
+			layer.on('dragend', this._onMarkerDragEnd);
 		} else {
 			layer.editing.enable();
 		}
@@ -195,22 +192,31 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_disableLayerEdit: function (e) {
 		var layer = e.layer || e.target || e;
-		
+		layer.edited = false;
+
 		// Reset layer styles to that of before select
-		if (layer instanceof L.Marker) {
-			this._toggleMarkerHighlight(layer);
-		} else {
-			// reset the layer style to what is was before being selected
-			layer.setStyle(layer.options.previousOptions);
-			// remove the cached options for the layer object
-			delete layer.options.previousOptions;
+		if (this._selectedPathOptions) {
+			if (layer instanceof L.Marker) {
+				this._toggleMarkerHighlight(layer);
+			} else {
+				// reset the layer style to what is was before being selected
+				layer.setStyle(layer.options.previousOptions);
+				// remove the cached options for the layer object
+				delete layer.options.previousOptions;
+			}
 		}
 
 		if (layer instanceof L.Marker) {
 			layer.dragging.disable();
+			layer.off('dragend', this._onMarkerDragEnd, this);
 		} else {
 			layer.editing.disable();
 		}
+	},
+
+	_onMarkerDragEnd: function (e) {
+		var layer = e.target;
+		layer.edited = true;
 	},
 
 	_onMouseMove: function (e) {
