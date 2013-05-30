@@ -1,24 +1,12 @@
 L.Marker.include({
   /**
-   * Temporarily snapping variables
-   */
-  _snapVars: {
-    map       : null,
-    minPoint  : null,
-    minDist   : null    
-  },
-
-  /**
    * Snap to function
    *
-   * @param <LatLng> latlng - cursor click
+   * @param <LatLng> latlng - original position
    *
-   * @return <LatLng> - snapped to
-   *
-   * @todo find the closest point before returning?
+   * @return <LatLng> - new position
    */
-  snapTo: function (latlng) {
-    return latlng;
+  snapTo: function(latlng) {
+    return L.LineUtil.snapToLayers(latlng, this._leaflet_id, this.options.snapping);
   }
-  
 });

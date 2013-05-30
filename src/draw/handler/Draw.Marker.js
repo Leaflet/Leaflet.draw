@@ -73,8 +73,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		var latlng = e.latlng;
    
     if (this._marker && typeof this._marker.options.snapping !== 'undefined' && this._marker.options.snapping.enabled) {
-      // latlng = this._marker.snapTo(latlng);
-      // console.log('marker snap');
+      latlng = this._marker.snapTo(latlng);
     }
 
 		this._tooltip.updatePosition(latlng);

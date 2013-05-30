@@ -43,6 +43,7 @@
 	<script src="../src/ext/Polygon.Intersect.js"></script>
 	<script src="../src/ext/Polyline.Intersect.js"></script>
 	<script src="../src/ext/Polyline.Snapping.js"></script>
+	<script src="../src/ext/Marker.Snapping.js"></script>
 
 	<script src="../src/Control.Draw.js"></script>
 	<script src="../src/Tooltip.js"></script>
@@ -68,7 +69,7 @@
 			    "opacity": 0.65
         }
         ,onEachFeature: function (feature, layer) {
-          console.log(feature, layer);
+          // console.log(feature, layer);
         }
       });
 			snap2.addTo(map);	
@@ -82,7 +83,7 @@
         marker: {
           snapping: {
             enabled   : true,
-            layers    : [drawnItems]
+            layers    : [snap2, drawnItems]
           }
         },
         polyline: {
