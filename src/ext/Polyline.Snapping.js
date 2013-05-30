@@ -24,20 +24,20 @@ L.Polyline.include({
     
     // Loop through layers
     for (var l1 in layers) {
-      //// console.log(layers[l1]);
+      console.log(layers[l1]);
       for (var l2 in layers[l1]._layers) {
         this._snapVars.map = layers[l1]._layers[l2]._map;
         if (typeof layers[l1]._layers[l2]._latlngs !== "undefined") {
           if (layers[l1]._layers[l2]._leaflet_id !== this._leaflet_id) {
             // Polygon
             if (typeof layers[l1]._layers[l2]._holes !== 'undefined') {
-              // console.log('polygon', layers[l1]._layers[l2]._layers[l3]);
+              console.log('polygon', layers[l1]._layers[l2]._layers[l3]);
               var latlngs = layers[l1]._layers[l2]._latlngs.slice(0);
               latlngs.push(latlngs[0]);
               this._snapToObject(latlng, latlngs, true);
               // Polygon Holes
               for (var i in layers[l1]._layers[l2]._holes) {
-                // console.log('p.hole', i);
+                console.log('p.hole', i);
                 this._snapToObject(latlng, layers[l1]._layers[l2]._holes[i], true);
               }
             // Polyline
