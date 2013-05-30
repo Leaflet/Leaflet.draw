@@ -183,7 +183,14 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			weight: 4,
 			opacity: 0.5,
 			fill: false,
-			clickable: true
+			clickable: true,
+
+			snapping: {
+				enabled			: false, // snapping
+				layers			: [],	// snapping
+				sensitivity : 10,		// snapping
+				vertexonly	: false	// snapping
+			}
 		},
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
@@ -292,6 +299,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var newPos = e.layerPoint,
 			latlng = e.latlng;
 
+		// Snapping the guideline in real time
+		if (typeof this._poly.options.snapping !== 'undefined' && this._poly.options.snapping.enabled) {
+			latlng = this._poly.snapTo(latlng);
+			newPos = this._map.latLngToLayerPoint(latlng);
+		}
+
 		// Save latlng
 		// should this be moved to _updateGuide() ?
 		this._currentLatLng = latlng;
@@ -311,6 +324,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_onClick: function (e) {
 		var latlng = e.target.getLatLng(),
 			markerCount = this._markers.length;
+
+		// Snapping
+		if (typeof this._poly.options.snapping !== 'undefined' && this._poly.options.snapping.enabled) {
+			latlng = this._poly.snapTo(latlng);
+		}
 
 		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
 			this._showErrorTooltip();
@@ -441,7 +459,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			// calculate the distance from the last fixed point to the mouse position
 			distance = this._measurementRunningTotal + this._currentLatLng.distanceTo(this._markers[this._markers.length - 1].getLatLng());
 			// show metres when distance is < 1km, then show km
-			distanceStr = distance  > 1000 ? (distance  / 1000).toFixed(2) + ' km' : Math.ceil(distance) + ' m';
+			distanceStr = distance > 1000 ? (distance / 1000).toFixed(2) + ' km' : Math.ceil(distance) + ' m';
 
 			if (this._markers.length === 1) {
 				labelText = {
@@ -777,7 +795,14 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 	options: {
 		icon: new L.Icon.Default(),
-		zIndexOffset: 2000 // This should be > than the highest z-index any markers
+		zIndexOffset: 2000, // This should be > than the highest z-index any markers
+	
+		snapping: {
+			enabled			: false, // snapping
+			layers			: [],		 // snapping
+			sensitivity : 10,		 // snapping
+			vertexonly	: false	 // snapping
+		}
 	},
 
 	initialize: function (map, options) {
@@ -836,6 +861,10 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 	_onMouseMove: function (e) {
 		var latlng = e.latlng;
+	 
+		if (this._marker && typeof this._marker.options.snapping !== 'undefined' && this._marker.options.snapping.enabled) {
+			latlng = this._marker.snapTo(latlng);
+		}
 
 		this._tooltip.updatePosition(latlng);
 		this._mouseMarker.setLatLng(latlng);
@@ -845,6 +874,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 				icon: this.options.icon,
 				zIndexOffset: this.options.zIndexOffset
 			});
+			this._marker.options.snapping = this.options.snapping;
 			// Bind to both marker and map to make sure we get the click event.
 			this._marker.on('click', this._onClick, this);
 			this._map
@@ -867,6 +897,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		L.Draw.Feature.prototype._fireCreatedEvent.call(this, marker);
 	}
 });
+
 
 L.Edit = L.Edit || {};
 
@@ -920,7 +951,7 @@ L.Edit.Poly = L.Handler.extend({
 
 		// TODO refactor holes implementation in Polygon to support it here
 
-		for (i = 0, len = latlngs.length; i < len; i++) {
+		for (i = 0 , len = latlngs.length; i < len; i++) {
 
 			marker = this._createMarker(latlngs[i], i);
 			marker.on('click', this._onMarkerClick, this);
@@ -929,7 +960,7 @@ L.Edit.Poly = L.Handler.extend({
 
 		var markerLeft, markerRight;
 
-		for (i = 0, j = len - 1; i < len; j = i++) {
+		for (i = 0 , j = len - 1; i < len; j = i++) {
 			if (i === 0 && !(L.Polygon && (this._poly instanceof L.Polygon))) {
 				continue;
 			}
@@ -1607,6 +1638,217 @@ L.Polygon.include({
 	}
 });
 
+L.Util.extend(L.LineUtil, {
+
+	/**
+	 * Snap to all layers
+	 *
+	 * @param <Latlng> latlng - original position
+	 * @param <Number> id - leaflet unique id
+	 * @param <Object> opts - snapping options
+	 *
+	 * @return <Latlng> closest point
+	*/
+	snapToLayers: function (latlng, id, opts) {
+		var i, j, keys, feature, res, sensitivity, vertexonly, layers, minDist, minPoint, map;
+
+		sensitivity = opts.sensitivity || 10;
+		vertexonly = opts.vertexonly || false;
+		layers = opts.layers || [];
+		minDist = Infinity;
+		minPoint = latlng;
+		map = opts.layers[0]._map; // @todo check for undef
+
+		for (i = 0; i < opts.layers.length; i++) {
+			keys = Object.keys(opts.layers[i]._layers);
+			for (j = 0; j < keys.length; j++) {
+				feature = opts.layers[i]._layers[keys[j]];
+
+				// Don't even try snapping to itself!
+				if (id === feature._leaflet_id) { continue; }
+
+				// Marker
+				if (feature instanceof L.Marker) {
+					res = this._snapToLatlngs(latlng, [feature.getLatLng()], map, sensitivity, vertexonly, minDist);
+
+				// Polyline
+				} else if (feature instanceof L.Polyline) {
+					res = this._snapToLatlngs(latlng, feature.getLatLngs(), map, sensitivity, vertexonly, minDist);
+
+				// MultiPolyline
+				} else if (feature instanceof L.MultiPolyline) {
+					console.error('Snapping to MultiPolyline is currently unsupported', feature);
+					res = {'minDist': minDist, 'minPoint': minPoint};
+
+				// Polygon
+				} else if (feature instanceof L.Polygon) {
+					res = this._snapToPolygon(latlng, feature, map, sensitivity, vertexonly, minDist);
+
+				// MultiPolygon
+				} else if (feature instanceof L.MultiPolygon) {
+					res = this._snapToMultiPolygon(latlng, feature, map, sensitivity, vertexonly, minDist);
+
+				// GeometryCollection
+				} else if (typeof feature.feature !== 'undefined' && typeof feature.feature.type !== 'undefined' && feature.feature.type === 'GeometryCollection') {
+					var newLatlng = this.snapToLayers(latlng, id, {
+						'sensitivity': sensitivity,
+						'vertexonly': vertexonly,
+						'layers': [feature]
+					});
+					// What if this is the same?
+					res = {'minDist': latlng.distanceTo(newLatlng), 'minPoint': newLatlng};
+
+				// Unknown
+				} else {
+					console.error('Unsupported snapping feature', feature);
+					res = {'minDist': minDist, 'minPoint': minPoint};
+				}
+
+				if (res.minDist < minDist) {
+					minDist = res.minDist;
+					minPoint = res.minPoint;
+				}
+
+			}
+		}
+
+		return minPoint;
+	},
+
+	/**
+	 * Snap to Polygon
+	 *
+	 * @param <Latlng> latlng - original position
+	 * @param <L.Polygon> feature -
+	 * @param <L.Map> map -
+	 * @param <Number> sensitivity -
+	 * @param <Boolean> vertexonly -
+	 * @param <Number> minDist -
+	 *
+	 * @return <Object> minDist and minPoint
+	*/
+	_snapToPolygon: function (latlng, polygon, map, sensitivity, vertexonly, minDist) {
+		var res, keys, latlngs, i, minPoint;
+
+		minPoint = null;
+
+		latlngs = polygon.getLatLngs();
+		latlngs.push(latlngs[0]);
+		res = this._snapToLatlngs(latlng, polygon.getLatLngs(), map, sensitivity, vertexonly, minDist);
+		if (res.minDist < minDist) {
+			minDist = res.minDist;
+			minPoint = res.minPoint;
+		}
+
+		keys = Object.keys(polygon._holes);
+		for (i = 0; i < keys.length; i++) {
+			latlngs = polygon._holes[keys[i]];
+			latlngs.push(latlngs[0]);
+			res = this._snapToLatlngs(latlng, polygon._holes[keys[i]], map, sensitivity, vertexonly, minDist);
+			if (res.minDist < minDist) {
+				minDist = res.minDist;
+				minPoint = res.minPoint;
+			}
+		}
+
+		return {'minDist': minDist, 'minPoint': minPoint};
+	},
+
+	/**
+	 * Snap to MultiPolygon
+	 *
+	 * @param <Latlng> latlng - original position
+	 * @param <L.Polygon> feature -
+	 * @param <L.Map> map -
+	 * @param <Number> sensitivity -
+	 * @param <Boolean> vertexonly -
+	 * @param <Number> minDist -
+	 *
+	 * @return <Object> minDist and minPoint
+	*/
+	_snapToMultiPolygon: function (latlng, multipolygon, map, sensitivity, vertexonly, minDist) {
+		var i, keys, res, minPoint;
+
+		minPoint = null;
+
+		keys = Object.keys(multipolygon._layers);
+		for (i = 0; i < keys.length; i++) {
+			res = this._snapToPolygon(latlng, multipolygon._layers[keys[i]], map, sensitivity, vertexonly, minDist);
+
+			if (res.minDist < minDist) {
+				minDist = res.minDist;
+				minPoint = res.minPoint;
+			}
+		}
+
+		return {'minDist': minDist, 'minPoint': minPoint};
+	},
+
+
+	/**
+	 * Snap to <Array> of <Latlang>
+	 *
+	 * @param <LatLng> latlng - cursor click
+	 * @param <Array> latlngs - array of <L.LatLngs> to snap to
+	 * @param <Object> opts - snapping options
+	 * @param <Boolean> isPolygon - if feature is a polygon
+	 *
+	 * @return <Object> minDist and minPoint
+	*/
+	_snapToLatlngs: function (latlng, latlngs, map, sensitivity, vertexonly, minDist) {
+		var i, tmpDist, minPoint, p, p1, p2, d2;
+
+		p = map.latLngToLayerPoint(latlng);
+		p1 = minPoint = null;
+
+		for (i = 0; i < latlngs.length; i++) {
+			p2 = map.latLngToLayerPoint(latlngs[i]);
+
+			if (!vertexonly && p1 !== null) {
+				tmpDist = L.LineUtil.pointToSegmentDistance(p, p1, p2);
+				if (tmpDist < minDist && tmpDist <= sensitivity) {
+					minDist = tmpDist;
+					minPoint = map.layerPointToLatLng(L.LineUtil.closestPointOnSegment(p, p1, p2));
+				}
+			} else if ((d2 = p.distanceTo(p2)) && d2 <= sensitivity && d2 < minDist) {
+				minDist = d2;
+				minPoint = latlngs[i];
+			}
+
+			p1 = p2;
+		}
+
+		return {'minDist': minDist, 'minPoint': minPoint};
+	}
+
+});
+
+L.Polyline.include({
+	/**
+	 * Snap to function
+	 *
+	 * @param <LatLng> latlng - original position
+	 *
+	 * @return <LatLng> - new position
+	 */
+	snapTo: function (latlng) {
+		return L.LineUtil.snapToLayers(latlng, this._leaflet_id, this.options.snapping);
+	}
+});
+
+L.Marker.include({
+	/**
+	 * Snap to function
+	 *
+	 * @param <LatLng> latlng - original position
+	 *
+	 * @return <LatLng> - new position
+	 */
+	snapTo: function (latlng) {
+		return L.LineUtil.snapToLayers(latlng, this._leaflet_id, this.options.snapping);
+	}
+});
+
 L.Control.Draw = L.Control.extend({
 
 	options: {
@@ -2088,6 +2330,12 @@ L.EditToolbar = L.Toolbar.extend({
 		remove: {
 			title: L.drawLocal.edit.toolbar.remove.title
 		},
+		snapping: {
+			enabled      : false,
+			layer        : [],
+			sensitivity  : 10,
+			vertexonly   : false
+		},
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
@@ -2110,7 +2358,7 @@ L.EditToolbar = L.Toolbar.extend({
 			buttonIndex = 0,
 			buttonClassPrefix = 'leaflet-draw-edit';
 
-		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar'),
+		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
 
 		this._map = map;
 
@@ -2176,6 +2424,7 @@ L.EditToolbar = L.Toolbar.extend({
 		this._activeMode.handler.disable();
 	}
 });
+
 
 L.EditToolbar.Edit = L.Handler.extend({
 	statics: {
