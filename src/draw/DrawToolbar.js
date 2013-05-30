@@ -2,26 +2,35 @@ L.DrawToolbar = L.Toolbar.extend({
 
 	options: {
 		polyline: {
-			title: 'Draw a polyline'
+			title: L.drawLocal.draw.toolbar.polyline
 		},
 		polygon: {
-			title: 'Draw a polygon'
+			title: L.drawLocal.draw.toolbar.polygon
 		},
 		rectangle: {
-			title: 'Draw a rectangle'
+			title: L.drawLocal.draw.toolbar.rectangle
 		},
 		circle: {
-			title: 'Draw a circle'
+			title: L.drawLocal.draw.toolbar.circle
 		},
 		marker: {
-			title: 'Add a marker'
+			title: L.drawLocal.draw.toolbar.marker
 		}
 	},
 
 	initialize: function (options) {
+		// Ensure that the options are merged correctly since L.extend is only shallow
+		for (var type in this.options) {
+			if (this.options.hasOwnProperty(type)) {
+				if (options[type]) {
+					options[type] = L.extend({}, this.options[type], options[type]);
+				}
+			}
+		}
+
 		L.Toolbar.prototype.initialize.call(this, options);
 	},
-	
+
 	addToolbar: function (map) {
 		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
 			buttonIndex = 0,
@@ -87,7 +96,7 @@ L.DrawToolbar = L.Toolbar.extend({
 				context: this
 			}
 		]);
-		
+
 		// Add draw and cancel containers to the control container
 		container.appendChild(this._toolbarContainer);
 		container.appendChild(this._actionsContainer);

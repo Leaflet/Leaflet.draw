@@ -22,7 +22,7 @@ L.Draw.Feature = L.Handler.extend({
 		L.Handler.prototype.enable.call(this);
 
 		this.fire('enabled', { handler: this.type });
-		
+
 		this._map.fire('draw:drawstart', { layerType: this.type });
 	},
 
@@ -35,7 +35,7 @@ L.Draw.Feature = L.Handler.extend({
 
 		this._map.fire('draw:drawstop', { layerType: this.type });
 	},
-	
+
 	addHooks: function () {
 		if (this._map) {
 			L.DomUtil.disableTextSelection();

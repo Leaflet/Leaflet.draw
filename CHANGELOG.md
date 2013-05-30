@@ -5,7 +5,25 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
-## 0.2 (February 20, 2013)
+### Improvements
+
+ * `draw:edited` now returns a `FeatureGroup` of features edited. (by [@jmkelly](https://github.com/jmkelly)). [#95](https://github.com/Leaflet/Leaflet.draw/pull/95)
+ * Circle tooltip shows the radius (in m) while drawing.
+ * Added Leaflet version check to inform developers that Leaflet 0.6+ is required.
+ * Added ability to finish drawing polygons by double clicking. (inspired by [@snkashis](https://github.com/snkashis)). [#121](https://github.com/Leaflet/Leaflet.label/pull/121)
+ * Added test environment. (by [@iirvine](https://github.com/iirvine)). [#123](https://github.com/Leaflet/Leaflet.draw/pull/123)
+ * Added `L.drawLocal` object to allow users to customize the text used in the plugin. Addresses localization issues. (by [@Starefossen](https://github.com/Starefossen)). [#87](https://github.com/Leaflet/Leaflet.draw/pull/87)
+ * Added ability to disable edit mode path and marker styles. (inspired by [@markgibbons25](https://github.com/markgibbons25)). [#121](https://github.com/Leaflet/Leaflet.label/pull/137)
+
+### Bugfixes
+
+ * Fixed issue where removing a vertex or adding a new one via midpoints would not update the edited state for polylines and polygons.
+ * Fixed issue where not passing in the context to `off()` would result in the event from not being unbound.(by [@koppelbakje](https://github.com/koppelbakje)). [#95](https://github.com/Leaflet/Leaflet.draw/pull/112)
+ * Fixed issue where removing the draw control from the map would result in an error.
+ * Fixed bug where removing points created by dragging midpoints would cause the polyline to not reflect any newly created points.
+ * Fixed regression where handlers were not able to be disabled.(by [@yohanboniface](https://github.com/yohanboniface)). [#139](https://github.com/Leaflet/Leaflet.draw/pull/139)
+
+## 0.2.0 (February 20, 2013)
 
 Major new version. Added Edit toolbar which allows editing and deleting shapes.
 

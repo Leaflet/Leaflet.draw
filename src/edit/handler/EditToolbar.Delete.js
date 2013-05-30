@@ -35,12 +35,12 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 	disable: function () {
 		if (!this._enabled) { return; }
-		
+
 		L.Handler.prototype.disable.call(this);
 
 		this._deletableLayers
-			.off('layeradd', this._enableLayerDelete)
-			.off('layerremove', this._disableLayerDelete);
+			.off('layeradd', this._enableLayerDelete, this)
+			.off('layerremove', this._disableLayerDelete, this);
 
 		this.fire('disabled', { handler: this.type});
 	},
@@ -51,7 +51,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 			this._deletedLayers = new L.layerGroup();
 
 			this._tooltip = new L.Tooltip(this._map);
-			this._tooltip.updateContent({ text: 'Click on a feature to remove.' });
+			this._tooltip.updateContent({ text: L.drawLocal.edit.toolbar.remove.tooltip });
 
 			this._map.on('mousemove', this._onMouseMove, this);
 		}
@@ -65,7 +65,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 			this._tooltip.dispose();
 			this._tooltip = null;
 
-			this._map.off('mousemove', this._onMouseMove);
+			this._map.off('mousemove', this._onMouseMove, this);
 		}
 	},
 
@@ -89,7 +89,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 	_disableLayerDelete: function (e) {
 		var layer = e.layer || e.target || e;
 
-		layer.off('click', this._removeLayer);
+		layer.off('click', this._removeLayer, this);
 
 		// Remove from the deleted layers so we can't accidently revert if the user presses cancel
 		this._deletedLayers.removeLayer(layer);
