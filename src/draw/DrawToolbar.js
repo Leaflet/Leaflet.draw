@@ -90,8 +90,8 @@ L.DrawToolbar = L.Toolbar.extend({
 		// Create the actions part of the toolbar
 		this._actionsContainer = this._createActions([
 			{
-				title: 'Cancel drawing',
-				text: 'Cancel',
+				title: L.drawLocal.draw.toolbar.title,
+				text: L.drawLocal.draw.toolbar.text,
 				callback: this.disable,
 				context: this
 			}
