@@ -24,12 +24,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			opacity: 0.5,
 			fill: false,
 			clickable: true,
-			
+
 			snapping: {
-				enabled     : false, // snapping
-				layers      : [], 	 // snapping
-				sensitivity : 10,    // snapping
-				vertexonly  : false  // snapping
+				enabled			: false, // snapping
+				layers			: [],	// snapping
+				sensitivity : 10,		// snapping
+				vertexonly	: false	// snapping
 			}
 		},
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
@@ -138,13 +138,13 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_onMouseMove: function (e) {
 		var newPos = e.layerPoint,
 			latlng = e.latlng;
-		
+
 		// Snapping the guideline in real time
 		if (typeof this._poly.options.snapping !== 'undefined' && this._poly.options.snapping.enabled) {
 			latlng = this._poly.snapTo(latlng);
 			newPos = this._map.latLngToLayerPoint(latlng);
 		}
-		
+
 		// Save latlng
 		// should this be moved to _updateGuide() ?
 		this._currentLatLng = latlng;
@@ -164,12 +164,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_onClick: function (e) {
 		var latlng = e.target.getLatLng(),
 			markerCount = this._markers.length;
-		
+
 		// Snapping
 		if (typeof this._poly.options.snapping !== 'undefined' && this._poly.options.snapping.enabled) {
 			latlng = this._poly.snapTo(latlng);
 		}
-		
+
 		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
 			this._showErrorTooltip();
 			return;
@@ -299,7 +299,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			// calculate the distance from the last fixed point to the mouse position
 			distance = this._measurementRunningTotal + this._currentLatLng.distanceTo(this._markers[this._markers.length - 1].getLatLng());
 			// show metres when distance is < 1km, then show km
-			distanceStr = distance  > 1000 ? (distance  / 1000).toFixed(2) + ' km' : Math.ceil(distance) + ' m';
+			distanceStr = distance > 1000 ? (distance / 1000).toFixed(2) + ' km' : Math.ceil(distance) + ' m';
 
 			if (this._markers.length === 1) {
 				labelText = {

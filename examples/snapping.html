@@ -125,6 +125,9 @@
 				 layer = e.layer;
 				
 			if (type === 'marker') {
+				layer.on('drag', function(e) {
+  			  this.setLatLng(L.LineUtil.snapToLayers(this.getLatLng(), this._leaflet_id, {enabled: true, layers: [snap2, drawnItems]}));	
+				});
 				layer.bindPopup('A popup!');
 			}
 
