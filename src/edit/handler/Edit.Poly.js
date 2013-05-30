@@ -51,7 +51,6 @@ L.Edit.Poly = L.Handler.extend({
 		// TODO refactor holes implementation in Polygon to support it here
 
 		for (i = 0, len = latlngs.length; i < len; i++) {
-
 			marker = this._createMarker(latlngs[i], i);
 			marker.on('click', this._onMarkerClick, this);
 			this._markers.push(marker);
@@ -119,7 +118,7 @@ L.Edit.Poly = L.Handler.extend({
 		if (marker._middleRight) {
 			marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next));
 		}
-
+		
 		this._poly.redraw();
 	},
 
@@ -166,6 +165,10 @@ L.Edit.Poly = L.Handler.extend({
 	},
 
 	_createMiddleMarker: function (marker1, marker2) {
+		if (this._poly.options.allowMiddleMarkers === false) {
+			return;
+		}
+		
 		var latlng = this._getMiddleLatLng(marker1, marker2),
 		    marker = this._createMarker(latlng),
 		    onClick,
