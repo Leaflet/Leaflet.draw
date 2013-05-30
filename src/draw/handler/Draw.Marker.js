@@ -5,8 +5,15 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 	options: {
 		icon: new L.Icon.Default(),
-		zIndexOffset: 2000 // This should be > than the highest z-index any markers
-	},
+		zIndexOffset: 2000, // This should be > than the highest z-index any markers
+	
+    snapping: {
+      enabled     : false, // snapping
+      layers      : [],    // snapping
+      sensitivity : 10,    // snapping
+      vertexonly  : false  // snapping
+    }
+  },
 
 	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
@@ -64,6 +71,11 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 	_onMouseMove: function (e) {
 		var latlng = e.latlng;
+   
+    if (this._marker && typeof this._marker.options.snapping !== 'undefined' && this._marker.options.snapping.enabled) {
+      // latlng = this._marker.snapTo(latlng);
+      // console.log('marker snap');
+    }
 
 		this._tooltip.updatePosition(latlng);
 		this._mouseMarker.setLatLng(latlng);
@@ -73,6 +85,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 				icon: this.options.icon,
 				zIndexOffset: this.options.zIndexOffset
 			});
+      this._marker.options.snapping = this.options.snapping;
 			// Bind to both marker and map to make sure we get the click event.
 			this._marker.on('click', this._onClick, this);
 			this._map
