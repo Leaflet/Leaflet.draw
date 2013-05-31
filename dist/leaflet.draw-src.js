@@ -16,6 +16,8 @@ L.drawVersion = '0.2.0-dev';
 L.drawLocal = {
 	draw: {
 		toolbar: {
+			title: 'Cancel drawing',
+			text: 'Cancel',
 			polyline: 'Draw a polyline',
 			polygon: 'Draw a polygon',
 			rectangle: 'Draw a rectangle',
@@ -916,11 +918,11 @@ L.Edit.Poly = L.Handler.extend({
 		this._markers = [];
 
 		var latlngs = this._poly._latlngs,
-		    i, j, len, marker;
+			i, j, len, marker;
 
 		// TODO refactor holes implementation in Polygon to support it here
 
-		for (i = 0 , len = latlngs.length; i < len; i++) {
+		for (i = 0, len = latlngs.length; i < len; i++) {
 
 			marker = this._createMarker(latlngs[i], i);
 			marker.on('click', this._onMarkerClick, this);
@@ -929,7 +931,7 @@ L.Edit.Poly = L.Handler.extend({
 
 		var markerLeft, markerRight;
 
-		for (i = 0 , j = len - 1; i < len; j = i++) {
+		for (i = 0, j = len - 1; i < len; j = i++) {
 			if (i === 0 && !(L.Polygon && (this._poly instanceof L.Polygon))) {
 				continue;
 			}
@@ -2042,8 +2044,8 @@ L.DrawToolbar = L.Toolbar.extend({
 		// Create the actions part of the toolbar
 		this._actionsContainer = this._createActions([
 			{
-				title: 'Cancel drawing',
-				text: 'Cancel',
+				title: L.drawLocal.draw.toolbar.title,
+				text: L.drawLocal.draw.toolbar.text,
 				callback: this.disable,
 				context: this
 			}
