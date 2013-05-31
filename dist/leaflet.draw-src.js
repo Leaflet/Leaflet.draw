@@ -920,7 +920,7 @@ L.Edit.Poly = L.Handler.extend({
 
 		// TODO refactor holes implementation in Polygon to support it here
 
-		for (i = 0, len = latlngs.length; i < len; i++) {
+		for (i = 0 , len = latlngs.length; i < len; i++) {
 
 			marker = this._createMarker(latlngs[i], i);
 			marker.on('click', this._onMarkerClick, this);
@@ -929,7 +929,7 @@ L.Edit.Poly = L.Handler.extend({
 
 		var markerLeft, markerRight;
 
-		for (i = 0, j = len - 1; i < len; j = i++) {
+		for (i = 0 , j = len - 1; i < len; j = i++) {
 			if (i === 0 && !(L.Polygon && (this._poly instanceof L.Polygon))) {
 				continue;
 			}
@@ -2110,7 +2110,7 @@ L.EditToolbar = L.Toolbar.extend({
 			buttonIndex = 0,
 			buttonClassPrefix = 'leaflet-draw-edit';
 
-		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar'),
+		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
 
 		this._map = map;
 
