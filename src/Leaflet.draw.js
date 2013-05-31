@@ -7,8 +7,8 @@ L.drawVersion = '0.2.0-dev';
 L.drawLocal = {
 	draw: {
 		toolbar: {
-		  title: 'Cancel drawing',
-		  text: 'Cancel',
+			title: 'Cancel drawing',
+			text: 'Cancel',
 			polyline: 'Draw a polyline',
 			polygon: 'Draw a polygon',
 			rectangle: 'Draw a rectangle',
