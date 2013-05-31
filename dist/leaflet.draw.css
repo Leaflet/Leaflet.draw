@@ -210,3 +210,7 @@
 .leaflet-edit-resize {
 	cursor: pointer;
 }
+
+.leaflet-draw-disabled {
+	opacity:0.3;
+}
