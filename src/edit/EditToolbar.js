@@ -41,7 +41,7 @@ L.EditToolbar = L.Toolbar.extend({
 			buttonIndex = 0,
 			buttonClassPrefix = 'leaflet-draw-edit';
 
-		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar'),
+		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
 
 		this._map = map;
 
