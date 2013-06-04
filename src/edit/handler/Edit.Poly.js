@@ -46,33 +46,51 @@ L.Edit.Poly = L.Handler.extend({
 		this._markers = [];
 
 		var latlngs = this._poly._latlngs,
-			i, j, len, marker;
+		    holes = this._poly._holes,
+			i, j, len, len2, marker;
 
 		// TODO refactor holes implementation in Polygon to support it here
-
+        var outerRing = new L.LayerGroup();
+        this._markerGroup.addLayer(outerRing);
+        this._markers.push([]);
 		for (i = 0, len = latlngs.length; i < len; i++) {
 
-			marker = this._createMarker(latlngs[i], i);
+			marker = this._createMarker(outerRing, latlngs[i], i);
 			marker.on('click', this._onMarkerClick, this);
-			this._markers.push(marker);
+			this._markers[this._markers.length - 1].push(marker);
+		}
+
+		for (i = 0, len = holes.length; i < len; i++) {
+			var hole = new L.LayerGroup();
+			this._markerGroup.addLayer(hole);
+			this._markers.push([]);
+			for (j = 0, len2 = holes[i].length; j < len2; j++) {
+
+				marker = this._createMarker(hole, holes[i][j], j);
+				marker.on('click', this._onMarkerClick, this);
+				this._markers[this._markers.length - 1].push(marker);
+			}
 		}
 
 		var markerLeft, markerRight;
+		var m, mLen;
+		for (m = 0, mLen = this._markers.length; m < mLen; m++) {
+			len = this._markers[m].length;
+			for (i = 0, j = len - 1; i < len; j = i++) {
+				if (i === 0 && !(L.Polygon && (this._poly instanceof L.Polygon))) {
+					continue;
+				}
 
-		for (i = 0, j = len - 1; i < len; j = i++) {
-			if (i === 0 && !(L.Polygon && (this._poly instanceof L.Polygon))) {
-				continue;
+				markerLeft = this._markers[m][j];
+				markerRight = this._markers[m][i];
+
+				this._createMiddleMarker(markerLeft, markerRight);
+				this._updatePrevNext(markerLeft, markerRight);
 			}
-
-			markerLeft = this._markers[j];
-			markerRight = this._markers[i];
-
-			this._createMiddleMarker(markerLeft, markerRight);
-			this._updatePrevNext(markerLeft, markerRight);
-		}
+	    }
 	},
 
-	_createMarker: function (latlng, index) {
+	_createMarker: function (layer, latlng, index) {
 		var marker = new L.Marker(latlng, {
 			draggable: true,
 			icon: this.options.icon
@@ -80,22 +98,42 @@ L.Edit.Poly = L.Handler.extend({
 
 		marker._origLatLng = latlng;
 		marker._index = index;
+		marker._layer = layer;
+		//hacky layer index tracking.
+		marker._layerIndex = this._markerGroup.getLayers().indexOf(layer);
 
 		marker.on('drag', this._onMarkerDrag, this);
 		marker.on('dragend', this._fireEdit, this);
 
-		this._markerGroup.addLayer(marker);
+		layer.addLayer(marker);
 
 		return marker;
 	},
 
-	_removeMarker: function (marker) {
-		var i = marker._index;
+	_spliceLatLngs: function (layerIndex) { // (Number index, Number howMany)
+		var removed,
+			args = [].splice.call(arguments, 1);
+		if (layerIndex === 0) {
+			removed = [].splice.apply(this._poly._latlngs, args);
+			this._poly._convertLatLngs(this._poly._latlngs, true);
+		} else {
+			var i = layerIndex - 1;
+			removed = [].splice.apply(this._poly._holes[i], args);
+			this._poly._convertLatLngs(this._poly._holes[i], true);
+		}
+		this._poly.redraw();
+		return removed;
+	},
 
-		this._markerGroup.removeLayer(marker);
-		this._markers.splice(i, 1);
-		this._poly.spliceLatLngs(i, 1);
-		this._updateIndexes(i, -1);
+	_removeMarker: function (marker) {
+		var layer = marker._layer,
+			i = marker._index,
+			j = marker._layerIndex;
+
+		layer.removeLayer(marker);
+		this._markers[j].splice(i, 1);
+		this._spliceLatLngs(j, i, 1);
+		this._updateIndexes(layer, i, -1);
 
 		marker
 			.off('drag', this._onMarkerDrag, this)
@@ -137,10 +175,10 @@ L.Edit.Poly = L.Handler.extend({
 
 		// remove ghost markers near the removed marker
 		if (marker._middleLeft) {
-			this._markerGroup.removeLayer(marker._middleLeft);
+			marker._layer.removeLayer(marker._middleLeft);
 		}
 		if (marker._middleRight) {
-			this._markerGroup.removeLayer(marker._middleRight);
+			marker._layer.removeLayer(marker._middleRight);
 		}
 
 		// create a ghost marker in place of the removed one
@@ -157,8 +195,8 @@ L.Edit.Poly = L.Handler.extend({
 		this._fireEdit();
 	},
 
-	_updateIndexes: function (index, delta) {
-		this._markerGroup.eachLayer(function (marker) {
+	_updateIndexes: function (layer, index, delta) {
+		layer.eachLayer(function (marker) {
 			if (marker._index > index) {
 				marker._index += delta;
 			}
@@ -167,7 +205,7 @@ L.Edit.Poly = L.Handler.extend({
 
 	_createMiddleMarker: function (marker1, marker2) {
 		var latlng = this._getMiddleLatLng(marker1, marker2),
-		    marker = this._createMarker(latlng),
+		    marker = this._createMarker(marker1._layer, latlng),
 		    onClick,
 		    onDragStart,
 		    onDragEnd;
@@ -177,7 +215,8 @@ L.Edit.Poly = L.Handler.extend({
 		marker1._middleRight = marker2._middleLeft = marker;
 
 		onDragStart = function () {
-			var i = marker2._index;
+			var i = marker2._index,
+				j = marker._layerIndex;
 
 			marker._index = i;
 
@@ -187,12 +226,12 @@ L.Edit.Poly = L.Handler.extend({
 
 			latlng.lat = marker.getLatLng().lat;
 			latlng.lng = marker.getLatLng().lng;
-			this._poly.spliceLatLngs(i, 0, latlng);
+			this._spliceLatLngs(j, i, 0, latlng);
 			this._markers.splice(i, 0, marker);
 
 			marker.setOpacity(1);
 
-			this._updateIndexes(i, 1);
+			this._updateIndexes(marker._layer, i, 1);
 			marker2._index++;
 			this._updatePrevNext(marker1, marker);
 			this._updatePrevNext(marker, marker2);
