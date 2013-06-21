@@ -356,7 +356,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_cleanUpShape: function () {
-		if (this._markers.length > 0) {
+		if (this._markers.length > 1) {
 			this._markers[this._markers.length - 1].off('click', this._finishShape, this);
 		}
 	},
