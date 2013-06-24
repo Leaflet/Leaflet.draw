@@ -353,11 +353,11 @@ You can change a draw handlers options after initialization by using the `setDra
 E.g. to change the colour of the rectangle:
 
 ````js
-drawControl.setDrawingOptions(
+drawControl.setDrawingOptions({
     rectangle: {
         color: '#0000FF'
     }
-);
+});
 ````
 
 <a name="thanks" />
