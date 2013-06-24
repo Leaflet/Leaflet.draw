@@ -76,9 +76,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 			area = L.PolygonUtil.geodesicArea(latLngs);
 
 		// Convert to most appropriate units
-		if (area > 1000000) {
-			area = (area * 0.000001).toFixed(2) + ' km&sup2;';
-		} else if (area > 10000) {
+		if (area > 10000) {
 			area = (area * 0.0001).toFixed(2) + ' ha';
 		} else {
 			area = area.toFixed(2) + ' m&sup2;';
