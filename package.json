@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "description": "Vector drawing plugin for Leaflet",
   "devDependencies": {
-    "leaflet:": "git://github.com/Leaflet/Leaflet.git",
+    "leaflet": "git://github.com/Leaflet/Leaflet.git",
     "jshint": "~1.1.0",
     "uglify-js": "~2.2.5",
     "jake": "~0.5.10",
