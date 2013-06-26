@@ -35,7 +35,6 @@ L.drawLocal = {
 			}
 		},
 		polygon: {
-			error: '<strong>Error:</strong> shape edges cannot cross!',
 			tooltip: {
 				start: 'Click to start drawing shape.',
 				cont: 'Click to continue drawing shape.',
@@ -43,6 +42,7 @@ L.drawLocal = {
 			}
 		},
 		polyline: {
+			error: '<strong>Error:</strong> shape edges cannot cross!',
 			tooltip: {
 				start: 'Click to start drawing line.',
 				cont: 'Click to continue drawing line.',
@@ -298,8 +298,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// should this be moved to _updateGuide() ?
 		this._currentLatLng = latlng;
 
-		// Update the label
-		this._tooltip.updatePosition(latlng);
+		this._updateTooltip(latlng);
 
 		// Update the guide line
 		this._updateGuide(newPos);
@@ -335,6 +334,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._vertexAdded(latlng);
 
 		this._clearGuides();
+
+		this._updateTooltip();
 	},
 
 	_updateFinishHandler: function () {
@@ -367,17 +368,24 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var markerCount = this._markers.length;
 
 		if (markerCount > 0) {
-			// Update the tooltip text, as long it's not showing and error
-			if (!this._errorShown) {
-				this._tooltip.updateContent(this._getTooltipText());
-			}
-
 			// draw the guide line
 			this._clearGuides();
 			this._drawGuide(
 				this._map.latLngToLayerPoint(this._markers[markerCount - 1].getLatLng()),
 				newPos
 			);
+		}
+	},
+
+	_updateTooltip: function (latLng) {
+		var text = this._getTooltipText();
+
+		if (latLng) {
+			this._tooltip.updatePosition(latLng);
+		}
+
+		if (!this._errorShown) {
+			this._tooltip.updateContent(text);
 		}
 	},
 
@@ -510,7 +518,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_cleanUpShape: function () {
-		if (this._markers.length > 0) {
+		if (this._markers.length > 1) {
 			this._markers[this._markers.length - 1].off('click', this._finishShape, this);
 		}
 	},
@@ -529,6 +537,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 	Poly: L.Polygon,
 
 	options: {
+		showArea: false,
 		shapeOptions: {
 			stroke: true,
 			color: '#f06eaa',
@@ -567,16 +576,20 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 	},
 
 	_getTooltipText: function () {
-		var text;
+		var text, subtext;
+
 		if (this._markers.length === 0) {
 			text = L.drawLocal.draw.polygon.tooltip.start;
 		} else if (this._markers.length < 3) {
 			text = L.drawLocal.draw.polygon.tooltip.cont;
 		} else {
 			text = L.drawLocal.draw.polygon.tooltip.end;
+			subtext = this._area;
 		}
+
 		return {
-			text: text
+			text: text,
+			subtext: subtext
 		};
 	},
 
@@ -585,7 +598,24 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 	},
 
 	_vertexAdded: function () {
-		//calc area here
+		// Check to see if we should show the area
+		if (this.options.allowIntersection || !this.options.showArea) {
+			return;
+		}
+
+		var latLngs = this._poly.getLatLngs(),
+			area = L.PolygonUtil.geodesicArea(latLngs);
+
+		// Convert to most appropriate units
+		if (area > 1000000) {
+			area = (area * 0.000001).toFixed(2) + ' km&sup2;';
+		} else if (area > 10000) {
+			area = (area * 0.0001).toFixed(2) + ' ha';
+		} else {
+			area = area.toFixed(2) + ' m&sup2;';
+		}
+
+		this._area = area;
 	},
 
 	_cleanUpShape: function () {
@@ -1476,6 +1506,32 @@ L.LatLngUtil = {
 
 	cloneLatLng: function (latlng) {
 		return L.latLng(latlng.lat, latlng.lng);
+	}
+};
+
+/*
+ * L.PolygonUtil contains different utility functions for Polygons.
+ */
+
+L.PolygonUtil = {
+	// Ported from the OpenLayers implementation. See https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Geometry/LinearRing.js#L270
+	geodesicArea: function (latLngs) {
+		var pointsCount = latLngs.length,
+			area = 0.0,
+			d2r = L.LatLng.DEG_TO_RAD,
+			p1, p2;
+
+		if (pointsCount > 2) {
+			for (var i = 0; i < pointsCount; i++) {
+				p1 = latLngs[i];
+				p2 = latLngs[(i + 1) % pointsCount];
+				area += ((p2.lng - p1.lng) * d2r) *
+						(2 + Math.sin(p1.lat * d2r) + Math.sin(p2.lat * d2r));
+			}
+			area = area * 6378137.0 * 6378137.0 / 2.0;
+		}
+
+		return Math.abs(area);
 	}
 };
 

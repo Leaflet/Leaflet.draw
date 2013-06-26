@@ -14,6 +14,8 @@ An in-progress version being developed on the master branch.
  * Added test environment. (by [@iirvine](https://github.com/iirvine)). [#123](https://github.com/Leaflet/Leaflet.draw/pull/123)
  * Added `L.drawLocal` object to allow users to customize the text used in the plugin. Addresses localization issues. (by [@Starefossen](https://github.com/Starefossen)). [#87](https://github.com/Leaflet/Leaflet.draw/pull/87)
  * Added ability to disable edit mode path and marker styles. (inspired by [@markgibbons25](https://github.com/markgibbons25)). [#121](https://github.com/Leaflet/Leaflet.label/pull/137)
+ * Added area calculation when drawing a polygon.
+ * Polyline and Polygon tooltips update on click as well as mouse move.
 
 ### Bugfixes
 
@@ -22,6 +24,7 @@ An in-progress version being developed on the master branch.
  * Fixed issue where removing the draw control from the map would result in an error.
  * Fixed bug where removing points created by dragging midpoints would cause the polyline to not reflect any newly created points.
  * Fixed regression where handlers were not able to be disabled.(by [@yohanboniface](https://github.com/yohanboniface)). [#139](https://github.com/Leaflet/Leaflet.draw/pull/139)
+ * Fixed bug where L.Draw.Polyline would try to remove a non-existant handler if the user cancelled and the polyline only had a single point.
 
 ## 0.2.0 (February 20, 2013)
 

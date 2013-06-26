@@ -6,6 +6,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 	Poly: L.Polygon,
 
 	options: {
+		showArea: false,
 		shapeOptions: {
 			stroke: true,
 			color: '#f06eaa',
@@ -44,16 +45,20 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 	},
 
 	_getTooltipText: function () {
-		var text;
+		var text, subtext;
+
 		if (this._markers.length === 0) {
 			text = L.drawLocal.draw.polygon.tooltip.start;
 		} else if (this._markers.length < 3) {
 			text = L.drawLocal.draw.polygon.tooltip.cont;
 		} else {
 			text = L.drawLocal.draw.polygon.tooltip.end;
+			subtext = this._area;
 		}
+
 		return {
-			text: text
+			text: text,
+			subtext: subtext
 		};
 	},
 
@@ -62,7 +67,22 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 	},
 
 	_vertexAdded: function () {
-		//calc area here
+		// Check to see if we should show the area
+		if (this.options.allowIntersection || !this.options.showArea) {
+			return;
+		}
+
+		var latLngs = this._poly.getLatLngs(),
+			area = L.PolygonUtil.geodesicArea(latLngs);
+
+		// Convert to most appropriate units
+		if (area > 10000) {
+			area = (area * 0.0001).toFixed(2) + ' ha';
+		} else {
+			area = area.toFixed(2) + ' m&sup2;';
+		}
+
+		this._area = area;
 	},
 
 	_cleanUpShape: function () {
