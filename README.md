@@ -11,7 +11,7 @@ Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGE
 ## Table of Contents
 [Using the plugin](#using)  
 [Advanced Options](#options)  
-[Command tasks](#tasks)  
+[Command tasks](#commontasks)  
 [Thanks](#thanks)  
 
 <a name="using" />
