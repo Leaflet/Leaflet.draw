@@ -269,7 +269,7 @@ var options = {
 	position: 'topright',
 	draw: {
 		polyline: {
-			title: 'Draw a kick ass polyline!'
+			title: 'Draw a kick ass polyline!',
 			shapeOptions: {
 				color: '#f357a1',
 				weight: 10
