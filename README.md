@@ -228,6 +228,21 @@ These options will allow you to configure the draw toolbar and its handlers.
 | Option | Type | Default | Description
 | --- | --- | --- | ---
 
+<a name="drawlocal" />
+#### Customizing language and text in Leaflet.draw
+
+Leaflet.draw uses the `L.drawLocal` configuration object to set any text used in the plugin. Customizing this will allow support for changing the text or supporting another language.
+
+E.g.
+
+````js
+// Set the button title text for the polygon button
+L.drawLocal.draw.toolbar.buttons.polygon = 'Draw a sexy polygon!';
+
+// Set the tooltip start text for the rectangle
+L.drawLocal.draw.handlers.rectangle.tooltip.start = 'Not telling...';
+````
+
 <a name="commontasks" />
 ## Common tasks
 
