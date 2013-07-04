@@ -52,11 +52,13 @@
 		var drawnItems = new L.FeatureGroup();
 		map.addLayer(drawnItems);
 
+		// Set the title to show on the polygon button
+		L.drawLocal.draw.toolbar.buttons.polygon = 'Draw a sexy polygon!';
+
 		var drawControl = new L.Control.Draw({
 			draw: {
 				position: 'topleft',
 				polygon: {
-					title: 'Draw a sexy polygon!',
 					allowIntersection: false,
 					showArea: true,
 					drawError: {
