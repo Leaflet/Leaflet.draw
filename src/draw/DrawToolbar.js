@@ -1,21 +1,11 @@
 L.DrawToolbar = L.Toolbar.extend({
 
 	options: {
-		polyline: {
-			title: L.drawLocal.draw.toolbar.polyline
-		},
-		polygon: {
-			title: L.drawLocal.draw.toolbar.polygon
-		},
-		rectangle: {
-			title: L.drawLocal.draw.toolbar.rectangle
-		},
-		circle: {
-			title: L.drawLocal.draw.toolbar.circle
-		},
-		marker: {
-			title: L.drawLocal.draw.toolbar.marker
-		}
+		polyline: {},
+		polygon: {},
+		rectangle: {},
+		circle: {},
+		marker: {}
 	},
 
 	initialize: function (options) {
@@ -44,7 +34,8 @@ L.DrawToolbar = L.Toolbar.extend({
 				new L.Draw.Polyline(map, this.options.polyline),
 				this._toolbarContainer,
 				buttonIndex++,
-				buttonClassPrefix
+				buttonClassPrefix,
+				L.drawLocal.draw.toolbar.buttons.polyline
 			);
 		}
 
@@ -53,7 +44,8 @@ L.DrawToolbar = L.Toolbar.extend({
 				new L.Draw.Polygon(map, this.options.polygon),
 				this._toolbarContainer,
 				buttonIndex++,
-				buttonClassPrefix
+				buttonClassPrefix,
+				L.drawLocal.draw.toolbar.buttons.polygon
 			);
 		}
 
@@ -62,7 +54,8 @@ L.DrawToolbar = L.Toolbar.extend({
 				new L.Draw.Rectangle(map, this.options.rectangle),
 				this._toolbarContainer,
 				buttonIndex++,
-				buttonClassPrefix
+				buttonClassPrefix,
+				L.drawLocal.draw.toolbar.buttons.rectangle
 			);
 		}
 
@@ -71,7 +64,8 @@ L.DrawToolbar = L.Toolbar.extend({
 				new L.Draw.Circle(map, this.options.circle),
 				this._toolbarContainer,
 				buttonIndex++,
-				buttonClassPrefix
+				buttonClassPrefix,
+				L.drawLocal.draw.toolbar.buttons.circle
 			);
 		}
 
@@ -80,7 +74,8 @@ L.DrawToolbar = L.Toolbar.extend({
 				new L.Draw.Marker(map, this.options.marker),
 				this._toolbarContainer,
 				buttonIndex++,
-				buttonClassPrefix
+				buttonClassPrefix,
+				L.drawLocal.draw.toolbar.buttons.marker
 			);
 		}
 
@@ -90,8 +85,8 @@ L.DrawToolbar = L.Toolbar.extend({
 		// Create the actions part of the toolbar
 		this._actionsContainer = this._createActions([
 			{
-				title: L.drawLocal.draw.toolbar.title,
-				text: L.drawLocal.draw.toolbar.text,
+				title: L.drawLocal.draw.toolbar.actions.title,
+				text: L.drawLocal.draw.toolbar.actions.text,
 				callback: this.disable,
 				context: this
 			}

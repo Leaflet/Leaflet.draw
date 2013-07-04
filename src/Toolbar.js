@@ -45,7 +45,7 @@ L.Toolbar = L.Class.extend({
 		this._actionsContainer = null;
 	},
 
-	_initModeHandler: function (handler, container, buttonIndex, classNamePredix) {
+	_initModeHandler: function (handler, container, buttonIndex, classNamePredix, buttonTitle) {
 		var type = handler.type;
 
 		this._modes[type] = {};
@@ -53,7 +53,7 @@ L.Toolbar = L.Class.extend({
 		this._modes[type].handler = handler;
 
 		this._modes[type].button = this._createButton({
-			title: this.options[type].title,
+			title: buttonTitle,
 			className: classNamePredix + '-' + type,
 			container: container,
 			callback: this._modes[type].handler.enable,

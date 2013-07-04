@@ -9,7 +9,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		allowIntersection: true,
 		drawError: {
 			color: '#b00b00',
-			message: L.drawLocal.draw.polyline.error,
+			message: L.drawLocal.draw.handlers.polyline.error,
 			timeout: 2500
 		},
 		icon: new L.DivIcon({
@@ -283,7 +283,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		if (this._markers.length === 0) {
 			labelText = {
-				text: L.drawLocal.draw.polyline.tooltip.start
+				text: L.drawLocal.draw.handlers.polyline.tooltip.start
 			};
 		} else {
 			// calculate the distance from the last fixed point to the mouse position
@@ -293,12 +293,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 			if (this._markers.length === 1) {
 				labelText = {
-					text: L.drawLocal.draw.polyline.tooltip.cont,
+					text: L.drawLocal.draw.handlers.polyline.tooltip.cont,
 					subtext: distanceStr
 				};
 			} else {
 				labelText = {
-					text: L.drawLocal.draw.polyline.tooltip.end,
+					text: L.drawLocal.draw.handlers.polyline.tooltip.end,
 					subtext: distanceStr
 				};
 			}

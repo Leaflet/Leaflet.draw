@@ -5,7 +5,6 @@
 L.EditToolbar = L.Toolbar.extend({
 	options: {
 		edit: {
-			title: L.drawLocal.edit.toolbar.edit.title,
 			selectedPathOptions: {
 				color: '#fe57a1', /* Hot pink all the things! */
 				opacity: 0.6,
@@ -16,9 +15,7 @@ L.EditToolbar = L.Toolbar.extend({
 				fillOpacity: 0.1
 			}
 		},
-		remove: {
-			title: L.drawLocal.edit.toolbar.remove.title
-		},
+		remove: {},
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
@@ -53,7 +50,8 @@ L.EditToolbar = L.Toolbar.extend({
 				}),
 				this._toolbarContainer,
 				buttonIndex++,
-				buttonClassPrefix
+				buttonClassPrefix,
+				L.drawLocal.edit.toolbar.buttons.edit
 			);
 		}
 
@@ -64,7 +62,8 @@ L.EditToolbar = L.Toolbar.extend({
 				}),
 				this._toolbarContainer,
 				buttonIndex++,
-				buttonClassPrefix
+				buttonClassPrefix,
+				L.drawLocal.edit.toolbar.buttons.remove
 			);
 		}
 
@@ -74,14 +73,14 @@ L.EditToolbar = L.Toolbar.extend({
 		// Create the actions part of the toolbar
 		this._actionsContainer = this._createActions([
 			{
-				title: L.drawLocal.edit.toolbar.edit.save.title,
-				text: L.drawLocal.edit.toolbar.edit.save.text,
+				title: L.drawLocal.edit.toolbar.actions.save.title,
+				text: L.drawLocal.edit.toolbar.actions.save.text,
 				callback: this._save,
 				context: this
 			},
 			{
-				title: L.drawLocal.edit.toolbar.edit.cancel.title,
-				text: L.drawLocal.edit.toolbar.edit.cancel.text,
+				title: L.drawLocal.edit.toolbar.actions.cancel.title,
+				text: L.drawLocal.edit.toolbar.actions.cancel.text,
 				callback: this.disable,
 				context: this
 			}
