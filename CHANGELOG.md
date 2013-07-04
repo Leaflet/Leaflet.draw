@@ -7,6 +7,16 @@ An in-progress version being developed on the master branch.
 
 ### Improvements
 
+ * Refactored the `L.drawLocal' object to be better structured and use this object whereever text is used. *NOTE: THIS IS A NEW FORMAT, SO WILL BRESK ANY EXISTING CUSTOM `L.drawLocal` SETTINGS*.
+
+### Bugfixes
+
+ * Fixed bug where edit handlers could not be disabled.
+
+## 0.2.1 (July 5, 2013)
+
+### Improvements
+
  * `draw:edited` now returns a `FeatureGroup` of features edited. (by [@jmkelly](https://github.com/jmkelly)). [#95](https://github.com/Leaflet/Leaflet.draw/pull/95)
  * Circle tooltip shows the radius (in m) while drawing.
  * Added Leaflet version check to inform developers that Leaflet 0.6+ is required.
