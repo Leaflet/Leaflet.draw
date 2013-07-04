@@ -21,12 +21,16 @@ L.EditToolbar = L.Toolbar.extend({
 
 	initialize: function (options) {
 		// Need to set this manually since null is an acceptable value here
-		if (options.edit && typeof options.edit.selectedPathOptions === 'undefined') {
-			options.edit.selectedPathOptions = this.options.edit.selectedPathOptions;
+		if (options.edit) {
+			if (typeof options.edit.selectedPathOptions === 'undefined') {
+				options.edit.selectedPathOptions = this.options.edit.selectedPathOptions;
+			}
+			options.edit = L.extend({}, this.options.edit, options.edit);
 		}
 
-		options.edit = L.extend({}, this.options.edit, options.edit);
-		options.remove = L.extend({}, this.options.remove, options.remove);
+		if (options.remove) {
+			options.remove = L.extend({}, this.options.remove, options.remove);
+		}
 
 		L.Toolbar.prototype.initialize.call(this, options);
 
