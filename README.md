@@ -150,11 +150,11 @@ These options will allow you to configure the draw toolbar and it's handlers.
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| polyline | [PolylineOptions](#polylineoptions) | `{ title: 'Draw a polyline' }` | Polyline draw handler options.
-| polygon | [PolygonOptions](#polygonoptions) | `{ title: 'Draw a polygon' }` | Polygon draw handler options.
-| rectangle | [RectangleOptions](#rectangleoptions) | `{ title: 'Draw a rectangle' }` | Rectangle draw handler options.
-| circle | [CircleOptions](#circleoptions) | `{ title: 'Draw a circle' }` | Circle draw handler options.
-| marker | [MarkerOptions](#markeroptions) | `{ title: 'Add a marker' }` | Marker draw handler options.
+| polyline | [PolylineOptions](#polylineoptions) | `{ }` | Polyline draw handler options. Set to `false` to disable handler.
+| polygon | [PolygonOptions](#polygonoptions) | `{ }` | Polygon draw handler options. Set to `false` to disable handler.
+| rectangle | [RectangleOptions](#rectangleoptions) | `{ }` | Rectangle draw handler options. Set to `false` to disable handler.
+| circle | [CircleOptions](#circleoptions) | `{ }` | Circle draw handler options. Set to `false` to disable handler.
+| marker | [MarkerOptions](#markeroptions) | `{ }` | Marker draw handler options. Set to `false` to disable handler.
 
 ### Draw handler options
 
@@ -167,7 +167,6 @@ Polyline and Polygon drawing handlers take the same options.
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| title | String | `'Draw a Polyline (Polygon)'` | The title used for the polyline/polygon button.
 | allowIntersection | Bool | `true` | Determines if line segements can cross.
 | drawError | Object | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Polyline.js#L10) | Configuration options for the error that displays if an intersection is detected.
 | guidelineDistance | Number | `20` | Distance in pixels between each guide dash.
@@ -188,7 +187,6 @@ Polygon options include all of the Polyline options plus the option to show the 
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| title | String | `'Draw a rectangle.'` | The title used for the rectangle button.
 | shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Rectangle.js#L7) | The options used when drawing the rectangle on the map.
 
 <a name="circleoptions" />
@@ -196,7 +194,6 @@ Polygon options include all of the Polyline options plus the option to show the 
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| title | String | `'Draw a circle.'` | The title used for the circle button.
 | shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map. 
 
 <a name="markeroptions" />
@@ -204,7 +201,6 @@ Polygon options include all of the Polyline options plus the option to show the 
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| title | String | `'Add a marker.'` | The title used for the marker button.
 | icon | [Leaflet Icon](http://leafletjs.com/reference.html#icon) | `L.Icon.Default()` | The icon displayed when drawing a marker.
 | zIndexOffset | Number | `2000` | This should be a high number to ensure that you can draw over all other layers on the map.
 
@@ -216,15 +212,14 @@ These options will allow you to configure the draw toolbar and its handlers.
 | Option | Type | Default | Description
 | --- | --- | --- | ---
 | featureGroup | [Leaflet FeatureGroup](http://leafletjs.com/reference.html#featuregroup) | `null` | This is the FeatureGroup that stores all editable shapes. **THIS iS REQUIRED FOR THE EDIT TOOLBAR TO WORK**
-| edit | [EditHandlerOptions](#edithandleroptions) | `{ title: 'Edit layers' }` | Edit handler options.
-| remove | [DeleteHandlerOptions](#deletehandleroptions) | `{ title: 'Delete layers' }` | Delete handler options.
+| edit | [EditHandlerOptions](#edithandleroptions) | `{ }` | Edit handler options. Set to `false` to disable handler.
+| remove | [DeleteHandlerOptions](#deletehandleroptions) | `{ }` | Delete handler options. Set to `false` to disable handler.
 
 <a name="edithandleroptions" />
 #### EditHandlerOptions
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| title | String | `'Edit Layers'` | The title used for the edit button.
 | selectedPathOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/edit/handler/EditToolbar.Edit.js#L9) | The path options for how the layers will look like while in edit mode. If this is set to null the editable path options will not be set.
 
 <a name="deletehandleroptions" />
@@ -232,7 +227,6 @@ These options will allow you to configure the draw toolbar and its handlers.
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| title | String | `'Remove Layers'` | The title used for the delete button.
 
 <a name="commontasks" />
 ## Common tasks
@@ -269,7 +263,6 @@ var options = {
 	position: 'topright',
 	draw: {
 		polyline: {
-			title: 'Draw a kick ass polyline!',
 			shapeOptions: {
 				color: '#f357a1',
 				weight: 10
