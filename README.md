@@ -233,14 +233,36 @@ These options will allow you to configure the draw toolbar and its handlers.
 
 Leaflet.draw uses the `L.drawLocal` configuration object to set any text used in the plugin. Customizing this will allow support for changing the text or supporting another language.
 
-E.g.
+You can see all possible strings doing `console.log(JSON.stringify(L.drawLocal))`. This are the defaults, you can set all or some to whatever you need
 
 ````js
-// Set the button title text for the polygon button
-L.drawLocal.draw.toolbar.buttons.polygon = 'Draw a sexy polygon!';
-
-// Set the tooltip start text for the rectangle
-L.drawLocal.draw.handlers.rectangle.tooltip.start = 'Not telling...';
+L.drawLocal.draw.toolbar.actions.title="Cancel drawing"
+L.drawLocal.draw.toolbar.actions.text="Cancel"
+L.drawLocal.draw.toolbar.buttons.polyline="Draw a polyline"
+L.drawLocal.draw.toolbar.buttons.polygon="Draw a polygon"
+L.drawLocal.draw.toolbar.buttons.rectangle="Draw a rectangle"
+L.drawLocal.draw.toolbar.buttons.circle="Draw a circle"
+L.drawLocal.draw.toolbar.buttons.marker="Draw a marker"
+L.drawLocal.draw.handlers.circle.tooltip.start="Click and drag to draw circle."
+L.drawLocal.draw.handlers.marker.tooltip.start="Click map to place marker."
+L.drawLocal.draw.handlers.polygon.tooltip.start="Click to start drawing shape."
+L.drawLocal.draw.handlers.polygon.tooltip.cont="Click to continue drawing shape."
+L.drawLocal.draw.handlers.polygon.tooltip.end="Click first point to close this shape."
+L.drawLocal.draw.handlers.polyline.error="<strong>Error:</strong> shape edges cannot cross!"
+L.drawLocal.draw.handlers.polyline.tooltip.start="Click to start drawing line."
+L.drawLocal.draw.handlers.polyline.tooltip.cont="Click to continue drawing line."
+L.drawLocal.draw.handlers.polyline.tooltip.end="Click last point to finish line."
+L.drawLocal.draw.handlers.rectangle.tooltip.start="Click and drag to draw rectangle."
+L.drawLocal.draw.handlers.simpleshape.tooltip.end="Release mouse to finish drawing."
+L.drawLocal.edit.toolbar.actions.save.title="Save changes."
+L.drawLocal.edit.toolbar.actions.save.text="Save"
+L.drawLocal.edit.toolbar.actions.cancel.title="Cancel editing, discards all changes."
+L.drawLocal.edit.toolbar.actions.cancel.text="Cancel"
+L.drawLocal.edit.toolbar.buttons.edit="Edit layers"
+L.drawLocal.edit.toolbar.buttons.remove="Delete layers"
+L.drawLocal.edit.handlers.edit.tooltip.text="Drag handles, or marker to edit feature."
+L.drawLocal.edit.handlers.edit.tooltip.subtext="Click cancel to undo changes."
+L.drawLocal.edit.handlers.remove.tooltip.text="Click on a feature to remove"
 ````
 
 <a name="commontasks" />
