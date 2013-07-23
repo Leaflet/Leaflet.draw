@@ -370,6 +370,12 @@ drawControl.setDrawingOptions({
 });
 ````
 
+### Creating a custom build
+
+If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://github.com/Leaflet/Leaflet.draw/blob/master/build/build.html). 
+
+See [edit handlers example](https://github.com/Leaflet/Leaflet.draw/blob/master/examples/edithandlers.html) which uses only the edit handlers.
+
 <a name="thanks" />
 ## Thanks
 
