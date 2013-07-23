@@ -233,6 +233,8 @@ These options will allow you to configure the draw toolbar and its handlers.
 
 Leaflet.draw uses the `L.drawLocal` configuration object to set any text used in the plugin. Customizing this will allow support for changing the text or supporting another language.
 
+See [Leaflet.draw.js](https://github.com/Leaflet/Leaflet.draw/blob/master/src/Leaflet.draw.js) for the default strings.
+
 E.g.
 
 ````js
