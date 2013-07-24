@@ -12,6 +12,7 @@ An in-progress version being developed on the master branch.
 ### Bugfixes
 
  * Fixed bug where edit handlers could not be disabled.
+ * Added support for displaying the toolbar on the right hand side of the map. (by [@paulcpederson](https://github.com/paulcpederson)). [#164](https://github.com/Leaflet/Leaflet.draw/pull/164)
 
 ## 0.2.1 (July 5, 2013)
 
