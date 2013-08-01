@@ -183,6 +183,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	options: {
 		allowIntersection: true,
+		repeatMode: false,
 		drawError: {
 			color: '#b00b00',
 			message: L.drawLocal.draw.handlers.polyline.error,
@@ -292,6 +293,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this._fireCreatedEvent();
 		this.disable();
+		if (this.options.repeatMode) {
+			this.enable();
+		}
 	},
 
 	//Called to verify the shape is valid when the user tries to finish it
@@ -647,6 +651,14 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 L.SimpleShape = {};
 
 L.Draw.SimpleShape = L.Draw.Feature.extend({
+	options: {
+		repeatMode: true
+	},
+
+	initialize: function (map, options) {
+		L.Draw.Feature.prototype.initialize.call(this, map, options);
+	},
+
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
@@ -709,6 +721,9 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		}
 
 		this.disable();
+		if (this.options.repeatMode) {
+			this.enable();
+		}
 	}
 });
 
@@ -821,6 +836,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 	options: {
 		icon: new L.Icon.Default(),
+		repeatMode: false,
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
 
@@ -904,6 +920,9 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		this._fireCreatedEvent();
 
 		this.disable();
+		if (this.options.repeatMode) {
+			this.enable();
+		}
 	},
 
 	_fireCreatedEvent: function () {
@@ -2150,7 +2169,8 @@ L.EditToolbar = L.Toolbar.extend({
 			}
 		},
 		remove: {},
-		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
+		featureGroups: [], /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
+		featureGroup: null /* Deprecated */
 	},
 
 	initialize: function (options) {
@@ -2183,7 +2203,7 @@ L.EditToolbar = L.Toolbar.extend({
 		if (this.options.edit) {
 			this._initModeHandler(
 				new L.EditToolbar.Edit(map, {
-					featureGroup: this.options.featureGroup,
+					featureGroups: this.options.featureGroup !== null ? [this.options.featureGroup] : this.options.featureGroups,
 					selectedPathOptions: this.options.edit.selectedPathOptions
 				}),
 				this._toolbarContainer,
@@ -2196,7 +2216,7 @@ L.EditToolbar = L.Toolbar.extend({
 		if (this.options.remove) {
 			this._initModeHandler(
 				new L.EditToolbar.Delete(map, {
-					featureGroup: this.options.featureGroup
+					featureGroups: this.options.featureGroup !== null ? [this.options.featureGroup] : this.options.featureGroups
 				}),
 				this._toolbarContainer,
 				buttonIndex++,
@@ -2259,11 +2279,17 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this._selectedPathOptions = options.selectedPathOptions;
 
 		// Store the selectable layer group for ease of access
-		this._featureGroup = options.featureGroup;
+		this._featureGroups = options.featureGroups;
 
-		if (!(this._featureGroup instanceof L.FeatureGroup)) {
-			throw new Error('options.featureGroup must be a L.FeatureGroup');
+		if (!L.Util.isArray(this._featureGroups)) {
+			throw new Error('options.featureGroups must be an array of L.FeatureGroup');
 		}
+
+		this._eachFeatureGroup(function(featureGroup) {
+			if (!(featureGroup instanceof L.FeatureGroup)) {
+				throw new Error('options.featureGroups must be an array of L.FeatureGroup');
+			}
+		});
 
 		this._uneditedLayerProps = {};
 
@@ -2276,9 +2302,11 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		L.Handler.prototype.enable.call(this);
 
-		this._featureGroup
-			.on('layeradd', this._enableLayerEdit, this)
-			.on('layerremove', this._disableLayerEdit, this);
+		this._eachFeatureGroup(function(featureGroup) {
+			featureGroup
+				.on('layeradd', this._enableLayerEdit, this)
+				.on('layerremove', this._disableLayerEdit, this);
+		});
 
 		this.fire('enabled', {handler: this.type});
 	},
@@ -2288,16 +2316,20 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		this.fire('disabled', {handler: this.type});
 
-		this._featureGroup
-			.off('layeradd', this._enableLayerEdit, this)
-			.off('layerremove', this._disableLayerEdit, this);
+		this._eachFeatureGroup(function(featureGroup) {
+			featureGroup
+				.off('layeradd', this._enableLayerEdit, this)
+				.off('layerremove', this._disableLayerEdit, this);
+		});
 
 		L.Handler.prototype.disable.call(this);
 	},
 
 	addHooks: function () {
 		if (this._map) {
-			this._featureGroup.eachLayer(this._enableLayerEdit, this);
+			this._eachFeatureGroup(function(featureGroup) {
+				featureGroup.eachLayer(this._enableLayerEdit, this);
+			});
 
 			this._tooltip = new L.Tooltip(this._map);
 			this._tooltip.updateContent({
@@ -2312,7 +2344,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 	removeHooks: function () {
 		if (this._map) {
 			// Clean up selected layers.
-			this._featureGroup.eachLayer(this._disableLayerEdit, this);
+			this._eachFeatureGroup(function(featureGroup) {
+				featureGroup.eachLayer(this._disableLayerEdit, this);
+			});
 
 			// Clear the backups of the original layers
 			this._uneditedLayerProps = {};
@@ -2325,19 +2359,24 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	revertLayers: function () {
-		this._featureGroup.eachLayer(function (layer) {
-			this._revertLayer(layer);
-		}, this);
+		this._eachFeatureGroup(function(featureGroup) {
+			featureGroup.eachLayer(function (layer) {
+				this._revertLayer(layer);
+			}, this);
+		});
 	},
 
 	save: function () {
 		var editedLayers = new L.LayerGroup();
-		this._featureGroup.eachLayer(function (layer) {
-			if (layer.edited) {
-				editedLayers.addLayer(layer);
-				layer.edited = false;
-			}
+		this._eachFeatureGroup(function(featureGroup) {
+			featureGroup.eachLayer(function (layer) {
+				if (layer.edited) {
+					editedLayers.addLayer(layer);
+					layer.edited = false;
+				}
+			});
 		});
+		
 		this._map.fire('draw:edited', {layers: editedLayers});
 	},
 
@@ -2471,6 +2510,12 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_onMouseMove: function (e) {
 		this._tooltip.updatePosition(e.latlng);
+	},
+
+	_eachFeatureGroup: function(fn) {
+		for (var i = this._featureGroups.length - 1; i >= 0; i--) {
+			fn.call(this, this._featureGroups[i]);
+		};
 	}
 });
 
@@ -2487,11 +2532,17 @@ L.EditToolbar.Delete = L.Handler.extend({
 		L.Util.setOptions(this, options);
 
 		// Store the selectable layer group for ease of access
-		this._deletableLayers = this.options.featureGroup;
+		this._featureGroups = options.featureGroups;
 
-		if (!(this._deletableLayers instanceof L.FeatureGroup)) {
-			throw new Error('options.featureGroup must be a L.FeatureGroup');
+		if (!L.Util.isArray(this._featureGroups)) {
+			throw new Error('options.featureGroups must be an array of L.FeatureGroup');
 		}
+
+		this._eachFeatureGroup(function(featureGroup) {
+			if (!(featureGroup instanceof L.FeatureGroup)) {
+				throw new Error('options.featureGroups must be an array of L.FeatureGroup');
+			}
+		});
 
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.EditToolbar.Delete.TYPE;
@@ -2502,9 +2553,11 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 		L.Handler.prototype.enable.call(this);
 
-		this._deletableLayers
-			.on('layeradd', this._enableLayerDelete, this)
-			.on('layerremove', this._disableLayerDelete, this);
+		this._eachFeatureGroup(function(featureGroup) {
+			featureGroup
+				.on('layeradd', this._enableLayerDelete, this)
+				.on('layerremove', this._disableLayerDelete, this);
+		});
 
 		this.fire('enabled', { handler: this.type});
 	},
@@ -2514,16 +2567,20 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 		L.Handler.prototype.disable.call(this);
 
-		this._deletableLayers
-			.off('layeradd', this._enableLayerDelete, this)
-			.off('layerremove', this._disableLayerDelete, this);
+		this._eachFeatureGroup(function(featureGroup) {
+			featureGroup
+				.off('layeradd', this._enableLayerDelete, this)
+				.off('layerremove', this._disableLayerDelete, this);
+		});
 
 		this.fire('disabled', { handler: this.type});
 	},
 
 	addHooks: function () {
 		if (this._map) {
-			this._deletableLayers.eachLayer(this._enableLayerDelete, this);
+			this._eachFeatureGroup(function(featureGroup) {
+				featureGroup.eachLayer(this._enableLayerDelete, this);
+			});
 			this._deletedLayers = new L.layerGroup();
 
 			this._tooltip = new L.Tooltip(this._map);
@@ -2535,7 +2592,9 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 	removeHooks: function () {
 		if (this._map) {
-			this._deletableLayers.eachLayer(this._disableLayerDelete, this);
+			this._eachFeatureGroup(function(featureGroup) {
+				featureGroup.eachLayer(this._disableLayerDelete, this);
+			});
 			this._deletedLayers = null;
 
 			this._tooltip.dispose();
@@ -2547,9 +2606,11 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 	revertLayers: function () {
 		// Iterate of the deleted layers and add them back into the featureGroup
-		this._deletedLayers.eachLayer(function (layer) {
-			this._deletableLayers.addLayer(layer);
-		}, this);
+		this._eachFeatureGroup(function(featureGroup) {
+			featureGroup.eachLayer(function (layer) {
+				this._deletableLayers.addLayer(layer);
+			}, this);
+		});
 	},
 
 	save: function () {
@@ -2574,13 +2635,21 @@ L.EditToolbar.Delete = L.Handler.extend({
 	_removeLayer: function (e) {
 		var layer = e.layer || e.target || e;
 
-		this._deletableLayers.removeLayer(layer);
+		this._eachFeatureGroup(function(featureGroup) {
+			featureGroup.removeLayer(layer);
+		});
 
 		this._deletedLayers.addLayer(layer);
 	},
 
 	_onMouseMove: function (e) {
 		this._tooltip.updatePosition(e.latlng);
+	},
+
+	_eachFeatureGroup: function(fn) {
+		for (var i = this._featureGroups.length - 1; i >= 0; i--) {
+			fn.call(this, this._featureGroups[i]);
+		};
 	}
 });
 

@@ -44,20 +44,20 @@ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Initialize the FeatureGroup to store editable layers
+// Initialize FeatureGroup(s) to store editable layers
 var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 
-// Initialize the draw control and pass it the FeatureGroup of editable layers
+// Initialize the draw control and pass it the FeatureGroups of editable layers
 var drawControl = new L.Control.Draw({
 	edit: {
-		featureGroup: drawnItems
+		featureGroups: [drawnItems]
 	}
 });
 map.addControl(drawControl);
 ````
 
-The key here is the `featureGroup` option. This tells the plugin which `FeatureGroup` that contains the layers that should be editable.
+The key here is the `featureGroups` option. This tells the plugin which `FeatureGroup`s contain the layers that should be editable.
 
 ### Events
 
@@ -93,7 +93,7 @@ map.on('draw:created', function (e) {
 | --- | --- | ---
 | layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just edited on the map.
 
-Triggered when layers in the FeatureGroup, that the plugin was initialized with, have been edited and saved.
+Triggered when layers in any FeatureGroup, that the plugin was initialized with, have been edited and saved.
 
 ````js
 map.on('draw:edited', function (e) {
@@ -106,7 +106,7 @@ map.on('draw:edited', function (e) {
 
 #### draw:deleted
 
-Triggered when layers have been layers have been removed (and saved) from the FeatureGroup.
+Triggered when layers have been removed (and saved) from a FeatureGroup.
 
 | Property | Type | Description
 | --- | --- | ---
@@ -172,6 +172,7 @@ Polyline and Polygon drawing handlers take the same options.
 | guidelineDistance | Number | `20` | Distance in pixels between each guide dash.
 | shapeOptions | [Leaflet Polyline options](http://leafletjs.com/reference.html#polyline-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Polyline.js#L20) | The options used when drawing the polyline/polygon on the map.
 | zIndexOffset | Number | `2000` | This should be a high number to ensure that you can draw over all other layers on the map.
+| repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
 <a name="polygonoptions" />
 #### PolygonOptions
@@ -188,6 +189,7 @@ Polygon options include all of the Polyline options plus the option to show the 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
 | shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Rectangle.js#L7) | The options used when drawing the rectangle on the map.
+| repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
 <a name="circleoptions" />
 #### CircleOptions
@@ -195,6 +197,7 @@ Polygon options include all of the Polyline options plus the option to show the 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
 | shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map. 
+| repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
 <a name="markeroptions" />
 #### MarkerOptions
@@ -203,6 +206,7 @@ Polygon options include all of the Polyline options plus the option to show the 
 | --- | --- | --- | ---
 | icon | [Leaflet Icon](http://leafletjs.com/reference.html#icon) | `L.Icon.Default()` | The icon displayed when drawing a marker.
 | zIndexOffset | Number | `2000` | This should be a high number to ensure that you can draw over all other layers on the map.
+| repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
 <a name="editoptions" />
 ### EditOptions
@@ -211,7 +215,7 @@ These options will allow you to configure the draw toolbar and its handlers.
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| featureGroup | [Leaflet FeatureGroup](http://leafletjs.com/reference.html#featuregroup) | `null` | This is the FeatureGroup that stores all editable shapes. **THIS iS REQUIRED FOR THE EDIT TOOLBAR TO WORK**
+| featureGroups | Array of [Leaflet FeatureGroup](http://leafletjs.com/reference.html#featuregroup) | `[]` | These are the FeatureGroups that store all editable shapes. **THIS iS REQUIRED FOR THE EDIT TOOLBAR TO WORK**
 | edit | [EditHandlerOptions](#edithandleroptions) | `{ }` | Edit handler options. Set to `false` to disable handler.
 | remove | [DeleteHandlerOptions](#deletehandleroptions) | `{ }` | Delete handler options. Set to `false` to disable handler.
 
@@ -306,7 +310,7 @@ var options = {
 		}
 	},
 	edit: {
-		featureGroup: editableLayers, //REQUIRED!!
+		featureGroups: [editableLayers], //REQUIRED!!
 		remove: false
 	}
 };
@@ -334,7 +338,7 @@ If you do not want a particular toolbar in your app you can turn it off by setti
 var drawControl = new L.Control.Draw({
 	draw: false,
 	edit: {
-		featureGroup: editableLayers
+		featureGroups: [editableLayers]
 	}
 });
 ````
@@ -350,7 +354,7 @@ var drawControl = new L.Control.Draw({
 		marker: false
 	},
 	edit: {
-		featureGroup: editableLayers,
+		featureGroups: [editableLayers],
 		edit: false
 	}
 });

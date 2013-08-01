@@ -16,7 +16,8 @@ L.EditToolbar = L.Toolbar.extend({
 			}
 		},
 		remove: {},
-		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
+		featureGroups: [], /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
+		featureGroup: null /* Deprecated */
 	},
 
 	initialize: function (options) {
@@ -49,7 +50,7 @@ L.EditToolbar = L.Toolbar.extend({
 		if (this.options.edit) {
 			this._initModeHandler(
 				new L.EditToolbar.Edit(map, {
-					featureGroup: this.options.featureGroup,
+					featureGroups: this.options.featureGroup !== null ? [this.options.featureGroup] : this.options.featureGroups,
 					selectedPathOptions: this.options.edit.selectedPathOptions
 				}),
 				this._toolbarContainer,
@@ -62,7 +63,7 @@ L.EditToolbar = L.Toolbar.extend({
 		if (this.options.remove) {
 			this._initModeHandler(
 				new L.EditToolbar.Delete(map, {
-					featureGroup: this.options.featureGroup
+					featureGroups: this.options.featureGroup !== null ? [this.options.featureGroup] : this.options.featureGroups
 				}),
 				this._toolbarContainer,
 				buttonIndex++,
