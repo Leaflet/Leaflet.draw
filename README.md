@@ -44,20 +44,20 @@ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Initialize the FeatureGroup to store editable layers
+// Initialize FeatureGroup(s) to store editable layers
 var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 
-// Initialize the draw control and pass it the FeatureGroup of editable layers
+// Initialize the draw control and pass it the FeatureGroups of editable layers
 var drawControl = new L.Control.Draw({
 	edit: {
-		featureGroup: drawnItems
+		featureGroups: [drawnItems]
 	}
 });
 map.addControl(drawControl);
 ````
 
-The key here is the `featureGroup` option. This tells the plugin which `FeatureGroup` that contains the layers that should be editable.
+The key here is the `featureGroups` option. This tells the plugin which `FeatureGroup`s contain the layers that should be editable.
 
 ### Events
 
@@ -93,7 +93,7 @@ map.on('draw:created', function (e) {
 | --- | --- | ---
 | layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just edited on the map.
 
-Triggered when layers in the FeatureGroup, that the plugin was initialized with, have been edited and saved.
+Triggered when layers in any FeatureGroup, that the plugin was initialized with, have been edited and saved.
 
 ````js
 map.on('draw:edited', function (e) {
@@ -106,7 +106,7 @@ map.on('draw:edited', function (e) {
 
 #### draw:deleted
 
-Triggered when layers have been layers have been removed (and saved) from the FeatureGroup.
+Triggered when layers have been removed (and saved) from a FeatureGroup.
 
 | Property | Type | Description
 | --- | --- | ---
@@ -211,7 +211,7 @@ These options will allow you to configure the draw toolbar and its handlers.
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| featureGroup | [Leaflet FeatureGroup](http://leafletjs.com/reference.html#featuregroup) | `null` | This is the FeatureGroup that stores all editable shapes. **THIS iS REQUIRED FOR THE EDIT TOOLBAR TO WORK**
+| featureGroups | Array of [Leaflet FeatureGroup](http://leafletjs.com/reference.html#featuregroup) | `[]` | These are the FeatureGroups that store all editable shapes. **THIS iS REQUIRED FOR THE EDIT TOOLBAR TO WORK**
 | edit | [EditHandlerOptions](#edithandleroptions) | `{ }` | Edit handler options. Set to `false` to disable handler.
 | remove | [DeleteHandlerOptions](#deletehandleroptions) | `{ }` | Delete handler options. Set to `false` to disable handler.
 
@@ -306,7 +306,7 @@ var options = {
 		}
 	},
 	edit: {
-		featureGroup: editableLayers, //REQUIRED!!
+		featureGroups: [editableLayers], //REQUIRED!!
 		remove: false
 	}
 };
@@ -334,7 +334,7 @@ If you do not want a particular toolbar in your app you can turn it off by setti
 var drawControl = new L.Control.Draw({
 	draw: false,
 	edit: {
-		featureGroup: editableLayers
+		featureGroups: [editableLayers]
 	}
 });
 ````
@@ -350,7 +350,7 @@ var drawControl = new L.Control.Draw({
 		marker: false
 	},
 	edit: {
-		featureGroup: editableLayers,
+		featureGroups: [editableLayers],
 		edit: false
 	}
 });

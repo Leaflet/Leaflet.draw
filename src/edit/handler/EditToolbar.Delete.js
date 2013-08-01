@@ -11,11 +11,17 @@ L.EditToolbar.Delete = L.Handler.extend({
 		L.Util.setOptions(this, options);
 
 		// Store the selectable layer group for ease of access
-		this._deletableLayers = this.options.featureGroup;
+		this._featureGroups = options.featureGroups;
 
-		if (!(this._deletableLayers instanceof L.FeatureGroup)) {
-			throw new Error('options.featureGroup must be a L.FeatureGroup');
+		if (!L.Util.isArray(this._featureGroups)) {
+			throw new Error('options.featureGroups must be an array of L.FeatureGroup');
 		}
+
+		this._eachFeatureGroup(function(featureGroup) {
+			if (!(featureGroup instanceof L.FeatureGroup)) {
+				throw new Error('options.featureGroups must be an array of L.FeatureGroup');
+			}
+		});
 
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.EditToolbar.Delete.TYPE;
@@ -26,9 +32,11 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 		L.Handler.prototype.enable.call(this);
 
-		this._deletableLayers
-			.on('layeradd', this._enableLayerDelete, this)
-			.on('layerremove', this._disableLayerDelete, this);
+		this._eachFeatureGroup(function(featureGroup) {
+			featureGroup
+				.on('layeradd', this._enableLayerDelete, this)
+				.on('layerremove', this._disableLayerDelete, this);
+		});
 
 		this.fire('enabled', { handler: this.type});
 	},
@@ -38,16 +46,20 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 		L.Handler.prototype.disable.call(this);
 
-		this._deletableLayers
-			.off('layeradd', this._enableLayerDelete, this)
-			.off('layerremove', this._disableLayerDelete, this);
+		this._eachFeatureGroup(function(featureGroup) {
+			featureGroup
+				.off('layeradd', this._enableLayerDelete, this)
+				.off('layerremove', this._disableLayerDelete, this);
+		});
 
 		this.fire('disabled', { handler: this.type});
 	},
 
 	addHooks: function () {
 		if (this._map) {
-			this._deletableLayers.eachLayer(this._enableLayerDelete, this);
+			this._eachFeatureGroup(function(featureGroup) {
+				featureGroup.eachLayer(this._enableLayerDelete, this);
+			});
 			this._deletedLayers = new L.layerGroup();
 
 			this._tooltip = new L.Tooltip(this._map);
@@ -59,7 +71,9 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 	removeHooks: function () {
 		if (this._map) {
-			this._deletableLayers.eachLayer(this._disableLayerDelete, this);
+			this._eachFeatureGroup(function(featureGroup) {
+				featureGroup.eachLayer(this._disableLayerDelete, this);
+			});
 			this._deletedLayers = null;
 
 			this._tooltip.dispose();
@@ -71,9 +85,11 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 	revertLayers: function () {
 		// Iterate of the deleted layers and add them back into the featureGroup
-		this._deletedLayers.eachLayer(function (layer) {
-			this._deletableLayers.addLayer(layer);
-		}, this);
+		this._eachFeatureGroup(function(featureGroup) {
+			featureGroup.eachLayer(function (layer) {
+				this._deletableLayers.addLayer(layer);
+			}, this);
+		});
 	},
 
 	save: function () {
@@ -98,12 +114,20 @@ L.EditToolbar.Delete = L.Handler.extend({
 	_removeLayer: function (e) {
 		var layer = e.layer || e.target || e;
 
-		this._deletableLayers.removeLayer(layer);
+		this._eachFeatureGroup(function(featureGroup) {
+			featureGroup.removeLayer(layer);
+		});
 
 		this._deletedLayers.addLayer(layer);
 	},
 
 	_onMouseMove: function (e) {
 		this._tooltip.updatePosition(e.latlng);
+	},
+
+	_eachFeatureGroup: function(fn) {
+		for (var i = this._featureGroups.length - 1; i >= 0; i--) {
+			fn.call(this, this._featureGroups[i]);
+		};
 	}
 });
