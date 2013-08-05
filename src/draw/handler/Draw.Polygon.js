@@ -66,6 +66,10 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		var area = this._area,
 			areaStr;
 
+		if (!area) {
+			return null;
+		}
+
 		if (this.options.metric) {
 			if (area >= 10000) {
 				areaStr = (area * 0.0001).toFixed(2) + ' ha';
