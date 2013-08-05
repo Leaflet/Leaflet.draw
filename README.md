@@ -171,6 +171,7 @@ Polyline and Polygon drawing handlers take the same options.
 | drawError | Object | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Polyline.js#L10) | Configuration options for the error that displays if an intersection is detected.
 | guidelineDistance | Number | `20` | Distance in pixels between each guide dash.
 | shapeOptions | [Leaflet Polyline options](http://leafletjs.com/reference.html#polyline-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Polyline.js#L20) | The options used when drawing the polyline/polygon on the map.
+| metric | Bool | `true` | Determines which measurement system (metric or imperial) is used.
 | zIndexOffset | Number | `2000` | This should be a high number to ensure that you can draw over all other layers on the map.
 
 <a name="polygonoptions" />
