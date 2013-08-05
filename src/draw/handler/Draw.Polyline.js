@@ -287,7 +287,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				text: L.drawLocal.draw.handlers.polyline.tooltip.start
 			};
 		} else {
-			distanceStr = this._getDistanceString();
+			distanceStr = this._getMeasurementString();
 
 			if (this._markers.length === 1) {
 				labelText = {
@@ -304,7 +304,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		return labelText;
 	},
 
-	_getDistanceString: function () {
+	_getMeasurementString: function () {
 		var currentLatLng = this._currentLatLng,
 			previousLatLng = this._markers[this._markers.length - 1].getLatLng(),
 			distance, distanceStr;
