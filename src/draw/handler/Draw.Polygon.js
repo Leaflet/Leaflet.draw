@@ -53,13 +53,38 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 			text = L.drawLocal.draw.handlers.polygon.tooltip.cont;
 		} else {
 			text = L.drawLocal.draw.handlers.polygon.tooltip.end;
-			subtext = this._area;
+			subtext = this._getMeasurementString();
 		}
 
 		return {
 			text: text,
 			subtext: subtext
 		};
+	},
+
+	_getMeasurementString: function () {
+		var area = this._area,
+			areaStr;
+
+		if (this.options.metric) {
+			if (area >= 10000) {
+				areaStr = (area * 0.0001).toFixed(2) + ' ha';
+			} else {
+				areaStr = area.toFixed(2) + ' m&sup2;';
+			}
+		} else {
+			area *= 0.836127; // Square yards in 1 meter
+
+			if (area >= 3097600) { //3097600 square yards in 1 square mile
+				areaStr = (area / 3097600).toFixed(2) + ' mi&sup2;';
+			} else if (area >= 4840) {//48040 square yards in 1 acre
+				areaStr = (area / 4840).toFixed(2) + ' acres';
+			} else {
+				areaStr = Math.ceil(area) + ' yd&sup2;';
+			}
+		}
+
+		return areaStr;
 	},
 
 	_shapeIsValid: function () {
@@ -72,17 +97,9 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 			return;
 		}
 
-		var latLngs = this._poly.getLatLngs(),
-			area = L.PolygonUtil.geodesicArea(latLngs);
+		var latLngs = this._poly.getLatLngs();
 
-		// Convert to most appropriate units
-		if (area > 10000) {
-			area = (area * 0.0001).toFixed(2) + ' ha';
-		} else {
-			area = area.toFixed(2) + ' m&sup2;';
-		}
-
-		this._area = area;
+		this._area = L.PolygonUtil.geodesicArea(latLngs);
 	},
 
 	_cleanUpShape: function () {
