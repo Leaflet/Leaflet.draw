@@ -201,6 +201,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			fill: false,
 			clickable: true
 		},
+		metric: true, // Whether to use the metric meaurement system or imperial
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
 
@@ -462,10 +463,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				text: L.drawLocal.draw.handlers.polyline.tooltip.start
 			};
 		} else {
-			// calculate the distance from the last fixed point to the mouse position
-			distance = this._measurementRunningTotal + this._currentLatLng.distanceTo(this._markers[this._markers.length - 1].getLatLng());
-			// show metres when distance is < 1km, then show km
-			distanceStr = distance  > 1000 ? (distance  / 1000).toFixed(2) + ' km' : Math.ceil(distance) + ' m';
+			distanceStr = this._getMeasurementString();
 
 			if (this._markers.length === 1) {
 				labelText = {
@@ -480,6 +478,34 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			}
 		}
 		return labelText;
+	},
+
+	_getMeasurementString: function () {
+		var currentLatLng = this._currentLatLng,
+			previousLatLng = this._markers[this._markers.length - 1].getLatLng(),
+			distance, distanceStr;
+
+		// calculate the distance from the last fixed point to the mouse position
+		distance = this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng);
+
+		if (this.options.metric) {
+			// show metres when distance is < 1km, then show km
+			if (distance  > 1000) {
+				distanceStr = (distance  / 1000).toFixed(2) + ' km';
+			} else {
+				distanceStr = Math.ceil(distance) + ' m';
+			}
+		} else {
+			distance *= 1.09361;
+
+			if (distance > 1760) {
+				distanceStr = (distance / 1760).toFixed(2) + ' miles';
+			} else {
+				distanceStr = Math.ceil(distance) + ' yd';
+			}
+		}
+
+		return distanceStr;
 	},
 
 	_showErrorTooltip: function () {
@@ -598,13 +624,38 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 			text = L.drawLocal.draw.handlers.polygon.tooltip.cont;
 		} else {
 			text = L.drawLocal.draw.handlers.polygon.tooltip.end;
-			subtext = this._area;
+			subtext = this._getMeasurementString();
 		}
 
 		return {
 			text: text,
 			subtext: subtext
 		};
+	},
+
+	_getMeasurementString: function () {
+		var area = this._area,
+			areaStr;
+
+		if (this.options.metric) {
+			if (area >= 10000) {
+				areaStr = (area * 0.0001).toFixed(2) + ' ha';
+			} else {
+				areaStr = area.toFixed(2) + ' m&sup2;';
+			}
+		} else {
+			area *= 0.836127; // Square yards in 1 meter
+
+			if (area >= 3097600) { //3097600 square yards in 1 square mile
+				areaStr = (area / 3097600).toFixed(2) + ' mi&sup2;';
+			} else if (area >= 4840) {//48040 square yards in 1 acre
+				areaStr = (area / 4840).toFixed(2) + ' acres';
+			} else {
+				areaStr = Math.ceil(area) + ' yd&sup2;';
+			}
+		}
+
+		return areaStr;
 	},
 
 	_shapeIsValid: function () {
@@ -617,17 +668,9 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 			return;
 		}
 
-		var latLngs = this._poly.getLatLngs(),
-			area = L.PolygonUtil.geodesicArea(latLngs);
+		var latLngs = this._poly.getLatLngs();
 
-		// Convert to most appropriate units
-		if (area > 10000) {
-			area = (area * 0.0001).toFixed(2) + ' ha';
-		} else {
-			area = area.toFixed(2) + ' m&sup2;';
-		}
-
-		this._area = area;
+		this._area = L.PolygonUtil.geodesicArea(latLngs);
 	},
 
 	_cleanUpShape: function () {
