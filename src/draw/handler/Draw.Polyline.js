@@ -25,6 +25,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			fill: false,
 			clickable: true
 		},
+		metric: true, // Whether to use the metric meaurement system or imperial
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
 
@@ -286,10 +287,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				text: L.drawLocal.draw.handlers.polyline.tooltip.start
 			};
 		} else {
-			// calculate the distance from the last fixed point to the mouse position
-			distance = this._measurementRunningTotal + this._currentLatLng.distanceTo(this._markers[this._markers.length - 1].getLatLng());
-			// show metres when distance is < 1km, then show km
-			distanceStr = distance  > 1000 ? (distance  / 1000).toFixed(2) + ' km' : Math.ceil(distance) + ' m';
+			distanceStr = this._getDistanceString();
 
 			if (this._markers.length === 1) {
 				labelText = {
@@ -304,6 +302,34 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			}
 		}
 		return labelText;
+	},
+
+	_getDistanceString: function () {
+		var currentLatLng = this._currentLatLng,
+			previousLatLng = this._markers[this._markers.length - 1].getLatLng(),
+			distance, distanceStr;
+
+		// calculate the distance from the last fixed point to the mouse position
+		distance = this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng);
+
+		if (this.options.metric) {
+			// show metres when distance is < 1km, then show km
+			if (distance  > 1000) {
+				distanceStr = (distance  / 1000).toFixed(2) + ' km';
+			} else {
+				distanceStr = Math.ceil(distance) + ' m';
+			}
+		} else {
+			distance *= 1.09361;
+
+			if (distance > 1760) {
+				distanceStr = (distance / 1760).toFixed(2) + ' miles';
+			} else {
+				distanceStr = Math.ceil(distance) + ' yd';
+			}
+		}
+
+		return distanceStr;
 	},
 
 	_showErrorTooltip: function () {
