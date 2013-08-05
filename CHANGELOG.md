@@ -8,6 +8,7 @@ An in-progress version being developed on the master branch.
 ### Improvements
 
  * Refactored the `L.drawLocal' object to be better structured and use this object whereever text is used. *NOTE: THIS IS A NEW FORMAT, SO WILL BRESK ANY EXISTING CUSTOM `L.drawLocal` SETTINGS*.
+ * Added Imperial measurements to compliment the existing Metric measurements when drawing a polyline or polygon.
 
 ### Bugfixes
 
