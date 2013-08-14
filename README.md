@@ -366,7 +366,9 @@ E.g. to change the colour of the rectangle:
 ````js
 drawControl.setDrawingOptions({
     rectangle: {
-        color: '#0000FF'
+    	shapeOptions: {
+        	color: '#0000FF'
+        }
     }
 });
 ````
