@@ -31,6 +31,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 			.on('layerremove', this._disableLayerDelete, this);
 
 		this.fire('enabled', { handler: this.type});
+		this._map.fire('draw:editstart', { handler: this.type });
 	},
 
 	disable: function () {
@@ -43,6 +44,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 			.off('layerremove', this._disableLayerDelete, this);
 
 		this.fire('disabled', { handler: this.type});
+		this._map.fire('draw:editstop', { handler: this.type });
 	},
 
 	addHooks: function () {
