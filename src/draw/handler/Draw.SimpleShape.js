@@ -1,6 +1,14 @@
 L.SimpleShape = {};
 
 L.Draw.SimpleShape = L.Draw.Feature.extend({
+	options: {
+		repeatMode: true
+	},
+
+	initialize: function (map, options) {
+		L.Draw.Feature.prototype.initialize.call(this, map, options);
+	},
+
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
@@ -63,5 +71,8 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		}
 
 		this.disable();
+		if (this.options.repeatMode) {
+			this.enable();
+		}
 	}
 });

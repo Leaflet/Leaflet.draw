@@ -5,6 +5,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 
 	options: {
 		icon: new L.Icon.Default(),
+		repeatMode: false,
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
 
@@ -88,6 +89,9 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		this._fireCreatedEvent();
 
 		this.disable();
+		if (this.options.repeatMode) {
+			this.enable();
+		}
 	},
 
 	_fireCreatedEvent: function () {
