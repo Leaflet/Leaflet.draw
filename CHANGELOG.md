@@ -9,6 +9,8 @@ An in-progress version being developed on the master branch.
 
  * Refactored the `L.drawLocal' object to be better structured and use this object whereever text is used. *NOTE: THIS IS A NEW FORMAT, SO WILL BRESK ANY EXISTING CUSTOM `L.drawLocal` SETTINGS*.
  * Added Imperial measurements to compliment the existing Metric measurements when drawing a polyline or polygon.
+ * Added `draw:editstart` and `draw:editstop` events. (by [@bhell](https://github.com/bhell)). [#175](https://github.com/Leaflet/Leaflet.draw/pull/175)
+ * Added `repeatMode` option that will allow repeated drawing of features. (by [@jayhogan](https://github.com/ jayhogan) and [@cscheid](https://github.com/ cscheid)). [#178](https://github.com/Leaflet/Leaflet.draw/pull/178)
 
 ### Bugfixes
 
