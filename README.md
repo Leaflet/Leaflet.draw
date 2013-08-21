@@ -128,6 +128,22 @@ Triggered when the user has finshed a particular vector or marker.
 | --- | --- | ---
 | layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
 
+#### draw:editstart
+
+Triggered when the user starts edit mode by clicking the edit or remove tool button.
+
+| Property | Type | Description
+| --- | --- | ---
+| handler | String | The type of edit this is. One of: `edit`, `remove`
+
+#### draw:editstop
+
+Triggered when the user has finshed editing (edit or remove mode) and saves edits.
+
+| Property | Type | Description
+| --- | --- | ---
+| handler | String | The type of edit this is. One of: `edit`, `remove`
+
 <a name="options" />
 ## Advanced options
 
