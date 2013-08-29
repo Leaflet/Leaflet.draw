@@ -87,7 +87,9 @@
 	font: 11px/19px "Helvetica Neue", Arial, Helvetica, sans-serif;
 	line-height: 28px;
 	text-decoration: none;
-	width: 50px;
+	min-width: 46px;
+	padding-left: 2px;
+	padding-right: 2px;
 	height: 28px;
 }
 
