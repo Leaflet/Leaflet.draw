@@ -58,7 +58,7 @@
 }
 
 .leaflet-draw-actions li {
-	float: left;
+	display: inline-block;
 }
 
 .leaflet-draw-actions li:first-child a {
@@ -87,7 +87,8 @@
 	font: 11px/19px "Helvetica Neue", Arial, Helvetica, sans-serif;
 	line-height: 28px;
 	text-decoration: none;
-	width: 50px;
+	padding-left: 10px;
+	padding-right: 10px;
 	height: 28px;
 }
 
@@ -97,6 +98,7 @@
 
 .leaflet-draw-actions-top {
 	margin-top: 1px;
+	white-space: nowrap;
 }
 
 .leaflet-draw-actions-top a,
