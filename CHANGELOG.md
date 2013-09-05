@@ -16,6 +16,8 @@ An in-progress version being developed on the master branch.
 
  * Fixed bug where edit handlers could not be disabled.
  * Added support for displaying the toolbar on the right hand side of the map. (by [@paulcpederson](https://github.com/paulcpederson)). [#164](https://github.com/Leaflet/Leaflet.draw/pull/164)
+ * Add flexible width action buttons. (by [@Grsmto](https://github.com/Grsmto)). [#181](https://github.com/Leaflet/Leaflet.draw/pull/181)
+ * Check for icon existence before disabling edit state. (by [@tmcw](https://github.com/tmcw)). [#182](https://github.com/Leaflet/Leaflet.draw/pull/182)
 
 ## 0.2.1 (July 5, 2013)
 
