@@ -1975,7 +1975,6 @@ L.Toolbar = L.Class.extend({
 		var container = L.DomUtil.create('ul', 'leaflet-draw-actions'),
 			buttonWidth = 50,
 			l = buttons.length,
-			containerWidth = (l * buttonWidth) + (l - 1), //l - 1 = the borders
 			li, button;
 
 		for (var i = 0; i < l; i++) {
@@ -1994,8 +1993,6 @@ L.Toolbar = L.Class.extend({
 				callback: buttons[i].callback
 			});
 		}
-
-		container.style.width = containerWidth + 'px';
 
 		return container;
 	},
@@ -2448,6 +2445,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	_toggleMarkerHighlight: function (marker) {
+		if (!marker._icon) {
+			return;
+		}
 		// This is quite naughty, but I don't see another way of doing it. (short of setting a new icon)
 		var icon = marker._icon;
 
