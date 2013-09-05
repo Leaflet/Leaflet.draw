@@ -126,7 +126,6 @@ L.Toolbar = L.Class.extend({
 
 	_createActions: function (buttons) {
 		var container = L.DomUtil.create('ul', 'leaflet-draw-actions'),
-			buttonWidth = 50,
 			l = buttons.length,
 			li, button;
 
