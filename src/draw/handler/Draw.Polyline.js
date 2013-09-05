@@ -10,7 +10,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		repeatMode: false,
 		drawError: {
 			color: '#b00b00',
-			message: L.drawLocal.draw.handlers.polyline.error,
 			timeout: 2500
 		},
 		icon: new L.DivIcon({
@@ -31,6 +30,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	initialize: function (map, options) {
+		// Need to set this here to ensure the correct message is used.
+		this.options.drawError.message = L.drawLocal.draw.handlers.polyline.error;
+
 		// Merge default drawError options with custom options
 		if (options && options.drawError) {
 			options.drawError = L.Util.extend({}, this.options.drawError, options.drawError);
