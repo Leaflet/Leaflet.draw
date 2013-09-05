@@ -17,6 +17,11 @@
 	margin-top: 3px;
 }
 
+.leaflet-draw-actions li {
+	display: inline;
+	zoom: 1;
+}
+
 .leaflet-edit-marker-selected {
 	border: 4px dashed #fe93c2;
 }
