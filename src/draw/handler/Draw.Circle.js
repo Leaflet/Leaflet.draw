@@ -13,7 +13,8 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 			fillColor: null, //same as color by default
 			fillOpacity: 0.2,
 			clickable: true
-		}
+		},
+		metric: true // Whether to use the metric meaurement system or imperial
 	},
 
 	initialize: function (map, options) {
@@ -41,6 +42,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 
 	_onMouseMove: function (e) {
 		var latlng = e.latlng,
+			metric = this.options.metric,
 			radius;
 
 		this._tooltip.updatePosition(latlng);
@@ -52,7 +54,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 
 			this._tooltip.updateContent({
 				text: 'Release mouse to finish drawing.',
-				subtext: 'Radius: ' + radius + ' m'
+				subtext: 'Radius: ' + L.GeometryUtil.readableDistance(radius, this.options.metric)
 			});
 		}
 	}
