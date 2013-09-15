@@ -2,7 +2,7 @@ L.SimpleShape = {};
 
 L.Draw.SimpleShape = L.Draw.Feature.extend({
 	options: {
-		repeatMode: true
+		repeatMode: false
 	},
 
 	initialize: function (map, options) {
