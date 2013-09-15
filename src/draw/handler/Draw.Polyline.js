@@ -212,7 +212,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		if (markerCount > 0) {
 			newPos = newPos || this._map.latLngToLayerPoint(this._currentLatLng);
-			
+
 			// draw the guide line
 			this._clearGuides();
 			this._drawGuide(
