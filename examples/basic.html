@@ -26,7 +26,7 @@
 	<script src="../src/draw/handler/Draw.Marker.js"></script>
 
 	<script src="../src/ext/LatLngUtil.js"></script>
-	<script src="../src/ext/PolygonUtil.js"></script>
+	<script src="../src/ext/GeometryUtil.js"></script>
 	<script src="../src/ext/LineUtil.Intersect.js"></script>
 	<script src="../src/ext/Polyline.Intersect.js"></script>
 	<script src="../src/ext/Polygon.Intersect.js"></script>
@@ -44,7 +44,6 @@
 	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
 	<button id="changeColor">Rectangle -> Blue</button>
 	<script>
-		
 		var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png',
 			cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18}),
 			map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(-37.7772, 175.2756), zoom: 15 });
@@ -58,6 +57,9 @@
 		var drawControl = new L.Control.Draw({
 			position: 'topright',
 			draw: {
+				polyline: {
+					metric: true
+				},
 				polygon: {
 					allowIntersection: false,
 					showArea: true,
