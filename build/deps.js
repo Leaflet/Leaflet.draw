@@ -34,7 +34,7 @@ var deps = {
 	Extensions: {
 		src: [
 			'ext/LatLngUtil.js',
-			'ext/PolygonUtil.js',
+			'ext/GeometryUtil.js',
 			'ext/LineUtil.Intersect.js',
 			'ext/Polyline.Intersect.js',
 			'ext/Polygon.Intersect.js'
