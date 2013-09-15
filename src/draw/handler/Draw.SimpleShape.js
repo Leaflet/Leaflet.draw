@@ -6,6 +6,8 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	},
 
 	initialize: function (map, options) {
+		this._endLabelText = L.drawLocal.draw.handlers.simpleshape.tooltip.end;
+
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 
@@ -60,7 +62,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 
 		this._tooltip.updatePosition(latlng);
 		if (this._isDrawing) {
-			this._tooltip.updateContent({ text: L.drawLocal.draw.handlers.simpleshape.tooltip.end });
+			this._tooltip.updateContent({ text: this._endLabelText });
 			this._drawShape(latlng);
 		}
 	},
