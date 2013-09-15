@@ -63,32 +63,13 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 	},
 
 	_getMeasurementString: function () {
-		var area = this._area,
-			areaStr;
+		var area = this._area;
 
 		if (!area) {
 			return null;
 		}
 
-		if (this.options.metric) {
-			if (area >= 10000) {
-				areaStr = (area * 0.0001).toFixed(2) + ' ha';
-			} else {
-				areaStr = area.toFixed(2) + ' m&sup2;';
-			}
-		} else {
-			area *= 0.836127; // Square yards in 1 meter
-
-			if (area >= 3097600) { //3097600 square yards in 1 square mile
-				areaStr = (area / 3097600).toFixed(2) + ' mi&sup2;';
-			} else if (area >= 4840) {//48040 square yards in 1 acre
-				areaStr = (area / 4840).toFixed(2) + ' acres';
-			} else {
-				areaStr = Math.ceil(area) + ' yd&sup2;';
-			}
-		}
-
-		return areaStr;
+		return L.GeometryUtil.readableArea(area, this.options.metric);
 	},
 
 	_shapeIsValid: function () {
@@ -103,7 +84,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 
 		var latLngs = this._poly.getLatLngs();
 
-		this._area = L.PolygonUtil.geodesicArea(latLngs);
+		this._area = L.GeometryUtil.geodesicArea(latLngs);
 	},
 
 	_cleanUpShape: function () {

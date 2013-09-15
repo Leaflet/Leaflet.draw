@@ -313,29 +313,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_getMeasurementString: function () {
 		var currentLatLng = this._currentLatLng,
 			previousLatLng = this._markers[this._markers.length - 1].getLatLng(),
-			distance, distanceStr;
+			distance;
 
 		// calculate the distance from the last fixed point to the mouse position
 		distance = this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng);
 
-		if (this.options.metric) {
-			// show metres when distance is < 1km, then show km
-			if (distance  > 1000) {
-				distanceStr = (distance  / 1000).toFixed(2) + ' km';
-			} else {
-				distanceStr = Math.ceil(distance) + ' m';
-			}
-		} else {
-			distance *= 1.09361;
-
-			if (distance > 1760) {
-				distanceStr = (distance / 1760).toFixed(2) + ' miles';
-			} else {
-				distanceStr = Math.ceil(distance) + ' yd';
-			}
-		}
-
-		return distanceStr;
+		return L.GeometryUtil.readableDistance(distance, this.options.metric);
 	},
 
 	_showErrorTooltip: function () {
