@@ -57,6 +57,7 @@ L.EditToolbar = L.Toolbar.extend({
 				buttonClassPrefix,
 				L.drawLocal.edit.toolbar.buttons.edit
 			);
+			L.DomUtil.addClass(this._modes.edit.button, 'leaflet-draw-disabled');
 		}
 
 		if (this.options.remove) {
@@ -69,6 +70,7 @@ L.EditToolbar = L.Toolbar.extend({
 				buttonClassPrefix,
 				L.drawLocal.edit.toolbar.buttons.remove
 			);
+			L.DomUtil.addClass(this._modes.remove.button, 'leaflet-draw-disabled');
 		}
 
 		// Save button index of the last button, -1 as we would have ++ after the last button
@@ -93,6 +95,55 @@ L.EditToolbar = L.Toolbar.extend({
 		// Add draw and cancel containers to the control container
 		container.appendChild(this._toolbarContainer);
 		container.appendChild(this._actionsContainer);
+
+		var self = this;
+		this._map.on('draw:created', function (e) {
+			if (self.options.edit) {
+				L.DomUtil.removeClass(self._modes.edit.button, 'leaflet-draw-disabled');
+			}
+			if (self.options.remove) {
+				L.DomUtil.removeClass(self._modes.remove.button, 'leaflet-draw-disabled');
+			}
+		});
+
+		this._map.on('draw:deleted', function (e) {
+			if (self.options.edit) {
+				var editAvailable = false;
+				var editLayers = self._modes.edit.handler._featureGroup._layers;
+				for (var propE in editLayers) {
+					if (editLayers.hasOwnProperty(propE)) {
+						editAvailable = true;
+						break;
+					}
+				}
+				if (editAvailable) {
+					L.DomUtil.removeClass(self._modes.edit.button, 'leaflet-draw-disabled');
+				}
+				else {
+					L.DomUtil.addClass(self._modes.edit.button, 'leaflet-draw-disabled');
+				}
+			}
+
+			if (self.options.remove) {
+				var removeAvailable = false;
+				var removeLayers = self._modes.remove.handler._deletableLayers._layers;
+				for (var propR in removeLayers) {
+					if (removeLayers.hasOwnProperty(propR)) {
+						removeAvailable = true;
+						break;
+					}
+				}
+
+				if (removeAvailable) {
+					L.DomUtil.removeClass(self._modes.remove.button, 'leaflet-draw-disabled');
+				}
+				else {
+					L.DomUtil.addClass(self._modes.remove.button, 'leaflet-draw-disabled');
+				}
+			}
+
+
+		});
 
 		return container;
 	},
