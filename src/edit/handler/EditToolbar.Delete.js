@@ -22,7 +22,9 @@ L.EditToolbar.Delete = L.Handler.extend({
 	},
 
 	enable: function () {
-		if (this._enabled) { return; }
+		if (this._enabled || !this._hasAvailableLayers()) {
+			return;
+		}
 
 		L.Handler.prototype.enable.call(this);
 
@@ -107,5 +109,9 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 	_onMouseMove: function (e) {
 		this._tooltip.updatePosition(e.latlng);
+	},
+
+	_hasAvailableLayers: function () {
+		return this._deletableLayers.getLayers().length !== 0;
 	}
 });
