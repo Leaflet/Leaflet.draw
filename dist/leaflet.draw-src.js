@@ -1345,7 +1345,6 @@ L.Edit.SimpleShape = L.Handler.extend({
 		var marker = e.target;
 		marker.setOpacity(1);
 
-		this._shape.fire('edit');
 		this._fireEdit();
 	},
 
