@@ -152,6 +152,14 @@
 	background-position: -182px -2px;
 }
 
+.leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {
+	background-position: -212px -2px;
+}
+
+.leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {
+	background-position: -242px -2px;
+}
+
 /* ================================================================== */
 /* Drawing styles
 /* ================================================================== */

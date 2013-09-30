@@ -40,7 +40,8 @@ L.EditToolbar = L.Toolbar.extend({
 	addToolbar: function (map) {
 		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
 			buttonIndex = 0,
-			buttonClassPrefix = 'leaflet-draw-edit';
+			buttonClassPrefix = 'leaflet-draw-edit',
+			featureGroup = this.options.featureGroup;
 
 		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
 
@@ -49,7 +50,7 @@ L.EditToolbar = L.Toolbar.extend({
 		if (this.options.edit) {
 			this._initModeHandler(
 				new L.EditToolbar.Edit(map, {
-					featureGroup: this.options.featureGroup,
+					featureGroup: featureGroup,
 					selectedPathOptions: this.options.edit.selectedPathOptions
 				}),
 				this._toolbarContainer,
@@ -62,7 +63,7 @@ L.EditToolbar = L.Toolbar.extend({
 		if (this.options.remove) {
 			this._initModeHandler(
 				new L.EditToolbar.Delete(map, {
-					featureGroup: this.options.featureGroup
+					featureGroup: featureGroup
 				}),
 				this._toolbarContainer,
 				buttonIndex++,
@@ -94,7 +95,17 @@ L.EditToolbar = L.Toolbar.extend({
 		container.appendChild(this._toolbarContainer);
 		container.appendChild(this._actionsContainer);
 
+		this._checkDisabled();
+
+		featureGroup.on('layeradd layerremove', this._checkDisabled, this);
+
 		return container;
+	},
+
+	removeToolbar: function () {
+		L.Toolbar.prototype.removeToolbar.call(this);
+
+		this.options.featureGroup.off('layeradd layerremove', this._checkDisabled, this);
 	},
 
 	disable: function () {
@@ -108,5 +119,49 @@ L.EditToolbar = L.Toolbar.extend({
 	_save: function () {
 		this._activeMode.handler.save();
 		this._activeMode.handler.disable();
+	},
+
+	_checkDisabled: function () {
+		var featureGroup = this.options.featureGroup,
+			hasLayers = featureGroup.getLayers().length === 0,
+			button;
+
+		if (this.options.edit) {
+			button = this._modes[L.EditToolbar.Edit.TYPE].button;
+
+			L.DomUtil.toggleClass(button, 'leaflet-disabled');
+
+			button.setAttribute(
+				'title',
+				hasLayers ?
+				L.drawLocal.edit.toolbar.buttons.edit
+				: L.drawLocal.edit.toolbar.buttons.editDisabled
+			);
+		}
+
+		if (this.options.remove) {
+			button = this._modes[L.EditToolbar.Delete.TYPE].button;
+
+			L.DomUtil.toggleClass(button, 'leaflet-disabled');
+
+			button.setAttribute(
+				'title',
+				hasLayers ?
+				L.drawLocal.edit.toolbar.buttons.remove
+				: L.drawLocal.edit.toolbar.buttons.removeDisabled
+			);
+		}
 	}
 });
+
+if (!L.DomUtil.toggleClass) {
+	L.Util.extend(L.DomUtil, {
+		toggleClass: function (el, name) {
+			if (this.hasClass(el, name)) {
+				this.removeClass(el, name);
+			} else {
+				this.addClass(el, name);
+			}
+		}
+	});
+}
