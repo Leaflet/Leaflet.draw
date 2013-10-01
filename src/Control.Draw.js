@@ -90,6 +90,7 @@ L.Control.Draw = L.Control.extend({
 });
 
 L.Map.mergeOptions({
+	drawControlTooltips: true,
 	drawControl: false
 });
 
