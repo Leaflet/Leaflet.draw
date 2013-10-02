@@ -11,7 +11,7 @@
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
 
-L.drawVersion = '0.2.1-dev';
+L.drawVersion = '0.2.2';
 
 L.drawLocal = {
 	draw: {
@@ -204,6 +204,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			clickable: true
 		},
 		metric: true, // Whether to use the metric meaurement system or imperial
+		showLength: true, // Whether to display distance in the tooltip
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
 
@@ -462,16 +463,15 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_getTooltipText: function () {
-		var labelText,
-			distance,
-			distanceStr;
+		var showLength = this.options.showLength,
+			labelText, distance, distanceStr;
 
 		if (this._markers.length === 0) {
 			labelText = {
 				text: L.drawLocal.draw.handlers.polyline.tooltip.start
 			};
 		} else {
-			distanceStr = this._getMeasurementString();
+			distanceStr = showLength ? this._getMeasurementString() : '';
 
 			if (this._markers.length === 1) {
 				labelText = {
@@ -804,6 +804,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 			fillOpacity: 0.2,
 			clickable: true
 		},
+		showRadius: true,
 		metric: true // Whether to use the metric meaurement system or imperial
 	},
 
@@ -833,6 +834,8 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 	_onMouseMove: function (e) {
 		var latlng = e.latlng,
 			metric = this.options.metric,
+			showRadius = this.options.showRadius,
+			useMetric = this.options.metric,
 			radius;
 
 		this._tooltip.updatePosition(latlng);
@@ -844,11 +847,12 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 
 			this._tooltip.updateContent({
 				text: this._endLabelText,
-				subtext: 'Radius: ' + L.GeometryUtil.readableDistance(radius, this.options.metric)
+				subtext: showRadius ? 'Radius: ' + L.GeometryUtil.readableDistance(radius, useMetric) : ''
 			});
 		}
 	}
 });
+
 
 L.Draw.Marker = L.Draw.Feature.extend({
 	statics: {
@@ -1852,6 +1856,7 @@ L.Control.Draw = L.Control.extend({
 });
 
 L.Map.mergeOptions({
+	drawControlTooltips: true,
 	drawControl: false
 });
 
@@ -2051,16 +2056,21 @@ L.Tooltip = L.Class.extend({
 		this._map = map;
 		this._popupPane = map._panes.popupPane;
 
-		this._container = L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane);
+		this._container = map.options.drawControlTooltips ? L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane) : null;
 		this._singleLineLabel = false;
 	},
 
 	dispose: function () {
-		this._popupPane.removeChild(this._container);
-		this._container = null;
+		if (this._container) {
+			this._popupPane.removeChild(this._container);
+			this._container = null;
+		}
 	},
 
 	updateContent: function (labelText) {
+		if (!this._container) {
+			return this;
+		}
 		labelText.subtext = labelText.subtext || '';
 
 		// update the vertical position (only if changed)
@@ -2083,18 +2093,24 @@ L.Tooltip = L.Class.extend({
 	updatePosition: function (latlng) {
 		var pos = this._map.latLngToLayerPoint(latlng);
 
-		L.DomUtil.setPosition(this._container, pos);
+		if (this._container) {
+			L.DomUtil.setPosition(this._container, pos);
+		}
 
 		return this;
 	},
 
 	showAsError: function () {
-		L.DomUtil.addClass(this._container, 'leaflet-error-draw-tooltip');
+		if (this._container) {
+			L.DomUtil.addClass(this._container, 'leaflet-error-draw-tooltip');
+		}
 		return this;
 	},
 
 	removeError: function () {
-		L.DomUtil.removeClass(this._container, 'leaflet-error-draw-tooltip');
+		if (this._container) {
+			L.DomUtil.removeClass(this._container, 'leaflet-error-draw-tooltip');
+		}
 		return this;
 	}
 });
