@@ -285,16 +285,15 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_getTooltipText: function () {
-		var labelText,
-			distance,
-			distanceStr;
+		var showLength = this.options.showLength,
+			labelText, distance, distanceStr;
 
 		if (this._markers.length === 0) {
 			labelText = {
 				text: L.drawLocal.draw.handlers.polyline.tooltip.start
 			};
 		} else {
-			distanceStr = this.options.showLength ? this._getMeasurementString() : '';
+			distanceStr = showLength ? this._getMeasurementString() : '';
 
 			if (this._markers.length === 1) {
 				labelText = {

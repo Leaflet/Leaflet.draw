@@ -44,6 +44,8 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 	_onMouseMove: function (e) {
 		var latlng = e.latlng,
 			metric = this.options.metric,
+			showRadius = this.options.showRadius,
+			useMetric = this.options.metric,
 			radius;
 
 		this._tooltip.updatePosition(latlng);
@@ -55,7 +57,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 
 			this._tooltip.updateContent({
 				text: this._endLabelText,
-				subtext: this.options.showRadius ? 'Radius: ' + L.GeometryUtil.readableDistance(radius, this.options.metric) : ''
+				subtext: showRadius ? 'Radius: ' + L.GeometryUtil.readableDistance(radius, useMetric) : ''
 			});
 		}
 	}
