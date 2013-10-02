@@ -14,6 +14,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 			fillOpacity: 0.2,
 			clickable: true
 		},
+		showRadius: true,
 		metric: true // Whether to use the metric meaurement system or imperial
 	},
 
@@ -54,7 +55,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 
 			this._tooltip.updateContent({
 				text: this._endLabelText,
-				subtext: 'Radius: ' + L.GeometryUtil.readableDistance(radius, this.options.metric)
+				subtext: this.options.showRadius ? 'Radius: ' + L.GeometryUtil.readableDistance(radius, this.options.metric) : ''
 			});
 		}
 	}
