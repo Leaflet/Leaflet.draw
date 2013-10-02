@@ -3,16 +3,21 @@ L.Tooltip = L.Class.extend({
 		this._map = map;
 		this._popupPane = map._panes.popupPane;
 
-		this._container = L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane);
+		this._container = map.options.drawControlTooltips ? L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane) : null;
 		this._singleLineLabel = false;
 	},
 
 	dispose: function () {
-		this._popupPane.removeChild(this._container);
-		this._container = null;
+		if (this._container) {
+			this._popupPane.removeChild(this._container);
+			this._container = null;
+		}
 	},
 
 	updateContent: function (labelText) {
+		if (!this._container) {
+			return this;
+		}
 		labelText.subtext = labelText.subtext || '';
 
 		// update the vertical position (only if changed)
@@ -35,18 +40,24 @@ L.Tooltip = L.Class.extend({
 	updatePosition: function (latlng) {
 		var pos = this._map.latLngToLayerPoint(latlng);
 
-		L.DomUtil.setPosition(this._container, pos);
+		if (this._container) {
+			L.DomUtil.setPosition(this._container, pos);
+		}
 
 		return this;
 	},
 
 	showAsError: function () {
-		L.DomUtil.addClass(this._container, 'leaflet-error-draw-tooltip');
+		if (this._container) {
+			L.DomUtil.addClass(this._container, 'leaflet-error-draw-tooltip');
+		}
 		return this;
 	},
 
 	removeError: function () {
-		L.DomUtil.removeClass(this._container, 'leaflet-error-draw-tooltip');
+		if (this._container) {
+			L.DomUtil.removeClass(this._container, 'leaflet-error-draw-tooltip');
+		}
 		return this;
 	}
 });
