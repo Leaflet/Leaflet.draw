@@ -13,6 +13,8 @@ An in-progress version being developed on the master branch.
  * Added `repeatMode` option that will allow repeated drawing of features. (by [@jayhogan](https://github.com/jayhogan) and [@cscheid](https://github.com/cscheid)). [#178](https://github.com/Leaflet/Leaflet.draw/pull/178)
  * Added abilit to set circle radius measurement to imperial units.
  * Added disabled state for edit/delete buttons when no layers present. (inspired by [@snkashis](https://github.com/snkashis)). [#136](https://github.com/Leaflet/Leaflet.draw/pull/136)
+ * Add `showLength` and `showRadius` options to circle and polyline. (by [@Zverik](https://github.com/Zverik)). [#195](https://github.com/Leaflet/Leaflet.draw/pull/195)
+ * Add option to disable tooltips. (by [@Zverik](https://github.com/Zverik)). [#196](https://github.com/Leaflet/Leaflet.draw/pull/196)
 
 ### Bugfixes
 
@@ -23,6 +25,7 @@ An in-progress version being developed on the master branch.
  * Only update guideslines when guidelines are present. (by [@jayhogan](https://github.com/jayhogan)). [#188](https://github.com/Leaflet/Leaflet.draw/pull/188)
  * Fixes to localization code so it can be correctly set after files have been loaded.
  * Fix for firing `draw:edit` twice for Draw.SimpleShape. (by [@cazacugmihai](https://github.com/cazacugmihai)). [#192](https://github.com/Leaflet/Leaflet.draw/pull/192)
+ * Fix last edit menu buttons from wrapping. (by [@moiarcsan](https://github.com/moiarcsan)). [#198](https://github.com/Leaflet/Leaflet.draw/pull/198)
 
 ## 0.2.1 (July 5, 2013)
 
