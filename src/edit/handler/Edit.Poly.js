@@ -125,7 +125,7 @@ L.Edit.Poly = L.Handler.extend({
 
 	_onMarkerClick: function (e) {
 		// we want to remove the marker on click, but if latlng count < 3, polyline would be invalid
-		if (this._poly._latlngs.length < 3) { return; }
+		if (this._poly._latlngs.length < (L.Polygon && (this._poly instanceof L.Polygon) ? 4 : 3)) { return; }
 
 		var marker = e.target;
 
