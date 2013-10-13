@@ -129,8 +129,11 @@ L.EditToolbar = L.Toolbar.extend({
 		if (this.options.edit) {
 			button = this._modes[L.EditToolbar.Edit.TYPE].button;
 
-			if (hasLayers) { L.DomUtil.removeClass(button, 'leaflet-disabled'); }
-			else { L.DomUtil.addClass(button, 'leaflet-disabled'); }
+			if (hasLayers) {
+				L.DomUtil.removeClass(button, 'leaflet-disabled');
+			} else {
+				L.DomUtil.addClass(button, 'leaflet-disabled');
+			}
 
 			button.setAttribute(
 				'title',
@@ -143,8 +146,11 @@ L.EditToolbar = L.Toolbar.extend({
 		if (this.options.remove) {
 			button = this._modes[L.EditToolbar.Delete.TYPE].button;
 
-			if (hasLayers) { L.DomUtil.removeClass(button, 'leaflet-disabled'); }
-			else { L.DomUtil.addClass(button, 'leaflet-disabled'); }
+			if (hasLayers) {
+				L.DomUtil.removeClass(button, 'leaflet-disabled');
+			} else {
+				L.DomUtil.addClass(button, 'leaflet-disabled');
+			}
 
 			button.setAttribute(
 				'title',
@@ -155,15 +161,3 @@ L.EditToolbar = L.Toolbar.extend({
 		}
 	}
 });
-
-if (!L.DomUtil.toggleClass) {
-	L.Util.extend(L.DomUtil, {
-		toggleClass: function (el, name) {
-			if (this.hasClass(el, name)) {
-				this.removeClass(el, name);
-			} else {
-				this.addClass(el, name);
-			}
-		}
-	});
-}
