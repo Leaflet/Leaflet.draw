@@ -7,6 +7,16 @@ An in-progress version being developed on the master branch.
 
 ### Improvements
 
+ * Restrict editing polygons so that at least 3 points are present. (by [@Zverik](https://github.com/Zverik). [#200](https://github.com/Leaflet/Leaflet.draw/pull/200)
+
+### Bugfixes
+
+ * Fix edit toolbar so diabled state is represented correctly. (by [@joeybaker](https://github.com/joeybaker)). [#203](https://github.com/Leaflet/Leaflet.draw/pull/203)
+
+## 0.2.2 (October 4, 2013)
+
+### Improvements
+
  * Refactored the `L.drawLocal' object to be better structured and use this object whereever text is used. *NOTE: THIS IS A NEW FORMAT, SO WILL BRESK ANY EXISTING CUSTOM `L.drawLocal` SETTINGS*.
  * Added Imperial measurements to compliment the existing Metric measurements when drawing a polyline or polygon.
  * Added `draw:editstart` and `draw:editstop` events. (by [@bhell](https://github.com/bhell)). [#175](https://github.com/Leaflet/Leaflet.draw/pull/175)
