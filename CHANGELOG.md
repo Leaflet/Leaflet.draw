@@ -12,6 +12,7 @@ An in-progress version being developed on the master branch.
 ### Bugfixes
 
  * Fix edit toolbar so diabled state is represented correctly. (by [@joeybaker](https://github.com/joeybaker)). [#203](https://github.com/Leaflet/Leaflet.draw/pull/203)
+ * Fixed path middle marker positions. (by [@Zverik](https://github.com/Zverik)). [#208](https://github.com/Leaflet/Leaflet.draw/pull/208)
 
 ## 0.2.2 (October 4, 2013)
 
