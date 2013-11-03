@@ -182,6 +182,7 @@
 	margin-top: -21px;
 	padding: 4px 8px;
 	position: absolute;
+	visibility: hidden;
 	white-space: nowrap;
 	z-index: 6;
 }

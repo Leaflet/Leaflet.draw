@@ -3,10 +3,7 @@ L.Tooltip = L.Class.extend({
 		this._map = map;
 		this._popupPane = map._panes.popupPane;
 
-		if (map.options.drawControlTooltips) {
-			this._container = L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane);
-			this._container.style.visibility = 'hidden';
-		}
+		this._container = map.options.drawControlTooltips ? L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane) : null;
 		this._singleLineLabel = false;
 	},
 
@@ -41,11 +38,12 @@ L.Tooltip = L.Class.extend({
 	},
 
 	updatePosition: function (latlng) {
-		var pos = this._map.latLngToLayerPoint(latlng);
+		var pos = this._map.latLngToLayerPoint(latlng),
+			tooltipContainer = this._container;
 
 		if (this._container) {
-			this._container.style.visibility = 'inherit';
-			L.DomUtil.setPosition(this._container, pos);
+			tooltipContainer.style.visibility = 'inherit';
+			L.DomUtil.setPosition(tooltipContainer, pos);
 		}
 
 		return this;
