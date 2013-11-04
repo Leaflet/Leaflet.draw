@@ -140,8 +140,12 @@ L.Draw.Feature = L.Handler.extend({
 	},
 
 	addHooks: function () {
-		if (this._map) {
+		var map = this._map;
+
+		if (map) {
 			L.DomUtil.disableTextSelection();
+
+			map.getContainer().focus();
 
 			this._tooltip = new L.Tooltip(this._map);
 
@@ -2452,7 +2456,11 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	addHooks: function () {
-		if (this._map) {
+		var map = this._map;
+
+		if (map) {
+			map.getContainer().focus();
+
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
 
 			this._tooltip = new L.Tooltip(this._map);
@@ -2698,7 +2706,11 @@ L.EditToolbar.Delete = L.Handler.extend({
 	},
 
 	addHooks: function () {
-		if (this._map) {
+		var map = this._map;
+
+		if (map) {
+			map.getContainer().focus();
+
 			this._deletableLayers.eachLayer(this._enableLayerDelete, this);
 			this._deletedLayers = new L.layerGroup();
 
