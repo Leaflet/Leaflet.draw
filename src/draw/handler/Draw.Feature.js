@@ -37,8 +37,12 @@ L.Draw.Feature = L.Handler.extend({
 	},
 
 	addHooks: function () {
-		if (this._map) {
+		var map = this._map;
+
+		if (map) {
 			L.DomUtil.disableTextSelection();
+
+			map.getContainer().focus();
 
 			this._tooltip = new L.Tooltip(this._map);
 
