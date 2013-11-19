@@ -393,6 +393,21 @@ drawControl.setDrawingOptions({
 });
 ````
 
+### Workaround using edit/delete with programmatically added geoJson shapes
+
+Don't do this
+````js
+var geojsonLayer = L.geoJson(data);
+geojsonLayer.addTo(drawnItems);
+````
+
+But this
+````js
+var geojsonLayer = L.GeoJSON.geometryToLayer(data);
+geojsonLayer.addTo(drawnItems);
+````
+
+
 ### Creating a custom build
 
 If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://github.com/Leaflet/Leaflet.draw/blob/master/build/build.html). 
