@@ -1,5 +1,5 @@
 # Important
-Leaflet.draw 0.2.0 requires [Leaflet 0.6](https://github.com/Leaflet/Leaflet/archive/v0.6.zip) or higher.
+Leaflet.draw 0.2.3+ requires [Leaflet 0.7](https://github.com/Leaflet/Leaflet/archive/v0.7.zip) or higher.
 
 #Leaflet.draw
 Adds support for drawing and editing vectors and markers on [Leaflet maps](https://github.com/Leaflet/Leaflet). Check out the [demo](http://leaflet.github.com/Leaflet.draw/)
