@@ -52,7 +52,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 		if (this._isDrawing) {
 			this._drawShape(latlng);
 
-			// Get the new radius (rouded to 1 dp)
+			// Get the new radius (rounded to 1 dp)
 			radius = this._shape.getRadius().toFixed(1);
 
 			this._tooltip.updateContent({
