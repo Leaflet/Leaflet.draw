@@ -596,7 +596,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 	_updateFinishHandler: function () {
 		var markerCount = this._markers.length;
 
-		// The first marker shold have a click handler to close the polygon
+		// The first marker should have a click handler to close the polygon
 		if (markerCount === 1) {
 			this._markers[0].on('click', this._finishShape, this);
 		}
@@ -846,7 +846,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 		if (this._isDrawing) {
 			this._drawShape(latlng);
 
-			// Get the new radius (rouded to 1 dp)
+			// Get the new radius (rounded to 1 dp)
 			radius = this._shape.getRadius().toFixed(1);
 
 			this._tooltip.updateContent({
@@ -1441,7 +1441,7 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 
 		this._shape.setLatLngs(newLatLngs);
 
-		// Respoition the resize markers
+		// Reposition the resize markers
 		this._repositionCornerMarkers();
 	},
 
@@ -1451,7 +1451,7 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 		// Update the shape based on the current position of this corner and the opposite point
 		this._shape.setBounds(L.latLngBounds(latlng, this._oppositeCorner));
 
-		// Respoition the move marker
+		// Reposition the move marker
 		bounds = this._shape.getBounds();
 		this._moveMarker.setLatLng(bounds.getCenter());
 	},
@@ -1490,6 +1490,7 @@ L.Rectangle.addInitHook(function () {
 		}
 	}
 });
+
 
 L.Edit = L.Edit || {};
 
@@ -1574,7 +1575,7 @@ L.LatLngUtil = {
 	}
 };
 
-L.GeometryUtil = {
+L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 	// Ported from the OpenLayers implementation. See https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Geometry/LinearRing.js#L270
 	geodesicArea: function (latLngs) {
 		var pointsCount = latLngs.length,
@@ -1641,7 +1642,7 @@ L.GeometryUtil = {
 
 		return distanceStr;
 	}
-};
+});
 
 L.Util.extend(L.LineUtil, {
 	// Checks to see if two line segments intersect. Does not handle degenerate cases.
@@ -1702,7 +1703,7 @@ L.Polyline.include({
 		var points = this._originalPoints,
 			len = points ? points.length : 0,
 			lastPoint = points ? points[len - 1] : null,
-			// The previous previous line segment. Previous line segement doesn't need testing.
+			// The previous previous line segment. Previous line segment doesn't need testing.
 			maxIndex = len - 2;
 
 		if (this._tooFewPointsForIntersection(1)) {
@@ -1723,7 +1724,7 @@ L.Polyline.include({
 		return !this._originalPoints || len <= 3;
 	},
 
-	// Checks a line segment intersections with any line segements before its predecessor.
+	// Checks a line segment intersections with any line segments before its predecessor.
 	// Don't need to check the predecessor as will never intersect.
 	_lineSegmentsIntersectsRange: function (p, p1, maxIndex, minIndex) {
 		var points = this._originalPoints,
@@ -1744,6 +1745,7 @@ L.Polyline.include({
 		return false;
 	}
 });
+
 
 L.Polygon.include({
 	// Checks a polygon for any intersecting line segments. Ignores holes.
@@ -1782,8 +1784,8 @@ L.Control.Draw = L.Control.extend({
 	},
 
 	initialize: function (options) {
-		if (L.version <= "0.5.1") {
-			throw new Error('Leaflet.draw 0.2.0+ requires Leaflet 0.6.0+. Download latest from https://github.com/Leaflet/Leaflet/');
+		if (L.version <= "0.7") {
+			throw new Error('Leaflet.draw 0.2.3+ requires Leaflet 0.7.0+. Download latest from https://github.com/Leaflet/Leaflet/');
 		}
 
 		L.Control.prototype.initialize.call(this, options);

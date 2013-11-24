@@ -9,6 +9,8 @@ An in-progress version being developed on the master branch.
 
  * Restrict editing polygons so that at least 3 points are present. (by [@Zverik](https://github.com/Zverik). [#200](https://github.com/Leaflet/Leaflet.draw/pull/200)
  * Tooltips initially start hidden until the mouse has been moved. (by [@Zverik](https://github.com/Zverik). [#210](https://github.com/Leaflet/Leaflet.draw/pull/210)
+ * Fixup spelling errors. (by [@nexushoratio](https://github.com/nexushoratio). [#223](https://github.com/Leaflet/Leaflet.draw/pull/223)
+ * Combine ie specific style within leaflet.draw.css stylesheet. (by [@frankrowe](https://github.com/frankrowe). [#221](https://github.com/Leaflet/Leaflet.draw/pull/221)
 
 ### Bugfixes
 
