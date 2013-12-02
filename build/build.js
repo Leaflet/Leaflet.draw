@@ -142,22 +142,32 @@ exports.build = function (callback, compsBase32, buildName) {
 	});
 };
 
-exports.test = function() {
-	var karma = require('karma'),
+exports.test = function(callback) {
+		var karma = require('karma'),
 		testConfig = {configFile : __dirname + '/../spec/karma.conf.js'};
 
 	testConfig.browsers = ['PhantomJS'];
 
+	function isArgv(optName) {
+		return process.argv.indexOf(optName) !== -1;
+	}
+
 	if (isArgv('--chrome')) {
 		testConfig.browsers.push('Chrome');
+	}
+	if (isArgv('--safari')) {
+		testConfig.browsers.push('Safari');
 	}
 	if (isArgv('--ff')) {
 		testConfig.browsers.push('Firefox');
 	}
+	if (isArgv('--ie')) {
+		testConfig.browsers.push('IE');
+	}
 
 	if (isArgv('--cov')) {
 		testConfig.preprocessors = {
-			'../src/**/*.js': 'coverage'
+			'src/**/*.js': 'coverage'
 		};
 		testConfig.coverageReporter = {
 			type : 'html',
@@ -166,9 +176,12 @@ exports.test = function() {
 		testConfig.reporters = ['coverage'];
 	}
 
-	karma.server.start(testConfig);
+	console.log('Running tests...');
 
-	function isArgv(optName) {
-		return process.argv.indexOf(optName) !== -1;
-	}
+	karma.server.start(testConfig, function(exitCode) {
+		if (!exitCode) {
+			console.log('\tTests ran successfully.\n');
+		}
+		callback();
+	});
 };
