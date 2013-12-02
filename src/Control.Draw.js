@@ -7,7 +7,7 @@ L.Control.Draw = L.Control.extend({
 	},
 
 	initialize: function (options) {
-		if (L.version < "0.7") {
+		if (L.version < '0.7') {
 			throw new Error('Leaflet.draw 0.2.3+ requires Leaflet 0.7.0+. Download latest from https://github.com/Leaflet/Leaflet/');
 		}
 
