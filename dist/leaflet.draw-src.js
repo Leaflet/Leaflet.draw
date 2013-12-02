@@ -6,8 +6,7 @@
 	http://leafletjs.com
 	https://github.com/jacobtoye
 */
-(function (window, document, undefined) {
-/*
+(function (window, document, undefined) {/*
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
 
@@ -468,7 +467,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_getTooltipText: function () {
 		var showLength = this.options.showLength,
-			labelText, distance, distanceStr;
+			labelText, distanceStr;
 
 		if (this._markers.length === 0) {
 			labelText = {
@@ -837,7 +836,6 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 
 	_onMouseMove: function (e) {
 		var latlng = e.latlng,
-			metric = this.options.metric,
 			showRadius = this.options.showRadius,
 			useMetric = this.options.metric,
 			radius;
@@ -1784,7 +1782,7 @@ L.Control.Draw = L.Control.extend({
 	},
 
 	initialize: function (options) {
-		if (L.version < "0.7") {
+		if (L.version < '0.7') {
 			throw new Error('Leaflet.draw 0.2.3+ requires Leaflet 0.7.0+. Download latest from https://github.com/Leaflet/Leaflet/');
 		}
 
@@ -2781,4 +2779,4 @@ L.EditToolbar.Delete = L.Handler.extend({
 });
 
 
-}(this, document));
+}(window, document));
