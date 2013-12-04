@@ -52,7 +52,7 @@ L.Edit.Poly = L.Handler.extend({
 
 		for (i = 0, len = latlngs.length; i < len; i++) {
 
-			marker = this._createMarker(latlngs[i], i);
+			marker = this._createMarker(latlngs[i], i, 'vertex');
 			marker.on('click', this._onMarkerClick, this);
 			this._markers.push(marker);
 		}
@@ -72,7 +72,7 @@ L.Edit.Poly = L.Handler.extend({
 		}
 	},
 
-	_createMarker: function (latlng, index) {
+	_createMarker: function (latlng, index, type) { // added type :buriwoy
 		var marker = new L.Marker(latlng, {
 			draggable: true,
 			icon: this.options.icon
@@ -83,9 +83,11 @@ L.Edit.Poly = L.Handler.extend({
 
 		marker.on('drag', this._onMarkerDrag, this);
 		marker.on('dragend', this._fireEdit, this);
+		marker.on('dragend', this._onMarkerDragEnd, this); // new event listener :buriwoy
 
 		this._markerGroup.addLayer(marker);
 
+		marker._type = type; // assigned type to marker :buriwoy
 		return marker;
 	},
 
@@ -123,9 +125,22 @@ L.Edit.Poly = L.Handler.extend({
 		this._poly.redraw();
 	},
 
+	// added new method :buriwoy
+	_onMarkerDragEnd: function (e) {
+		var marker = e.target, latlng = marker.getLatLng();
+		// existing vertex has been moved
+		if (marker._type === 'vertex') {
+			this._poly.fire('draw:vertex_moved', {index: marker._index, latlng: latlng});
+		// middle marker became a vertex
+		} else if (marker._type === 'middle') {
+			this._poly.fire('draw:vertex_added', {index: marker._index, latlng: latlng});
+			marker._type = 'vertex';
+		}
+	},
+
 	_onMarkerClick: function (e) {
 		var minPoints = L.Polygon && (this._poly instanceof L.Polygon) ? 4 : 3,
-			marker = e.target;
+			marker = e.target, index = marker._index; // added index :buriwoy
 
 		// If removing this point would create an invalid polyline/polygon don't remove
 		if (this._poly._latlngs.length < minPoints) {
@@ -157,6 +172,9 @@ L.Edit.Poly = L.Handler.extend({
 			marker._prev._middleRight = null;
 		}
 
+		// fire vertex_removed :buriwoy
+		this._poly.fire('draw:vertex_removed', {index: index});
+
 		this._fireEdit();
 	},
 
@@ -170,7 +188,7 @@ L.Edit.Poly = L.Handler.extend({
 
 	_createMiddleMarker: function (marker1, marker2) {
 		var latlng = this._getMiddleLatLng(marker1, marker2),
-		    marker = this._createMarker(latlng),
+		    marker = this._createMarker(latlng, undefined, 'middle'),
 		    onClick,
 		    onDragStart,
 		    onDragEnd;
@@ -209,7 +227,12 @@ L.Edit.Poly = L.Handler.extend({
 			this._createMiddleMarker(marker, marker2);
 		};
 
-		onClick = function () {
+		onClick = function (e) {
+			// marker added here, so publish it :buriwoy
+			var marker = e.target, latlng = marker.getLatLng();
+			marker._type = 'vertex';
+			this._poly.fire('draw:vertex_added', {index: marker._index, latlng: latlng});
+
 			onDragStart.call(this);
 			onDragEnd.call(this);
 			this._fireEdit();
