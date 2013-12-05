@@ -69,6 +69,22 @@ L.Control.Draw = L.Control.extend({
 			}
 		}
 	},
+	
+	showButton: function (type, toggleClass) {
+		this._toggleButton({
+			showing: true,
+			type: type,
+			toggleClass: toggleClass // class to remove to show the element
+		});
+	},
+
+	hideButton: function (type, toggleClass) {
+		this._toggleButton({
+			showing: false,
+			type: type,
+			toggleClass: toggleClass // class to add to hide the element
+		});
+	},
 
 	setDrawingOptions: function (options) {
 		for (var toolbarId in this._toolbars) {
@@ -84,6 +100,17 @@ L.Control.Draw = L.Control.extend({
 		for (var toolbarId in this._toolbars) {
 			if (this._toolbars.hasOwnProperty(toolbarId) && toolbarId !== id) {
 				this._toolbars[toolbarId].disable();
+			}
+		}
+	},
+
+	_toggleButton: function (options) {
+		// loop over the toolbars to find the right buttons
+		for (var toolbarId in this._toolbars) {
+			if (this._toolbars.hasOwnProperty(toolbarId)) {
+				if(this._toolbars[toolbarId].toggleButton){
+					this._toolbars[toolbarId]._toggleButton(options);
+				}
 			}
 		}
 	}

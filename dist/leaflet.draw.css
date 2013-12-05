@@ -38,6 +38,11 @@
 	text-decoration: none;
 }
 
+.leaflet-container .leaflet-draw-hidden{
+	display: none;
+	visibility: hidden;
+}
+
 /* ================================================================== */
 /* Toolbar actions menu
 /* ================================================================== */

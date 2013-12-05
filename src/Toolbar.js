@@ -172,6 +172,53 @@ L.Toolbar = L.Class.extend({
 		this._actionsContainer.style.display = 'block';
 	},
 
+	_toggleButton: function (options) {
+		var toggleList = [],
+			showing = options.showing,
+			type = options.type,
+			toggleClass = options.toggleClass || 'leaflet-draw-hidden',
+			modes = this._modes,
+			addToToggleList = function (id) {
+				if(modes[id]){
+					toggleList.push(modes[id].button);
+				}
+			};
+
+		if (typeof type === 'undefined'){
+			// all buttons
+			for (var handlerId in this._modes) {
+				if (this._modes.hasOwnProperty(handlerId)) {
+					addToToggleList(handlerId);
+				}
+			}
+
+		} else if (typeof type === 'string'){
+			// one button
+			addToToggleList(type);
+
+		} else if (L.Util.isArray(type)){
+			// array of buttons
+			for (var handlerId in type){
+				if (type.hasOwnProperty(handlerId)) {
+					addToToggleList(type[handlerId]);
+				}
+			}
+		}
+
+		for (var id in toggleList){
+			if (toggleList.hasOwnProperty(id)) {
+				var button = toggleList[id];
+				
+				if(showing){
+					L.DomUtil.removeClass(button, toggleClass);
+
+				} else {
+					L.DomUtil.addClass(button, toggleClass);
+				}
+			}
+		}
+	},
+
 	_hideActionsToolbar: function () {
 		this._actionsContainer.style.display = 'none';
 
