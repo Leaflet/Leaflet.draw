@@ -2,7 +2,7 @@
 Leaflet.draw 0.2.3+ requires [Leaflet 0.7](https://github.com/Leaflet/Leaflet/archive/v0.7.zip) or higher.
 
 #Leaflet.draw
-Adds support for drawing and editing vectors and markers on [Leaflet maps](https://github.com/Leaflet/Leaflet). Check out the [demo](http://leaflet.github.com/Leaflet.draw/)
+Adds support for drawing and editing vectors and markers on [Leaflet maps](https://github.com/Leaflet/Leaflet). Check out the [demo](http://leaflet.github.com/Leaflet.draw/).
 
 #### Upgrading from Leaflet.draw 0.1
 
@@ -19,7 +19,7 @@ Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGE
 
 The default state for the control is the draw toolbar just below the zoom control. This will allow map users to draw vectors and markers. **Please note the edit toolbar is not enabled by default.**
 
-Too add the draw toolbar set the option `drawControl: true` in the map options.
+To add the draw toolbar set the option `drawControl: true` in the map options.
 
 ````js
 // create a map in the "map" div, set the view to a given place and zoom
@@ -44,11 +44,11 @@ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Initialize the FeatureGroup to store editable layers
+// Initialise the FeatureGroup to store editable layers
 var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 
-// Initialize the draw control and pass it the FeatureGroup of editable layers
+// Initialise the draw control and pass it the FeatureGroup of editable layers
 var drawControl = new L.Control.Draw({
 	edit: {
 		featureGroup: drawnItems
@@ -57,11 +57,11 @@ var drawControl = new L.Control.Draw({
 map.addControl(drawControl);
 ````
 
-The key here is the `featureGroup` option. This tells the plugin which `FeatureGroup` that contains the layers that should be editable.
+The key here is the `featureGroup` option. This tells the plugin which `FeatureGroup` contains the layers that should be editable.
 
 ### Events
 
-Once you have successfully added the Leaflet.draw plugin your map you will want to respond to the different actions users can do. The following events will be triggered on the map:
+Once you have successfully added the Leaflet.draw plugin to your map you will want to respond to the different actions users can initiate. The following events will be triggered on the map:
 
 #### draw:created
 
@@ -93,7 +93,7 @@ map.on('draw:created', function (e) {
 | --- | --- | ---
 | layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just edited on the map.
 
-Triggered when layers in the FeatureGroup, that the plugin was initialized with, have been edited and saved.
+Triggered when layers in the FeatureGroup, initialised with the plugin, have been edited and saved.
 
 ````js
 map.on('draw:edited', function (e) {
@@ -106,7 +106,7 @@ map.on('draw:edited', function (e) {
 
 #### draw:deleted
 
-Triggered when layers have been layers have been removed (and saved) from the FeatureGroup.
+Triggered when layers have been removed (and saved) from the FeatureGroup.
 
 | Property | Type | Description
 | --- | --- | ---
@@ -122,7 +122,7 @@ Triggered when the user has chosen to draw a particular vector or marker.
 
 #### draw:drawstop
 
-Triggered when the user has finshed a particular vector or marker.
+Triggered when the user has finished a particular vector or marker.
 
 | Property | Type | Description
 | --- | --- | ---
@@ -151,7 +151,7 @@ You can configure the plugin by using the different options listed here.
 
 ### Control.Draw
 
-These options make up the root object that is used when initializing the Leaflet.draw control.
+These options make up the root object that is used when initialising the Leaflet.draw control.
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
@@ -162,7 +162,7 @@ These options make up the root object that is used when initializing the Leaflet
 <a name="drawoptions" />
 ### DrawOptions
 
-These options will allow you to configure the draw toolbar and it's handlers.
+These options will allow you to configure the draw toolbar and its handlers.
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
@@ -232,7 +232,7 @@ These options will allow you to configure the draw toolbar and its handlers.
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| featureGroup | [Leaflet FeatureGroup](http://leafletjs.com/reference.html#featuregroup) | `null` | This is the FeatureGroup that stores all editable shapes. **THIS iS REQUIRED FOR THE EDIT TOOLBAR TO WORK**
+| featureGroup | [Leaflet FeatureGroup](http://leafletjs.com/reference.html#featuregroup) | `null` | This is the FeatureGroup that stores all editable shapes. **THIS IS REQUIRED FOR THE EDIT TOOLBAR TO WORK**
 | edit | [EditHandlerOptions](#edithandleroptions) | `{ }` | Edit handler options. Set to `false` to disable handler.
 | remove | [DeleteHandlerOptions](#deletehandleroptions) | `{ }` | Delete handler options. Set to `false` to disable handler.
 
@@ -241,7 +241,7 @@ These options will allow you to configure the draw toolbar and its handlers.
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| selectedPathOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/edit/handler/EditToolbar.Edit.js#L9) | The path options for how the layers will look like while in edit mode. If this is set to null the editable path options will not be set.
+| selectedPathOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/edit/handler/EditToolbar.Edit.js#L9) | The path options for how the layers will look while in edit mode. If this is set to null the editable path options will not be set.
 
 <a name="deletehandleroptions" />
 #### DeleteHandlerOptions
@@ -379,7 +379,7 @@ var drawControl = new L.Control.Draw({
 
 ### Changing a drawing handlers options
 
-You can change a draw handlers options after initialization by using the `setDrawingOptions` method on the Leaflet.draw control.
+You can change a draw handlers options after initialisation by using the `setDrawingOptions` method on the Leaflet.draw control.
 
 E.g. to change the colour of the rectangle:
 
