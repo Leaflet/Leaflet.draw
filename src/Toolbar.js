@@ -152,9 +152,7 @@ L.Toolbar = L.Class.extend({
 	_showActionsToolbar: function () {
 		var buttonIndex = this._activeMode.buttonIndex,
 			lastButtonIndex = this._lastButtonIndex,
-			buttonHeight = 26, // TODO: this should be calculated
-			borderHeight = 1, // TODO: this should also be calculated
-			toolbarPosition = (buttonIndex * buttonHeight) + (buttonIndex * borderHeight) - 1;
+			toolbarPosition = this._activeMode.button.offsetTop - 1;
 
 		// Correctly position the cancel button
 		this._actionsContainer.style.top = toolbarPosition + 'px';
