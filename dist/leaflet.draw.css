@@ -50,6 +50,7 @@
 	position: absolute;
 	left: 26px; /* leaflet-draw-toolbar.left + leaflet-draw-toolbar.width */
 	top: 0;
+	white-space: nowrap;
 }
 
 .leaflet-right .leaflet-draw-actions {
@@ -94,12 +95,10 @@
 
 .leaflet-draw-actions-bottom {
 	margin-top: 0;
-	white-space: nowrap;
 }
 
 .leaflet-draw-actions-top {
 	margin-top: 1px;
-	white-space: nowrap;
 }
 
 .leaflet-draw-actions-top a,
