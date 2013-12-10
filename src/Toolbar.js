@@ -200,8 +200,7 @@ L.Toolbar = L.Class.extend({
 
 			this._actionButtons.push({
 				button: button,
-				callback: buttons[i].callback,
-				forHandler: buttons[i].forHandler
+				callback: buttons[i].callback
 			});
 		}
 	},
