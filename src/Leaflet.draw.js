@@ -11,6 +11,10 @@ L.drawLocal = {
 				title: 'Cancel drawing',
 				text: 'Cancel'
 			},
+			undo: {
+				title: 'Delete last point drawn',
+				text: 'Delete last point'
+			},
 			buttons: {
 				polyline: 'Draw a polyline',
 				polygon: 'Draw a polygon',

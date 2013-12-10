@@ -56,6 +56,13 @@ L.DrawToolbar = L.Toolbar.extend({
 	getActions: function (handler) {
 		return [
 			{
+				enabled: handler.deleteLastNode,
+				title: L.drawLocal.draw.toolbar.undo.title,
+				text: L.drawLocal.draw.toolbar.undo.text,
+				callback: handler.deleteLastNode,
+				context: handler
+			},
+			{
 				title: L.drawLocal.draw.toolbar.actions.title,
 				text: L.drawLocal.draw.toolbar.actions.text,
 				callback: this.disable,
