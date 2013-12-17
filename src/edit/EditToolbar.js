@@ -47,14 +47,14 @@ L.EditToolbar = L.Toolbar.extend({
 					featureGroup: featureGroup,
 					selectedPathOptions: this.options.edit.selectedPathOptions
 				}),
-				text: L.drawLocal.edit.toolbar.buttons.edit
+				title: L.drawLocal.edit.toolbar.buttons.edit
 			},
 			{
 				enabled: this.options.remove,
 				handler: new L.EditToolbar.Delete(map, {
 					featureGroup: featureGroup
 				}),
-				text: L.drawLocal.edit.toolbar.buttons.remove
+				title: L.drawLocal.edit.toolbar.buttons.remove
 			},
 		];
 	},

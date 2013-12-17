@@ -27,27 +27,27 @@ L.DrawToolbar = L.Toolbar.extend({
 			{
 				enabled: this.options.polyline,
 				handler: new L.Draw.Polyline(map, this.options.polyline),
-				text: L.drawLocal.draw.toolbar.buttons.polyline
+				title: L.drawLocal.draw.toolbar.buttons.polyline
 			},
 			{
 				enabled: this.options.polygon,
 				handler: new L.Draw.Polygon(map, this.options.polygon),
-				text: L.drawLocal.draw.toolbar.buttons.polygon
+				title: L.drawLocal.draw.toolbar.buttons.polygon
 			},
 			{
 				enabled: this.options.rectangle,
 				handler: new L.Draw.Rectangle(map, this.options.rectangle),
-				text: L.drawLocal.draw.toolbar.buttons.rectangle
+				title: L.drawLocal.draw.toolbar.buttons.rectangle
 			},
 			{
 				enabled: this.options.circle,
 				handler: new L.Draw.Circle(map, this.options.cicle),
-				text: L.drawLocal.draw.toolbar.buttons.cicle
+				title: L.drawLocal.draw.toolbar.buttons.circle
 			},
 			{
 				enabled: this.options.marker,
 				handler: new L.Draw.Marker(map, this.options.marker),
-				text: L.drawLocal.draw.toolbar.buttons.marker
+				title: L.drawLocal.draw.toolbar.buttons.marker
 			}
 		];
 	},

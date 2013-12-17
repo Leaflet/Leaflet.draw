@@ -35,7 +35,7 @@ L.Toolbar = L.Class.extend({
 					this._toolbarContainer,
 					buttonIndex++,
 					buttonClassPrefix,
-					modeHandlers[i].text
+					modeHandlers[i].title
 				);
 			}
 		}
