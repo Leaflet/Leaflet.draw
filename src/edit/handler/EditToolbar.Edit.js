@@ -193,7 +193,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			if (isMarker) {
 				this._toggleMarkerHighlight(layer);
 			} else {
-				layer.options.previousOptions = layer.options;
+				layer.options.previousOptions = L.Util.extend({ dashArray: null }, layer.options);
 
 				// Make sure that Polylines are not filled
 				if (!(layer instanceof L.Circle) && !(layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {
