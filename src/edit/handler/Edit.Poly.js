@@ -199,6 +199,8 @@ L.Edit.Poly = L.Handler.extend({
 			marker2._index++;
 			this._updatePrevNext(marker1, marker);
 			this._updatePrevNext(marker, marker2);
+
+			this._poly.fire('editstart');
 		};
 
 		onDragEnd = function () {
