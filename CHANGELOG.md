@@ -11,6 +11,7 @@ An in-progress version being developed on the master branch.
  * Tooltips initially start hidden until the mouse has been moved. (by [@Zverik](https://github.com/Zverik). [#210](https://github.com/Leaflet/Leaflet.draw/pull/210)
  * Fixup spelling errors. (by [@nexushoratio](https://github.com/nexushoratio). [#223](https://github.com/Leaflet/Leaflet.draw/pull/223)
  * Combine ie specific style within leaflet.draw.css stylesheet. (by [@frankrowe](https://github.com/frankrowe). [#221](https://github.com/Leaflet/Leaflet.draw/pull/221)
+ * Improve my terrible engrish. (by [@erictheise](https://github.com/erictheise). [#237](https://github.com/Leaflet/Leaflet.draw/pull/237)
 
 ### Bugfixes
 
