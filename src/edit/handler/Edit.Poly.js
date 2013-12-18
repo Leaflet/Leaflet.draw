@@ -199,6 +199,8 @@ L.Edit.Poly = L.Handler.extend({
 			marker2._index++;
 			this._updatePrevNext(marker1, marker);
 			this._updatePrevNext(marker, marker2);
+
+			this._poly.fire('editstart');
 		};
 
 		onDragEnd = function () {
@@ -234,10 +236,10 @@ L.Edit.Poly = L.Handler.extend({
 
 	_getMiddleLatLng: function (marker1, marker2) {
 		var map = this._poly._map,
-		    p1 = map.latLngToLayerPoint(marker1.getLatLng()),
-		    p2 = map.latLngToLayerPoint(marker2.getLatLng());
+		    p1 = map.project(marker1.getLatLng()),
+		    p2 = map.project(marker2.getLatLng());
 
-		return map.layerPointToLatLng(p1._add(p2)._divideBy(2));
+		return map.unproject(p1._add(p2)._divideBy(2));
 	}
 });
 

@@ -24,7 +24,11 @@ L.Toolbar = L.Class.extend({
 		for (var handlerId in this._modes) {
 			if (this._modes.hasOwnProperty(handlerId)) {
 				// Unbind handler button
-				this._disposeButton(this._modes[handlerId].button, this._modes[handlerId].handler.enable);
+				this._disposeButton(
+					this._modes[handlerId].button,
+					this._modes[handlerId].handler.enable,
+					this._modes[handlerId].handler
+				);
 
 				// Make sure is disabled
 				this._modes[handlerId].handler.disable();
@@ -39,7 +43,11 @@ L.Toolbar = L.Class.extend({
 
 		// Dispose the actions toolbar
 		for (var i = 0, l = this._actionButtons.length; i < l; i++) {
-			this._disposeButton(this._actionButtons[i].button, this._actionButtons[i].callback);
+			this._disposeButton(
+				this._actionButtons[i].button,
+				this._actionButtons[i].callback,
+				this
+			);
 		}
 		this._actionButtons = [];
 		this._actionsContainer = null;

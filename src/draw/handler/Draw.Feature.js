@@ -13,7 +13,7 @@ L.Draw.Feature = L.Handler.extend({
 		if (options && options.shapeOptions) {
 			options.shapeOptions = L.Util.extend({}, this.options.shapeOptions, options.shapeOptions);
 		}
-		L.Util.extend(this.options, options);
+		L.setOptions(this, options);
 	},
 
 	enable: function () {
@@ -37,12 +37,16 @@ L.Draw.Feature = L.Handler.extend({
 	},
 
 	addHooks: function () {
-		if (this._map) {
+		var map = this._map;
+
+		if (map) {
 			L.DomUtil.disableTextSelection();
+
+			map.getContainer().focus();
 
 			this._tooltip = new L.Tooltip(this._map);
 
-			L.DomEvent.addListener(this._container, 'keyup', this._cancelDrawing, this);
+			L.DomEvent.on(this._container, 'keyup', this._cancelDrawing, this);
 		}
 	},
 
@@ -53,7 +57,7 @@ L.Draw.Feature = L.Handler.extend({
 			this._tooltip.dispose();
 			this._tooltip = null;
 
-			L.DomEvent.removeListener(this._container, 'keyup', this._cancelDrawing);
+			L.DomEvent.off(this._container, 'keyup', this._cancelDrawing, this);
 		}
 	},
 

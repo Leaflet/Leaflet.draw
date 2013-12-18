@@ -41,7 +41,7 @@ L.Polyline.include({
 		var points = this._originalPoints,
 			len = points ? points.length : 0,
 			lastPoint = points ? points[len - 1] : null,
-			// The previous previous line segment. Previous line segement doesn't need testing.
+			// The previous previous line segment. Previous line segment doesn't need testing.
 			maxIndex = len - 2;
 
 		if (this._tooFewPointsForIntersection(1)) {
@@ -62,7 +62,7 @@ L.Polyline.include({
 		return !this._originalPoints || len <= 3;
 	},
 
-	// Checks a line segment intersections with any line segements before its predecessor.
+	// Checks a line segment intersections with any line segments before its predecessor.
 	// Don't need to check the predecessor as will never intersect.
 	_lineSegmentsIntersectsRange: function (p, p1, maxIndex, minIndex) {
 		var points = this._originalPoints,

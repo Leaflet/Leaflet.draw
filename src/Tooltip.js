@@ -38,10 +38,12 @@ L.Tooltip = L.Class.extend({
 	},
 
 	updatePosition: function (latlng) {
-		var pos = this._map.latLngToLayerPoint(latlng);
+		var pos = this._map.latLngToLayerPoint(latlng),
+			tooltipContainer = this._container;
 
 		if (this._container) {
-			L.DomUtil.setPosition(this._container, pos);
+			tooltipContainer.style.visibility = 'inherit';
+			L.DomUtil.setPosition(tooltipContainer, pos);
 		}
 
 		return this;

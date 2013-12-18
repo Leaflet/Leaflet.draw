@@ -7,6 +7,24 @@ An in-progress version being developed on the master branch.
 
 ### Improvements
 
+ * Restrict editing polygons so that at least 3 points are present. (by [@Zverik](https://github.com/Zverik). [#200](https://github.com/Leaflet/Leaflet.draw/pull/200)
+ * Tooltips initially start hidden until the mouse has been moved. (by [@Zverik](https://github.com/Zverik). [#210](https://github.com/Leaflet/Leaflet.draw/pull/210)
+ * Fixup spelling errors. (by [@nexushoratio](https://github.com/nexushoratio). [#223](https://github.com/Leaflet/Leaflet.draw/pull/223)
+ * Combine ie specific style within leaflet.draw.css stylesheet. (by [@frankrowe](https://github.com/frankrowe). [#221](https://github.com/Leaflet/Leaflet.draw/pull/221)
+ * Improve my terrible engrish. (by [@erictheise](https://github.com/erictheise). [#237](https://github.com/Leaflet/Leaflet.draw/pull/237)
+
+### Bugfixes
+
+ * Fix edit toolbar so diabled state is represented correctly. (by [@joeybaker](https://github.com/joeybaker)). [#203](https://github.com/Leaflet/Leaflet.draw/pull/203)
+ * Fixed path middle marker positions. (by [@Zverik](https://github.com/Zverik)). [#208](https://github.com/Leaflet/Leaflet.draw/pull/208)
+ * Fix issue where toolbar buttons would have focus after clicked so couldn't use escape to cancel until clicked map at least once.
+ * Fix toolbar icons for retina displays. (by [@dwnoble](https://github.com/dwnoble)). [#217](https://github.com/Leaflet/Leaflet.draw/pull/217)
+ * Ensure that options are not shared between draw handler classes. (by [@yohanboniface](https://github.com/yohanboniface). [#219](https://github.com/Leaflet/Leaflet.draw/pull/219)
+
+## 0.2.2 (October 4, 2013)
+
+### Improvements
+
  * Refactored the `L.drawLocal' object to be better structured and use this object whereever text is used. *NOTE: THIS IS A NEW FORMAT, SO WILL BRESK ANY EXISTING CUSTOM `L.drawLocal` SETTINGS*.
  * Added Imperial measurements to compliment the existing Metric measurements when drawing a polyline or polygon.
  * Added `draw:editstart` and `draw:editstop` events. (by [@bhell](https://github.com/bhell)). [#175](https://github.com/Leaflet/Leaflet.draw/pull/175)

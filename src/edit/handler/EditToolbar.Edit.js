@@ -51,7 +51,11 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	addHooks: function () {
-		if (this._map) {
+		var map = this._map;
+
+		if (map) {
+			map.getContainer().focus();
+
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
 
 			this._tooltip = new L.Tooltip(this._map);
@@ -187,7 +191,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			if (isMarker) {
 				this._toggleMarkerHighlight(layer);
 			} else {
-				layer.options.previousOptions = layer.options;
+				layer.options.previousOptions = L.Util.extend({ dashArray: null }, layer.options);
 
 				// Make sure that Polylines are not filled
 				if (!(layer instanceof L.Circle) && !(layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {

@@ -286,7 +286,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_getTooltipText: function () {
 		var showLength = this.options.showLength,
-			labelText, distance, distanceStr;
+			labelText, distanceStr;
 
 		if (this._markers.length === 0) {
 			labelText = {

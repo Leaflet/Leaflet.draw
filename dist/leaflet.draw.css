@@ -29,7 +29,7 @@
 
 .leaflet-retina .leaflet-draw-toolbar a {
 	background-image: url('images/spritesheet-2x.png');
-	background-size: 210px 30px;
+	background-size: 270px 30px;
 }
 
 .leaflet-draw a {
@@ -182,6 +182,7 @@
 	margin-top: -21px;
 	padding: 4px 8px;
 	position: absolute;
+	visibility: hidden;
 	white-space: nowrap;
 	z-index: 6;
 }
@@ -240,4 +241,56 @@
 
 .leaflet-edit-resize {
 	cursor: pointer;
+}
+
+/* ================================================================== */
+/* Old IE styles
+/* ================================================================== */
+
+.leaflet-oldie .leaflet-draw-toolbar {
+	border: 3px solid #999;
+}
+
+.leaflet-oldie .leaflet-draw-toolbar a {
+	background-color: #eee;
+}
+
+.leaflet-oldie .leaflet-draw-toolbar a:hover {
+	background-color: #fff;
+}
+
+.leaflet-oldie .leaflet-draw-actions {
+	left: 32px;
+	margin-top: 3px;
+}
+
+.leaflet-oldie .leaflet-draw-actions li {
+	display: inline;
+	zoom: 1;
+}
+
+.leaflet-oldie .leaflet-edit-marker-selected {
+	border: 4px dashed #fe93c2;
+}
+
+.leaflet-oldie .leaflet-draw-actions a {
+	background-color: #999;
+}
+
+.leaflet-oldie .leaflet-draw-actions a:hover {
+	background-color: #a5a5a5;
+}
+
+.leaflet-oldie .leaflet-draw-actions-top a {
+	margin-top: 1px;
+}
+
+.leaflet-oldie .leaflet-draw-actions-bottom a {
+	height: 28px;
+	line-height: 28px;
+}
+
+.leaflet-oldie .leaflet-draw-actions-top.leaflet-draw-actions-bottom a {
+	height: 27px;
+	line-height: 27px;
 }
