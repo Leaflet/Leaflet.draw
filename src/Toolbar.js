@@ -40,6 +40,11 @@ L.Toolbar = L.Class.extend({
 			}
 		}
 
+		// if no buttons were added, do not add the toolbar
+		if (!buttonIndex) {
+			return;
+		}
+
 		// Save button index of the last button, -1 as we would have ++ after the last button
 		this._lastButtonIndex = --buttonIndex;
 
