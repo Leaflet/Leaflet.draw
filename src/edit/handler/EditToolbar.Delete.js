@@ -25,28 +25,26 @@ L.EditToolbar.Delete = L.Handler.extend({
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
 		}
+		this.fire('enabled', { handler: this.type});
+			//this disable other handlers
+
+		this._map.fire('draw:deletestart', { handler: this.type });
+			//allow drawLayer to be updated before beginning deletion.
 
 		L.Handler.prototype.enable.call(this);
-
 		this._deletableLayers
 			.on('layeradd', this._enableLayerDelete, this)
 			.on('layerremove', this._disableLayerDelete, this);
-
-		this.fire('enabled', { handler: this.type});
-		this._map.fire('draw:editstart', { handler: this.type });
 	},
 
 	disable: function () {
 		if (!this._enabled) { return; }
-
-		L.Handler.prototype.disable.call(this);
-
 		this._deletableLayers
 			.off('layeradd', this._enableLayerDelete, this)
 			.off('layerremove', this._disableLayerDelete, this);
-
+		L.Handler.prototype.disable.call(this);
+		this._map.fire('draw:deletestop', { handler: this.type });
 		this.fire('disabled', { handler: this.type});
-		this._map.fire('draw:editstop', { handler: this.type });
 	},
 
 	addHooks: function () {
