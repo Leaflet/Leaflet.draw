@@ -55,7 +55,7 @@ L.EditToolbar = L.Toolbar.extend({
 					featureGroup: featureGroup
 				}),
 				title: L.drawLocal.edit.toolbar.buttons.remove
-			},
+			}
 		];
 	},
 
