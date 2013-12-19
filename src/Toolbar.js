@@ -22,12 +22,13 @@ L.Toolbar = L.Class.extend({
 	addToolbar: function (map) {
 		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
 			buttonIndex = 0,
-			buttonClassPrefix = this._toolbarClass || '';
+			buttonClassPrefix = this._toolbarClass || '',
+			modeHandlers = this.getModeHandlers(map),
+			i;
 
 		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
 		this._map = map;
 
-		var modeHandlers = this.getModeHandlers(map), i;
 		for (i = 0; i < modeHandlers.length; i++) {
 			if (modeHandlers[i].enabled) {
 				this._initModeHandler(
