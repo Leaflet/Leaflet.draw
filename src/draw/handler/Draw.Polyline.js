@@ -111,6 +111,29 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			.off('zoomend', this._onZoomEnd, this);
 	},
 
+	deleteLastNode: function () {
+		if (this._markers.length <= 1) {
+			return;
+		}
+
+		var lastMarker = this._markers.pop();
+		this._markerGroup.removeLayer(lastMarker);
+
+		var lastLatLon = this._poly.spliceLatLngs(this._poly.getLatLngs().length - 1, 1);
+
+		if (this._poly.getLatLngs().length < 2) {
+			this._map.removeLayer(this._poly);
+		}
+
+		this._updateFinishHandler();
+
+		this._vertexRemoved(lastLatLon[0]);
+
+		this._clearGuides();
+
+		this._updateTooltip();
+	},
+
 	_finishShape: function () {
 		var intersects = this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true);
 
@@ -367,6 +390,16 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		else {
 			this._measurementRunningTotal +=
 				latlng.distanceTo(this._markers[this._markers.length - 2].getLatLng());
+		}
+	},
+
+	_vertexRemoved: function (latlng) {
+		if (this._markers.length === 1) {
+			this._measurementRunningTotal = 0;
+		}
+		else {
+			this._measurementRunningTotal -=
+				latlng.distanceTo(this._markers[this._markers.length - 1].getLatLng());
 		}
 	},
 

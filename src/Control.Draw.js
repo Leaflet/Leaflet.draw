@@ -47,15 +47,17 @@ L.Control.Draw = L.Control.extend({
 			if (this._toolbars.hasOwnProperty(toolbarId)) {
 				toolbarContainer = this._toolbars[toolbarId].addToolbar(map);
 
-				// Add class to the first toolbar to remove the margin
-				if (!addedTopClass) {
-					if (!L.DomUtil.hasClass(toolbarContainer, topClassName)) {
-						L.DomUtil.addClass(toolbarContainer.childNodes[0], topClassName);
+				if (toolbarContainer) {
+					// Add class to the first toolbar to remove the margin
+					if (!addedTopClass) {
+						if (!L.DomUtil.hasClass(toolbarContainer, topClassName)) {
+							L.DomUtil.addClass(toolbarContainer.childNodes[0], topClassName);
+						}
+						addedTopClass = true;
 					}
-					addedTopClass = true;
-				}
 
-				container.appendChild(toolbarContainer);
+					container.appendChild(toolbarContainer);
+				}
 			}
 		}
 

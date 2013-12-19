@@ -18,85 +18,57 @@ L.DrawToolbar = L.Toolbar.extend({
 			}
 		}
 
+		this._toolbarClass = 'leaflet-draw-draw';
 		L.Toolbar.prototype.initialize.call(this, options);
 	},
 
-	addToolbar: function (map) {
-		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
-			buttonIndex = 0,
-			buttonClassPrefix = 'leaflet-draw-draw';
+	getModeHandlers: function (map) {
+		return [
+			{
+				enabled: this.options.polyline,
+				handler: new L.Draw.Polyline(map, this.options.polyline),
+				title: L.drawLocal.draw.toolbar.buttons.polyline
+			},
+			{
+				enabled: this.options.polygon,
+				handler: new L.Draw.Polygon(map, this.options.polygon),
+				title: L.drawLocal.draw.toolbar.buttons.polygon
+			},
+			{
+				enabled: this.options.rectangle,
+				handler: new L.Draw.Rectangle(map, this.options.rectangle),
+				title: L.drawLocal.draw.toolbar.buttons.rectangle
+			},
+			{
+				enabled: this.options.circle,
+				handler: new L.Draw.Circle(map, this.options.cicle),
+				title: L.drawLocal.draw.toolbar.buttons.circle
+			},
+			{
+				enabled: this.options.marker,
+				handler: new L.Draw.Marker(map, this.options.marker),
+				title: L.drawLocal.draw.toolbar.buttons.marker
+			}
+		];
+	},
 
-		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
-
-
-		if (this.options.polyline) {
-			this._initModeHandler(
-				new L.Draw.Polyline(map, this.options.polyline),
-				this._toolbarContainer,
-				buttonIndex++,
-				buttonClassPrefix,
-				L.drawLocal.draw.toolbar.buttons.polyline
-			);
-		}
-
-		if (this.options.polygon) {
-			this._initModeHandler(
-				new L.Draw.Polygon(map, this.options.polygon),
-				this._toolbarContainer,
-				buttonIndex++,
-				buttonClassPrefix,
-				L.drawLocal.draw.toolbar.buttons.polygon
-			);
-		}
-
-		if (this.options.rectangle) {
-			this._initModeHandler(
-				new L.Draw.Rectangle(map, this.options.rectangle),
-				this._toolbarContainer,
-				buttonIndex++,
-				buttonClassPrefix,
-				L.drawLocal.draw.toolbar.buttons.rectangle
-			);
-		}
-
-		if (this.options.circle) {
-			this._initModeHandler(
-				new L.Draw.Circle(map, this.options.circle),
-				this._toolbarContainer,
-				buttonIndex++,
-				buttonClassPrefix,
-				L.drawLocal.draw.toolbar.buttons.circle
-			);
-		}
-
-		if (this.options.marker) {
-			this._initModeHandler(
-				new L.Draw.Marker(map, this.options.marker),
-				this._toolbarContainer,
-				buttonIndex++,
-				buttonClassPrefix,
-				L.drawLocal.draw.toolbar.buttons.marker
-			);
-		}
-
-		// Save button index of the last button, -1 as we would have ++ after the last button
-		this._lastButtonIndex = --buttonIndex;
-
-		// Create the actions part of the toolbar
-		this._actionsContainer = this._createActions([
+	// Get the actions part of the toolbar
+	getActions: function (handler) {
+		return [
+			{
+				enabled: handler.deleteLastNode,
+				title: L.drawLocal.draw.toolbar.undo.title,
+				text: L.drawLocal.draw.toolbar.undo.text,
+				callback: handler.deleteLastNode,
+				context: handler
+			},
 			{
 				title: L.drawLocal.draw.toolbar.actions.title,
 				text: L.drawLocal.draw.toolbar.actions.text,
 				callback: this.disable,
 				context: this
 			}
-		]);
-
-		// Add draw and cancel containers to the control container
-		container.appendChild(this._toolbarContainer);
-		container.appendChild(this._actionsContainer);
-
-		return container;
+		];
 	},
 
 	setOptions: function (options) {
