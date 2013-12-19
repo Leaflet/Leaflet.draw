@@ -91,6 +91,7 @@ L.EditToolbar = L.Toolbar.extend({
 
 		L.Toolbar.prototype.removeToolbar.call(this);
 	},
+
 	disable: function () {
 		if (!this.enabled()) { return; }
 
