@@ -134,6 +134,34 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._updateTooltip();
 	},
 
+	addVertex: function (latlng) {
+		var markerCount = this._markers.length;
+
+		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
+			this._showErrorTooltip();
+			return;
+		}
+		else if (this._errorShown) {
+			this._hideErrorTooltip();
+		}
+
+		this._markers.push(this._createMarker(latlng));
+
+		this._poly.addLatLng(latlng);
+
+		if (this._poly.getLatLngs().length === 2) {
+			this._map.addLayer(this._poly);
+		}
+
+		this._updateFinishHandler();
+
+		this._vertexAdded(latlng);
+
+		this._clearGuides();
+
+		this._updateTooltip();
+	},
+
 	_finishShape: function () {
 		var intersects = this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true);
 
@@ -179,32 +207,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onClick: function (e) {
-		var latlng = e.target.getLatLng(),
-			markerCount = this._markers.length;
+		var latlng = e.target.getLatLng();
 
-		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
-			this._showErrorTooltip();
-			return;
-		}
-		else if (this._errorShown) {
-			this._hideErrorTooltip();
-		}
-
-		this._markers.push(this._createMarker(latlng));
-
-		this._poly.addLatLng(latlng);
-
-		if (this._poly.getLatLngs().length === 2) {
-			this._map.addLayer(this._poly);
-		}
-
-		this._updateFinishHandler();
-
-		this._vertexAdded(latlng);
-
-		this._clearGuides();
-
-		this._updateTooltip();
+		this.addVertex(latlng);
 	},
 
 	_updateFinishHandler: function () {
