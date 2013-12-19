@@ -148,9 +148,7 @@ L.Toolbar = L.Class.extend({
 
 	_handlerActivated: function (e) {
 		// Disable active mode (if present)
-		if (this._activeMode && this._activeMode.handler.enabled()) {
-			this._activeMode.handler.disable();
-		}
+		this.disable();
 
 		// Cache new active feature
 		this._activeMode = this._modes[e.handler];
