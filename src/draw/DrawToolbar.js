@@ -56,10 +56,10 @@ L.DrawToolbar = L.Toolbar.extend({
 	getActions: function (handler) {
 		return [
 			{
-				enabled: handler.deleteLastNode,
+				enabled: handler.deleteLastVertex,
 				title: L.drawLocal.draw.toolbar.undo.title,
 				text: L.drawLocal.draw.toolbar.undo.text,
-				callback: handler.deleteLastNode,
+				callback: handler.deleteLastVertex,
 				context: handler
 			},
 			{

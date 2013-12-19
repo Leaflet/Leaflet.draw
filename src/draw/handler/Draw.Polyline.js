@@ -111,33 +111,28 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			.off('zoomend', this._onZoomEnd, this);
 	},
 
-	deleteLastNode: function () {
+	deleteLastVertex: function () {
 		if (this._markers.length <= 1) {
 			return;
 		}
 
-		var lastMarker = this._markers.pop();
+		var lastMarker = this._markers.pop(),
+			poly = this._poly,
+			latlng = this._poly.spliceLatLngs(poly.getLatLngs().length - 1, 1)[0];
+
 		this._markerGroup.removeLayer(lastMarker);
 
-		var lastLatLon = this._poly.spliceLatLngs(this._poly.getLatLngs().length - 1, 1);
-
-		if (this._poly.getLatLngs().length < 2) {
-			this._map.removeLayer(this._poly);
+		if (poly.getLatLngs().length < 2) {
+			this._map.removeLayer(poly);
 		}
 
-		this._updateFinishHandler();
-
-		this._vertexRemoved(lastLatLon[0]);
-
-		this._clearGuides();
-
-		this._updateTooltip();
+		this._vertexChanged(latlng, false);
 	},
 
 	addVertex: function (latlng) {
-		var markerCount = this._markers.length;
+		var markersLength = this._markers.length;
 
-		if (markerCount > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
+		if (markersLength > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
 			this._showErrorTooltip();
 			return;
 		}
@@ -153,13 +148,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map.addLayer(this._poly);
 		}
 
-		this._updateFinishHandler();
-
-		this._vertexAdded(latlng);
-
-		this._clearGuides();
-
-		this._updateTooltip();
+		this._vertexChanged(latlng, true);
 	},
 
 	_finishShape: function () {
@@ -210,6 +199,16 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var latlng = e.target.getLatLng();
 
 		this.addVertex(latlng);
+	},
+
+	_vertexChanged: function (latlng, added) {
+		this._updateFinishHandler();
+
+		this._updateRunningMeasure(latlng, added);
+
+		this._clearGuides();
+
+		this._updateTooltip();
 	},
 
 	_updateFinishHandler: function () {
@@ -338,6 +337,20 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		return labelText;
 	},
 
+	_updateRunningMeasure: function (latlng, added) {
+		var markersLength = this._markers.length,
+			previousMarkerIndex, distance;
+
+		if (this._markers.length === 1) {
+			this._measurementRunningTotal = 0;
+		} else {
+			previousMarkerIndex = markersLength - (added ? 2 : 1);
+			distance = latlng.distanceTo(this._markers[previousMarkerIndex].getLatLng());
+
+			this._measurementRunningTotal += distance * (added ? 1 : -1);
+		}
+	},
+
 	_getMeasurementString: function () {
 		var currentLatLng = this._currentLatLng,
 			previousLatLng = this._markers[this._markers.length - 1].getLatLng(),
@@ -385,26 +398,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		if (this._hideErrorTimeout) {
 			clearTimeout(this._hideErrorTimeout);
 			this._hideErrorTimeout = null;
-		}
-	},
-
-	_vertexAdded: function (latlng) {
-		if (this._markers.length === 1) {
-			this._measurementRunningTotal = 0;
-		}
-		else {
-			this._measurementRunningTotal +=
-				latlng.distanceTo(this._markers[this._markers.length - 2].getLatLng());
-		}
-	},
-
-	_vertexRemoved: function (latlng) {
-		if (this._markers.length === 1) {
-			this._measurementRunningTotal = 0;
-		}
-		else {
-			this._measurementRunningTotal -=
-				latlng.distanceTo(this._markers[this._markers.length - 1].getLatLng());
 		}
 	},
 
