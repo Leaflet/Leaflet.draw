@@ -12,6 +12,8 @@ An in-progress version being developed on the master branch.
  * Fixup spelling errors. (by [@nexushoratio](https://github.com/nexushoratio). [#223](https://github.com/Leaflet/Leaflet.draw/pull/223)
  * Combine ie specific style within leaflet.draw.css stylesheet. (by [@frankrowe](https://github.com/frankrowe). [#221](https://github.com/Leaflet/Leaflet.draw/pull/221)
  * Improve my terrible engrish. (by [@erictheise](https://github.com/erictheise). [#237](https://github.com/Leaflet/Leaflet.draw/pull/237)
+  * Fire `editstart` events when a poly or simple shape is initially edited. (by [@atombender](https://github.com/atombender). [#245](https://github.com/Leaflet/Leaflet.draw/pull/245)
+ * Add ability to add a new vertex to a polyline or polygon hander.
 
 ### Bugfixes
 
