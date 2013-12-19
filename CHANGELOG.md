@@ -23,6 +23,7 @@ An in-progress version being developed on the master branch.
  * Fix issue where toolbar buttons would have focus after clicked so couldn't use escape to cancel until clicked map at least once.
  * Fix toolbar icons for retina displays. (by [@dwnoble](https://github.com/dwnoble)). [#217](https://github.com/Leaflet/Leaflet.draw/pull/217)
  * Ensure that options are not shared between draw handler classes. (by [@yohanboniface](https://github.com/yohanboniface). [#219](https://github.com/Leaflet/Leaflet.draw/pull/219)
+ * Fix bug where multiple handlers could be active. (by [@manubb](https://github.com/manubb). [#247](https://github.com/Leaflet/Leaflet.draw/pull/247)
 
 ## 0.2.2 (October 4, 2013)
 

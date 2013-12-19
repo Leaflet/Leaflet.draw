@@ -126,11 +126,11 @@ L.Draw.Feature = L.Handler.extend({
 	enable: function () {
 		if (this._enabled) { return; }
 
-		L.Handler.prototype.enable.call(this);
-
 		this.fire('enabled', { handler: this.type });
 
 		this._map.fire('draw:drawstart', { layerType: this.type });
+
+		L.Handler.prototype.enable.call(this);
 	},
 
 	disable: function () {
@@ -138,9 +138,9 @@ L.Draw.Feature = L.Handler.extend({
 
 		L.Handler.prototype.disable.call(this);
 
-		this.fire('disabled', { handler: this.type });
-
 		this._map.fire('draw:drawstop', { layerType: this.type });
+
+		this.fire('disabled', { handler: this.type });
 	},
 
 	addHooks: function () {
@@ -2412,7 +2412,12 @@ L.EditToolbar = L.Toolbar.extend({
 
 		L.Toolbar.prototype.removeToolbar.call(this);
 	},
-
+	_handlerActivated: function (e) {
+		if (this._activeMode && this._activeMode.handler.enabled()) {
+			this._activeMode.handler.revertLayers();
+		}
+		L.Toolbar.prototype._handlerActivated.call(this, e);
+	},
 	disable: function () {
 		if (!this.enabled()) { return; }
 
@@ -2498,28 +2503,26 @@ L.EditToolbar.Edit = L.Handler.extend({
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
 		}
+		this.fire('enabled', {handler: this.type});
+			//this disable other handlers
+
+		this._map.fire('draw:editstart', { handler: this.type });
+			//allow drawLayer to be updated before beginning edition.
 
 		L.Handler.prototype.enable.call(this);
-
 		this._featureGroup
 			.on('layeradd', this._enableLayerEdit, this)
 			.on('layerremove', this._disableLayerEdit, this);
-
-		this.fire('enabled', {handler: this.type});
-		this._map.fire('draw:editstart', { handler: this.type });
 	},
 
 	disable: function () {
 		if (!this._enabled) { return; }
-
-		this.fire('disabled', {handler: this.type});
-		this._map.fire('draw:editstop', { handler: this.type });
-
 		this._featureGroup
 			.off('layeradd', this._enableLayerEdit, this)
 			.off('layerremove', this._disableLayerEdit, this);
-
 		L.Handler.prototype.disable.call(this);
+		this._map.fire('draw:editstop', { handler: this.type });
+		this.fire('disabled', {handler: this.type});
 	},
 
 	addHooks: function () {
@@ -2748,28 +2751,26 @@ L.EditToolbar.Delete = L.Handler.extend({
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
 		}
+		this.fire('enabled', { handler: this.type});
+			//this disable other handlers
+
+		this._map.fire('draw:deletestart', { handler: this.type });
+			//allow drawLayer to be updated before beginning deletion.
 
 		L.Handler.prototype.enable.call(this);
-
 		this._deletableLayers
 			.on('layeradd', this._enableLayerDelete, this)
 			.on('layerremove', this._disableLayerDelete, this);
-
-		this.fire('enabled', { handler: this.type});
-		this._map.fire('draw:editstart', { handler: this.type });
 	},
 
 	disable: function () {
 		if (!this._enabled) { return; }
-
-		L.Handler.prototype.disable.call(this);
-
 		this._deletableLayers
 			.off('layeradd', this._enableLayerDelete, this)
 			.off('layerremove', this._disableLayerDelete, this);
-
+		L.Handler.prototype.disable.call(this);
+		this._map.fire('draw:deletestop', { handler: this.type });
 		this.fire('disabled', { handler: this.type});
-		this._map.fire('draw:editstop', { handler: this.type });
 	},
 
 	addHooks: function () {
