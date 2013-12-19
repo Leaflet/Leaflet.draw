@@ -76,13 +76,20 @@ L.EditToolbar = L.Toolbar.extend({
 		];
 	},
 
-	onToolbarAdd: function () {
+	addToolbar: function (map) {
+		var container = L.Toolbar.prototype.addToolbar.call(this, map);
+
 		this._checkDisabled();
+
 		this.options.featureGroup.on('layeradd layerremove', this._checkDisabled, this);
+
+		return container;
 	},
 
-	onToolbarRemove: function () {
+	removeToolbar: function () {
 		this.options.featureGroup.off('layeradd layerremove', this._checkDisabled, this);
+
+		L.Toolbar.prototype.removeToolbar.call(this);
 	},
 
 	disable: function () {

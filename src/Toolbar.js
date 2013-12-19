@@ -55,18 +55,10 @@ L.Toolbar = L.Class.extend({
 		container.appendChild(this._toolbarContainer);
 		container.appendChild(this._actionsContainer);
 
-		if (this.onToolbarAdd) {
-			this.onToolbarAdd(map);
-		}
-
 		return container;
 	},
 
 	removeToolbar: function () {
-		if (this.onToolbarRemove) {
-			this.onToolbarRemove();
-		}
-
 		// Dispose each handler
 		for (var handlerId in this._modes) {
 			if (this._modes.hasOwnProperty(handlerId)) {
