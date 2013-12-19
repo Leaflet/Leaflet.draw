@@ -28,28 +28,26 @@ L.EditToolbar.Edit = L.Handler.extend({
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
 		}
+		this.fire('enabled', {handler: this.type});
+			//this disable other handlers
+
+		this._map.fire('draw:editstart', { handler: this.type });
+			//allow drawLayer to be updated before beginning edition.
 
 		L.Handler.prototype.enable.call(this);
-
 		this._featureGroup
 			.on('layeradd', this._enableLayerEdit, this)
 			.on('layerremove', this._disableLayerEdit, this);
-
-		this.fire('enabled', {handler: this.type});
-		this._map.fire('draw:editstart', { handler: this.type });
 	},
 
 	disable: function () {
 		if (!this._enabled) { return; }
-
-		this.fire('disabled', {handler: this.type});
-		this._map.fire('draw:editstop', { handler: this.type });
-
 		this._featureGroup
 			.off('layeradd', this._enableLayerEdit, this)
 			.off('layerremove', this._disableLayerEdit, this);
-
 		L.Handler.prototype.disable.call(this);
+		this._map.fire('draw:editstop', { handler: this.type });
+		this.fire('disabled', {handler: this.type});
 	},
 
 	addHooks: function () {

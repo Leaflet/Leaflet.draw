@@ -91,7 +91,12 @@ L.EditToolbar = L.Toolbar.extend({
 
 		L.Toolbar.prototype.removeToolbar.call(this);
 	},
-
+	_handlerActivated: function (e) {
+		if (this._activeMode && this._activeMode.handler.enabled()) {
+			this._activeMode.handler.revertLayers();
+		}
+		L.Toolbar.prototype._handlerActivated.call(this, e);
+	},
 	disable: function () {
 		if (!this.enabled()) { return; }
 
