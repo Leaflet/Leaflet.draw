@@ -1943,12 +1943,13 @@ L.Toolbar = L.Class.extend({
 	addToolbar: function (map) {
 		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
 			buttonIndex = 0,
-			buttonClassPrefix = this._toolbarClass || '';
+			buttonClassPrefix = this._toolbarClass || '',
+			modeHandlers = this.getModeHandlers(map),
+			i;
 
 		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
 		this._map = map;
 
-		var modeHandlers = this.getModeHandlers(map), i;
 		for (i = 0; i < modeHandlers.length; i++) {
 			if (modeHandlers[i].enabled) {
 				this._initModeHandler(
@@ -2134,9 +2135,7 @@ L.Toolbar = L.Class.extend({
 	_showActionsToolbar: function () {
 		var buttonIndex = this._activeMode.buttonIndex,
 			lastButtonIndex = this._lastButtonIndex,
-			buttonHeight = 26, // TODO: this should be calculated
-			borderHeight = 1, // TODO: this should also be calculated
-			toolbarPosition = (buttonIndex * buttonHeight) + (buttonIndex * borderHeight) - 1;
+			toolbarPosition = this._activeMode.button.offsetTop - 1;
 
 		// Recreate action buttons on every click
 		this._createActions(this._activeMode.handler);
@@ -2376,7 +2375,7 @@ L.EditToolbar = L.Toolbar.extend({
 					featureGroup: featureGroup
 				}),
 				title: L.drawLocal.edit.toolbar.buttons.remove
-			},
+			}
 		];
 	},
 

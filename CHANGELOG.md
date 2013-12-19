@@ -15,6 +15,7 @@ An in-progress version being developed on the master branch.
   * Fire `editstart` events when a poly or simple shape is initially edited. (by [@atombender](https://github.com/atombender). [#245](https://github.com/Leaflet/Leaflet.draw/pull/245)
  * Add ability to add a new vertex to a polyline or polygon hander.
  * Added ability to remove/undo the last placed point for polyline or polygons. (by [@Zverik](https://github.com/Zverik). [#242](https://github.com/Leaflet/Leaflet.draw/pull/242)
+ * Dynamically position the action toolbars. (by [@DevinClark](https://github.com/DevinClark). [#240](https://github.com/Leaflet/Leaflet.draw/pull/240)
 
 ### Bugfixes
 
