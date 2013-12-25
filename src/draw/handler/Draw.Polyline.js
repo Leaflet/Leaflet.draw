@@ -13,7 +13,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			timeout: 2500
 		},
 		icon: new L.DivIcon({
-			iconSize: new L.Point(8, 8),
+			iconSize: new L.Point(15, 15),
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
 		guidelineDistance: 20,
@@ -78,6 +78,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				.on('click', this._onClick, this)
 				.addTo(this._map);
 
+            L.DomEvent.on(this._container, 'touchstart', this._onTouchStart, this);
+
 			this._map
 				.on('mousemove', this._onMouseMove, this)
 				.on('zoomend', this._onZoomEnd, this);
@@ -98,6 +100,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this._map.removeLayer(this._poly);
 		delete this._poly;
+
+        L.DomEvent.off(this._container, 'touchstart', this._onTouchStart);
 
 		this._mouseMarker.off('click', this._onClick, this);
 		this._map.removeLayer(this._mouseMarker);
@@ -200,6 +204,13 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this.addVertex(latlng);
 	},
+
+    _onTouchStart: function (e) {
+        var touch = e.touches[0];
+        var latlng = this._map.mouseEventToLatLng({pageX: touch.pageX, pageY: touch.pageY});
+        this._mouseMarker.setLatLng(latlng);
+        this.addVertex(latlng);
+    },
 
 	_vertexChanged: function (latlng, added) {
 		this._updateFinishHandler();

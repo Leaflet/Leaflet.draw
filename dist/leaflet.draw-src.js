@@ -44,17 +44,17 @@ L.drawLocal = {
 			},
 			polygon: {
 				tooltip: {
-					start: 'Click to start drawing shape.',
-					cont: 'Click to continue drawing shape.',
-					end: 'Click first point to close this shape.'
+					start: 'Click or tap to start drawing shape.',
+					cont: 'Click or tap to continue drawing shape.',
+					end: 'Click or tap first point to close this shape.'
 				}
 			},
 			polyline: {
 				error: '<strong>Error:</strong> shape edges cannot cross!',
 				tooltip: {
-					start: 'Click to start drawing line.',
-					cont: 'Click to continue drawing line.',
-					end: 'Click last point to finish line.'
+					start: 'Click or tap to start drawing line.',
+					cont: 'Click or tap to continue drawing line.',
+					end: 'Click or tap last point to finish line.'
 				}
 			},
 			rectangle: {
@@ -264,6 +264,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				.on('click', this._onClick, this)
 				.addTo(this._map);
 
+            L.DomEvent.on(this._container, 'touchstart', this._onTouchStart, this);
+
 			this._map
 				.on('mousemove', this._onMouseMove, this)
 				.on('zoomend', this._onZoomEnd, this);
@@ -284,6 +286,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this._map.removeLayer(this._poly);
 		delete this._poly;
+
+        L.DomEvent.off(this._container, 'touchstart', this._onTouchStart);
 
 		this._mouseMarker.off('click', this._onClick, this);
 		this._map.removeLayer(this._mouseMarker);
@@ -386,6 +390,13 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this.addVertex(latlng);
 	},
+
+    _onTouchStart: function (e) {
+        var touch = e.touches[0];
+        var latlng = this._map.mouseEventToLatLng({pageX: touch.pageX, pageY: touch.pageY});
+        this._mouseMarker.setLatLng(latlng);
+        this.addVertex(latlng);
+    },
 
 	_vertexChanged: function (latlng, added) {
 		this._updateFinishHandler();
@@ -634,6 +645,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		// The first marker should have a click handler to close the polygon
 		if (markerCount === 1) {
 			this._markers[0].on('click', this._finishShape, this);
+            this._markers[0].on('touchstart', this._finishShape, this);//TOUCH
 		}
 
 		// Add and update the double click handler
@@ -694,6 +706,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 
 		if (markerCount > 0) {
 			this._markers[0].off('click', this._finishShape, this);
+            this._markers[0].off('touchstart', this._finishShape, this);//TOUCH
 
 			if (markerCount > 2) {
 				this._markers[markerCount - 1].off('dblclick', this._finishShape, this);
@@ -2069,9 +2082,7 @@ L.Toolbar = L.Class.extend({
 
 	_handlerActivated: function (e) {
 		// Disable active mode (if present)
-		if (this._activeMode && this._activeMode.handler.enabled()) {
-			this._activeMode.handler.disable();
-		}
+		this.disable();
 
 		// Cache new active feature
 		this._activeMode = this._modes[e.handler];
@@ -2411,12 +2422,7 @@ L.EditToolbar = L.Toolbar.extend({
 
 		L.Toolbar.prototype.removeToolbar.call(this);
 	},
-	_handlerActivated: function (e) {
-		if (this._activeMode && this._activeMode.handler.enabled()) {
-			this._activeMode.handler.revertLayers();
-		}
-		L.Toolbar.prototype._handlerActivated.call(this, e);
-	},
+
 	disable: function () {
 		if (!this.enabled()) { return; }
 
@@ -2753,13 +2759,13 @@ L.EditToolbar.Delete = L.Handler.extend({
 		this.fire('enabled', { handler: this.type});
 			//this disable other handlers
 
+        L.Handler.prototype.enable.call(this);
+        this._deletableLayers
+            .on('layeradd', this._enableLayerDelete, this)
+            .on('layerremove', this._disableLayerDelete, this);
+
 		this._map.fire('draw:deletestart', { handler: this.type });
 			//allow drawLayer to be updated before beginning deletion.
-
-		L.Handler.prototype.enable.call(this);
-		this._deletableLayers
-			.on('layeradd', this._enableLayerDelete, this)
-			.on('layerremove', this._disableLayerDelete, this);
 	},
 
 	disable: function () {
