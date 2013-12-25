@@ -36,17 +36,17 @@ L.drawLocal = {
 			},
 			polygon: {
 				tooltip: {
-					start: 'Click to start drawing shape.',
-					cont: 'Click to continue drawing shape.',
-					end: 'Click first point to close this shape.'
+					start: 'Click or tap to start drawing shape.',
+					cont: 'Click or tap to continue drawing shape.',
+					end: 'Click or tap first point to close this shape.'
 				}
 			},
 			polyline: {
 				error: '<strong>Error:</strong> shape edges cannot cross!',
 				tooltip: {
-					start: 'Click to start drawing line.',
-					cont: 'Click to continue drawing line.',
-					end: 'Click last point to finish line.'
+					start: 'Click or tap to start drawing line.',
+					cont: 'Click or tap to continue drawing line.',
+					end: 'Click or tap last point to finish line.'
 				}
 			},
 			rectangle: {
