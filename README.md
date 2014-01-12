@@ -130,19 +130,35 @@ Triggered when the user has finished a particular vector or marker.
 
 #### draw:editstart
 
-Triggered when the user starts edit mode by clicking the edit or remove tool button.
+Triggered when the user starts edit mode by clicking the edit tool button.
 
 | Property | Type | Description
 | --- | --- | ---
-| handler | String | The type of edit this is. One of: `edit`, `remove`
+| handler | String | The type of edit this is. One of: `edit`
 
 #### draw:editstop
 
-Triggered when the user has finshed editing (edit or remove mode) and saves edits.
+Triggered when the user has finshed editing (edit mode) and saves edits.
 
 | Property | Type | Description
 | --- | --- | ---
-| handler | String | The type of edit this is. One of: `edit`, `remove`
+| handler | String | The type of edit this is. One of: `edit`
+
+#### draw:deletestart
+
+Triggered when the user starts remove mode by clicking the remove tool button.
+
+| Property | Type | Description
+| --- | --- | ---
+| handler | String | The type of edit this is. One of: `remove`
+
+#### draw:deletestop
+
+Triggered when the user has finished removing shapes (remove mode) and saves.
+
+| Property | Type | Description
+| --- | --- | ---
+| handler | String | The type of edit this is. One of: `remove`
 
 <a name="options" />
 ## Advanced options
