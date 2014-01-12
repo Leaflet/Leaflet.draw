@@ -14,7 +14,12 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
-			this._map.dragging.disable();
+			this._mapDraggable = this._map.dragging.enabled();
+
+			if (this._mapDraggable) {
+				this._map.dragging.disable();
+			}
+
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
 
@@ -29,7 +34,10 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
 		if (this._map) {
-			this._map.dragging.enable();
+			if (this._mapDraggable) {
+				this._map.dragging.enable();
+			}
+
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = '';
 
