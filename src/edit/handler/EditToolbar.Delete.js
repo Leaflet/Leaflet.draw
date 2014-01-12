@@ -28,13 +28,13 @@ L.EditToolbar.Delete = L.Handler.extend({
 		this.fire('enabled', { handler: this.type});
 			//this disable other handlers
 
+        L.Handler.prototype.enable.call(this);
+        this._deletableLayers
+            .on('layeradd', this._enableLayerDelete, this)
+            .on('layerremove', this._disableLayerDelete, this);
+
 		this._map.fire('draw:deletestart', { handler: this.type });
 			//allow drawLayer to be updated before beginning deletion.
-
-		L.Handler.prototype.enable.call(this);
-		this._deletableLayers
-			.on('layeradd', this._enableLayerDelete, this)
-			.on('layerremove', this._disableLayerDelete, this);
 	},
 
 	disable: function () {
