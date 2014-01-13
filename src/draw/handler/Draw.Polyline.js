@@ -17,6 +17,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
 		guidelineDistance: 20,
+		maxGuideLineLength: 4000,
 		shapeOptions: {
 			stroke: true,
 			color: '#f06eaa',
@@ -279,7 +280,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_drawGuide: function (pointA, pointB) {
 		var length = Math.floor(Math.sqrt(Math.pow((pointB.x - pointA.x), 2) + Math.pow((pointB.y - pointA.y), 2))),
-			i,
+			guidelineDistance = this.options.guidelineDistance,
+			maxGuideLineLength = this.options.maxGuideLineLength,
+			// Only draw a guideline with a max length
+			i = length > maxGuideLineLength ? length - maxGuideLineLength : guidelineDistance,
 			fraction,
 			dashPoint,
 			dash;
@@ -290,7 +294,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		}
 
 		//draw a dash every GuildeLineDistance
-		for (i = this.options.guidelineDistance; i < length; i += this.options.guidelineDistance) {
+		for (; i < length; i += this.options.guidelineDistance) {
 			//work out fraction along line we are
 			fraction = i / length;
 
