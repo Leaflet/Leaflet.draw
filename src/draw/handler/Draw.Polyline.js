@@ -75,11 +75,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			}
 
 			this._mouseMarker
-				.on('click', this._onClick, this)
+				.on('mousedown', this._onMouseDown, this)
 				.addTo(this._map);
 
 			this._map
 				.on('mousemove', this._onMouseMove, this)
+				.on('mouseup', this._onMouseUp, this)
 				.on('zoomend', this._onZoomEnd, this);
 		}
 	},
@@ -99,7 +100,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._map.removeLayer(this._poly);
 		delete this._poly;
 
-		this._mouseMarker.off('click', this._onClick, this);
+		this._mouseMarker
+			.off('mousedown', this._onMouseDown, this)
+			.off('mouseup', this._onMouseUp, this);
 		this._map.removeLayer(this._mouseMarker);
 		delete this._mouseMarker;
 
@@ -195,12 +198,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		L.DomEvent.preventDefault(e.originalEvent);
 	},
 
-	_onClick: function (e) {
-		var latlng = e.target.getLatLng();
-
-		this.addVertex(latlng);
-	},
-
 	_vertexChanged: function (latlng, added) {
 		this._updateFinishHandler();
 
@@ -209,6 +206,24 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._clearGuides();
 
 		this._updateTooltip();
+	},
+
+	_onMouseDown: function (e) {
+		var originalEvent = e.originalEvent;
+		this._mouseDownOrigin = L.point(originalEvent.clientX, originalEvent.clientY);
+	},
+
+	_onMouseUp: function (e) {
+		if (this._mouseDownOrigin) {
+			// We detect clicks within a certain tolerance, otherwise let it
+			// be interpreted as a drag by the map
+			var distance = L.point(e.originalEvent.clientX, e.originalEvent.clientY)
+				.distanceTo(this._mouseDownOrigin);
+			if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
+				this.addVertex(e.latlng);
+			}
+		}
+		this._mouseDownOrigin = null;
 	},
 
 	_updateFinishHandler: function () {
