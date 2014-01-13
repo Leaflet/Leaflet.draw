@@ -41,7 +41,7 @@ L.DrawToolbar = L.Toolbar.extend({
 			},
 			{
 				enabled: this.options.circle,
-				handler: new L.Draw.Circle(map, this.options.cicle),
+				handler: new L.Draw.Circle(map, this.options.circle),
 				title: L.drawLocal.draw.toolbar.buttons.circle
 			},
 			{
