@@ -719,7 +719,12 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
-			this._map.dragging.disable();
+			this._mapDraggable = this._map.dragging.enabled();
+
+			if (this._mapDraggable) {
+				this._map.dragging.disable();
+			}
+
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
 
@@ -734,7 +739,10 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
 		if (this._map) {
-			this._map.dragging.enable();
+			if (this._mapDraggable) {
+				this._map.dragging.enable();
+			}
+
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = '';
 
@@ -2069,9 +2077,7 @@ L.Toolbar = L.Class.extend({
 
 	_handlerActivated: function (e) {
 		// Disable active mode (if present)
-		if (this._activeMode && this._activeMode.handler.enabled()) {
-			this._activeMode.handler.disable();
-		}
+		this.disable();
 
 		// Cache new active feature
 		this._activeMode = this._modes[e.handler];
@@ -2276,7 +2282,7 @@ L.DrawToolbar = L.Toolbar.extend({
 			},
 			{
 				enabled: this.options.circle,
-				handler: new L.Draw.Circle(map, this.options.cicle),
+				handler: new L.Draw.Circle(map, this.options.circle),
 				title: L.drawLocal.draw.toolbar.buttons.circle
 			},
 			{
@@ -2411,12 +2417,7 @@ L.EditToolbar = L.Toolbar.extend({
 
 		L.Toolbar.prototype.removeToolbar.call(this);
 	},
-	_handlerActivated: function (e) {
-		if (this._activeMode && this._activeMode.handler.enabled()) {
-			this._activeMode.handler.revertLayers();
-		}
-		L.Toolbar.prototype._handlerActivated.call(this, e);
-	},
+
 	disable: function () {
 		if (!this.enabled()) { return; }
 
@@ -2588,7 +2589,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 					latlng: L.LatLngUtil.cloneLatLng(layer.getLatLng()),
 					radius: layer.getRadius()
 				};
-			} else { // Marker
+			} else if (layer instanceof L.Marker) { // Marker
 				this._uneditedLayerProps[id] = {
 					latlng: L.LatLngUtil.cloneLatLng(layer.getLatLng())
 				};
@@ -2606,7 +2607,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			} else if (layer instanceof L.Circle) {
 				layer.setLatLng(this._uneditedLayerProps[id].latlng);
 				layer.setRadius(this._uneditedLayerProps[id].radius);
-			} else { // Marker
+			} else if (layer instanceof L.Marker) { // Marker
 				layer.setLatLng(this._uneditedLayerProps[id].latlng);
 			}
 		}
@@ -2751,12 +2752,11 @@ L.EditToolbar.Delete = L.Handler.extend({
 			return;
 		}
 		this.fire('enabled', { handler: this.type});
-			//this disable other handlers
 
 		this._map.fire('draw:deletestart', { handler: this.type });
-			//allow drawLayer to be updated before beginning deletion.
 
 		L.Handler.prototype.enable.call(this);
+
 		this._deletableLayers
 			.on('layeradd', this._enableLayerDelete, this)
 			.on('layerremove', this._disableLayerDelete, this);
@@ -2764,11 +2764,15 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 	disable: function () {
 		if (!this._enabled) { return; }
+
 		this._deletableLayers
 			.off('layeradd', this._enableLayerDelete, this)
 			.off('layerremove', this._disableLayerDelete, this);
+
 		L.Handler.prototype.disable.call(this);
+
 		this._map.fire('draw:deletestop', { handler: this.type });
+
 		this.fire('disabled', { handler: this.type});
 	},
 
