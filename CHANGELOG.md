@@ -16,6 +16,8 @@ An in-progress version being developed on the master branch.
  * Add ability to add a new vertex to a polyline or polygon hander.
  * Added ability to remove/undo the last placed point for polyline or polygons. (by [@Zverik](https://github.com/Zverik). [#242](https://github.com/Leaflet/Leaflet.draw/pull/242)
  * Dynamically position the action toolbars. (by [@DevinClark](https://github.com/DevinClark). [#240](https://github.com/Leaflet/Leaflet.draw/pull/240)
+ * Improve polyline/polygon drawing by accepting some motion on click. (by [@atombender](https://github.com/atombender). [#249](https://github.com/Leaflet/Leaflet.draw/pull/249)
+ * Only draw a limited number of guide dashes to improve performance in some rare cases.
 
 ### Bugfixes
 
