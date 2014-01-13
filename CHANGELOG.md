@@ -5,6 +5,8 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
+## 0.2.3 (January 14, 2014)
+
 ### Improvements
 
  * Restrict editing polygons so that at least 3 points are present. (by [@Zverik](https://github.com/Zverik). [#200](https://github.com/Leaflet/Leaflet.draw/pull/200)
