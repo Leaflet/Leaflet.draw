@@ -76,15 +76,17 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		return this._markers.length >= 3;
 	},
 
-	_vertexAdded: function () {
+	_vertexChanged: function (latlng, added) {
+		var latLngs;
+
 		// Check to see if we should show the area
-		if (this.options.allowIntersection || !this.options.showArea) {
-			return;
+		if (!this.options.allowIntersection && this.options.showArea) {
+			latLngs = this._poly.getLatLngs();
+
+			this._area = L.GeometryUtil.geodesicArea(latLngs);
 		}
 
-		var latLngs = this._poly.getLatLngs();
-
-		this._area = L.GeometryUtil.geodesicArea(latLngs);
+		L.Draw.Polyline.prototype._vertexChanged.call(this, latlng, added);
 	},
 
 	_cleanUpShape: function () {
