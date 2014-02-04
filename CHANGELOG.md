@@ -5,6 +5,12 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
+## 0.2.4 (February 04, 2014)
+
+### Improvements
+
+ * Add support for toolbar touch styles. (by [@alanshaw](https://github.com/alanshaw)). [#269](https://github.com/Leaflet/Leaflet.draw/pull/269 )
+
 ## 0.2.3 (January 14, 2014)
 
 ### Improvements
