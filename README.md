@@ -409,6 +409,10 @@ drawControl.setDrawingOptions({
 });
 ````
 
+### Edit layers indvidually
+
+You don't have to edit all the layers at once. You can call `layer.editing.enable();` and `layer.editing.disable();` individually. When editing starts it fires an `edit` event.
+
 ### Creating a custom build
 
 If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://github.com/Leaflet/Leaflet.draw/blob/master/build/build.html). 
