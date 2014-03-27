@@ -55,8 +55,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map.addLayer(this._markerGroup);
 
 			this._poly = new L.Polyline([], this.options.shapeOptions);
-
-			this._tooltip.updateContent(this._getTooltipText());
+            
+            if(!L.Browser.touch){
+                this._tooltip.updateContent(this._getTooltipText());
+            }
 
 			// Make a transparent marker that will used to catch click events. These click
 			// events will create the vertices. We need to do this so we can ensure that
@@ -82,6 +84,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map
 				.on('mousemove', this._onMouseMove, this)
 				.on('mouseup', this._onMouseUp, this)
+                .on('click', this._onTouch, this)
 				.on('zoomend', this._onZoomEnd, this);
 		}
 	},
@@ -199,16 +202,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		L.DomEvent.preventDefault(e.originalEvent);
 	},
 
-	_vertexChanged: function (latlng, added) {
-		this._updateFinishHandler();
-
-		this._updateRunningMeasure(latlng, added);
-
-		this._clearGuides();
-
-		this._updateTooltip();
-	},
-
 	_onMouseDown: function (e) {
 		var originalEvent = e.originalEvent;
 		this._mouseDownOrigin = L.point(originalEvent.clientX, originalEvent.clientY);
@@ -226,6 +219,21 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		}
 		this._mouseDownOrigin = null;
 	},
+
+    _onTouch: function (e) {
+        this._onMouseDown(e);
+        this._onMouseUp(e);
+    },
+    
+    _vertexChanged: function (latlng, added) {
+        this._updateFinishHandler();
+
+        this._updateRunningMeasure(latlng, added);
+
+        this._clearGuides();
+
+        this._updateTooltip();
+    },
 
 	_updateFinishHandler: function () {
 		var markerCount = this._markers.length;
