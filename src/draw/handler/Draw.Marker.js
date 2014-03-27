@@ -40,6 +40,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 				.addTo(this._map);
 
 			this._map.on('mousemove', this._onMouseMove, this);
+            this._map.on('click', this._onTouch, this);
 		}
 	},
 
@@ -94,6 +95,12 @@ L.Draw.Marker = L.Draw.Feature.extend({
 			this.enable();
 		}
 	},
+
+    _onTouch: function (e) {
+        // called on click & tap, only really does any thing on tap
+        this._onMouseMove(e); // creates & places marker
+        this._onClick(); // permenantly places marker & ends interaction
+    },
 
 	_fireCreatedEvent: function () {
 		var marker = new L.Marker(this._marker.getLatLng(), { icon: this.options.icon });
