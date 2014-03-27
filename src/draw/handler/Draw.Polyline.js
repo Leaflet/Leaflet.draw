@@ -56,9 +56,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 			this._poly = new L.Polyline([], this.options.shapeOptions);
             
-            if(!L.Browser.touch){
-                this._tooltip.updateContent(this._getTooltipText());
-            }
+            this._tooltip.updateContent(this._getTooltipText());
 
 			// Make a transparent marker that will used to catch click events. These click
 			// events will create the vertices. We need to do this so we can ensure that
