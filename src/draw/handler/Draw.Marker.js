@@ -52,6 +52,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 				this._marker.off('click', this._onClick, this);
 				this._map
 					.off('click', this._onClick, this)
+                    .off('click', this._onTouch, this)
 					.removeLayer(this._marker);
 				delete this._marker;
 			}

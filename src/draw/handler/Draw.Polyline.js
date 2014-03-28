@@ -82,8 +82,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map
 				.on('mousemove', this._onMouseMove, this)
 				.on('mouseup', this._onMouseUp, this)
-                .on('click', this._onTouch, this)
-				.on('zoomend', this._onZoomEnd, this);
+				.on('zoomend', this._onZoomEnd, this)
+                .on('click', this._onTouch, this);
 		}
 	},
 
@@ -113,7 +113,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this._map
 			.off('mousemove', this._onMouseMove, this)
-			.off('zoomend', this._onZoomEnd, this);
+			.off('zoomend', this._onZoomEnd, this)
+            .off('click', this._onTouch, this);
 	},
 
 	deleteLastVertex: function () {
