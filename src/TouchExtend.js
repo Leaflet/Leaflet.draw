@@ -25,16 +25,12 @@ L.Map.TouchExtend = L.Handler.extend({
         L.DomEvent.off(this._container, 'touchleave', this._onTouchLeave);
         L.DomEvent.off(this._container, 'touchmove', this._onTouchMove);
     },
-
-    _onTouchStart: function (e) {
-        if (!this._map._loaded) { return; }
-
-        var type = 'touchstart';
-
-        var containerPoint = this._map.mouseEventToContainerPoint(e),
-            layerPoint = this._map.containerPointToLayerPoint(containerPoint),
+    
+    _touchEvent: function (e, type) {
+        var containerPoint = this._map.mouseEventToContainerPoint(e.touches[0]),
+            layerPoint = this._map.mouseEventToLayerPoint(e.touches[0]),
             latlng = this._map.layerPointToLatLng(layerPoint);
-
+        
         this._map.fire(type, {
             latlng: latlng,
             layerPoint: layerPoint,
@@ -43,44 +39,39 @@ L.Map.TouchExtend = L.Handler.extend({
         });
     },
 
+    _onTouchStart: function (e) {
+        if (!this._map._loaded) { return; }
+
+        var type = 'touchstart';
+        this._touchEvent(e, type);
+    },
+
     _onTouchEnd: function (e) {
         if (!this._map._loaded) { return; }
 
         var type = 'touchend';
-
-        this._map.fire(type, {
-            originalEvent: e
-        });
+        this._touchEvent(e, type);
     },
     
     _onTouchCancel: function (e) {
         if (!this._map._loaded) { return; }
 
         var type = 'touchcancel';
-
-        this._map.fire(type, {
-            originalEvent: e
-        });
+        this._touchEvent(e, type);
     },
 
     _onTouchLeave: function (e) {
         if (!this._map._loaded) { return; }
 
         var type = 'touchleave';
-
-        this._map.fire(type, {
-            originalEvent: e
-        });
+        this._touchEvent(e, type);
     },
 
     _onTouchMove: function (e) {
         if (!this._map._loaded) { return; }
 
         var type = 'touchmove';
-
-        this._map.fire(type, {
-            originalEvent: e
-        });
+        this._touchEvent(e, type);
     }
 });
 
