@@ -33,6 +33,7 @@ var deps = {
 
 	Extensions: {
 		src: [
+            'ext/TouchEvents.js',
 			'ext/LatLngUtil.js',
 			'ext/GeometryUtil.js',
 			'ext/LineUtil.Intersect.js',
