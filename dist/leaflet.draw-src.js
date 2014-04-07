@@ -241,8 +241,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map.addLayer(this._markerGroup);
 
 			this._poly = new L.Polyline([], this.options.shapeOptions);
-
-			this._tooltip.updateContent(this._getTooltipText());
+            
+            this._tooltip.updateContent(this._getTooltipText());
 
 			// Make a transparent marker that will used to catch click events. These click
 			// events will create the vertices. We need to do this so we can ensure that
@@ -268,7 +268,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map
 				.on('mousemove', this._onMouseMove, this)
 				.on('mouseup', this._onMouseUp, this)
-				.on('zoomend', this._onZoomEnd, this);
+				.on('zoomend', this._onZoomEnd, this)
+                .on('click', this._onTouch, this);
 		}
 	},
 
@@ -298,7 +299,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this._map
 			.off('mousemove', this._onMouseMove, this)
-			.off('zoomend', this._onZoomEnd, this);
+			.off('zoomend', this._onZoomEnd, this)
+            .off('click', this._onTouch, this);
 	},
 
 	deleteLastVertex: function () {
@@ -385,16 +387,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		L.DomEvent.preventDefault(e.originalEvent);
 	},
 
-	_vertexChanged: function (latlng, added) {
-		this._updateFinishHandler();
-
-		this._updateRunningMeasure(latlng, added);
-
-		this._clearGuides();
-
-		this._updateTooltip();
-	},
-
 	_onMouseDown: function (e) {
 		var originalEvent = e.originalEvent;
 		this._mouseDownOrigin = L.point(originalEvent.clientX, originalEvent.clientY);
@@ -412,6 +404,21 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		}
 		this._mouseDownOrigin = null;
 	},
+
+    _onTouch: function (e) {
+        this._onMouseDown(e);
+        this._onMouseUp(e);
+    },
+    
+    _vertexChanged: function (latlng, added) {
+        this._updateFinishHandler();
+
+        this._updateRunningMeasure(latlng, added);
+
+        this._clearGuides();
+
+        this._updateTooltip();
+    },
 
 	_updateFinishHandler: function () {
 		var markerCount = this._markers.length;
@@ -753,7 +760,9 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 
 			this._map
 				.on('mousedown', this._onMouseDown, this)
-				.on('mousemove', this._onMouseMove, this);
+				.on('mousemove', this._onMouseMove, this)
+                .on('touchstart', this._onMouseDown, this)
+                .on('touchmove', this._onMouseMove, this);
 		}
 	},
 
@@ -769,9 +778,12 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 
 			this._map
 				.off('mousedown', this._onMouseDown, this)
-				.off('mousemove', this._onMouseMove, this);
+				.off('mousemove', this._onMouseMove, this)
+                .off('touchstart', this._onMouseDown, this)
+                .off('touchmove', this._onMouseMove, this);
 
 			L.DomEvent.off(document, 'mouseup', this._onMouseUp, this);
+            L.DomEvent.off(document, 'touchend', this._onMouseUp, this);
 
 			// If the box element doesn't exist they must not have moved the mouse, so don't need to destroy/return
 			if (this._shape) {
@@ -788,6 +800,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 
 		L.DomEvent
 			.on(document, 'mouseup', this._onMouseUp, this)
+            .on(document, 'touchend', this._onMouseUp, this)
 			.preventDefault(e.originalEvent);
 	},
 
@@ -963,6 +976,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 				.addTo(this._map);
 
 			this._map.on('mousemove', this._onMouseMove, this);
+            this._map.on('click', this._onTouch, this);
 		}
 	},
 
@@ -974,6 +988,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 				this._marker.off('click', this._onClick, this);
 				this._map
 					.off('click', this._onClick, this)
+                    .off('click', this._onTouch, this)
 					.removeLayer(this._marker);
 				delete this._marker;
 			}
@@ -1017,6 +1032,12 @@ L.Draw.Marker = L.Draw.Feature.extend({
 			this.enable();
 		}
 	},
+
+    _onTouch: function (e) {
+        // called on click & tap, only really does any thing on tap
+        this._onMouseMove(e); // creates & places marker
+        this._onClick(); // permenantly places marker & ends interaction
+    },
 
 	_fireCreatedEvent: function () {
 		var marker = new L.Marker(this._marker.getLatLng(), { icon: this.options.icon });
@@ -1622,6 +1643,90 @@ L.Circle.addInitHook(function () {
 		}
 	});
 });
+
+L.Map.mergeOptions({
+  touchExtend: true
+});
+
+L.Map.TouchExtend = L.Handler.extend({
+
+    initialize: function (map) {
+        this._map = map;
+        this._container = map._container;
+        this._pane = map._panes.overlayPane;
+    },
+
+    addHooks: function () {
+        L.DomEvent.on(this._container, 'touchstart', this._onTouchStart, this);
+        L.DomEvent.on(this._container, 'touchend', this._onTouchEnd, this);
+        L.DomEvent.on(this._container, 'touchcancel', this._onTouchCancel, this);
+        L.DomEvent.on(this._container, 'touchleave', this._onTouchLeave, this);
+        L.DomEvent.on(this._container, 'touchmove', this._onTouchMove, this);
+    },
+
+    removeHooks: function () {
+        L.DomEvent.off(this._container, 'touchstart', this._onTouchStart);
+        L.DomEvent.off(this._container, 'touchend', this._onTouchEnd);
+        L.DomEvent.off(this._container, 'touchcancel', this._onTouchCancel);
+        L.DomEvent.off(this._container, 'touchleave', this._onTouchLeave);
+        L.DomEvent.off(this._container, 'touchmove', this._onTouchMove);
+    },
+    
+    _touchEvent: function (e, type) {
+        // #TODO: fix the pageX error that is do a bug in Android where a single touch triggers two click events
+        // _filterClick is what leaflet uses as a workaround.
+        var containerPoint = this._map.mouseEventToContainerPoint(e.touches[0]);
+            layerPoint = this._map.mouseEventToLayerPoint(e.touches[0]),
+            latlng = this._map.layerPointToLatLng(layerPoint);
+
+        this._map.fire(type, {
+            latlng: latlng,
+            layerPoint: layerPoint,
+            containerPoint: containerPoint,
+            pageX: e.touches[0].pageX,
+            pageY: e.touches[0].pageY,
+            originalEvent: e
+        });
+    },
+
+    _onTouchStart: function (e) {
+        if (!this._map._loaded) { return; }
+
+        var type = 'touchstart';
+        this._touchEvent(e, type);
+        
+    },
+
+    _onTouchEnd: function (e) {
+        if (!this._map._loaded) { return; }
+
+        var type = 'touchend';
+        this._touchEvent(e, type);
+    },
+    
+    _onTouchCancel: function (e) {
+        if (!this._map._loaded) { return; }
+
+        var type = 'touchcancel';
+        this._touchEvent(e, type);
+    },
+
+    _onTouchLeave: function (e) {
+        if (!this._map._loaded) { return; }
+
+        var type = 'touchleave';
+        this._touchEvent(e, type);
+    },
+
+    _onTouchMove: function (e) {
+        if (!this._map._loaded) { return; }
+
+        var type = 'touchmove';
+        this._touchEvent(e, type);
+    }
+});
+
+L.Map.addInitHook('addHandler', 'touchExtend', L.Map.TouchExtend);
 
 /*
  * L.LatLngUtil contains different utility functions for LatLngs.
