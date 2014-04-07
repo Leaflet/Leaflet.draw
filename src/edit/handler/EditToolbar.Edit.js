@@ -64,7 +64,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 				subtext: L.drawLocal.edit.handlers.edit.tooltip.subtext
 			});
 
-			this._map.on('mousemove', this._onMouseMove, this);
+			this._map
+                .on('mousemove', this._onMouseMove, this)
+                .on('touchmove', this._onMouseMove, this);
 		}
 	},
 
@@ -79,7 +81,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._tooltip.dispose();
 			this._tooltip = null;
 
-			this._map.off('mousemove', this._onMouseMove, this);
+			this._map
+                .off('mousemove', this._onMouseMove, this)
+                .off('touchmove', this._onMouseMove, this);
 		}
 	},
 
