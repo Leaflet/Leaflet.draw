@@ -19,6 +19,12 @@ L.Edit.Poly = L.Handler.extend({
 
 	addHooks: function () {
 		if (this._poly._map) {
+
+			//Terrible hack to un-nest nested polygons. See https://github.com/Leaflet/Leaflet/issues/2618
+			if (!this._poly._flat(this._poly._latlngs)) {
+				this._poly._latlngs = this._poly._latlngs[0];
+			}
+
 			if (!this._markerGroup) {
 				this._initMarkers();
 			}
