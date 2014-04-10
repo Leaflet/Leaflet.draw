@@ -74,6 +74,7 @@ L.Edit.Poly = L.Handler.extend({
     },
 
     _createMarker: function (latlng, index) {
+        // Extending L.Marker in TouchEvents.js to include touch.
         var marker = new L.Marker.Touch(latlng, {
             draggable: true,
             icon: this.options.icon
@@ -130,6 +131,7 @@ L.Edit.Poly = L.Handler.extend({
     },
 
     _onMarkerClick: function (e) {
+
         var minPoints = L.Polygon && (this._poly instanceof L.Polygon) ? 4 : 3,
             marker = e.target;
 
@@ -169,9 +171,8 @@ L.Edit.Poly = L.Handler.extend({
     _onTouchMove: function (e){
 
         var layerPoint = this._map.mouseEventToLayerPoint(e.originalEvent.touches[0]),
-            latlng = this._map.layerPointToLatLng(layerPoint);
-
-        var marker = e.target;
+            latlng = this._map.layerPointToLatLng(layerPoint),
+            marker = e.target;
                 
         L.extend(marker._origLatLng, latlng);
 
@@ -181,6 +182,7 @@ L.Edit.Poly = L.Handler.extend({
         if (marker._middleRight) {
             marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next));
         }
+
         this._poly.redraw();
         this.updateMarkers();
     },
