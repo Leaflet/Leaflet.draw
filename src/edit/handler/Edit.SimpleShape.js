@@ -13,6 +13,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 	},
 
 	initialize: function (shape, options) {
+        this._map = map;
 		this._shape = shape;
 		L.Util.setOptions(this, options);
 	},
@@ -70,7 +71,8 @@ L.Edit.SimpleShape = L.Handler.extend({
 	},
 
 	_createMarker: function (latlng, icon) {
-		var marker = new L.Marker(latlng, {
+        // Extending L.Marker in TouchEvents.js to include touch.
+		var marker = new L.Marker.Touch(latlng, {
 			draggable: true,
 			icon: icon,
 			zIndexOffset: 10
@@ -87,14 +89,20 @@ L.Edit.SimpleShape = L.Handler.extend({
 		marker
 			.on('dragstart', this._onMarkerDragStart, this)
 			.on('drag', this._onMarkerDrag, this)
-			.on('dragend', this._onMarkerDragEnd, this);
+			.on('dragend', this._onMarkerDragEnd, this)
+            .on('touchstart', this._onTouchStart, this)
+            .on('touchmove', this._onTouchMove, this)
+            .on('touchend', this._onTouchEnd, this);
 	},
 
 	_unbindMarker: function (marker) {
 		marker
 			.off('dragstart', this._onMarkerDragStart, this)
 			.off('drag', this._onMarkerDrag, this)
-			.off('dragend', this._onMarkerDragEnd, this);
+			.off('dragend', this._onMarkerDragEnd, this)
+            .off('touchstart', this._onTouchStart, this)
+            .off('touchmove', this._onTouchMove, this)
+            .off('touchend', this._onTouchEnd, this);
 	},
 
 	_onMarkerDragStart: function (e) {
@@ -128,6 +136,34 @@ L.Edit.SimpleShape = L.Handler.extend({
 
 		this._fireEdit();
 	},
+
+    _onTouchStart: function (e) {
+        var marker = e.target;
+        marker.setOpacity(0);
+
+        this._shape.fire('editstart');
+    },
+
+    _onTouchMove: function (e) {
+        var layerPoint = this._map.mouseEventToLayerPoint(e.originalEvent.touches[0]),
+            latlng = this._map.layerPointToLatLng(layerPoint),
+            marker = e.target;
+
+        if (marker === this._moveMarker) {
+            this._move(latlng);
+        } else {
+            this._resize(latlng);
+        }
+
+        this._shape.redraw();
+    },
+
+    _onTouchEnd: function (e) {
+        var marker = e.target;
+        marker.setOpacity(1);
+        this.updateMarkers();
+        this._fireEdit();
+    },
 
 	_move: function () {
 		// Children override
