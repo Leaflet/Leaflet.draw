@@ -95,7 +95,7 @@ L.Marker.Touch = L.Marker.extend({
         // TODO refactor into something shared with Map/Path/etc. to DRY it up
 
         var icon = this._icon,
-            events = ['dblclick', 'mousedown', 'mouseover', 'mouseout', 'contextmenu', 'touchstart', 'touchend', 'touchmove'];
+            events = ['dblclick', 'mousedown', 'mouseover', 'mouseout', 'contextmenu', 'touchstart', 'touchend', 'touchmove', 'touchcancel'];
 
         L.DomUtil.addClass(icon, 'leaflet-clickable');
         L.DomEvent.on(icon, 'click', this._onMouseClick, this);

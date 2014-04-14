@@ -92,7 +92,8 @@ L.Edit.SimpleShape = L.Handler.extend({
 			.on('dragend', this._onMarkerDragEnd, this)
             .on('touchstart', this._onTouchStart, this)
             .on('touchmove', this._onTouchMove, this)
-            .on('touchend', this._onTouchEnd, this);
+            .on('touchend', this._onTouchEnd, this)
+            .on('touchcancel', this._onTouchEnd, this); // In IOS touchend doesn't fire aftermove which is why we use touchcancel as well
 	},
 
 	_unbindMarker: function (marker) {
@@ -102,7 +103,8 @@ L.Edit.SimpleShape = L.Handler.extend({
 			.off('dragend', this._onMarkerDragEnd, this)
             .off('touchstart', this._onTouchStart, this)
             .off('touchmove', this._onTouchMove, this)
-            .off('touchend', this._onTouchEnd, this);
+            .off('touchend', this._onTouchEnd, this)
+            .off('touchcancel', this._onTouchEnd, this);
 	},
 
 	_onMarkerDragStart: function (e) {
