@@ -157,6 +157,19 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._vertexChanged(latlng, true);
 	},
 
+    completeShape: function(){
+        if (this._markers.length <= 1) {
+            return;
+        }
+
+        this._fireCreatedEvent();
+        this.disable();
+
+        if (this.options.repeatMode) {
+            this.enable();
+        }
+    },
+
 	_finishShape: function () {
 		var intersects = this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true);
 
