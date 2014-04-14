@@ -58,7 +58,7 @@ L.DrawToolbar = L.Toolbar.extend({
             {
                 enabled: handler.completeShape,
                 title: L.drawLocal.draw.toolbar.finish.title,
-                text: L.drawLocal.draw.toolbar.undo.text,
+                text: L.drawLocal.draw.toolbar.finish.text,
                 callback: handler.completeShape,
                 context: handler
             },
