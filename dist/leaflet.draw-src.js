@@ -15,10 +15,16 @@ L.drawVersion = '0.2.4-dev';
 L.drawLocal = {
 	draw: {
 		toolbar: {
+            // #TODO: this should be reorganized where actions are nested in actions
+            // ex: actions.undo  or actions.cancel
 			actions: {
 				title: 'Cancel drawing',
 				text: 'Cancel'
 			},
+            finish: {
+                title: 'Finish drawing',
+                text: 'Finish'
+            },
 			undo: {
 				title: 'Delete last point drawn',
 				text: 'Delete last point'
@@ -342,6 +348,19 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this._vertexChanged(latlng, true);
 	},
+
+    completeShape: function(){
+        if (this._markers.length <= 1) {
+            return;
+        }
+
+        this._fireCreatedEvent();
+        this.disable();
+
+        if (this.options.repeatMode) {
+            this.enable();
+        }
+    },
 
 	_finishShape: function () {
 		var intersects = this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true);
@@ -2532,6 +2551,13 @@ L.DrawToolbar = L.Toolbar.extend({
 	// Get the actions part of the toolbar
 	getActions: function (handler) {
 		return [
+            {
+                enabled: handler.completeShape,
+                title: L.drawLocal.draw.toolbar.finish.title,
+                text: L.drawLocal.draw.toolbar.undo.text,
+                callback: handler.completeShape,
+                context: handler
+            },
 			{
 				enabled: handler.deleteLastVertex,
 				title: L.drawLocal.draw.toolbar.undo.title,
