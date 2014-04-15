@@ -9,10 +9,24 @@ L.Edit.SimpleShape = L.Handler.extend({
 		resizeIcon: new L.DivIcon({
 			iconSize: new L.Point(8, 8),
 			className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-resize'
-		})
+		}),
+        touchMoveIcon: new L.DivIcon({
+            iconSize: new L.Point(20, 20),
+            className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-move leaflet-touch-icon'
+        }),
+        touchResizeIcon: new L.DivIcon({
+            iconSize: new L.Point(20, 20),
+            className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-resize leaflet-touch-icon'
+        }),
 	},
 
 	initialize: function (shape, options) {
+        // if touch, switch to touch icon
+        if (L.Browser.touch){ 
+            this.options.moveIcon = this.options.touchMoveIcon;
+            this.options.resizeIcon = this.options.touchResizeIcon;
+        }
+
         this._map = map;
 		this._shape = shape;
 		L.Util.setOptions(this, options);

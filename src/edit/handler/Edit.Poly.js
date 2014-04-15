@@ -9,13 +9,23 @@ L.Edit.Poly = L.Handler.extend({
         icon: new L.DivIcon({
             iconSize: new L.Point(8, 8),
             className: 'leaflet-div-icon leaflet-editing-icon'
-        })
+        }),
+        touchIcon: new L.DivIcon({
+            iconSize: new L.Point(20, 20),
+            className: 'leaflet-div-icon leaflet-editing-icon leaflet-touch-icon'
+        }),
     },
 
     initialize: function (poly, options) {
+        // if touch, switch to touch icon
+        if (L.Browser.touch){ 
+            this.options.icon = this.options.touchIcon;
+        }
+
         this._map = map;
         this._poly = poly;
         L.setOptions(this, options);
+        console.log(L.Browser.touch)
     },
 
     addHooks: function () {
@@ -77,7 +87,7 @@ L.Edit.Poly = L.Handler.extend({
         // Extending L.Marker in TouchEvents.js to include touch.
         var marker = new L.Marker.Touch(latlng, {
             draggable: true,
-            icon: this.options.icon
+            icon: this.options.icon,
         });
 
         marker._origLatLng = latlng;

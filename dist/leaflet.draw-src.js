@@ -208,6 +208,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			iconSize: new L.Point(8, 8),
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
+        touchIcon: new L.DivIcon({
+            iconSize: new L.Point(20, 20),
+            className: 'leaflet-div-icon leaflet-editing-icon leaflet-touch-icon'
+        }),
 		guidelineDistance: 20,
 		maxGuideLineLength: 4000,
 		shapeOptions: {
@@ -224,6 +228,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	initialize: function (map, options) {
+        // if touch, switch to touch icon
+        if (L.Browser.touch){ 
+            this.options.icon = this.options.touchIcon;
+        }
+
 		// Need to set this here to ensure the correct message is used.
 		this.options.drawError.message = L.drawLocal.draw.handlers.polyline.error;
 
@@ -1078,13 +1087,23 @@ L.Edit.Poly = L.Handler.extend({
         icon: new L.DivIcon({
             iconSize: new L.Point(8, 8),
             className: 'leaflet-div-icon leaflet-editing-icon'
-        })
+        }),
+        touchIcon: new L.DivIcon({
+            iconSize: new L.Point(20, 20),
+            className: 'leaflet-div-icon leaflet-editing-icon leaflet-touch-icon'
+        }),
     },
 
     initialize: function (poly, options) {
+        // if touch, switch to touch icon
+        if (L.Browser.touch){ 
+            this.options.icon = this.options.touchIcon;
+        }
+
         this._map = map;
         this._poly = poly;
         L.setOptions(this, options);
+        console.log(L.Browser.touch)
     },
 
     addHooks: function () {
@@ -1146,7 +1165,7 @@ L.Edit.Poly = L.Handler.extend({
         // Extending L.Marker in TouchEvents.js to include touch.
         var marker = new L.Marker.Touch(latlng, {
             draggable: true,
-            icon: this.options.icon
+            icon: this.options.icon,
         });
 
         marker._origLatLng = latlng;
@@ -1380,10 +1399,24 @@ L.Edit.SimpleShape = L.Handler.extend({
 		resizeIcon: new L.DivIcon({
 			iconSize: new L.Point(8, 8),
 			className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-resize'
-		})
+		}),
+        touchMoveIcon: new L.DivIcon({
+            iconSize: new L.Point(20, 20),
+            className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-move leaflet-touch-icon'
+        }),
+        touchResizeIcon: new L.DivIcon({
+            iconSize: new L.Point(20, 20),
+            className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-resize leaflet-touch-icon'
+        }),
 	},
 
 	initialize: function (shape, options) {
+        // if touch, switch to touch icon
+        if (L.Browser.touch){ 
+            this.options.moveIcon = this.options.touchMoveIcon;
+            this.options.resizeIcon = this.options.touchResizeIcon;
+        }
+
         this._map = map;
 		this._shape = shape;
 		L.Util.setOptions(this, options);
@@ -1538,7 +1571,8 @@ L.Edit.SimpleShape = L.Handler.extend({
         }
 
         this._shape.redraw();
-        // prevent touchcancel
+        
+        // prevent touchcancel in IOS
         e.preventDefault();
     },
 
