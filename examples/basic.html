@@ -3,10 +3,18 @@
 <head>
 	<title>Leaflet.draw drawing and editing tools</title>
 
+    <!-- 
+        Spectrum is a touch friendly multi instance color picker tool
+        This is included for demo only. You should grab the latest version
+        of it here: https://github.com/bgrins/spectrum
+    
+    <link rel="stylesheet" href="libs/spectrum.css" />
+    <script src="libs/spectrum.js"></script>
+    -->
+
 	<link rel="stylesheet" href="libs/leaflet.css" />
 	<link rel="stylesheet" href="../dist/leaflet.draw.css" />
 	
-
 	<script src="libs/leaflet-src.js"></script>
 
 	<script src="../src/Leaflet.draw.js"></script>
@@ -39,9 +47,10 @@
 	<script src="../src/edit/EditToolbar.js"></script>
 	<script src="../src/edit/handler/EditToolbar.Edit.js"></script>
 	<script src="../src/edit/handler/EditToolbar.Delete.js"></script>
+    <script src="../src/edit/handler/EditToolbar.Colorable.js"></script>
 </head>
 <body>
-	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
+	<div id="map" style="width: 100%; height: 600px; border: 1px solid #ccc"></div>
 	<button id="changeColor">Rectangle -> Blue</button>
 	<script>
 		var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
