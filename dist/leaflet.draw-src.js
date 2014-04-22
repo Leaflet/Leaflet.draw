@@ -91,7 +91,9 @@ L.drawLocal = {
 				edit: 'Edit layers.',
 				editDisabled: 'No layers to edit.',
 				remove: 'Delete layers.',
-				removeDisabled: 'No layers to delete.'
+				removeDisabled: 'No layers to delete.',
+                colorable: 'Color layers.',
+                colorableDisabled: 'No layers to change color.'
 			}
 		},
 		handlers: {
@@ -105,7 +107,12 @@ L.drawLocal = {
 				tooltip: {
 					text: 'Click on a feature to remove'
 				}
-			}
+			},
+            colorable: {
+                tooltip: {
+                    text: 'Click on a feature to change the color'
+                }
+            }
 		}
 	}
 };
@@ -1103,7 +1110,6 @@ L.Edit.Poly = L.Handler.extend({
         this._map = map;
         this._poly = poly;
         L.setOptions(this, options);
-        console.log(L.Browser.touch)
     },
 
     addHooks: function () {
@@ -2219,248 +2225,256 @@ L.Map.addInitHook(function () {
 
 
 L.Toolbar = L.Class.extend({
-	includes: [L.Mixin.Events],
+    includes: [L.Mixin.Events],
 
-	initialize: function (options) {
-		L.setOptions(this, options);
+    initialize: function (options) {
+        L.setOptions(this, options);
 
-		this._modes = {};
-		this._actionButtons = [];
-		this._activeMode = null;
-	},
+        this._modes = {};
+        this._actionButtons = [];
+        this._activeMode = null;
+    },
 
-	enabled: function () {
-		return this._activeMode !== null;
-	},
+    enabled: function () {
+        return this._activeMode !== null;
+    },
 
-	disable: function () {
-		if (!this.enabled()) { return; }
+    disable: function () {
+        if (!this.enabled()) { return; }
 
-		this._activeMode.handler.disable();
-	},
+        this._activeMode.handler.disable();
+    },
 
-	addToolbar: function (map) {
-		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
-			buttonIndex = 0,
-			buttonClassPrefix = this._toolbarClass || '',
-			modeHandlers = this.getModeHandlers(map),
-			i;
+    addToolbar: function (map) {
+        var container = L.DomUtil.create('div', 'leaflet-draw-section'),
+            buttonIndex = 0,
+            buttonClassPrefix = this._toolbarClass || '',
+            modeHandlers = this.getModeHandlers(map),
+            i;
 
-		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
-		this._map = map;
+        this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
+        this._map = map;
 
-		for (i = 0; i < modeHandlers.length; i++) {
-			if (modeHandlers[i].enabled) {
-				this._initModeHandler(
-					modeHandlers[i].handler,
-					this._toolbarContainer,
-					buttonIndex++,
-					buttonClassPrefix,
-					modeHandlers[i].title
-				);
-			}
-		}
+        for (i = 0; i < modeHandlers.length; i++) {
+            if (modeHandlers[i].enabled) {
+                this._initModeHandler(
+                    modeHandlers[i].handler,
+                    this._toolbarContainer,
+                    buttonIndex++,
+                    buttonClassPrefix,
+                    modeHandlers[i].title
+                );
+            }
+        }
 
-		// if no buttons were added, do not add the toolbar
-		if (!buttonIndex) {
-			return;
-		}
+        // if no buttons were added, do not add the toolbar
+        if (!buttonIndex) {
+            return;
+        }
 
-		// Save button index of the last button, -1 as we would have ++ after the last button
-		this._lastButtonIndex = --buttonIndex;
+        // Save button index of the last button, -1 as we would have ++ after the last button
+        this._lastButtonIndex = --buttonIndex;
 
-		// Create empty actions part of the toolbar
-		this._actionsContainer = L.DomUtil.create('ul', 'leaflet-draw-actions');
+        // Create empty actions part of the toolbar
+        this._actionsContainer = L.DomUtil.create('ul', 'leaflet-draw-actions');
 
-		// Add draw and cancel containers to the control container
-		container.appendChild(this._toolbarContainer);
-		container.appendChild(this._actionsContainer);
+        // Add draw and cancel containers to the control container
+        container.appendChild(this._toolbarContainer);
+        container.appendChild(this._actionsContainer);
 
-		return container;
-	},
+        return container;
+    },
 
-	removeToolbar: function () {
-		// Dispose each handler
-		for (var handlerId in this._modes) {
-			if (this._modes.hasOwnProperty(handlerId)) {
-				// Unbind handler button
-				this._disposeButton(
-					this._modes[handlerId].button,
-					this._modes[handlerId].handler.enable,
-					this._modes[handlerId].handler
-				);
+    removeToolbar: function () {
+        // Dispose each handler
+        for (var handlerId in this._modes) {
+            if (this._modes.hasOwnProperty(handlerId)) {
+                // Unbind handler button
+                this._disposeButton(
+                    this._modes[handlerId].button,
+                    this._modes[handlerId].handler.enable,
+                    this._modes[handlerId].handler
+                );
 
-				// Make sure is disabled
-				this._modes[handlerId].handler.disable();
+                // Make sure is disabled
+                this._modes[handlerId].handler.disable();
 
-				// Unbind handler
-				this._modes[handlerId].handler
-					.off('enabled', this._handlerActivated, this)
-					.off('disabled', this._handlerDeactivated, this);
-			}
-		}
-		this._modes = {};
+                // Unbind handler
+                this._modes[handlerId].handler
+                    .off('enabled', this._handlerActivated, this)
+                    .off('disabled', this._handlerDeactivated, this);
+            }
+        }
+        this._modes = {};
 
-		// Dispose the actions toolbar
-		for (var i = 0, l = this._actionButtons.length; i < l; i++) {
-			this._disposeButton(
-				this._actionButtons[i].button,
-				this._actionButtons[i].callback,
-				this
-			);
-		}
-		this._actionButtons = [];
-		this._actionsContainer = null;
-	},
+        // Dispose the actions toolbar
+        for (var i = 0, l = this._actionButtons.length; i < l; i++) {
+            this._disposeButton(
+                this._actionButtons[i].button,
+                this._actionButtons[i].callback,
+                this
+            );
+        }
+        this._actionButtons = [];
+        this._actionsContainer = null;
+    },
 
-	_initModeHandler: function (handler, container, buttonIndex, classNamePredix, buttonTitle) {
-		var type = handler.type;
+    _initModeHandler: function (handler, container, buttonIndex, classNamePredix, buttonTitle) {
+        var type = handler.type;
 
-		this._modes[type] = {};
+        this._modes[type] = {};
 
-		this._modes[type].handler = handler;
+        this._modes[type].handler = handler;
 
-		this._modes[type].button = this._createButton({
-			title: buttonTitle,
-			className: classNamePredix + '-' + type,
-			container: container,
-			callback: this._modes[type].handler.enable,
-			context: this._modes[type].handler
-		});
+        this._modes[type].button = this._createButton({
+            type: type,
+            title: buttonTitle,
+            className: classNamePredix + '-' + type,
+            container: container,
+            callback: this._modes[type].handler.enable,
+            context: this._modes[type].handler
+        });
 
-		this._modes[type].buttonIndex = buttonIndex;
+        this._modes[type].buttonIndex = buttonIndex;
 
-		this._modes[type].handler
-			.on('enabled', this._handlerActivated, this)
-			.on('disabled', this._handlerDeactivated, this);
-	},
+        this._modes[type].handler
+            .on('enabled', this._handlerActivated, this)
+            .on('disabled', this._handlerDeactivated, this);
+    },
 
-	_createButton: function (options) {
-		var link = L.DomUtil.create('a', options.className || '', options.container);
-		link.href = '#';
+    _createButton: function (options) {
 
-		if (options.text) {
-			link.innerHTML = options.text;
-		}
+        if ( options.type === 'colorable'){
+            var link = L.DomUtil.create('input', options.className || '', options.container);
+            link.href = '#';
+            link.type = 'color';
+        } else {
+            var link = L.DomUtil.create('a', options.className || '', options.container);
+            link.href = '#';  
+        }
 
-		if (options.title) {
-			link.title = options.title;
-		}
+        if (options.text) {
+            link.innerHTML = options.text;
+        }
 
-		L.DomEvent
-			.on(link, 'click', L.DomEvent.stopPropagation)
-			.on(link, 'mousedown', L.DomEvent.stopPropagation)
-			.on(link, 'dblclick', L.DomEvent.stopPropagation)
-			.on(link, 'click', L.DomEvent.preventDefault)
-			.on(link, 'click', options.callback, options.context);
+        if (options.title) {
+            link.title = options.title;
+        }
 
-		return link;
-	},
+        L.DomEvent
+            .on(link, 'click', L.DomEvent.stopPropagation)
+            .on(link, 'mousedown', L.DomEvent.stopPropagation)
+            .on(link, 'dblclick', L.DomEvent.stopPropagation)
+            .on(link, 'click', L.DomEvent.preventDefault)
+            .on(link, 'click', options.callback, options.context);
 
-	_disposeButton: function (button, callback) {
-		L.DomEvent
-			.off(button, 'click', L.DomEvent.stopPropagation)
-			.off(button, 'mousedown', L.DomEvent.stopPropagation)
-			.off(button, 'dblclick', L.DomEvent.stopPropagation)
-			.off(button, 'click', L.DomEvent.preventDefault)
-			.off(button, 'click', callback);
-	},
+        return link;
+    },
 
-	_handlerActivated: function (e) {
-		// Disable active mode (if present)
-		this.disable();
+    _disposeButton: function (button, callback) {
+        L.DomEvent
+            .off(button, 'click', L.DomEvent.stopPropagation)
+            .off(button, 'mousedown', L.DomEvent.stopPropagation)
+            .off(button, 'dblclick', L.DomEvent.stopPropagation)
+            .off(button, 'click', L.DomEvent.preventDefault)
+            .off(button, 'click', callback);
+    },
 
-		// Cache new active feature
-		this._activeMode = this._modes[e.handler];
+    _handlerActivated: function (e) {
+        // Disable active mode (if present)
+        this.disable();
 
-		L.DomUtil.addClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
+        // Cache new active feature
+        this._activeMode = this._modes[e.handler];
 
-		this._showActionsToolbar();
+        L.DomUtil.addClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
 
-		this.fire('enable');
-	},
+        this._showActionsToolbar();
 
-	_handlerDeactivated: function () {
-		this._hideActionsToolbar();
+        this.fire('enable');
+    },
 
-		L.DomUtil.removeClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
+    _handlerDeactivated: function () {
+        this._hideActionsToolbar();
 
-		this._activeMode = null;
+        L.DomUtil.removeClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
 
-		this.fire('disable');
-	},
+        this._activeMode = null;
 
-	_createActions: function (handler) {
-		var container = this._actionsContainer,
-			buttons = this.getActions(handler),
-			l = buttons.length,
-			li, di, dl, button;
+        this.fire('disable');
+    },
 
-		// Dispose the actions toolbar (todo: dispose only not used buttons)
-		for (di = 0, dl = this._actionButtons.length; di < dl; di++) {
-			this._disposeButton(this._actionButtons[di].button, this._actionButtons[di].callback);
-		}
-		this._actionButtons = [];
+    _createActions: function (handler) {
+        var container = this._actionsContainer,
+            buttons = this.getActions(handler),
+            l = buttons.length,
+            li, di, dl, button;
 
-		// Remove all old buttons
-		while (container.firstChild) {
-			container.removeChild(container.firstChild);
-		}
+        // Dispose the actions toolbar (todo: dispose only not used buttons)
+        for (di = 0, dl = this._actionButtons.length; di < dl; di++) {
+            this._disposeButton(this._actionButtons[di].button, this._actionButtons[di].callback);
+        }
+        this._actionButtons = [];
 
-		for (var i = 0; i < l; i++) {
-			if ('enabled' in buttons[i] && !buttons[i].enabled) {
-				continue;
-			}
+        // Remove all old buttons
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
 
-			li = L.DomUtil.create('li', '', container);
+        for (var i = 0; i < l; i++) {
+            if ('enabled' in buttons[i] && !buttons[i].enabled) {
+                continue;
+            }
 
-			button = this._createButton({
-				title: buttons[i].title,
-				text: buttons[i].text,
-				container: li,
-				callback: buttons[i].callback,
-				context: buttons[i].context
-			});
+            li = L.DomUtil.create('li', '', container);
 
-			this._actionButtons.push({
-				button: button,
-				callback: buttons[i].callback
-			});
-		}
-	},
+            button = this._createButton({
+                title: buttons[i].title,
+                text: buttons[i].text,
+                container: li,
+                callback: buttons[i].callback,
+                context: buttons[i].context
+            });
 
-	_showActionsToolbar: function () {
-		var buttonIndex = this._activeMode.buttonIndex,
-			lastButtonIndex = this._lastButtonIndex,
-			toolbarPosition = this._activeMode.button.offsetTop - 1;
+            this._actionButtons.push({
+                button: button,
+                callback: buttons[i].callback
+            });
+        }
+    },
 
-		// Recreate action buttons on every click
-		this._createActions(this._activeMode.handler);
+    _showActionsToolbar: function () {
+        var buttonIndex = this._activeMode.buttonIndex,
+            lastButtonIndex = this._lastButtonIndex,
+            toolbarPosition = this._activeMode.button.offsetTop - 1;
 
-		// Correctly position the cancel button
-		this._actionsContainer.style.top = toolbarPosition + 'px';
+        // Recreate action buttons on every click
+        this._createActions(this._activeMode.handler);
 
-		if (buttonIndex === 0) {
-			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
-			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
-		}
+        // Correctly position the cancel button
+        this._actionsContainer.style.top = toolbarPosition + 'px';
 
-		if (buttonIndex === lastButtonIndex) {
-			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
-			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
-		}
+        if (buttonIndex === 0) {
+            L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
+            L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
+        }
 
-		this._actionsContainer.style.display = 'block';
-	},
+        if (buttonIndex === lastButtonIndex) {
+            L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
+            L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
+        }
 
-	_hideActionsToolbar: function () {
-		this._actionsContainer.style.display = 'none';
+        this._actionsContainer.style.display = 'block';
+    },
 
-		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
-		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
-		L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-top');
-		L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
-	}
+    _hideActionsToolbar: function () {
+        this._actionsContainer.style.display = 'none';
+
+        L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
+        L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
+        L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-top');
+        L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
+    }
 });
 
 
@@ -2532,61 +2546,61 @@ L.Tooltip = L.Class.extend({
 
 L.DrawToolbar = L.Toolbar.extend({
 
-	options: {
-		polyline: {},
-		polygon: {},
-		rectangle: {},
-		circle: {},
-		marker: {}
-	},
+    options: {
+        polyline: {},
+        polygon: {},
+        rectangle: {},
+        circle: {},
+        marker: {}
+    },
 
-	initialize: function (options) {
-		// Ensure that the options are merged correctly since L.extend is only shallow
-		for (var type in this.options) {
-			if (this.options.hasOwnProperty(type)) {
-				if (options[type]) {
-					options[type] = L.extend({}, this.options[type], options[type]);
-				}
-			}
-		}
+    initialize: function (options) {
+        // Ensure that the options are merged correctly since L.extend is only shallow
+        for (var type in this.options) {
+            if (this.options.hasOwnProperty(type)) {
+                if (options[type]) {
+                    options[type] = L.extend({}, this.options[type], options[type]);
+                }
+            }
+        }
 
-		this._toolbarClass = 'leaflet-draw-draw';
-		L.Toolbar.prototype.initialize.call(this, options);
-	},
+        this._toolbarClass = 'leaflet-draw-draw';
+        L.Toolbar.prototype.initialize.call(this, options);
+    },
 
-	getModeHandlers: function (map) {
-		return [
-			{
-				enabled: this.options.polyline,
-				handler: new L.Draw.Polyline(map, this.options.polyline),
-				title: L.drawLocal.draw.toolbar.buttons.polyline
-			},
-			{
-				enabled: this.options.polygon,
-				handler: new L.Draw.Polygon(map, this.options.polygon),
-				title: L.drawLocal.draw.toolbar.buttons.polygon
-			},
-			{
-				enabled: this.options.rectangle,
-				handler: new L.Draw.Rectangle(map, this.options.rectangle),
-				title: L.drawLocal.draw.toolbar.buttons.rectangle
-			},
-			{
-				enabled: this.options.circle,
-				handler: new L.Draw.Circle(map, this.options.circle),
-				title: L.drawLocal.draw.toolbar.buttons.circle
-			},
-			{
-				enabled: this.options.marker,
-				handler: new L.Draw.Marker(map, this.options.marker),
-				title: L.drawLocal.draw.toolbar.buttons.marker
-			}
-		];
-	},
+    getModeHandlers: function (map) {
+        return [
+            {
+                enabled: this.options.polyline,
+                handler: new L.Draw.Polyline(map, this.options.polyline),
+                title: L.drawLocal.draw.toolbar.buttons.polyline
+            },
+            {
+                enabled: this.options.polygon,
+                handler: new L.Draw.Polygon(map, this.options.polygon),
+                title: L.drawLocal.draw.toolbar.buttons.polygon
+            },
+            {
+                enabled: this.options.rectangle,
+                handler: new L.Draw.Rectangle(map, this.options.rectangle),
+                title: L.drawLocal.draw.toolbar.buttons.rectangle
+            },
+            {
+                enabled: this.options.circle,
+                handler: new L.Draw.Circle(map, this.options.circle),
+                title: L.drawLocal.draw.toolbar.buttons.circle
+            },
+            {
+                enabled: this.options.marker,
+                handler: new L.Draw.Marker(map, this.options.marker),
+                title: L.drawLocal.draw.toolbar.buttons.marker
+            }
+        ];
+    },
 
-	// Get the actions part of the toolbar
-	getActions: function (handler) {
-		return [
+    // Get the actions part of the toolbar
+    getActions: function (handler) {
+        return [
             {
                 enabled: handler.completeShape,
                 title: L.drawLocal.draw.toolbar.finish.title,
@@ -2594,31 +2608,31 @@ L.DrawToolbar = L.Toolbar.extend({
                 callback: handler.completeShape,
                 context: handler
             },
-			{
-				enabled: handler.deleteLastVertex,
-				title: L.drawLocal.draw.toolbar.undo.title,
-				text: L.drawLocal.draw.toolbar.undo.text,
-				callback: handler.deleteLastVertex,
-				context: handler
-			},
-			{
-				title: L.drawLocal.draw.toolbar.actions.title,
-				text: L.drawLocal.draw.toolbar.actions.text,
-				callback: this.disable,
-				context: this
-			}
-		];
-	},
+            {
+                enabled: handler.deleteLastVertex,
+                title: L.drawLocal.draw.toolbar.undo.title,
+                text: L.drawLocal.draw.toolbar.undo.text,
+                callback: handler.deleteLastVertex,
+                context: handler
+            },
+            {
+                title: L.drawLocal.draw.toolbar.actions.title,
+                text: L.drawLocal.draw.toolbar.actions.text,
+                callback: this.disable,
+                context: this
+            }
+        ];
+    },
 
-	setOptions: function (options) {
-		L.setOptions(this, options);
+    setOptions: function (options) {
+        L.setOptions(this, options);
 
-		for (var type in this._modes) {
-			if (this._modes.hasOwnProperty(type) && options.hasOwnProperty(type)) {
-				this._modes[type].handler.setOptions(options[type]);
-			}
-		}
-	}
+        for (var type in this._modes) {
+            if (this._modes.hasOwnProperty(type) && options.hasOwnProperty(type)) {
+                this._modes[type].handler.setOptions(options[type]);
+            }
+        }
+    }
 });
 
 
@@ -2640,6 +2654,7 @@ L.EditToolbar = L.Toolbar.extend({
 			}
 		},
 		remove: {},
+        colorable: {},
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
@@ -2655,6 +2670,10 @@ L.EditToolbar = L.Toolbar.extend({
 		if (options.remove) {
 			options.remove = L.extend({}, this.options.remove, options.remove);
 		}
+
+        if (options.colorable) {
+            options.colorable = L.extend({}, this.options.colorable, options.colorable);
+        }
 
 		this._toolbarClass = 'leaflet-draw-edit';
 		L.Toolbar.prototype.initialize.call(this, options);
@@ -2679,7 +2698,14 @@ L.EditToolbar = L.Toolbar.extend({
 					featureGroup: featureGroup
 				}),
 				title: L.drawLocal.edit.toolbar.buttons.remove
-			}
+			},
+            {
+                enabled: this.options.colorable,
+                handler: new L.EditToolbar.Colorable(map, {
+                    featureGroup: featureGroup
+                }),
+                title: L.drawLocal.edit.toolbar.buttons.remove
+            }
 		];
 	},
 
@@ -2767,6 +2793,24 @@ L.EditToolbar = L.Toolbar.extend({
 				: L.drawLocal.edit.toolbar.buttons.removeDisabled
 			);
 		}
+        
+        if (this.options.colorable) {
+
+            button = this._modes[L.EditToolbar.Colorable.TYPE].button;
+
+            if (hasLayers) {
+                L.DomUtil.removeClass(button, 'leaflet-disabled');
+            } else {
+                L.DomUtil.addClass(button, 'leaflet-disabled');
+            }
+
+            button.setAttribute(
+                'title',
+                hasLayers ?
+                L.drawLocal.edit.toolbar.buttons.colorable
+                : L.drawLocal.edit.toolbar.buttons.colorableDisabled
+            );
+        }
 	}
 });
 
@@ -3147,6 +3191,59 @@ L.EditToolbar.Delete = L.Handler.extend({
 	_hasAvailableLayers: function () {
 		return this._deletableLayers.getLayers().length !== 0;
 	}
+});
+
+
+// Color is depended on Jquery and Spectrum.js
+// Spectrum was picked for the community support and features with pallets, alpha, touch and multi instance
+// This is included for demo only. You should grab the latest version
+// of it here: https://github.com/bgrins/spectrum
+// Specrum is dependent on jquery but that's cool :P
+
+L.EditToolbar.Colorable = L.Handler.extend({
+    statics: {
+        TYPE: 'colorable'
+    },
+
+    includes: L.Mixin.Events,
+
+    initialize: function (map, options) {
+        var colorable = this; // cache this to target in jquery
+
+        L.Handler.prototype.initialize.call(this, map);
+
+        L.Util.setOptions(this, options);
+
+        // Save the type so super can fire, need to do this as cannot do this.TYPE :(
+        this.type = L.EditToolbar.Colorable.TYPE;
+
+        this._setColor('#fe57a1'); // Set color for all tools on load
+
+        $(document).ready(function(){ // initialize after dom creation
+            // Color is depended on Jquery and Spectrum.js
+            $(".leaflet-draw-edit-colorable").spectrum({
+                chooseText: 'Ok',
+                color: '#fe57a1', /* Hot pink all the things! */
+                showAlpha: true,
+                showPalette: true,
+                palette: [ ],
+                change: function(color) {
+                    var hexColor = color.toHexString(); // #ff0000
+                    colorable._setColor(hexColor);
+                }
+            });
+        });        
+    },
+
+    _setColor: function (color) {
+        drawControl.setDrawingOptions({ 
+            polyline: { shapeOptions: { color: color } },
+            polygon: { shapeOptions: { color: color } },
+            rectangle: { shapeOptions: { color: color } },
+            circle: { shapeOptions: { color: color } },
+            marker: { shapeOptions: { color: color } }
+        });
+    },
 });
 
 
