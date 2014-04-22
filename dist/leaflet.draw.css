@@ -296,10 +296,12 @@
 /* ================================================================== */
 /* Colorable styles ( Spectrum.js )
 /* ================================================================== */
+
 .sp-replacer {
     padding: 3px;
     border: none;
     border-bottom: 1px solid #ccc;
+    background-color: #fff;
 }
 .sp-preview {
     width: 10px;
