@@ -2795,21 +2795,7 @@ L.EditToolbar = L.Toolbar.extend({
 		}
         
         if (this.options.colorable) {
-
             button = this._modes[L.EditToolbar.Colorable.TYPE].button;
-
-            if (hasLayers) {
-                L.DomUtil.removeClass(button, 'leaflet-disabled');
-            } else {
-                L.DomUtil.addClass(button, 'leaflet-disabled');
-            }
-
-            button.setAttribute(
-                'title',
-                hasLayers ?
-                L.drawLocal.edit.toolbar.buttons.colorable
-                : L.drawLocal.edit.toolbar.buttons.colorableDisabled
-            );
         }
 	}
 });
