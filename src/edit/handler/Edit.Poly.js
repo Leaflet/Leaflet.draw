@@ -25,7 +25,6 @@ L.Edit.Poly = L.Handler.extend({
         this._map = map;
         this._poly = poly;
         L.setOptions(this, options);
-        console.log(L.Browser.touch)
     },
 
     addHooks: function () {
