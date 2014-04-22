@@ -16,7 +16,7 @@ L.EditToolbar = L.Toolbar.extend({
 			}
 		},
 		remove: {},
-        colorable: {},
+        colorable: false, /* REQUIRES Jquery and Spectrum.js*/
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
