@@ -21,31 +21,31 @@ L.EditToolbar.Colorable = L.Handler.extend({
         // Save the type so super can fire, need to do this as cannot do this.TYPE :(
         this.type = L.EditToolbar.Colorable.TYPE;
 
-        this._setColor('#fe57a1'); // Set color for all tools on load
+        this._setColor('#fe57a1', '0.2'); // Set color for all tools on load
 
         $(document).ready(function(){ // initialize after dom creation
             // Color is depended on Jquery and Spectrum.js
             $(".leaflet-draw-edit-colorable").spectrum({
                 chooseText: 'Ok',
-                color: '#fe57a1', /* Hot pink all the things! */
+                color: 'rgba(254,87,161,0.2)', /* Hot pink all the things! */
                 showAlpha: true,
                 showPalette: true,
                 palette: [ ],
                 change: function(color) {
+                    console.log(color);
                     var hexColor = color.toHexString(); // #ff0000
-                    colorable._setColor(hexColor);
+                    colorable._setColor(hexColor, color.alpha);
                 }
             });
         });        
     },
 
-    _setColor: function (color) {
+    _setColor: function (color, opacity) {
         drawControl.setDrawingOptions({ 
-            polyline: { shapeOptions: { color: color } },
-            polygon: { shapeOptions: { color: color } },
-            rectangle: { shapeOptions: { color: color } },
-            circle: { shapeOptions: { color: color } },
-            marker: { shapeOptions: { color: color } }
+            polyline: { shapeOptions: { color: color, opacity: opacity } },
+            polygon: { shapeOptions: { color: color, fillOpacity: opacity } },
+            rectangle: { shapeOptions: { color: color, fillOpacity: opacity } },
+            circle: { shapeOptions: { color: color, fillOpacity: opacity } }
         });
     },
 });
