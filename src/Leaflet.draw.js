@@ -7,16 +7,16 @@ L.drawVersion = '0.2.4-dev';
 L.drawLocal = {
 	draw: {
 		toolbar: {
-            // #TODO: this should be reorganized where actions are nested in actions
-            // ex: actions.undo  or actions.cancel
+			// #TODO: this should be reorganized where actions are nested in actions
+			// ex: actions.undo  or actions.cancel
 			actions: {
 				title: 'Cancel drawing',
 				text: 'Cancel'
 			},
-            finish: {
-                title: 'Finish drawing',
-                text: 'Finish'
-            },
+			finish: {
+				title: 'Finish drawing',
+				text: 'Finish'
+			},
 			undo: {
 				title: 'Delete last point drawn',
 				text: 'Delete last point'
@@ -84,8 +84,8 @@ L.drawLocal = {
 				editDisabled: 'No layers to edit.',
 				remove: 'Delete layers.',
 				removeDisabled: 'No layers to delete.',
-                colorable: 'Color layers.',
-                colorableDisabled: 'No layers to change color.'
+				colorable: 'Color layers.',
+				colorableDisabled: 'No layers to change color.'
 			}
 		},
 		handlers: {
@@ -100,11 +100,11 @@ L.drawLocal = {
 					text: 'Click on a feature to remove'
 				}
 			},
-            colorable: {
-                tooltip: {
-                    text: 'Click on a feature to change the color'
-                }
-            }
+			colorable: {
+				tooltip: {
+					text: 'Click on a feature to change the color'
+				}
+			}
 		}
 	}
 };
