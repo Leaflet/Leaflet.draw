@@ -32,7 +32,6 @@ L.EditToolbar.Colorable = L.Handler.extend({
 				showPalette: true,
 				palette: [ ],
 				change: function(color) {
-					console.log(color);
 					var hexColor = color.toHexString(); // #ff0000
 					colorable._setColor(hexColor, color.alpha);
 				}
@@ -41,11 +40,12 @@ L.EditToolbar.Colorable = L.Handler.extend({
 	},
 
 	_setColor: function (color, opacity) {
-		drawControl.setDrawingOptions({ 
-			polyline: { shapeOptions: { color: color, opacity: opacity } },
-			polygon: { shapeOptions: { color: color, fillOpacity: opacity } },
-			rectangle: { shapeOptions: { color: color, fillOpacity: opacity } },
-			circle: { shapeOptions: { color: color, fillOpacity: opacity } }
-		});
+        // #TODO: make this work
+		// drawControl.setDrawingOptions({ 
+		// 	polyline: { shapeOptions: { color: color, opacity: opacity } },
+		// 	polygon: { shapeOptions: { color: color, fillOpacity: opacity } },
+		// 	rectangle: { shapeOptions: { color: color, fillOpacity: opacity } },
+		// 	circle: { shapeOptions: { color: color, fillOpacity: opacity } }
+		// });
 	},
 });
