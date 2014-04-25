@@ -15,16 +15,16 @@ L.drawVersion = '0.2.4-dev';
 L.drawLocal = {
 	draw: {
 		toolbar: {
-            // #TODO: this should be reorganized where actions are nested in actions
-            // ex: actions.undo  or actions.cancel
+			// #TODO: this should be reorganized where actions are nested in actions
+			// ex: actions.undo  or actions.cancel
 			actions: {
 				title: 'Cancel drawing',
 				text: 'Cancel'
 			},
-            finish: {
-                title: 'Finish drawing',
-                text: 'Finish'
-            },
+			finish: {
+				title: 'Finish drawing',
+				text: 'Finish'
+			},
 			undo: {
 				title: 'Delete last point drawn',
 				text: 'Delete last point'
@@ -92,8 +92,8 @@ L.drawLocal = {
 				editDisabled: 'No layers to edit.',
 				remove: 'Delete layers.',
 				removeDisabled: 'No layers to delete.',
-                colorable: 'Color layers.',
-                colorableDisabled: 'No layers to change color.'
+				colorable: 'Color layers.',
+				colorableDisabled: 'No layers to change color.'
 			}
 		},
 		handlers: {
@@ -108,11 +108,11 @@ L.drawLocal = {
 					text: 'Click on a feature to remove'
 				}
 			},
-            colorable: {
-                tooltip: {
-                    text: 'Click on a feature to change the color'
-                }
-            }
+			colorable: {
+				tooltip: {
+					text: 'Click on a feature to change the color'
+				}
+			}
 		}
 	}
 };
@@ -215,10 +215,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			iconSize: new L.Point(8, 8),
 			className: 'leaflet-div-icon leaflet-editing-icon'
 		}),
-        touchIcon: new L.DivIcon({
-            iconSize: new L.Point(20, 20),
-            className: 'leaflet-div-icon leaflet-editing-icon leaflet-touch-icon'
-        }),
+		touchIcon: new L.DivIcon({
+			iconSize: new L.Point(20, 20),
+			className: 'leaflet-div-icon leaflet-editing-icon leaflet-touch-icon'
+		}),
 		guidelineDistance: 20,
 		maxGuideLineLength: 4000,
 		shapeOptions: {
@@ -235,10 +235,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	initialize: function (map, options) {
-        // if touch, switch to touch icon
-        if (L.Browser.touch){ 
-            this.options.icon = this.options.touchIcon;
-        }
+		// if touch, switch to touch icon
+		if (L.Browser.touch){ 
+			this.options.icon = this.options.touchIcon;
+		}
 
 		// Need to set this here to ensure the correct message is used.
 		this.options.drawError.message = L.drawLocal.draw.handlers.polyline.error;
@@ -263,8 +263,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map.addLayer(this._markerGroup);
 
 			this._poly = new L.Polyline([], this.options.shapeOptions);
-            
-            this._tooltip.updateContent(this._getTooltipText());
+			
+			this._tooltip.updateContent(this._getTooltipText());
 
 			// Make a transparent marker that will used to catch click events. These click
 			// events will create the vertices. We need to do this so we can ensure that
@@ -291,7 +291,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				.on('mousemove', this._onMouseMove, this)
 				.on('mouseup', this._onMouseUp, this)
 				.on('zoomend', this._onZoomEnd, this)
-                .on('click', this._onTouch, this);
+				.on('click', this._onTouch, this);
 		}
 	},
 
@@ -322,7 +322,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._map
 			.off('mousemove', this._onMouseMove, this)
 			.off('zoomend', this._onZoomEnd, this)
-            .off('click', this._onTouch, this);
+			.off('click', this._onTouch, this);
 	},
 
 	deleteLastVertex: function () {
@@ -365,18 +365,18 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._vertexChanged(latlng, true);
 	},
 
-    completeShape: function(){
-        if (this._markers.length <= 1) {
-            return;
-        }
+	completeShape: function(){
+		if (this._markers.length <= 1) {
+			return;
+		}
 
-        this._fireCreatedEvent();
-        this.disable();
+		this._fireCreatedEvent();
+		this.disable();
 
-        if (this.options.repeatMode) {
-            this.enable();
-        }
-    },
+		if (this.options.repeatMode) {
+			this.enable();
+		}
+	},
 
 	_finishShape: function () {
 		var intersects = this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true);
@@ -440,22 +440,22 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._mouseDownOrigin = null;
 	},
 
-    _onTouch: function (e) {
-        // #TODO: fix the glitchyness of not closing the polyline
-        // #TODO: use touchstart and touchend vs using click(touch start & end).
-        this._onMouseDown(e);
-        this._onMouseUp(e);
-    },
-    
-    _vertexChanged: function (latlng, added) {
-        this._updateFinishHandler();
+	_onTouch: function (e) {
+		// #TODO: fix the glitchyness of not closing the polyline
+		// #TODO: use touchstart and touchend vs using click(touch start & end).
+		this._onMouseDown(e);
+		this._onMouseUp(e);
+	},
+	
+	_vertexChanged: function (latlng, added) {
+		this._updateFinishHandler();
 
-        this._updateRunningMeasure(latlng, added);
+		this._updateRunningMeasure(latlng, added);
 
-        this._clearGuides();
+		this._clearGuides();
 
-        this._updateTooltip();
-    },
+		this._updateTooltip();
+	},
 
 	_updateFinishHandler: function () {
 		var markerCount = this._markers.length;
@@ -798,8 +798,8 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 			this._map
 				.on('mousedown', this._onMouseDown, this)
 				.on('mousemove', this._onMouseMove, this)
-                .on('touchstart', this._onMouseDown, this)
-                .on('touchmove', this._onMouseMove, this);
+				.on('touchstart', this._onMouseDown, this)
+				.on('touchmove', this._onMouseMove, this);
 		}
 	},
 
@@ -816,11 +816,11 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 			this._map
 				.off('mousedown', this._onMouseDown, this)
 				.off('mousemove', this._onMouseMove, this)
-                .off('touchstart', this._onMouseDown, this)
-                .off('touchmove', this._onMouseMove, this);
+				.off('touchstart', this._onMouseDown, this)
+				.off('touchmove', this._onMouseMove, this);
 
 			L.DomEvent.off(document, 'mouseup', this._onMouseUp, this);
-            L.DomEvent.off(document, 'touchend', this._onMouseUp, this);
+			L.DomEvent.off(document, 'touchend', this._onMouseUp, this);
 
 			// If the box element doesn't exist they must not have moved the mouse, so don't need to destroy/return
 			if (this._shape) {
@@ -837,7 +837,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 
 		L.DomEvent
 			.on(document, 'mouseup', this._onMouseUp, this)
-            .on(document, 'touchend', this._onMouseUp, this)
+			.on(document, 'touchend', this._onMouseUp, this)
 			.preventDefault(e.originalEvent);
 	},
 
@@ -1013,7 +1013,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 				.addTo(this._map);
 
 			this._map.on('mousemove', this._onMouseMove, this);
-            this._map.on('click', this._onTouch, this);
+			this._map.on('click', this._onTouch, this);
 		}
 	},
 
@@ -1025,7 +1025,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 				this._marker.off('click', this._onClick, this);
 				this._map
 					.off('click', this._onClick, this)
-                    .off('click', this._onTouch, this)
+					.off('click', this._onTouch, this)
 					.removeLayer(this._marker);
 				delete this._marker;
 			}
@@ -1070,11 +1070,11 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		}
 	},
 
-    _onTouch: function (e) {
-        // called on click & tap, only really does any thing on tap
-        this._onMouseMove(e); // creates & places marker
-        this._onClick(); // permenantly places marker & ends interaction
-    },
+	_onTouch: function (e) {
+		// called on click & tap, only really does any thing on tap
+		this._onMouseMove(e); // creates & places marker
+		this._onClick(); // permenantly places marker & ends interaction
+	},
 
 	_fireCreatedEvent: function () {
 		var marker = new L.Marker(this._marker.getLatLng(), { icon: this.options.icon });
@@ -1090,307 +1090,307 @@ L.Edit = L.Edit || {};
  */
 
 L.Edit.Poly = L.Handler.extend({
-    options: {
-        icon: new L.DivIcon({
-            iconSize: new L.Point(8, 8),
-            className: 'leaflet-div-icon leaflet-editing-icon'
-        }),
-        touchIcon: new L.DivIcon({
-            iconSize: new L.Point(20, 20),
-            className: 'leaflet-div-icon leaflet-editing-icon leaflet-touch-icon'
-        }),
-    },
+	options: {
+		icon: new L.DivIcon({
+			iconSize: new L.Point(8, 8),
+			className: 'leaflet-div-icon leaflet-editing-icon'
+		}),
+		touchIcon: new L.DivIcon({
+			iconSize: new L.Point(20, 20),
+			className: 'leaflet-div-icon leaflet-editing-icon leaflet-touch-icon'
+		}),
+	},
 
-    initialize: function (poly, options) {
-        // if touch, switch to touch icon
-        if (L.Browser.touch){ 
-            this.options.icon = this.options.touchIcon;
-        }
+	initialize: function (poly, options) {
+		// if touch, switch to touch icon
+		if (L.Browser.touch){ 
+			this.options.icon = this.options.touchIcon;
+		}
 
-        this._map = map;
-        this._poly = poly;
-        L.setOptions(this, options);
-    },
+		this._map = map;
+		this._poly = poly;
+		L.setOptions(this, options);
+	},
 
-    addHooks: function () {
-        if (this._poly._map) {
-            if (!this._markerGroup) {
-                this._initMarkers();
-            }
-            this._poly._map.addLayer(this._markerGroup);
-        }
-    },
+	addHooks: function () {
+		if (this._poly._map) {
+			if (!this._markerGroup) {
+				this._initMarkers();
+			}
+			this._poly._map.addLayer(this._markerGroup);
+		}
+	},
 
-    removeHooks: function () {
-        if (this._poly._map) {
-            this._poly._map.removeLayer(this._markerGroup);
-            delete this._markerGroup;
-            delete this._markers;
-        }
-    },
+	removeHooks: function () {
+		if (this._poly._map) {
+			this._poly._map.removeLayer(this._markerGroup);
+			delete this._markerGroup;
+			delete this._markers;
+		}
+	},
 
-    updateMarkers: function () {
-        this._markerGroup.clearLayers();
-        this._initMarkers();
-    },
+	updateMarkers: function () {
+		this._markerGroup.clearLayers();
+		this._initMarkers();
+	},
 
-    _initMarkers: function () {
-        if (!this._markerGroup) {
-            this._markerGroup = new L.LayerGroup();
-        }
-        this._markers = [];
+	_initMarkers: function () {
+		if (!this._markerGroup) {
+			this._markerGroup = new L.LayerGroup();
+		}
+		this._markers = [];
 
-        var latlngs = this._poly._latlngs,
-            i, j, len, marker;
+		var latlngs = this._poly._latlngs,
+			i, j, len, marker;
 
-        // TODO refactor holes implementation in Polygon to support it here
+		// TODO refactor holes implementation in Polygon to support it here
 
-        for (i = 0, len = latlngs.length; i < len; i++) {
+		for (i = 0, len = latlngs.length; i < len; i++) {
 
-            marker = this._createMarker(latlngs[i], i);
-            marker.on('click', this._onMarkerClick, this);
-            this._markers.push(marker);
-        }
+			marker = this._createMarker(latlngs[i], i);
+			marker.on('click', this._onMarkerClick, this);
+			this._markers.push(marker);
+		}
 
-        var markerLeft, markerRight;
+		var markerLeft, markerRight;
 
-        for (i = 0, j = len - 1; i < len; j = i++) {
-            if (i === 0 && !(L.Polygon && (this._poly instanceof L.Polygon))) {
-                continue;
-            }
+		for (i = 0, j = len - 1; i < len; j = i++) {
+			if (i === 0 && !(L.Polygon && (this._poly instanceof L.Polygon))) {
+				continue;
+			}
 
-            markerLeft = this._markers[j];
-            markerRight = this._markers[i];
+			markerLeft = this._markers[j];
+			markerRight = this._markers[i];
 
-            this._createMiddleMarker(markerLeft, markerRight);
-            this._updatePrevNext(markerLeft, markerRight);
-        }
-    },
+			this._createMiddleMarker(markerLeft, markerRight);
+			this._updatePrevNext(markerLeft, markerRight);
+		}
+	},
 
-    _createMarker: function (latlng, index) {
-        // Extending L.Marker in TouchEvents.js to include touch.
-        var marker = new L.Marker.Touch(latlng, {
-            draggable: true,
-            icon: this.options.icon,
-        });
+	_createMarker: function (latlng, index) {
+		// Extending L.Marker in TouchEvents.js to include touch.
+		var marker = new L.Marker.Touch(latlng, {
+			draggable: true,
+			icon: this.options.icon,
+		});
 
-        marker._origLatLng = latlng;
-        marker._index = index;
+		marker._origLatLng = latlng;
+		marker._index = index;
 
-        marker
-            .on('drag', this._onMarkerDrag, this)
-            .on('dragend', this._fireEdit, this)
-            .on('touchmove', this._onTouchMove, this)
-            .on('touchend', this._fireEdit, this);
+		marker
+			.on('drag', this._onMarkerDrag, this)
+			.on('dragend', this._fireEdit, this)
+			.on('touchmove', this._onTouchMove, this)
+			.on('touchend', this._fireEdit, this);
 
-        this._markerGroup.addLayer(marker);
+		this._markerGroup.addLayer(marker);
 
-        return marker;
-    },
+		return marker;
+	},
 
-    _removeMarker: function (marker) {
-        var i = marker._index;
+	_removeMarker: function (marker) {
+		var i = marker._index;
 
-        this._markerGroup.removeLayer(marker);
-        this._markers.splice(i, 1);
-        this._poly.spliceLatLngs(i, 1);
-        this._updateIndexes(i, -1);
+		this._markerGroup.removeLayer(marker);
+		this._markers.splice(i, 1);
+		this._poly.spliceLatLngs(i, 1);
+		this._updateIndexes(i, -1);
 
-        marker
-            .off('drag', this._onMarkerDrag, this)
-            .off('dragend', this._fireEdit, this)
-            .off('touchmove', this._onMarkerDrag, this)
-            .off('touchend', this._fireEdit, this)
-            .off('click', this._onMarkerClick, this);
-    },
+		marker
+			.off('drag', this._onMarkerDrag, this)
+			.off('dragend', this._fireEdit, this)
+			.off('touchmove', this._onMarkerDrag, this)
+			.off('touchend', this._fireEdit, this)
+			.off('click', this._onMarkerClick, this);
+	},
 
-    _fireEdit: function () {
-        this._poly.edited = true;
-        this._poly.fire('edit');
-    },
+	_fireEdit: function () {
+		this._poly.edited = true;
+		this._poly.fire('edit');
+	},
 
-    _onMarkerDrag: function (e) {
-        var marker = e.target;
+	_onMarkerDrag: function (e) {
+		var marker = e.target;
 
-        L.extend(marker._origLatLng, marker._latlng);
+		L.extend(marker._origLatLng, marker._latlng);
 
-        if (marker._middleLeft) {
-            marker._middleLeft.setLatLng(this._getMiddleLatLng(marker._prev, marker));
-        }
-        if (marker._middleRight) {
-            marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next));
-        }
+		if (marker._middleLeft) {
+			marker._middleLeft.setLatLng(this._getMiddleLatLng(marker._prev, marker));
+		}
+		if (marker._middleRight) {
+			marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next));
+		}
 
-        this._poly.redraw();
-    },
+		this._poly.redraw();
+	},
 
-    _onMarkerClick: function (e) {
+	_onMarkerClick: function (e) {
 
-        var minPoints = L.Polygon && (this._poly instanceof L.Polygon) ? 4 : 3,
-            marker = e.target;
+		var minPoints = L.Polygon && (this._poly instanceof L.Polygon) ? 4 : 3,
+			marker = e.target;
 
-        // If removing this point would create an invalid polyline/polygon don't remove
-        if (this._poly._latlngs.length < minPoints) {
-            return;
-        }
+		// If removing this point would create an invalid polyline/polygon don't remove
+		if (this._poly._latlngs.length < minPoints) {
+			return;
+		}
 
-        // remove the marker
-        this._removeMarker(marker);
+		// remove the marker
+		this._removeMarker(marker);
 
-        // update prev/next links of adjacent markers
-        this._updatePrevNext(marker._prev, marker._next);
+		// update prev/next links of adjacent markers
+		this._updatePrevNext(marker._prev, marker._next);
 
-        // remove ghost markers near the removed marker
-        if (marker._middleLeft) {
-            this._markerGroup.removeLayer(marker._middleLeft);
-        }
-        if (marker._middleRight) {
-            this._markerGroup.removeLayer(marker._middleRight);
-        }
+		// remove ghost markers near the removed marker
+		if (marker._middleLeft) {
+			this._markerGroup.removeLayer(marker._middleLeft);
+		}
+		if (marker._middleRight) {
+			this._markerGroup.removeLayer(marker._middleRight);
+		}
 
-        // create a ghost marker in place of the removed one
-        if (marker._prev && marker._next) {
-            this._createMiddleMarker(marker._prev, marker._next);
+		// create a ghost marker in place of the removed one
+		if (marker._prev && marker._next) {
+			this._createMiddleMarker(marker._prev, marker._next);
 
-        } else if (!marker._prev) {
-            marker._next._middleLeft = null;
+		} else if (!marker._prev) {
+			marker._next._middleLeft = null;
 
-        } else if (!marker._next) {
-            marker._prev._middleRight = null;
-        }
+		} else if (!marker._next) {
+			marker._prev._middleRight = null;
+		}
 
-        this._fireEdit();
-    },
+		this._fireEdit();
+	},
 
-    _onTouchMove: function (e){
+	_onTouchMove: function (e){
 
-        var layerPoint = this._map.mouseEventToLayerPoint(e.originalEvent.touches[0]),
-            latlng = this._map.layerPointToLatLng(layerPoint),
-            marker = e.target;
-                
-        L.extend(marker._origLatLng, latlng);
+		var layerPoint = this._map.mouseEventToLayerPoint(e.originalEvent.touches[0]),
+			latlng = this._map.layerPointToLatLng(layerPoint),
+			marker = e.target;
+				
+		L.extend(marker._origLatLng, latlng);
 
-        if (marker._middleLeft) {
-            marker._middleLeft.setLatLng(this._getMiddleLatLng(marker._prev, marker));
-        }
-        if (marker._middleRight) {
-            marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next));
-        }
+		if (marker._middleLeft) {
+			marker._middleLeft.setLatLng(this._getMiddleLatLng(marker._prev, marker));
+		}
+		if (marker._middleRight) {
+			marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next));
+		}
 
-        this._poly.redraw();
-        this.updateMarkers();
-    },
+		this._poly.redraw();
+		this.updateMarkers();
+	},
 
-    _updateIndexes: function (index, delta) {
-        this._markerGroup.eachLayer(function (marker) {
-            if (marker._index > index) {
-                marker._index += delta;
-            }
-        });
-    },
+	_updateIndexes: function (index, delta) {
+		this._markerGroup.eachLayer(function (marker) {
+			if (marker._index > index) {
+				marker._index += delta;
+			}
+		});
+	},
 
-    _createMiddleMarker: function (marker1, marker2) {
-        var latlng = this._getMiddleLatLng(marker1, marker2),
-            marker = this._createMarker(latlng),
-            onClick,
-            onDragStart,
-            onDragEnd;
+	_createMiddleMarker: function (marker1, marker2) {
+		var latlng = this._getMiddleLatLng(marker1, marker2),
+			marker = this._createMarker(latlng),
+			onClick,
+			onDragStart,
+			onDragEnd;
 
-        marker.setOpacity(0.6);
+		marker.setOpacity(0.6);
 
-        marker1._middleRight = marker2._middleLeft = marker;
+		marker1._middleRight = marker2._middleLeft = marker;
 
-        onDragStart = function () {
-            
-            var i = marker2._index;
+		onDragStart = function () {
+			
+			var i = marker2._index;
 
-            marker._index = i;
+			marker._index = i;
 
-            marker
-                .off('click', onClick, this)
-                .on('click', this._onMarkerClick, this);
+			marker
+				.off('click', onClick, this)
+				.on('click', this._onMarkerClick, this);
 
-            latlng.lat = marker.getLatLng().lat;
-            latlng.lng = marker.getLatLng().lng;
-            this._poly.spliceLatLngs(i, 0, latlng);
-            this._markers.splice(i, 0, marker);
+			latlng.lat = marker.getLatLng().lat;
+			latlng.lng = marker.getLatLng().lng;
+			this._poly.spliceLatLngs(i, 0, latlng);
+			this._markers.splice(i, 0, marker);
 
-            marker.setOpacity(1);
+			marker.setOpacity(1);
 
-            this._updateIndexes(i, 1);
-            marker2._index++;
-            this._updatePrevNext(marker1, marker);
-            this._updatePrevNext(marker, marker2);
+			this._updateIndexes(i, 1);
+			marker2._index++;
+			this._updatePrevNext(marker1, marker);
+			this._updatePrevNext(marker, marker2);
 
-            this._poly.fire('editstart');
-        };
+			this._poly.fire('editstart');
+		};
 
-        onDragEnd = function () {
-            marker.off('dragstart', onDragStart, this);
-            marker.off('dragend', onDragEnd, this);
+		onDragEnd = function () {
+			marker.off('dragstart', onDragStart, this);
+			marker.off('dragend', onDragEnd, this);
 
-            this._createMiddleMarker(marker1, marker);
-            this._createMiddleMarker(marker, marker2);
-        };
+			this._createMiddleMarker(marker1, marker);
+			this._createMiddleMarker(marker, marker2);
+		};
 
-        onClick = function () {
-            onDragStart.call(this);
-            onDragEnd.call(this);
-            this._fireEdit();
-        };
+		onClick = function () {
+			onDragStart.call(this);
+			onDragEnd.call(this);
+			this._fireEdit();
+		};
 
-        marker
-            .on('click', onClick, this)
-            .on('dragstart', onDragStart, this)
-            .on('dragend', onDragEnd, this);
+		marker
+			.on('click', onClick, this)
+			.on('dragstart', onDragStart, this)
+			.on('dragend', onDragEnd, this);
 
-        this._markerGroup.addLayer(marker);
-    },
+		this._markerGroup.addLayer(marker);
+	},
 
-    _updatePrevNext: function (marker1, marker2) {
-        if (marker1) {
-            marker1._next = marker2;
-        }
-        if (marker2) {
-            marker2._prev = marker1;
-        }
-    },
+	_updatePrevNext: function (marker1, marker2) {
+		if (marker1) {
+			marker1._next = marker2;
+		}
+		if (marker2) {
+			marker2._prev = marker1;
+		}
+	},
 
-    _getMiddleLatLng: function (marker1, marker2) {
-        var map = this._poly._map,
-            p1 = map.project(marker1.getLatLng()),
-            p2 = map.project(marker2.getLatLng());
+	_getMiddleLatLng: function (marker1, marker2) {
+		var map = this._poly._map,
+			p1 = map.project(marker1.getLatLng()),
+			p2 = map.project(marker2.getLatLng());
 
-        return map.unproject(p1._add(p2)._divideBy(2));
-    }
+		return map.unproject(p1._add(p2)._divideBy(2));
+	}
 });
 
 L.Polyline.addInitHook(function () {
 
-    // Check to see if handler has already been initialized. This is to support versions of Leaflet that still have L.Handler.PolyEdit
-    if (this.editing) {
-        return;
-    }
+	// Check to see if handler has already been initialized. This is to support versions of Leaflet that still have L.Handler.PolyEdit
+	if (this.editing) {
+		return;
+	}
 
-    if (L.Edit.Poly) {
-        this.editing = new L.Edit.Poly(this);
+	if (L.Edit.Poly) {
+		this.editing = new L.Edit.Poly(this);
 
-        if (this.options.editable) {
-            this.editing.enable();
-        }
-    }
+		if (this.options.editable) {
+			this.editing.enable();
+		}
+	}
 
-    this.on('add', function () {
-        if (this.editing && this.editing.enabled()) {
-            this.editing.addHooks();
-        }
-    });
+	this.on('add', function () {
+		if (this.editing && this.editing.enabled()) {
+			this.editing.addHooks();
+		}
+	});
 
-    this.on('remove', function () {
-        if (this.editing && this.editing.enabled()) {
-            this.editing.removeHooks();
-        }
-    });
+	this.on('remove', function () {
+		if (this.editing && this.editing.enabled()) {
+			this.editing.removeHooks();
+		}
+	});
 });
 
 
@@ -1406,24 +1406,24 @@ L.Edit.SimpleShape = L.Handler.extend({
 			iconSize: new L.Point(8, 8),
 			className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-resize'
 		}),
-        touchMoveIcon: new L.DivIcon({
-            iconSize: new L.Point(20, 20),
-            className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-move leaflet-touch-icon'
-        }),
-        touchResizeIcon: new L.DivIcon({
-            iconSize: new L.Point(20, 20),
-            className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-resize leaflet-touch-icon'
-        }),
+		touchMoveIcon: new L.DivIcon({
+			iconSize: new L.Point(20, 20),
+			className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-move leaflet-touch-icon'
+		}),
+		touchResizeIcon: new L.DivIcon({
+			iconSize: new L.Point(20, 20),
+			className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-resize leaflet-touch-icon'
+		}),
 	},
 
 	initialize: function (shape, options) {
-        // if touch, switch to touch icon
-        if (L.Browser.touch){ 
-            this.options.moveIcon = this.options.touchMoveIcon;
-            this.options.resizeIcon = this.options.touchResizeIcon;
-        }
+		// if touch, switch to touch icon
+		if (L.Browser.touch){ 
+			this.options.moveIcon = this.options.touchMoveIcon;
+			this.options.resizeIcon = this.options.touchResizeIcon;
+		}
 
-        this._map = map;
+		this._map = map;
 		this._shape = shape;
 		L.Util.setOptions(this, options);
 	},
@@ -1481,7 +1481,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 	},
 
 	_createMarker: function (latlng, icon) {
-        // Extending L.Marker in TouchEvents.js to include touch.
+		// Extending L.Marker in TouchEvents.js to include touch.
 		var marker = new L.Marker.Touch(latlng, {
 			draggable: true,
 			icon: icon,
@@ -1500,9 +1500,9 @@ L.Edit.SimpleShape = L.Handler.extend({
 			.on('dragstart', this._onMarkerDragStart, this)
 			.on('drag', this._onMarkerDrag, this)
 			.on('dragend', this._onMarkerDragEnd, this)
-            .on('touchstart', this._onTouchStart, this)
-            .on('touchmove', this._onTouchMove, this)
-            .on('touchend', this._onTouchEnd, this);
+			.on('touchstart', this._onTouchStart, this)
+			.on('touchmove', this._onTouchMove, this)
+			.on('touchend', this._onTouchEnd, this);
 	},
 
 	_unbindMarker: function (marker) {
@@ -1510,9 +1510,9 @@ L.Edit.SimpleShape = L.Handler.extend({
 			.off('dragstart', this._onMarkerDragStart, this)
 			.off('drag', this._onMarkerDrag, this)
 			.off('dragend', this._onMarkerDragEnd, this)
-            .off('touchstart', this._onTouchStart, this)
-            .off('touchmove', this._onTouchMove, this)
-            .off('touchend', this._onTouchEnd, this);
+			.off('touchstart', this._onTouchStart, this)
+			.off('touchmove', this._onTouchMove, this)
+			.off('touchend', this._onTouchEnd, this);
 	},
 
 	_onMarkerDragStart: function (e) {
@@ -1547,47 +1547,47 @@ L.Edit.SimpleShape = L.Handler.extend({
 		this._fireEdit();
 	},
 
-    _onTouchStart: function (e) {
-        L.Edit.SimpleShape.prototype._onMarkerDragStart.call(this, e);
+	_onTouchStart: function (e) {
+		L.Edit.SimpleShape.prototype._onMarkerDragStart.call(this, e);
 
-        // Save a reference to the opposite point
-        var corners = this._getCorners(),
-            marker = e.target,
-            currentCornerIndex = marker._cornerIndex;
-        
-        marker.setOpacity(0);
+		// Save a reference to the opposite point
+		var corners = this._getCorners(),
+			marker = e.target,
+			currentCornerIndex = marker._cornerIndex;
+		
+		marker.setOpacity(0);
 
-        // Copyed from Edit.Rectangle.js line 23 _onMarkerDragStart()
-        // Latlng is null otherwise.
-        this._oppositeCorner = corners[(currentCornerIndex + 2) % 4];
-        this._toggleCornerMarkers(0, currentCornerIndex);
+		// Copyed from Edit.Rectangle.js line 23 _onMarkerDragStart()
+		// Latlng is null otherwise.
+		this._oppositeCorner = corners[(currentCornerIndex + 2) % 4];
+		this._toggleCornerMarkers(0, currentCornerIndex);
 
-        this._shape.fire('editstart');
-    },
+		this._shape.fire('editstart');
+	},
 
-    _onTouchMove: function (e) {
-        var layerPoint = this._map.mouseEventToLayerPoint(e.originalEvent.touches[0]),
-            latlng = this._map.layerPointToLatLng(layerPoint),
-            marker = e.target;
+	_onTouchMove: function (e) {
+		var layerPoint = this._map.mouseEventToLayerPoint(e.originalEvent.touches[0]),
+			latlng = this._map.layerPointToLatLng(layerPoint),
+			marker = e.target;
 
-        if (marker === this._moveMarker) {
-            this._move(latlng);
-        } else {
-            this._resize(latlng);
-        }
+		if (marker === this._moveMarker) {
+			this._move(latlng);
+		} else {
+			this._resize(latlng);
+		}
 
-        this._shape.redraw();
-        
-        // prevent touchcancel in IOS
-        e.preventDefault();
-    },
+		this._shape.redraw();
+		
+		// prevent touchcancel in IOS
+		e.preventDefault();
+	},
 
-    _onTouchEnd: function (e) {
-        var marker = e.target;
-        marker.setOpacity(1);
-        this.updateMarkers();
-        this._fireEdit();
-    },
+	_onTouchEnd: function (e) {
+		var marker = e.target;
+		marker.setOpacity(1);
+		this.updateMarkers();
+		this._fireEdit();
+	},
 
 	_move: function () {
 		// Children override
@@ -1788,80 +1788,80 @@ L.Map.mergeOptions({
 
 L.Map.TouchExtend = L.Handler.extend({
 
-    initialize: function (map) {
-        this._map = map;
-        this._container = map._container;
-        this._pane = map._panes.overlayPane;
-    },
+	initialize: function (map) {
+		this._map = map;
+		this._container = map._container;
+		this._pane = map._panes.overlayPane;
+	},
 
-    addHooks: function () {
-        L.DomEvent.on(this._container, 'touchstart', this._onTouchStart, this);
-        L.DomEvent.on(this._container, 'touchend', this._onTouchEnd, this);
-        L.DomEvent.on(this._container, 'touchcancel', this._onTouchCancel, this);
-        L.DomEvent.on(this._container, 'touchleave', this._onTouchLeave, this);
-        L.DomEvent.on(this._container, 'touchmove', this._onTouchMove, this);
-    },
+	addHooks: function () {
+		L.DomEvent.on(this._container, 'touchstart', this._onTouchStart, this);
+		L.DomEvent.on(this._container, 'touchend', this._onTouchEnd, this);
+		L.DomEvent.on(this._container, 'touchcancel', this._onTouchCancel, this);
+		L.DomEvent.on(this._container, 'touchleave', this._onTouchLeave, this);
+		L.DomEvent.on(this._container, 'touchmove', this._onTouchMove, this);
+	},
 
-    removeHooks: function () {
-        L.DomEvent.off(this._container, 'touchstart', this._onTouchStart);
-        L.DomEvent.off(this._container, 'touchend', this._onTouchEnd);
-        L.DomEvent.off(this._container, 'touchcancel', this._onTouchCancel);
-        L.DomEvent.off(this._container, 'touchleave', this._onTouchLeave);
-        L.DomEvent.off(this._container, 'touchmove', this._onTouchMove);
-    },
-    
-    _touchEvent: function (e, type) {
-        // #TODO: fix the pageX error that is do a bug in Android where a single touch triggers two click events
-        // _filterClick is what leaflet uses as a workaround.
-        var containerPoint = this._map.mouseEventToContainerPoint(e.touches[0]);
-            layerPoint = this._map.mouseEventToLayerPoint(e.touches[0]),
-            latlng = this._map.layerPointToLatLng(layerPoint);
+	removeHooks: function () {
+		L.DomEvent.off(this._container, 'touchstart', this._onTouchStart);
+		L.DomEvent.off(this._container, 'touchend', this._onTouchEnd);
+		L.DomEvent.off(this._container, 'touchcancel', this._onTouchCancel);
+		L.DomEvent.off(this._container, 'touchleave', this._onTouchLeave);
+		L.DomEvent.off(this._container, 'touchmove', this._onTouchMove);
+	},
+	
+	_touchEvent: function (e, type) {
+		// #TODO: fix the pageX error that is do a bug in Android where a single touch triggers two click events
+		// _filterClick is what leaflet uses as a workaround.
+		var containerPoint = this._map.mouseEventToContainerPoint(e.touches[0]);
+			layerPoint = this._map.mouseEventToLayerPoint(e.touches[0]),
+			latlng = this._map.layerPointToLatLng(layerPoint);
 
-        this._map.fire(type, {
-            latlng: latlng,
-            layerPoint: layerPoint,
-            containerPoint: containerPoint,
-            pageX: e.touches[0].pageX,
-            pageY: e.touches[0].pageY,
-            originalEvent: e
-        });
-    },
+		this._map.fire(type, {
+			latlng: latlng,
+			layerPoint: layerPoint,
+			containerPoint: containerPoint,
+			pageX: e.touches[0].pageX,
+			pageY: e.touches[0].pageY,
+			originalEvent: e
+		});
+	},
 
-    _onTouchStart: function (e) {
-        if (!this._map._loaded) { return; }
+	_onTouchStart: function (e) {
+		if (!this._map._loaded) { return; }
 
-        var type = 'touchstart';
-        this._touchEvent(e, type);
-        
-    },
+		var type = 'touchstart';
+		this._touchEvent(e, type);
+		
+	},
 
-    _onTouchEnd: function (e) {
-        if (!this._map._loaded) { return; }
+	_onTouchEnd: function (e) {
+		if (!this._map._loaded) { return; }
 
-        var type = 'touchend';
-        this._touchEvent(e, type);
-    },
-    
-    _onTouchCancel: function (e) {
-        if (!this._map._loaded) { return; }
+		var type = 'touchend';
+		this._touchEvent(e, type);
+	},
+	
+	_onTouchCancel: function (e) {
+		if (!this._map._loaded) { return; }
 
-        var type = 'touchcancel';
-        this._touchEvent(e, type);
-    },
+		var type = 'touchcancel';
+		this._touchEvent(e, type);
+	},
 
-    _onTouchLeave: function (e) {
-        if (!this._map._loaded) { return; }
+	_onTouchLeave: function (e) {
+		if (!this._map._loaded) { return; }
 
-        var type = 'touchleave';
-        this._touchEvent(e, type);
-    },
+		var type = 'touchleave';
+		this._touchEvent(e, type);
+	},
 
-    _onTouchMove: function (e) {
-        if (!this._map._loaded) { return; }
+	_onTouchMove: function (e) {
+		if (!this._map._loaded) { return; }
 
-        var type = 'touchmove';
-        this._touchEvent(e, type);
-    }
+		var type = 'touchmove';
+		this._touchEvent(e, type);
+	}
 });
 
 L.Map.addInitHook('addHandler', 'touchExtend', L.Map.TouchExtend);
@@ -1870,33 +1870,33 @@ L.Map.addInitHook('addHandler', 'touchExtend', L.Map.TouchExtend);
 // #TODO: find a better way of getting markers to support touch.
 L.Marker.Touch = L.Marker.extend({
 
-    // This is an exact copy of https://github.com/Leaflet/Leaflet/blob/v0.7/src/layer/marker/Marker.js
-    // with the addition of the touch event son line 15.
-    _initInteraction: function () {
+	// This is an exact copy of https://github.com/Leaflet/Leaflet/blob/v0.7/src/layer/marker/Marker.js
+	// with the addition of the touch event son line 15.
+	_initInteraction: function () {
 
-        if (!this.options.clickable) { return; }
+		if (!this.options.clickable) { return; }
 
-        // TODO refactor into something shared with Map/Path/etc. to DRY it up
+		// TODO refactor into something shared with Map/Path/etc. to DRY it up
 
-        var icon = this._icon,
-            events = ['dblclick', 'mousedown', 'mouseover', 'mouseout', 'contextmenu', 'touchstart', 'touchend', 'touchmove', 'touchcancel'];
+		var icon = this._icon,
+			events = ['dblclick', 'mousedown', 'mouseover', 'mouseout', 'contextmenu', 'touchstart', 'touchend', 'touchmove', 'touchcancel'];
 
-        L.DomUtil.addClass(icon, 'leaflet-clickable');
-        L.DomEvent.on(icon, 'click', this._onMouseClick, this);
-        L.DomEvent.on(icon, 'keypress', this._onKeyPress, this);
+		L.DomUtil.addClass(icon, 'leaflet-clickable');
+		L.DomEvent.on(icon, 'click', this._onMouseClick, this);
+		L.DomEvent.on(icon, 'keypress', this._onKeyPress, this);
 
-        for (var i = 0; i < events.length; i++) {
-            L.DomEvent.on(icon, events[i], this._fireMouseEvent, this);
-        }
+		for (var i = 0; i < events.length; i++) {
+			L.DomEvent.on(icon, events[i], this._fireMouseEvent, this);
+		}
 
-        if (L.Handler.MarkerDrag) {
-            this.dragging = new L.Handler.MarkerDrag(this);
+		if (L.Handler.MarkerDrag) {
+			this.dragging = new L.Handler.MarkerDrag(this);
 
-            if (this.options.draggable) {
-                this.dragging.enable();
-            }
-        }
-    }
+			if (this.options.draggable) {
+				this.dragging.enable();
+			}
+		}
+	}
 });
 
 /*
@@ -2225,256 +2225,256 @@ L.Map.addInitHook(function () {
 
 
 L.Toolbar = L.Class.extend({
-    includes: [L.Mixin.Events],
+	includes: [L.Mixin.Events],
 
-    initialize: function (options) {
-        L.setOptions(this, options);
+	initialize: function (options) {
+		L.setOptions(this, options);
 
-        this._modes = {};
-        this._actionButtons = [];
-        this._activeMode = null;
-    },
+		this._modes = {};
+		this._actionButtons = [];
+		this._activeMode = null;
+	},
 
-    enabled: function () {
-        return this._activeMode !== null;
-    },
+	enabled: function () {
+		return this._activeMode !== null;
+	},
 
-    disable: function () {
-        if (!this.enabled()) { return; }
+	disable: function () {
+		if (!this.enabled()) { return; }
 
-        this._activeMode.handler.disable();
-    },
+		this._activeMode.handler.disable();
+	},
 
-    addToolbar: function (map) {
-        var container = L.DomUtil.create('div', 'leaflet-draw-section'),
-            buttonIndex = 0,
-            buttonClassPrefix = this._toolbarClass || '',
-            modeHandlers = this.getModeHandlers(map),
-            i;
+	addToolbar: function (map) {
+		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
+			buttonIndex = 0,
+			buttonClassPrefix = this._toolbarClass || '',
+			modeHandlers = this.getModeHandlers(map),
+			i;
 
-        this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
-        this._map = map;
+		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
+		this._map = map;
 
-        for (i = 0; i < modeHandlers.length; i++) {
-            if (modeHandlers[i].enabled) {
-                this._initModeHandler(
-                    modeHandlers[i].handler,
-                    this._toolbarContainer,
-                    buttonIndex++,
-                    buttonClassPrefix,
-                    modeHandlers[i].title
-                );
-            }
-        }
+		for (i = 0; i < modeHandlers.length; i++) {
+			if (modeHandlers[i].enabled) {
+				this._initModeHandler(
+					modeHandlers[i].handler,
+					this._toolbarContainer,
+					buttonIndex++,
+					buttonClassPrefix,
+					modeHandlers[i].title
+				);
+			}
+		}
 
-        // if no buttons were added, do not add the toolbar
-        if (!buttonIndex) {
-            return;
-        }
+		// if no buttons were added, do not add the toolbar
+		if (!buttonIndex) {
+			return;
+		}
 
-        // Save button index of the last button, -1 as we would have ++ after the last button
-        this._lastButtonIndex = --buttonIndex;
+		// Save button index of the last button, -1 as we would have ++ after the last button
+		this._lastButtonIndex = --buttonIndex;
 
-        // Create empty actions part of the toolbar
-        this._actionsContainer = L.DomUtil.create('ul', 'leaflet-draw-actions');
+		// Create empty actions part of the toolbar
+		this._actionsContainer = L.DomUtil.create('ul', 'leaflet-draw-actions');
 
-        // Add draw and cancel containers to the control container
-        container.appendChild(this._toolbarContainer);
-        container.appendChild(this._actionsContainer);
+		// Add draw and cancel containers to the control container
+		container.appendChild(this._toolbarContainer);
+		container.appendChild(this._actionsContainer);
 
-        return container;
-    },
+		return container;
+	},
 
-    removeToolbar: function () {
-        // Dispose each handler
-        for (var handlerId in this._modes) {
-            if (this._modes.hasOwnProperty(handlerId)) {
-                // Unbind handler button
-                this._disposeButton(
-                    this._modes[handlerId].button,
-                    this._modes[handlerId].handler.enable,
-                    this._modes[handlerId].handler
-                );
+	removeToolbar: function () {
+		// Dispose each handler
+		for (var handlerId in this._modes) {
+			if (this._modes.hasOwnProperty(handlerId)) {
+				// Unbind handler button
+				this._disposeButton(
+					this._modes[handlerId].button,
+					this._modes[handlerId].handler.enable,
+					this._modes[handlerId].handler
+				);
 
-                // Make sure is disabled
-                this._modes[handlerId].handler.disable();
+				// Make sure is disabled
+				this._modes[handlerId].handler.disable();
 
-                // Unbind handler
-                this._modes[handlerId].handler
-                    .off('enabled', this._handlerActivated, this)
-                    .off('disabled', this._handlerDeactivated, this);
-            }
-        }
-        this._modes = {};
+				// Unbind handler
+				this._modes[handlerId].handler
+					.off('enabled', this._handlerActivated, this)
+					.off('disabled', this._handlerDeactivated, this);
+			}
+		}
+		this._modes = {};
 
-        // Dispose the actions toolbar
-        for (var i = 0, l = this._actionButtons.length; i < l; i++) {
-            this._disposeButton(
-                this._actionButtons[i].button,
-                this._actionButtons[i].callback,
-                this
-            );
-        }
-        this._actionButtons = [];
-        this._actionsContainer = null;
-    },
+		// Dispose the actions toolbar
+		for (var i = 0, l = this._actionButtons.length; i < l; i++) {
+			this._disposeButton(
+				this._actionButtons[i].button,
+				this._actionButtons[i].callback,
+				this
+			);
+		}
+		this._actionButtons = [];
+		this._actionsContainer = null;
+	},
 
-    _initModeHandler: function (handler, container, buttonIndex, classNamePredix, buttonTitle) {
-        var type = handler.type;
+	_initModeHandler: function (handler, container, buttonIndex, classNamePredix, buttonTitle) {
+		var type = handler.type;
 
-        this._modes[type] = {};
+		this._modes[type] = {};
 
-        this._modes[type].handler = handler;
+		this._modes[type].handler = handler;
 
-        this._modes[type].button = this._createButton({
-            type: type,
-            title: buttonTitle,
-            className: classNamePredix + '-' + type,
-            container: container,
-            callback: this._modes[type].handler.enable,
-            context: this._modes[type].handler
-        });
+		this._modes[type].button = this._createButton({
+			type: type,
+			title: buttonTitle,
+			className: classNamePredix + '-' + type,
+			container: container,
+			callback: this._modes[type].handler.enable,
+			context: this._modes[type].handler
+		});
 
-        this._modes[type].buttonIndex = buttonIndex;
+		this._modes[type].buttonIndex = buttonIndex;
 
-        this._modes[type].handler
-            .on('enabled', this._handlerActivated, this)
-            .on('disabled', this._handlerDeactivated, this);
-    },
+		this._modes[type].handler
+			.on('enabled', this._handlerActivated, this)
+			.on('disabled', this._handlerDeactivated, this);
+	},
 
-    _createButton: function (options) {
+	_createButton: function (options) {
 
-        if ( options.type === 'colorable'){
-            var link = L.DomUtil.create('input', options.className || '', options.container);
-            link.href = '#';
-            link.type = 'color';
-        } else {
-            var link = L.DomUtil.create('a', options.className || '', options.container);
-            link.href = '#';  
-        }
+		if ( options.type === 'colorable'){
+			var link = L.DomUtil.create('input', options.className || '', options.container);
+			link.href = '#';
+			link.type = 'color';
+		} else {
+			var link = L.DomUtil.create('a', options.className || '', options.container);
+			link.href = '#';  
+		}
 
-        if (options.text) {
-            link.innerHTML = options.text;
-        }
+		if (options.text) {
+			link.innerHTML = options.text;
+		}
 
-        if (options.title) {
-            link.title = options.title;
-        }
+		if (options.title) {
+			link.title = options.title;
+		}
 
-        L.DomEvent
-            .on(link, 'click', L.DomEvent.stopPropagation)
-            .on(link, 'mousedown', L.DomEvent.stopPropagation)
-            .on(link, 'dblclick', L.DomEvent.stopPropagation)
-            .on(link, 'click', L.DomEvent.preventDefault)
-            .on(link, 'click', options.callback, options.context);
+		L.DomEvent
+			.on(link, 'click', L.DomEvent.stopPropagation)
+			.on(link, 'mousedown', L.DomEvent.stopPropagation)
+			.on(link, 'dblclick', L.DomEvent.stopPropagation)
+			.on(link, 'click', L.DomEvent.preventDefault)
+			.on(link, 'click', options.callback, options.context);
 
-        return link;
-    },
+		return link;
+	},
 
-    _disposeButton: function (button, callback) {
-        L.DomEvent
-            .off(button, 'click', L.DomEvent.stopPropagation)
-            .off(button, 'mousedown', L.DomEvent.stopPropagation)
-            .off(button, 'dblclick', L.DomEvent.stopPropagation)
-            .off(button, 'click', L.DomEvent.preventDefault)
-            .off(button, 'click', callback);
-    },
+	_disposeButton: function (button, callback) {
+		L.DomEvent
+			.off(button, 'click', L.DomEvent.stopPropagation)
+			.off(button, 'mousedown', L.DomEvent.stopPropagation)
+			.off(button, 'dblclick', L.DomEvent.stopPropagation)
+			.off(button, 'click', L.DomEvent.preventDefault)
+			.off(button, 'click', callback);
+	},
 
-    _handlerActivated: function (e) {
-        // Disable active mode (if present)
-        this.disable();
+	_handlerActivated: function (e) {
+		// Disable active mode (if present)
+		this.disable();
 
-        // Cache new active feature
-        this._activeMode = this._modes[e.handler];
+		// Cache new active feature
+		this._activeMode = this._modes[e.handler];
 
-        L.DomUtil.addClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
+		L.DomUtil.addClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
 
-        this._showActionsToolbar();
+		this._showActionsToolbar();
 
-        this.fire('enable');
-    },
+		this.fire('enable');
+	},
 
-    _handlerDeactivated: function () {
-        this._hideActionsToolbar();
+	_handlerDeactivated: function () {
+		this._hideActionsToolbar();
 
-        L.DomUtil.removeClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
+		L.DomUtil.removeClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
 
-        this._activeMode = null;
+		this._activeMode = null;
 
-        this.fire('disable');
-    },
+		this.fire('disable');
+	},
 
-    _createActions: function (handler) {
-        var container = this._actionsContainer,
-            buttons = this.getActions(handler),
-            l = buttons.length,
-            li, di, dl, button;
+	_createActions: function (handler) {
+		var container = this._actionsContainer,
+			buttons = this.getActions(handler),
+			l = buttons.length,
+			li, di, dl, button;
 
-        // Dispose the actions toolbar (todo: dispose only not used buttons)
-        for (di = 0, dl = this._actionButtons.length; di < dl; di++) {
-            this._disposeButton(this._actionButtons[di].button, this._actionButtons[di].callback);
-        }
-        this._actionButtons = [];
+		// Dispose the actions toolbar (todo: dispose only not used buttons)
+		for (di = 0, dl = this._actionButtons.length; di < dl; di++) {
+			this._disposeButton(this._actionButtons[di].button, this._actionButtons[di].callback);
+		}
+		this._actionButtons = [];
 
-        // Remove all old buttons
-        while (container.firstChild) {
-            container.removeChild(container.firstChild);
-        }
+		// Remove all old buttons
+		while (container.firstChild) {
+			container.removeChild(container.firstChild);
+		}
 
-        for (var i = 0; i < l; i++) {
-            if ('enabled' in buttons[i] && !buttons[i].enabled) {
-                continue;
-            }
+		for (var i = 0; i < l; i++) {
+			if ('enabled' in buttons[i] && !buttons[i].enabled) {
+				continue;
+			}
 
-            li = L.DomUtil.create('li', '', container);
+			li = L.DomUtil.create('li', '', container);
 
-            button = this._createButton({
-                title: buttons[i].title,
-                text: buttons[i].text,
-                container: li,
-                callback: buttons[i].callback,
-                context: buttons[i].context
-            });
+			button = this._createButton({
+				title: buttons[i].title,
+				text: buttons[i].text,
+				container: li,
+				callback: buttons[i].callback,
+				context: buttons[i].context
+			});
 
-            this._actionButtons.push({
-                button: button,
-                callback: buttons[i].callback
-            });
-        }
-    },
+			this._actionButtons.push({
+				button: button,
+				callback: buttons[i].callback
+			});
+		}
+	},
 
-    _showActionsToolbar: function () {
-        var buttonIndex = this._activeMode.buttonIndex,
-            lastButtonIndex = this._lastButtonIndex,
-            toolbarPosition = this._activeMode.button.offsetTop - 1;
+	_showActionsToolbar: function () {
+		var buttonIndex = this._activeMode.buttonIndex,
+			lastButtonIndex = this._lastButtonIndex,
+			toolbarPosition = this._activeMode.button.offsetTop - 1;
 
-        // Recreate action buttons on every click
-        this._createActions(this._activeMode.handler);
+		// Recreate action buttons on every click
+		this._createActions(this._activeMode.handler);
 
-        // Correctly position the cancel button
-        this._actionsContainer.style.top = toolbarPosition + 'px';
+		// Correctly position the cancel button
+		this._actionsContainer.style.top = toolbarPosition + 'px';
 
-        if (buttonIndex === 0) {
-            L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
-            L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
-        }
+		if (buttonIndex === 0) {
+			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
+			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
+		}
 
-        if (buttonIndex === lastButtonIndex) {
-            L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
-            L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
-        }
+		if (buttonIndex === lastButtonIndex) {
+			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
+			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
+		}
 
-        this._actionsContainer.style.display = 'block';
-    },
+		this._actionsContainer.style.display = 'block';
+	},
 
-    _hideActionsToolbar: function () {
-        this._actionsContainer.style.display = 'none';
+	_hideActionsToolbar: function () {
+		this._actionsContainer.style.display = 'none';
 
-        L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
-        L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
-        L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-top');
-        L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
-    }
+		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
+		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
+		L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-top');
+		L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
+	}
 });
 
 
@@ -2546,93 +2546,93 @@ L.Tooltip = L.Class.extend({
 
 L.DrawToolbar = L.Toolbar.extend({
 
-    options: {
-        polyline: {},
-        polygon: {},
-        rectangle: {},
-        circle: {},
-        marker: {}
-    },
+	options: {
+		polyline: {},
+		polygon: {},
+		rectangle: {},
+		circle: {},
+		marker: {}
+	},
 
-    initialize: function (options) {
-        // Ensure that the options are merged correctly since L.extend is only shallow
-        for (var type in this.options) {
-            if (this.options.hasOwnProperty(type)) {
-                if (options[type]) {
-                    options[type] = L.extend({}, this.options[type], options[type]);
-                }
-            }
-        }
+	initialize: function (options) {
+		// Ensure that the options are merged correctly since L.extend is only shallow
+		for (var type in this.options) {
+			if (this.options.hasOwnProperty(type)) {
+				if (options[type]) {
+					options[type] = L.extend({}, this.options[type], options[type]);
+				}
+			}
+		}
 
-        this._toolbarClass = 'leaflet-draw-draw';
-        L.Toolbar.prototype.initialize.call(this, options);
-    },
+		this._toolbarClass = 'leaflet-draw-draw';
+		L.Toolbar.prototype.initialize.call(this, options);
+	},
 
-    getModeHandlers: function (map) {
-        return [
-            {
-                enabled: this.options.polyline,
-                handler: new L.Draw.Polyline(map, this.options.polyline),
-                title: L.drawLocal.draw.toolbar.buttons.polyline
-            },
-            {
-                enabled: this.options.polygon,
-                handler: new L.Draw.Polygon(map, this.options.polygon),
-                title: L.drawLocal.draw.toolbar.buttons.polygon
-            },
-            {
-                enabled: this.options.rectangle,
-                handler: new L.Draw.Rectangle(map, this.options.rectangle),
-                title: L.drawLocal.draw.toolbar.buttons.rectangle
-            },
-            {
-                enabled: this.options.circle,
-                handler: new L.Draw.Circle(map, this.options.circle),
-                title: L.drawLocal.draw.toolbar.buttons.circle
-            },
-            {
-                enabled: this.options.marker,
-                handler: new L.Draw.Marker(map, this.options.marker),
-                title: L.drawLocal.draw.toolbar.buttons.marker
-            }
-        ];
-    },
+	getModeHandlers: function (map) {
+		return [
+			{
+				enabled: this.options.polyline,
+				handler: new L.Draw.Polyline(map, this.options.polyline),
+				title: L.drawLocal.draw.toolbar.buttons.polyline
+			},
+			{
+				enabled: this.options.polygon,
+				handler: new L.Draw.Polygon(map, this.options.polygon),
+				title: L.drawLocal.draw.toolbar.buttons.polygon
+			},
+			{
+				enabled: this.options.rectangle,
+				handler: new L.Draw.Rectangle(map, this.options.rectangle),
+				title: L.drawLocal.draw.toolbar.buttons.rectangle
+			},
+			{
+				enabled: this.options.circle,
+				handler: new L.Draw.Circle(map, this.options.circle),
+				title: L.drawLocal.draw.toolbar.buttons.circle
+			},
+			{
+				enabled: this.options.marker,
+				handler: new L.Draw.Marker(map, this.options.marker),
+				title: L.drawLocal.draw.toolbar.buttons.marker
+			}
+		];
+	},
 
-    // Get the actions part of the toolbar
-    getActions: function (handler) {
-        return [
-            {
-                enabled: handler.completeShape,
-                title: L.drawLocal.draw.toolbar.finish.title,
-                text: L.drawLocal.draw.toolbar.finish.text,
-                callback: handler.completeShape,
-                context: handler
-            },
-            {
-                enabled: handler.deleteLastVertex,
-                title: L.drawLocal.draw.toolbar.undo.title,
-                text: L.drawLocal.draw.toolbar.undo.text,
-                callback: handler.deleteLastVertex,
-                context: handler
-            },
-            {
-                title: L.drawLocal.draw.toolbar.actions.title,
-                text: L.drawLocal.draw.toolbar.actions.text,
-                callback: this.disable,
-                context: this
-            }
-        ];
-    },
+	// Get the actions part of the toolbar
+	getActions: function (handler) {
+		return [
+			{
+				enabled: handler.completeShape,
+				title: L.drawLocal.draw.toolbar.finish.title,
+				text: L.drawLocal.draw.toolbar.finish.text,
+				callback: handler.completeShape,
+				context: handler
+			},
+			{
+				enabled: handler.deleteLastVertex,
+				title: L.drawLocal.draw.toolbar.undo.title,
+				text: L.drawLocal.draw.toolbar.undo.text,
+				callback: handler.deleteLastVertex,
+				context: handler
+			},
+			{
+				title: L.drawLocal.draw.toolbar.actions.title,
+				text: L.drawLocal.draw.toolbar.actions.text,
+				callback: this.disable,
+				context: this
+			}
+		];
+	},
 
-    setOptions: function (options) {
-        L.setOptions(this, options);
+	setOptions: function (options) {
+		L.setOptions(this, options);
 
-        for (var type in this._modes) {
-            if (this._modes.hasOwnProperty(type) && options.hasOwnProperty(type)) {
-                this._modes[type].handler.setOptions(options[type]);
-            }
-        }
-    }
+		for (var type in this._modes) {
+			if (this._modes.hasOwnProperty(type) && options.hasOwnProperty(type)) {
+				this._modes[type].handler.setOptions(options[type]);
+			}
+		}
+	}
 });
 
 
@@ -2644,17 +2644,11 @@ L.EditToolbar = L.Toolbar.extend({
 	options: {
 		edit: {
 			selectedPathOptions: {
-				color: '#fe57a1', /* Hot pink all the things! */
-				opacity: 0.6,
 				dashArray: '10, 10',
-
-				fill: true,
-				fillColor: '#fe57a1',
-				fillOpacity: 0.1
 			}
 		},
 		remove: {},
-        colorable: false, /* REQUIRES Jquery and Spectrum.js*/
+		colorable: false, /* REQUIRES Jquery and Spectrum.js*/
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
@@ -2671,9 +2665,9 @@ L.EditToolbar = L.Toolbar.extend({
 			options.remove = L.extend({}, this.options.remove, options.remove);
 		}
 
-        if (options.colorable) {
-            options.colorable = L.extend({}, this.options.colorable, options.colorable);
-        }
+		if (options.colorable) {
+			options.colorable = L.extend({}, this.options.colorable, options.colorable);
+		}
 
 		this._toolbarClass = 'leaflet-draw-edit';
 		L.Toolbar.prototype.initialize.call(this, options);
@@ -2699,13 +2693,13 @@ L.EditToolbar = L.Toolbar.extend({
 				}),
 				title: L.drawLocal.edit.toolbar.buttons.remove
 			},
-            {
-                enabled: this.options.colorable,
-                handler: new L.EditToolbar.Colorable(map, {
-                    featureGroup: featureGroup
-                }),
-                title: L.drawLocal.edit.toolbar.buttons.remove
-            }
+			{
+				enabled: this.options.colorable,
+				handler: new L.EditToolbar.Colorable(map, {
+					featureGroup: featureGroup
+				}),
+				title: L.drawLocal.edit.toolbar.buttons.remove
+			}
 		];
 	},
 
@@ -2793,10 +2787,10 @@ L.EditToolbar = L.Toolbar.extend({
 				: L.drawLocal.edit.toolbar.buttons.removeDisabled
 			);
 		}
-        
-        if (this.options.colorable) {
-            button = this._modes[L.EditToolbar.Colorable.TYPE].button;
-        }
+		
+		if (this.options.colorable) {
+			button = this._modes[L.EditToolbar.Colorable.TYPE].button;
+		}
 	}
 });
 
@@ -2868,8 +2862,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 			});
 
 			this._map
-                .on('mousemove', this._onMouseMove, this)
-                .on('touchmove', this._onMouseMove, this);
+				.on('mousemove', this._onMouseMove, this)
+				.on('touchmove', this._onMouseMove, this)
+				.on('click', this._editStyle, this);
 		}
 	},
 
@@ -2885,8 +2880,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._tooltip = null;
 
 			this._map
-                .off('mousemove', this._onMouseMove, this)
-                .off('touchmove', this._onMouseMove, this);
+				.off('mousemove', this._onMouseMove, this)
+				.off('touchmove', this._onMouseMove, this);
 		}
 	},
 
@@ -3040,6 +3035,14 @@ L.EditToolbar.Edit = L.Handler.extend({
 			layer.editing.disable();
 		}
 	},
+	
+	_editStyle: function(e){
+		// Creates a mini tool box for changing the color, alpha, and stroke width.
+		var layer = e.target,
+			editContainer = L.DomUtil.create('div', 'leaflet-draw-layer-edit');
+		// layer.appendChild(editContainer);
+	},
+
 
 	_onMarkerDragEnd: function (e) {
 		var layer = e.target;
@@ -3187,49 +3190,49 @@ L.EditToolbar.Delete = L.Handler.extend({
 // Specrum is dependent on jquery but that's cool :P
 
 L.EditToolbar.Colorable = L.Handler.extend({
-    statics: {
-        TYPE: 'colorable'
-    },
+	statics: {
+		TYPE: 'colorable'
+	},
 
-    includes: L.Mixin.Events,
+	includes: L.Mixin.Events,
 
-    initialize: function (map, options) {
-        var colorable = this; // cache this to target in jquery
+	initialize: function (map, options) {
+		var colorable = this; // cache this to target in jquery
 
-        L.Handler.prototype.initialize.call(this, map);
+		L.Handler.prototype.initialize.call(this, map);
 
-        L.Util.setOptions(this, options);
+		L.Util.setOptions(this, options);
 
-        // Save the type so super can fire, need to do this as cannot do this.TYPE :(
-        this.type = L.EditToolbar.Colorable.TYPE;
+		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
+		this.type = L.EditToolbar.Colorable.TYPE;
 
-        this._setColor('#fe57a1'); // Set color for all tools on load
+		this._setColor('#fe57a1', '0.2'); // Set color for all tools on load
 
-        $(document).ready(function(){ // initialize after dom creation
-            // Color is depended on Jquery and Spectrum.js
-            $(".leaflet-draw-edit-colorable").spectrum({
-                chooseText: 'Ok',
-                color: '#fe57a1', /* Hot pink all the things! */
-                showAlpha: true,
-                showPalette: true,
-                palette: [ ],
-                change: function(color) {
-                    var hexColor = color.toHexString(); // #ff0000
-                    colorable._setColor(hexColor);
-                }
-            });
-        });        
-    },
+		$(document).ready(function(){ // initialize after dom creation
+			// Color is depended on Jquery and Spectrum.js
+			$(".leaflet-draw-edit-colorable").spectrum({
+				chooseText: 'Ok',
+				color: 'rgba(254,87,161,0.2)', /* Hot pink all the things! */
+				showAlpha: true,
+				showPalette: true,
+				palette: [ ],
+				change: function(color) {
+					var hexColor = color.toHexString(); // #ff0000
+					colorable._setColor(hexColor, color.alpha);
+				}
+			});
+		});		
+	},
 
-    _setColor: function (color) {
-        drawControl.setDrawingOptions({ 
-            polyline: { shapeOptions: { color: color } },
-            polygon: { shapeOptions: { color: color } },
-            rectangle: { shapeOptions: { color: color } },
-            circle: { shapeOptions: { color: color } },
-            marker: { shapeOptions: { color: color } }
-        });
-    },
+	_setColor: function (color, opacity) {
+        // #TODO: make this work
+		// drawControl.setDrawingOptions({ 
+		// 	polyline: { shapeOptions: { color: color, opacity: opacity } },
+		// 	polygon: { shapeOptions: { color: color, fillOpacity: opacity } },
+		// 	rectangle: { shapeOptions: { color: color, fillOpacity: opacity } },
+		// 	circle: { shapeOptions: { color: color, fillOpacity: opacity } }
+		// });
+	},
 });
 
 
