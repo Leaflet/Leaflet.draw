@@ -27,7 +27,7 @@ L.EditToolbar.Colorable = L.Handler.extend({
 			// Color is depended on Jquery and Spectrum.js
 			$(".leaflet-draw-edit-colorable").spectrum({
 				chooseText: 'Ok',
-				color: 'rgba(254,87,161,0.2)',  Hot pink all the things! 
+				color: 'rgba(254,87,161,0.2)', //Hot pink all the things! 
 				showAlpha: true,
 				showPalette: true,
 				palette: [ ],
