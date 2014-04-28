@@ -154,18 +154,20 @@ L.Edit.SimpleShape = L.Handler.extend({
 	_onTouchStart: function (e) {
 		L.Edit.SimpleShape.prototype._onMarkerDragStart.call(this, e);
 
-		// Save a reference to the opposite point
-		var corners = this._getCorners(),
-			marker = e.target,
-			currentCornerIndex = marker._cornerIndex;
-		
-		marker.setOpacity(0);
+		if (typeof(this._getCorners) === "function") { 
+			// Save a reference to the opposite point
+			var corners = this._getCorners(),
+				marker = e.target,
+				currentCornerIndex = marker._cornerIndex;
+			
+			marker.setOpacity(0);
 
-		// Copyed from Edit.Rectangle.js line 23 _onMarkerDragStart()
-		// Latlng is null otherwise.
-		this._oppositeCorner = corners[(currentCornerIndex + 2) % 4];
-		this._toggleCornerMarkers(0, currentCornerIndex);
-
+			// Copyed from Edit.Rectangle.js line 23 _onMarkerDragStart()
+			// Latlng is null otherwise.
+			this._oppositeCorner = corners[(currentCornerIndex + 2) % 4];
+			this._toggleCornerMarkers(0, currentCornerIndex);
+		}
+	
 		this._shape.fire('editstart');
 	},
 
@@ -183,7 +185,8 @@ L.Edit.SimpleShape = L.Handler.extend({
 		this._shape.redraw();
 		
 		// prevent touchcancel in IOS
-		e.preventDefault();
+		// e.preventDefault();
+		return false;
 	},
 
 	_onTouchEnd: function (e) {
