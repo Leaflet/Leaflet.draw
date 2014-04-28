@@ -27,7 +27,7 @@ L.EditToolbar.Colorable = L.Handler.extend({
 			// Color is depended on Jquery and Spectrum.js
 			$(".leaflet-draw-edit-colorable").spectrum({
 				chooseText: 'Ok',
-				color: 'rgba(254,87,161,0.2)', /* Hot pink all the things! */
+				color: 'rgba(254,87,161,0.2)',  Hot pink all the things! 
 				showAlpha: true,
 				showPalette: true,
 				palette: [ ],
@@ -40,12 +40,12 @@ L.EditToolbar.Colorable = L.Handler.extend({
 	},
 
 	_setColor: function (color, opacity) {
-        // #TODO: make this work
-		// drawControl.setDrawingOptions({ 
-		// 	polyline: { shapeOptions: { color: color, opacity: opacity } },
-		// 	polygon: { shapeOptions: { color: color, fillOpacity: opacity } },
-		// 	rectangle: { shapeOptions: { color: color, fillOpacity: opacity } },
-		// 	circle: { shapeOptions: { color: color, fillOpacity: opacity } }
-		// });
+        // Use global var of toolbar that gets set on L.Control.Draw initialization
+		L.toolbar.setDrawingOptions({ 
+			polyline: { shapeOptions: { color: color, opacity: opacity } },
+			polygon: { shapeOptions: { color: color, fillOpacity: opacity } },
+			rectangle: { shapeOptions: { color: color, fillOpacity: opacity } },
+			circle: { shapeOptions: { color: color, fillOpacity: opacity } }
+		});
 	},
 });
