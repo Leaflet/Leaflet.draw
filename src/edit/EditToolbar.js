@@ -3,6 +3,10 @@
 });*/
 
 L.EditToolbar = L.Toolbar.extend({
+	statics: {
+		TYPE: 'edit'
+	},
+
 	options: {
 		edit: {
 			selectedPathOptions: {
