@@ -290,7 +290,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map
 				.on('mousemove', this._onMouseMove, this)
 				.on('mouseup', this._onMouseUp, this)
-				.on('zoomend', this._onZoomEnd, this)
+				.on('zoomlevelschange', this._onZoomEnd, this)
 				.on('click', this._onTouch, this);
 		}
 	},
@@ -1107,13 +1107,15 @@ L.Edit.Poly = L.Handler.extend({
 			this.options.icon = this.options.touchIcon;
 		}
 
-		this._map = map;
 		this._poly = poly;
 		L.setOptions(this, options);
 	},
 
 	addHooks: function () {
 		if (this._poly._map) {
+
+			this._map = this._poly._map; // Set map
+
 			if (!this._markerGroup) {
 				this._initMarkers();
 			}
@@ -1423,13 +1425,13 @@ L.Edit.SimpleShape = L.Handler.extend({
 			this.options.resizeIcon = this.options.touchResizeIcon;
 		}
 
-		this._map = map;
 		this._shape = shape;
 		L.Util.setOptions(this, options);
 	},
 
 	addHooks: function () {
 		if (this._shape._map) {
+
 			this._map = this._shape._map;
 
 			if (!this._markerGroup) {
@@ -1550,18 +1552,20 @@ L.Edit.SimpleShape = L.Handler.extend({
 	_onTouchStart: function (e) {
 		L.Edit.SimpleShape.prototype._onMarkerDragStart.call(this, e);
 
-		// Save a reference to the opposite point
-		var corners = this._getCorners(),
-			marker = e.target,
-			currentCornerIndex = marker._cornerIndex;
-		
-		marker.setOpacity(0);
+		if (typeof(this._getCorners) === "function") { 
+			// Save a reference to the opposite point
+			var corners = this._getCorners(),
+				marker = e.target,
+				currentCornerIndex = marker._cornerIndex;
+			
+			marker.setOpacity(0);
 
-		// Copyed from Edit.Rectangle.js line 23 _onMarkerDragStart()
-		// Latlng is null otherwise.
-		this._oppositeCorner = corners[(currentCornerIndex + 2) % 4];
-		this._toggleCornerMarkers(0, currentCornerIndex);
-
+			// Copyed from Edit.Rectangle.js line 23 _onMarkerDragStart()
+			// Latlng is null otherwise.
+			this._oppositeCorner = corners[(currentCornerIndex + 2) % 4];
+			this._toggleCornerMarkers(0, currentCornerIndex);
+		}
+	
 		this._shape.fire('editstart');
 	},
 
@@ -1579,7 +1583,8 @@ L.Edit.SimpleShape = L.Handler.extend({
 		this._shape.redraw();
 		
 		// prevent touchcancel in IOS
-		e.preventDefault();
+		// e.preventDefault();
+		return false;
 	},
 
 	_onTouchEnd: function (e) {
