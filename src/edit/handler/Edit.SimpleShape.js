@@ -27,13 +27,13 @@ L.Edit.SimpleShape = L.Handler.extend({
 			this.options.resizeIcon = this.options.touchResizeIcon;
 		}
 
-		this._map = map;
 		this._shape = shape;
 		L.Util.setOptions(this, options);
 	},
 
 	addHooks: function () {
 		if (this._shape._map) {
+
 			this._map = this._shape._map;
 
 			if (!this._markerGroup) {

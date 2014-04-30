@@ -22,13 +22,15 @@ L.Edit.Poly = L.Handler.extend({
 			this.options.icon = this.options.touchIcon;
 		}
 
-		this._map = map;
 		this._poly = poly;
 		L.setOptions(this, options);
 	},
 
 	addHooks: function () {
 		if (this._poly._map) {
+
+			this._map = this._poly._map; // Set map
+
 			if (!this._markerGroup) {
 				this._initMarkers();
 			}
@@ -272,6 +274,7 @@ L.Edit.Poly = L.Handler.extend({
 	},
 
 	_getMiddleLatLng: function (marker1, marker2) {
+	debugger;
 		var map = this._poly._map,
 			p1 = map.project(marker1.getLatLng()),
 			p2 = map.project(marker2.getLatLng());
