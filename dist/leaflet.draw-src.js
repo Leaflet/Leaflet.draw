@@ -126,11 +126,11 @@ L.Draw.Feature = L.Handler.extend({
 	enable: function () {
 		if (this._enabled) { return; }
 
+		L.Handler.prototype.enable.call(this);
+
 		this.fire('enabled', { handler: this.type });
 
 		this._map.fire('draw:drawstart', { layerType: this.type });
-
-		L.Handler.prototype.enable.call(this);
 	},
 
 	disable: function () {
@@ -1857,27 +1857,27 @@ L.Control.Draw = L.Control.extend({
 
 		L.Control.prototype.initialize.call(this, options);
 
-		var id, toolbar;
+		var toolbar;
 
 		this._toolbars = {};
 
 		// Initialize toolbars
 		if (L.DrawToolbar && this.options.draw) {
 			toolbar = new L.DrawToolbar(this.options.draw);
-			id = L.stamp(toolbar);
-			this._toolbars[id] = toolbar;
+
+			this._toolbars[L.DrawToolbar.TYPE] = toolbar;
 
 			// Listen for when toolbar is enabled
-			this._toolbars[id].on('enable', this._toolbarEnabled, this);
+			this._toolbars[L.DrawToolbar.TYPE].on('enable', this._toolbarEnabled, this);
 		}
 
 		if (L.EditToolbar && this.options.edit) {
 			toolbar = new L.EditToolbar(this.options.edit);
-			id = L.stamp(toolbar);
-			this._toolbars[id] = toolbar;
+
+			this._toolbars[L.EditToolbar.TYPE] = toolbar;
 
 			// Listen for when toolbar is enabled
-			this._toolbars[id].on('enable', this._toolbarEnabled, this);
+			this._toolbars[L.EditToolbar.TYPE].on('enable', this._toolbarEnabled, this);
 		}
 	},
 
@@ -1925,10 +1925,10 @@ L.Control.Draw = L.Control.extend({
 	},
 
 	_toolbarEnabled: function (e) {
-		var id = '' + L.stamp(e.target);
+		var enabledToolbar = e.target;
 
 		for (var toolbarId in this._toolbars) {
-			if (this._toolbars.hasOwnProperty(toolbarId) && toolbarId !== id) {
+			if (this._toolbars[toolbarId] !== enabledToolbar) {
 				this._toolbars[toolbarId].disable();
 			}
 		}
@@ -2262,6 +2262,10 @@ L.Tooltip = L.Class.extend({
 
 L.DrawToolbar = L.Toolbar.extend({
 
+	statics: {
+		TYPE: 'draw'
+	},
+
 	options: {
 		polyline: {},
 		polygon: {},
@@ -2350,6 +2354,10 @@ L.DrawToolbar = L.Toolbar.extend({
 });*/
 
 L.EditToolbar = L.Toolbar.extend({
+	statics: {
+		TYPE: 'edit'
+	},
+
 	options: {
 		edit: {
 			selectedPathOptions: {
