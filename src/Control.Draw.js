@@ -13,7 +13,7 @@ L.Control.Draw = L.Control.extend({
 
 		L.Control.prototype.initialize.call(this, options);
 
-		var id, toolbar;
+		var toolbar;
 
 		this._toolbars = {};
 
