@@ -2,6 +2,10 @@ L.Edit = L.Edit || {};
 
 L.Edit.SimpleShape = L.Handler.extend({
 	options: {
+		icon: new L.DivIcon({
+			iconSize: new L.Point(8, 8),
+			className: 'leaflet-div-icon leaflet-editing-icon'
+		}),
 		moveIcon: new L.DivIcon({
 			iconSize: new L.Point(8, 8),
 			className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-move'
@@ -75,6 +79,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 			icon: icon,
 			zIndexOffset: 10
 		});
+		marker._origLatLng = latlng;
 
 		this._bindMarker(marker);
 
