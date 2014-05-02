@@ -27,8 +27,6 @@ L.Edit.Poly = L.Edit.SimpleShape.extend({
 		
 		// Create point edit markers
 		this._createEditMarkers();
-		
-		console.log('**', this._shape.intersects() );
 	},
 
 	_createEditMarkers: function () {
