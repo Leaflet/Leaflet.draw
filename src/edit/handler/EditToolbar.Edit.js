@@ -188,6 +188,12 @@ L.EditToolbar.Edit = L.Handler.extend({
 		if (this._selectedPathOptions) {
 			pathOptions = L.Util.extend({}, this._selectedPathOptions);
 
+			// Use the existing color of the layer
+			if (pathOptions.maintainColor) {
+				pathOptions.color = layer.options.color;
+				pathOptions.fillColor = layer.options.fillColor;
+			}
+
 			if (isMarker) {
 				this._toggleMarkerHighlight(layer);
 			} else {
