@@ -36,11 +36,11 @@ L.EditToolbar.Colorable = L.Handler.extend({
 					colorable._setColor(hexColor, color.alpha);
 				}
 			});
-		});		
+		});
 	},
 
 	_setColor: function (color, opacity) {
-        // Use global var of toolbar that gets set on L.Control.Draw initialization
+		// Use global var of toolbar that gets set on L.Control.Draw initialization
 		L.toolbar.setDrawingOptions({ 
 			polyline: { shapeOptions: { color: color, opacity: opacity } },
 			polygon: { shapeOptions: { color: color, fillOpacity: opacity } },
