@@ -238,14 +238,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 			layer.editing.disable();
 		}
 	},
-	
-	_editStyle: function(e){
-		// Creates a mini tool box for changing the color, alpha, and stroke width.
-		var layer = e.target,
-			editContainer = L.DomUtil.create('div', 'leaflet-draw-layer-edit');
-		// layer.appendChild(editContainer);
-	},
-
 
 	_onMarkerDragEnd: function (e) {
 		var layer = e.target;

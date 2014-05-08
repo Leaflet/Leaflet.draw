@@ -3,17 +3,6 @@
 <head>
     <title>Leaflet.draw drawing and editing tools</title>
 
-    <!-- 
-        Spectrum is a touch friendly multi instance color picker tool
-        This is included for demo only. You should grab the latest version
-        of it here: https://github.com/bgrins/spectrum
-        Specrum is dependent on jquery but that's cool :P
-    -->
-    <link rel="stylesheet" href="libs/spectrum.css" />
-    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script src="libs/spectrum.js"></script>
-    
-
     <link rel="stylesheet" href="libs/leaflet.css" />
     <link rel="stylesheet" href="../dist/leaflet.draw.css" />
     
@@ -49,7 +38,6 @@
     <script src="../src/edit/EditToolbar.js"></script>
     <script src="../src/edit/handler/EditToolbar.Edit.js"></script>
     <script src="../src/edit/handler/EditToolbar.Delete.js"></script>
-    <script src="../src/edit/handler/EditToolbar.Colorable.js"></script>
 </head>
 <body>
     <div id="map" style="width: 100%; height: 600px; border: 1px solid #ccc"></div>
@@ -92,8 +80,7 @@
             },
             edit: {
                 featureGroup: drawnItems,
-                remove: true,
-                colorable: true    
+                remove: true
             }
         });
         map.addControl(drawControl);

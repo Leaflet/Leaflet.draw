@@ -84,8 +84,6 @@ L.drawLocal = {
 				editDisabled: 'No layers to edit.',
 				remove: 'Delete layers.',
 				removeDisabled: 'No layers to delete.',
-				colorable: 'Color layers.',
-				colorableDisabled: 'No layers to change color.'
 			}
 		},
 		handlers: {
@@ -98,11 +96,6 @@ L.drawLocal = {
 			remove: {
 				tooltip: {
 					text: 'Click on a feature to remove'
-				}
-			},
-			colorable: {
-				tooltip: {
-					text: 'Click on a feature to change the color'
 				}
 			}
 		}
