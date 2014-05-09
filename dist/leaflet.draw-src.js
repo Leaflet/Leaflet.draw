@@ -92,8 +92,6 @@ L.drawLocal = {
 				editDisabled: 'No layers to edit.',
 				remove: 'Delete layers.',
 				removeDisabled: 'No layers to delete.',
-				colorable: 'Color layers.',
-				colorableDisabled: 'No layers to change color.'
 			}
 		},
 		handlers: {
@@ -106,11 +104,6 @@ L.drawLocal = {
 			remove: {
 				tooltip: {
 					text: 'Click on a feature to remove'
-				}
-			},
-			colorable: {
-				tooltip: {
-					text: 'Click on a feature to change the color'
 				}
 			}
 		}
@@ -2350,14 +2343,8 @@ L.Toolbar = L.Class.extend({
 
 	_createButton: function (options) {
 
-		if ( options.type === 'colorable'){
-			var link = L.DomUtil.create('input', options.className || '', options.container);
-			link.href = '#';
-			link.type = 'color';
-		} else {
-			var link = L.DomUtil.create('a', options.className || '', options.container);
-			link.href = '#';  
-		}
+		var link = L.DomUtil.create('a', options.className || '', options.container);
+		link.href = '#';
 
 		if (options.text) {
 			link.innerHTML = options.text;
@@ -2654,7 +2641,6 @@ L.EditToolbar = L.Toolbar.extend({
 			}
 		},
 		remove: {},
-		colorable: false, /* REQUIRES Jquery and Spectrum.js*/
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
@@ -2669,10 +2655,6 @@ L.EditToolbar = L.Toolbar.extend({
 
 		if (options.remove) {
 			options.remove = L.extend({}, this.options.remove, options.remove);
-		}
-
-		if (options.colorable) {
-			options.colorable = L.extend({}, this.options.colorable, options.colorable);
 		}
 
 		this._toolbarClass = 'leaflet-draw-edit';
@@ -2695,13 +2677,6 @@ L.EditToolbar = L.Toolbar.extend({
 			{
 				enabled: this.options.remove,
 				handler: new L.EditToolbar.Delete(map, {
-					featureGroup: featureGroup
-				}),
-				title: L.drawLocal.edit.toolbar.buttons.remove
-			},
-			{
-				enabled: this.options.colorable,
-				handler: new L.EditToolbar.Colorable(map, {
 					featureGroup: featureGroup
 				}),
 				title: L.drawLocal.edit.toolbar.buttons.remove
@@ -2792,10 +2767,6 @@ L.EditToolbar = L.Toolbar.extend({
 				L.drawLocal.edit.toolbar.buttons.remove
 				: L.drawLocal.edit.toolbar.buttons.removeDisabled
 			);
-		}
-		
-		if (this.options.colorable) {
-			button = this._modes[L.EditToolbar.Colorable.TYPE].button;
 		}
 	}
 });
@@ -3041,14 +3012,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 			layer.editing.disable();
 		}
 	},
-	
-	_editStyle: function(e){
-		// Creates a mini tool box for changing the color, alpha, and stroke width.
-		var layer = e.target,
-			editContainer = L.DomUtil.create('div', 'leaflet-draw-layer-edit');
-		// layer.appendChild(editContainer);
-	},
-
 
 	_onMarkerDragEnd: function (e) {
 		var layer = e.target;
@@ -3186,59 +3149,6 @@ L.EditToolbar.Delete = L.Handler.extend({
 	_hasAvailableLayers: function () {
 		return this._deletableLayers.getLayers().length !== 0;
 	}
-});
-
-
-// Color is depended on Jquery and Spectrum.js
-// Spectrum was picked for the community support and features with pallets, alpha, touch and multi instance
-// This is included for demo only. You should grab the latest version
-// of it here: https://github.com/bgrins/spectrum
-// Specrum is dependent on jquery but that's cool :P
-
-L.EditToolbar.Colorable = L.Handler.extend({
-	statics: {
-		TYPE: 'colorable'
-	},
-
-	includes: L.Mixin.Events,
-
-	initialize: function (map, options) {
-		var colorable = this; // cache this to target in jquery
-
-		L.Handler.prototype.initialize.call(this, map);
-
-		L.Util.setOptions(this, options);
-
-		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
-		this.type = L.EditToolbar.Colorable.TYPE;
-
-		this._setColor('#fe57a1', '0.2'); // Set color for all tools on load
-
-		$(document).ready(function(){ // initialize after dom creation
-			// Color is depended on Jquery and Spectrum.js
-			$(".leaflet-draw-edit-colorable").spectrum({
-				chooseText: 'Ok',
-				color: 'rgba(254,87,161,0.2)', //Hot pink all the things! 
-				showAlpha: true,
-				showPalette: true,
-				palette: [ ],
-				change: function(color) {
-					var hexColor = color.toHexString(); // #ff0000
-					colorable._setColor(hexColor, color.alpha);
-				}
-			});
-		});		
-	},
-
-	_setColor: function (color, opacity) {
-        // Use global var of toolbar that gets set on L.Control.Draw initialization
-		L.toolbar.setDrawingOptions({ 
-			polyline: { shapeOptions: { color: color, opacity: opacity } },
-			polygon: { shapeOptions: { color: color, fillOpacity: opacity } },
-			rectangle: { shapeOptions: { color: color, fillOpacity: opacity } },
-			circle: { shapeOptions: { color: color, fillOpacity: opacity } }
-		});
-	},
 });
 
 
