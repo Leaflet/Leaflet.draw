@@ -218,7 +218,6 @@ L.Edit.Poly = L.Handler.extend({
 		marker1._middleRight = marker2._middleLeft = marker;
 
 		onDragStart = function () {
-			
 			var i = marker2._index;
 
 			marker._index = i;
@@ -245,6 +244,7 @@ L.Edit.Poly = L.Handler.extend({
 		onDragEnd = function () {
 			marker.off('dragstart', onDragStart, this);
 			marker.off('dragend', onDragEnd, this);
+			marker.off('touchmove', onDragStart, this);
 
 			this._createMiddleMarker(marker1, marker);
 			this._createMiddleMarker(marker, marker2);
@@ -259,7 +259,8 @@ L.Edit.Poly = L.Handler.extend({
 		marker
 			.on('click', onClick, this)
 			.on('dragstart', onDragStart, this)
-			.on('dragend', onDragEnd, this);
+			.on('dragend', onDragEnd, this)
+			.on('touchmove', onDragStart, this);
 
 		this._markerGroup.addLayer(marker);
 	},
