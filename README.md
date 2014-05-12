@@ -259,6 +259,19 @@ These options will allow you to configure the draw toolbar and its handlers.
 | --- | --- | --- | ---
 | selectedPathOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/edit/handler/EditToolbar.Edit.js#L9) | The path options for how the layers will look while in edit mode. If this is set to null the editable path options will not be set.
 
+**Note:** To maintain the original layer color of the layer use `maintainColor: true` within `selectedPathOptions`.
+
+E.g. The edit options below will maintain the layer color and set the edit opacity to 0.3.
+
+````js
+{
+	selectedPathoptions: {
+		maintainColor: true,
+		opacity: 0.3
+	}
+}
+````
+
 <a name="deletehandleroptions" />
 #### DeleteHandlerOptions
 
