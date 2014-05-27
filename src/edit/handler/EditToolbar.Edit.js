@@ -215,7 +215,11 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (isMarker) {
 			layer.dragging.enable();
-			layer.on('dragend', this._onMarkerDragEnd);
+			layer
+				.on('dragend', this._onMarkerDragEnd)
+				// #TODO: remove when leaflet finally fixes their draggable so it's touch friendly again.
+ 				.on('touchmove', this._onTouchMove, this)
+ 				.on('touchend', this._onMarkerDragEnd, this);
 		} else {
 			layer.editing.enable();
 		}
@@ -239,7 +243,10 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (layer instanceof L.Marker) {
 			layer.dragging.disable();
-			layer.off('dragend', this._onMarkerDragEnd, this);
+			layer
+				.off('dragend', this._onMarkerDragEnd, this)
+				.off('touchmove', this._onTouchMove, this)
+ 				.off('touchend', this._onMarkerDragEnd, this);
 		} else {
 			layer.editing.disable();
 		}
@@ -252,6 +259,13 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_onMouseMove: function (e) {
 		this._tooltip.updatePosition(e.latlng);
+	},
+
+	_onTouchMove: function (e){
+		var touchEvent = e.originalEvent.changedTouches[0],
+			layerPoint = this._map.mouseEventToLayerPoint(touchEvent),
+			latlng = this._map.layerPointToLatLng(layerPoint);
+		e.target.setLatLng(latlng);
 	},
 
 	_hasAvailableLayers: function () {
