@@ -32,7 +32,7 @@ L.Map.TouchExtend = L.Handler.extend({
 		// This is a problem with more things than just android. Another problem is touchEnd has no touches in
 		// its touch list.
 		if (!e.touches.length) { return; }
-		var containerPoint = this._map.mouseEventToContainerPoint(e.touches[0]);
+		var containerPoint = this._map.mouseEventToContainerPoint(e.touches[0]),
 			layerPoint = this._map.mouseEventToLayerPoint(e.touches[0]),
 			latlng = this._map.layerPointToLatLng(layerPoint);
 
