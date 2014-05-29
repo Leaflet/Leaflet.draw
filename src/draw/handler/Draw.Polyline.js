@@ -242,10 +242,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onTouch: function (e) {
-		// #TODO: fix the glitchyness of not closing the polyline
 		// #TODO: use touchstart and touchend vs using click(touch start & end).
-		this._onMouseDown(e);
-		this._onMouseUp(e);
+		if (L.Browser.touch){ // #TODO: get rid of this once leaflet fixes their click/touch.
+			this._onMouseDown(e);
+			this._onMouseUp(e);
+		}
 	},
 	
 	_vertexChanged: function (latlng, added) {
