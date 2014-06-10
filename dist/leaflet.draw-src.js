@@ -434,10 +434,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onTouch: function (e) {
-		// #TODO: fix the glitchyness of not closing the polyline
 		// #TODO: use touchstart and touchend vs using click(touch start & end).
-		this._onMouseDown(e);
-		this._onMouseUp(e);
+		if (L.Browser.touch){ // #TODO: get rid of this once leaflet fixes their click/touch.
+			this._onMouseDown(e);
+			this._onMouseUp(e);
+		}
 	},
 	
 	_vertexChanged: function (latlng, added) {
@@ -1070,7 +1071,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	},
 
 	_fireCreatedEvent: function () {
-		var marker = new L.Marker(this._marker.getLatLng(), { icon: this.options.icon });
+		var marker = new L.Marker.Touch(this._marker.getLatLng(), { icon: this.options.icon });
 		L.Draw.Feature.prototype._fireCreatedEvent.call(this, marker);
 	}
 });
@@ -3009,7 +3010,11 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (isMarker) {
 			layer.dragging.enable();
-			layer.on('dragend', this._onMarkerDragEnd);
+			layer
+				.on('dragend', this._onMarkerDragEnd)
+				// #TODO: remove when leaflet finally fixes their draggable so it's touch friendly again.
+ 				.on('touchmove', this._onTouchMove, this)
+ 				.on('touchend', this._onMarkerDragEnd, this);
 		} else {
 			layer.editing.enable();
 		}
@@ -3033,7 +3038,10 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (layer instanceof L.Marker) {
 			layer.dragging.disable();
-			layer.off('dragend', this._onMarkerDragEnd, this);
+			layer
+				.off('dragend', this._onMarkerDragEnd, this)
+				.off('touchmove', this._onTouchMove, this)
+ 				.off('touchend', this._onMarkerDragEnd, this);
 		} else {
 			layer.editing.disable();
 		}
@@ -3046,6 +3054,13 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_onMouseMove: function (e) {
 		this._tooltip.updatePosition(e.latlng);
+	},
+
+	_onTouchMove: function (e){
+		var touchEvent = e.originalEvent.changedTouches[0],
+			layerPoint = this._map.mouseEventToLayerPoint(touchEvent),
+			latlng = this._map.layerPointToLatLng(layerPoint);
+		e.target.setLatLng(latlng);
 	},
 
 	_hasAvailableLayers: function () {
