@@ -119,7 +119,7 @@ L.Toolbar = L.Class.extend({
 		var link = L.DomUtil.create('a', options.className || '', options.container);
 		link.href = '#';
 
-		var icon = L.DomUtil.create('span', 'icon' || '', link);
+		var icon = L.DomUtil.create('span', 'icon', link);
 
 		if (options.text) {
 			link.innerHTML = options.text;
