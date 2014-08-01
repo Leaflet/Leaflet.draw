@@ -11,6 +11,7 @@ An in-progress version being developed on the master branch.
 
  * Add support for toolbar touch styles. (by [@alanshaw](https://github.com/alanshaw)). [#269](https://github.com/Leaflet/Leaflet.draw/pull/269 )
  * Add support for maintaining a layers color when entering edit mode.
+ * Add support for showing area when drawing a rectangle.
 
 ## 0.2.3 (January 14, 2014)
 
