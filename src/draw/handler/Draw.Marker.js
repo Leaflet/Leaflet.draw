@@ -4,7 +4,9 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	},
 
 	options: {
-		icon: new L.Icon.Default(),
+		shapeOptions: {
+			icon: new L.Icon.Default()
+		},
 		repeatMode: false,
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
@@ -96,7 +98,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	},
 
 	_fireCreatedEvent: function () {
-		var marker = new L.Marker(this._marker.getLatLng(), { icon: this.options.icon });
+		var marker = new L.Marker(this._marker.getLatLng(), this.options.shapeOptions);
 		L.Draw.Feature.prototype._fireCreatedEvent.call(this, marker);
 	}
 });
