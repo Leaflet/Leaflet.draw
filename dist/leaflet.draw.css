@@ -289,8 +289,12 @@
 	cursor: move;
 }
 
-.leaflet-edit-resize {
-	cursor: pointer;
+.leaflet-edit-resize-nesw {
+	cursor: nesw-resize;
+}
+
+.leaflet-edit-resize-nwse {
+	cursor: nwse-resize;
 }
 
 /* ================================================================== */
