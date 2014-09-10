@@ -782,6 +782,12 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		this._isDrawing = false;
 	},
 
+	_getTooltipText: function () {
+		return {
+			text: this._endLabelText
+		};
+	},
+
 	_onMouseDown: function (e) {
 		this._isDrawing = true;
 		this._startLatLng = e.latlng;
@@ -796,7 +802,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 
 		this._tooltip.updatePosition(latlng);
 		if (this._isDrawing) {
-			this._tooltip.updateContent({ text: this._endLabelText });
+			this._tooltip.updateContent(this._getTooltipText());
 			this._drawShape(latlng);
 		}
 	},
@@ -828,7 +834,8 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 			fillColor: null, //same as color by default
 			fillOpacity: 0.2,
 			clickable: true
-		}
+		},
+		metric: true // Whether to use the metric meaurement system or imperial
 	},
 
 	initialize: function (map, options) {
@@ -852,6 +859,23 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	_fireCreatedEvent: function () {
 		var rectangle = new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions);
 		L.Draw.SimpleShape.prototype._fireCreatedEvent.call(this, rectangle);
+	},
+
+	_getTooltipText: function () {
+		var tooltipText = L.Draw.SimpleShape.prototype._getTooltipText.call(this),
+			shape = this._shape,
+			latLngs, area, subtext;
+
+		if (shape) {
+			latLngs = this._shape.getLatLngs();
+			area = L.GeometryUtil.geodesicArea(latLngs);
+			subtext = L.GeometryUtil.readableArea(area, this.options.metric);
+		}
+
+		return {
+			text: tooltipText.text,
+			subtext: subtext
+		};
 	}
 });
 
@@ -2718,7 +2742,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 		if (isMarker) {
 			layer.dragging.enable();
 			layer.on('dragend', this._onMarkerDragEnd);
-		} else {
+		}
+
+		if (layer.editing) {
 			layer.editing.enable();
 		}
 	},
@@ -2742,7 +2768,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 		if (layer instanceof L.Marker) {
 			layer.dragging.disable();
 			layer.off('dragend', this._onMarkerDragEnd, this);
-		} else {
+		}
+
+		if (layer.editing) {
 			layer.editing.disable();
 		}
 	},
