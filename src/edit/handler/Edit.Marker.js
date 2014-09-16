@@ -10,7 +10,7 @@ L.Edit.Marker = L.Handler.extend({
 		var marker = this._marker;
 
 		marker.dragging.enable();
-		marker.on('dragend', this._onMarkerDragEnd);
+		marker.on('dragend', this._onDragEnd, marker);
 		this._toggleMarkerHighlight();
 	},
 
@@ -18,7 +18,7 @@ L.Edit.Marker = L.Handler.extend({
 		var marker = this._marker;
 
 		marker.dragging.disable();
-		marker.off('dragend', this._onDragEnd, this);
+		marker.off('dragend', this._onDragEnd, marker);
 		this._toggleMarkerHighlight();
 	},
 
