@@ -1058,14 +1058,18 @@ L.Edit.Marker = L.Handler.extend({
 	},
 
 	addHooks: function () {
-		this.dragging.enable();
-		this.on('dragend', this._onMarkerDragEnd);
+		var marker = this._marker;
+
+		marker.dragging.enable();
+		marker.on('dragend', this._onMarkerDragEnd);
 		this._toggleMarkerHighlight();
 	},
 
 	removeHooks: function () {
-		this.dragging.disable();
-		this.off('dragend', this._onDragEnd, this);
+		var marker = this._marker;
+
+		marker.dragging.disable();
+		marker.off('dragend', this._onDragEnd, this);
 		this._toggleMarkerHighlight();
 	},
 
@@ -1105,6 +1109,17 @@ L.Edit.Marker = L.Handler.extend({
 		icon.style.marginLeft = iconMarginLeft + 'px';
 	}
 });
+
+L.Marker.addInitHook(function () {
+	if (L.Edit.Marker) {
+		this.editing = new L.Edit.Marker(this);
+
+		if (this.options.editable) {
+			this.editing.enable();
+		}
+	}
+});
+
 
 L.Edit = L.Edit || {};
 
