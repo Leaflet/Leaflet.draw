@@ -135,6 +135,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 			} else if (layer instanceof L.Marker) { // Marker
 				layer.setLatLng(this._uneditedLayerProps[id].latlng);
 			}
+
+			layer.fire('revert-edited', { layer: layer });
 		}
 	},
 

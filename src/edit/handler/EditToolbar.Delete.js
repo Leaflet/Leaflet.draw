@@ -82,6 +82,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 		// Iterate of the deleted layers and add them back into the featureGroup
 		this._deletedLayers.eachLayer(function (layer) {
 			this._deletableLayers.addLayer(layer);
+			layer.fire('revert-deleted', { layer: layer });
 		}, this);
 	},
 
