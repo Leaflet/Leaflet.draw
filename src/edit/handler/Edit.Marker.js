@@ -28,9 +28,14 @@ L.Edit.Marker = L.Handler.extend({
 	},
 
 	_toggleMarkerHighlight: function () {
+
+		// Don't do anything if this layer is a marker but doesn't have an icon. Markers
+		// should usually have icons. If using Leaflet.draw with Leafler.markercluster there
+		// is a chance that a marker doesn't.
 		if (!this._icon) {
 			return;
 		}
+		
 		// This is quite naughty, but I don't see another way of doing it. (short of setting a new icon)
 		var icon = this._icon;
 
