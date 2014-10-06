@@ -18,8 +18,12 @@ L.Edit.SimpleShape = L.Handler.extend({
 	},
 
 	addHooks: function () {
-		if (this._shape._map) {
-			this._map = this._shape._map;
+		var shape = this._shape;
+
+		shape.setStyle(shape.options.editing);
+
+		if (shape._map) {
+			this._map = shape._map;
 
 			if (!this._markerGroup) {
 				this._initMarkers();
@@ -29,7 +33,11 @@ L.Edit.SimpleShape = L.Handler.extend({
 	},
 
 	removeHooks: function () {
-		if (this._shape._map) {
+		var shape = this._shape;
+
+		shape.setStyle(shape.options.original);
+
+		if (shape._map) {
 			this._unbindMarker(this._moveMarker);
 
 			for (var i = 0, l = this._resizeMarkers.length; i < l; i++) {
