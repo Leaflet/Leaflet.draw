@@ -81,6 +81,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 			this._map
 				.on('mousemove', this._onMouseMove, this)
+				.on('click', this._onMouseDown, this)
 				.on('mouseup', this._onMouseUp, this)
 				.on('zoomend', this._onZoomEnd, this);
 		}
@@ -112,6 +113,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this._map
 			.off('mousemove', this._onMouseMove, this)
+			.off('click', this._onMouseDown, this)
 			.off('zoomend', this._onZoomEnd, this);
 	},
 
@@ -212,6 +214,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_onMouseDown: function (e) {
 		var originalEvent = e.originalEvent;
 		this._mouseDownOrigin = L.point(originalEvent.clientX, originalEvent.clientY);
+
+		if (e.type === 'mousedown') {
+			this._map.off('click', this._onMouseDown, this);
+		} else {
+			this._onMouseUp(e);
+		}
 	},
 
 	_onMouseUp: function (e) {
