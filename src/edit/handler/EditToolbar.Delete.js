@@ -57,7 +57,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 			map.getContainer().focus();
 
 			this._deletableLayers.eachLayer(this._enableLayerDelete, this);
-			this._deletedLayers = new L.layerGroup();
+			this._deletedLayers = new L.LayerGroup();
 
 			this._tooltip = new L.Tooltip(this._map);
 			this._tooltip.updateContent({ text: L.drawLocal.edit.handlers.remove.tooltip.text });
