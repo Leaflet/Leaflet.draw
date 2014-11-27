@@ -3,7 +3,7 @@
   "version": "0.2.3",
   "description": "Vector drawing plugin for Leaflet",
   "dependencies": {
-    "leaflet-toolbar": "manleyjster#leaflet-toolbar"
+    "leaflet-toolbar": "manleyjster/Leaflet.Toolbar"
   },
   "devDependencies": {
     "leaflet": "~0.7.0",
