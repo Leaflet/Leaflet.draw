@@ -4,7 +4,7 @@ L.Edit = L.Edit || {};
  * L.Edit.Poly is an editing handler for polylines and polygons.
  */
 
-L.Edit.Poly = L.Handler.extend({
+L.Edit.Poly = L.ToolbarHandler.extend({
 	options: {
 		icon: new L.DivIcon({
 			iconSize: new L.Point(8, 8),
@@ -257,7 +257,7 @@ L.Edit.Poly = L.Handler.extend({
 
 L.Polyline.addInitHook(function () {
 
-	// Check to see if handler has already been initialized. This is to support versions of Leaflet that still have L.Handler.PolyEdit
+	// Check to see if handler has already been initialized. This is to support versions of Leaflet that still have L.ToolbarHandler.PolyEdit
 	if (this.editing) {
 		return;
 	}

@@ -1,6 +1,6 @@
 L.Edit = L.Edit || {};
 
-L.Edit.SimpleShape = L.Handler.extend({
+L.Edit.SimpleShape = L.ToolbarHandler.extend({
 	options: {
 		moveIcon: new L.DivIcon({
 			iconSize: new L.Point(8, 8),

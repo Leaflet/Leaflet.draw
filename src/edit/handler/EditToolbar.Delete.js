@@ -1,4 +1,4 @@
-L.EditToolbar.Delete = L.Handler.extend({
+L.EditToolbar.Delete = L.ToolbarHandler.extend({
 	statics: {
 		TYPE: 'remove' // not delete as delete is reserved in js
 	},
@@ -6,7 +6,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 	includes: L.Mixin.Events,
 
 	initialize: function (map, options) {
-		L.Handler.prototype.initialize.call(this, map);
+		L.ToolbarHandler.prototype.initialize.call(this, map);
 
 		L.Util.setOptions(this, options);
 
@@ -29,7 +29,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 		this._map.fire('draw:deletestart', { handler: this.type });
 
-		L.Handler.prototype.enable.call(this);
+		L.ToolbarHandler.prototype.enable.call(this);
 
 		this._deletableLayers
 			.on('layeradd', this._enableLayerDelete, this)
@@ -43,7 +43,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 			.off('layeradd', this._enableLayerDelete, this)
 			.off('layerremove', this._disableLayerDelete, this);
 
-		L.Handler.prototype.disable.call(this);
+		L.ToolbarHandler.prototype.disable.call(this);
 
 		this._map.fire('draw:deletestop', { handler: this.type });
 

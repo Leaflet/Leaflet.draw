@@ -1,12 +1,16 @@
-L.EditToolbar.Edit = L.Handler.extend({
+L.EditToolbar.Edit = L.ToolbarHandler.extend({
 	statics: {
 		TYPE: 'edit'
+	},
+
+	options: {
+		selectedPathOptions: true
 	},
 
 	includes: L.Mixin.Events,
 
 	initialize: function (map, options) {
-		L.Handler.prototype.initialize.call(this, map);
+		L.ToolbarHandler.prototype.initialize.call(this, map);
 
 		L.setOptions(this, options);
 
@@ -33,7 +37,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this._map.fire('draw:editstart', { handler: this.type });
 			//allow drawLayer to be updated before beginning edition.
 
-		L.Handler.prototype.enable.call(this);
+		L.ToolbarHandler.prototype.enable.call(this);
 		this._featureGroup
 			.on('layeradd', this._enableLayerEdit, this)
 			.on('layerremove', this._disableLayerEdit, this);
@@ -44,7 +48,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this._featureGroup
 			.off('layeradd', this._enableLayerEdit, this)
 			.off('layerremove', this._disableLayerEdit, this);
-		L.Handler.prototype.disable.call(this);
+		L.ToolbarHandler.prototype.disable.call(this);
 		this._map.fire('draw:editstop', { handler: this.type });
 		this.fire('disabled', {handler: this.type});
 	},

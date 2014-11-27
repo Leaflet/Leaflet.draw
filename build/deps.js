@@ -6,6 +6,13 @@ var deps = {
 		desc: 'The core of the plugin. Currently only includes the version.'
 	},
 
+	Toolbar: {
+		src: [
+			'../node_modules/leaflet-toolbar/dist/Leaflet.Toolbar.js'
+		],
+		desc: 'External dependencies (Leaflet plugins).  Curently only includes Leaflet.Toolbar.'
+	},
+
 	DrawHandlers: {
 		src: [
 			'draw/handler/Draw.Feature.js',
@@ -17,7 +24,7 @@ var deps = {
 			'draw/handler/Draw.Marker.js'
 		],
 		desc: 'Drawing handlers for: polylines, polygons, rectangles, circles and markers.',
-		deps: ['Core']
+		deps: ['Core', 'Toolbar']
 	},
 
 	EditHandlers: {
@@ -29,7 +36,7 @@ var deps = {
 			'edit/handler/Edit.Circle.js'
 		],
 		desc: 'Editing handlers for: polylines, polygons, rectangles, and circles.',
-		deps: ['Core']
+		deps: ['Core', 'Toolbar']
 	},
 
 	Extensions: {
@@ -53,13 +60,14 @@ var deps = {
 		deps: ['Extensions']
 	},
 
-	DrawUI: {
-		src: [
-			'draw/DrawToolbar.js'
-		],
-		desc: 'Draw toolbar.',
-		deps: ['DrawHandlers', 'CommonUI']
-	},
+	// TODO: Rewrite.
+	// DrawUI: {
+	// 	src: [
+	// 		'draw/DrawToolbar.js'
+	// 	],
+	// 	desc: 'Draw toolbar.',
+	// 	deps: ['DrawHandlers', 'CommonUI']
+	// },
 
 	EditUI: {
 		src: [
