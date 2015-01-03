@@ -1,6 +1,6 @@
 L.Edit = L.Edit || {};
 
-L.Edit.Marker = L.ToolbarHandler.extend({
+L.Edit.Marker = L.Handler.extend({
 	initialize: function (marker, options) {
 		this._marker = marker;
 		L.setOptions(this, options);
