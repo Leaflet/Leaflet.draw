@@ -6,13 +6,6 @@ var deps = {
 		desc: 'The core of the plugin. Currently only includes the version.'
 	},
 
-	Toolbar: {
-		src: [
-			'../node_modules/leaflet-toolbar/dist/Leaflet.Toolbar.js'
-		],
-		desc: 'External dependencies (Leaflet plugins).  Curently only includes Leaflet.Toolbar.'
-	},
-
 	DrawHandlers: {
 		src: [
 			'draw/handler/Draw.Feature.js',
@@ -24,7 +17,7 @@ var deps = {
 			'draw/handler/Draw.Marker.js'
 		],
 		desc: 'Drawing handlers for: polylines, polygons, rectangles, circles and markers.',
-		deps: ['Core', 'Toolbar']
+		deps: ['Core']
 	},
 
 	EditHandlers: {
@@ -36,7 +29,7 @@ var deps = {
 			'edit/handler/Edit.Circle.js'
 		],
 		desc: 'Editing handlers for: polylines, polygons, rectangles, and circles.',
-		deps: ['Core', 'Toolbar']
+		deps: ['Core']
 	},
 
 	Extensions: {
@@ -52,28 +45,32 @@ var deps = {
 
 	CommonUI: {
 		src: [
-			'Control.Draw.js',
-			'Toolbar.js',
 			'Tooltip.js'
 		],
 		desc: 'Common UI components used.',
 		deps: ['Extensions']
 	},
 
-	// TODO: Rewrite.
-	// DrawUI: {
-	// 	src: [
-	// 		'draw/DrawToolbar.js'
-	// 	],
-	// 	desc: 'Draw toolbar.',
-	// 	deps: ['DrawHandlers', 'CommonUI']
-	// },
+	DrawUI: {
+		src: [
+			'draw/DrawToolbar.js',
+			'draw/control/Draw.Cancel.js',
+			'draw/control/Draw.RemoveLastPoint.js',
+			'draw/control/DrawToolbar.Control.js'
+		],
+		desc: 'Draw toolbar.',
+		deps: ['DrawHandlers', 'CommonUI']
+	},
 
 	EditUI: {
 		src: [
 			'edit/EditToolbar.js',
-			'edit/handler/EditToolbar.Edit.js',
-			'edit/handler/EditToolbar.Delete.js'
+			'edit/control/Edit.Control.Edit.js',
+			'edit/control/Edit.Control.Delete.js',
+			'edit/control/EditToolbar.Control.js',
+			'edit/popup/Edit.Popup.Edit.js',
+			'edit/popup/Edit.Popup.Delete.js',
+			'edit/popup/EditToolbar.Popup.js'
 		],
 		desc: 'Edit toolbar.',
 		deps: ['EditHandlers', 'CommonUI']
