@@ -1,6 +1,6 @@
 L.Draw = {};
 
-L.Draw.Feature = L.ToolbarHandler.extend({
+L.Draw.Feature = L.ToolbarAction.extend({
 	includes: L.Mixin.Events,
 
 	initialize: function (map, options) {
@@ -13,13 +13,14 @@ L.Draw.Feature = L.ToolbarHandler.extend({
 		if (options && options.shapeOptions) {
 			options.shapeOptions = L.Util.extend({}, this.options.shapeOptions, options.shapeOptions);
 		}
-		L.setOptions(this, options);
+
+		L.ToolbarAction.prototype.initialize.call(this, options);
 	},
 
 	enable: function () {
 		if (this._enabled) { return; }
 
-		L.ToolbarHandler.prototype.enable.call(this);
+		L.ToolbarAction.prototype.enable.call(this);
 
 		this.fire('enabled', { handler: this.type });
 
@@ -29,7 +30,7 @@ L.Draw.Feature = L.ToolbarHandler.extend({
 	disable: function () {
 		if (!this._enabled) { return; }
 
-		L.ToolbarHandler.prototype.disable.call(this);
+		L.ToolbarAction.prototype.disable.call(this);
 
 		this._map.fire('draw:drawstop', { layerType: this.type });
 
