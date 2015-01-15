@@ -17,7 +17,10 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 			fillOpacity: 0.2,
 			clickable: true
 		},
-		toolbarIcon: { className: 'leaflet-draw-draw-polygon', tooltip: 'Draw a polygon.' }
+		toolbarIcon: {
+			className: 'leaflet-draw-draw-polygon',
+			tooltip: L.drawLocal.draw.toolbar.buttons.polygon
+		}
 	},
 
 	initialize: function (map, options) {

@@ -15,7 +15,10 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 			clickable: true
 		},
 		metric: true, // Whether to use the metric meaurement system or imperial,
-		toolbarIcon: { className: 'leaflet-draw-draw-rectangle', tooltip: 'Draw a rectangle.' }
+		toolbarIcon: {
+			className: 'leaflet-draw-draw-rectangle',
+			tooltip: L.drawLocal.draw.toolbar.buttons.rectangle
+		}
 	},
 
 	initialize: function (map, options) {

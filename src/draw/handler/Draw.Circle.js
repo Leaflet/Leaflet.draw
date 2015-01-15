@@ -16,7 +16,10 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 		},
 		showRadius: true,
 		metric: true, // Whether to use the metric meaurement system or imperial
-		toolbarIcon: { className: 'leaflet-draw-draw-circle', tooltip: 'Draw a circle.' }
+		toolbarIcon: {
+			className: 'leaflet-draw-draw-circle',
+			tooltip: 'Hi'
+		}
 	},
 
 	initialize: function (map, options) {
