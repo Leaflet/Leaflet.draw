@@ -3,6 +3,7 @@ module.exports = function (config) {
 
 	var libSources = require(__dirname+'/../build/build.js').getFiles();
 	var leafletSources = require(__dirname+'/../node_modules/leaflet/build/build.js').getFiles();
+	var leafletToolbar = __dirname+'/../node_modules/leaflet-toolbar/dist/Leaflet.Toolbar.js';
 
 	for (var i=0; i < leafletSources.length; i++) {
 		leafletSources[i] = __dirname+"/../node_modules/leaflet/" + leafletSources[i];
@@ -12,7 +13,7 @@ module.exports = function (config) {
 		"spec/before.js",
 		"spec/sinon.js",
 		"spec/expect.js"
-	].concat(leafletSources, libSources, [
+	].concat(leafletSources, leafletToolbar, libSources, [
 		"spec/after.js",
 		"node_modules/happen/happen.js",
 		"spec/suites/SpecHelper.js",
