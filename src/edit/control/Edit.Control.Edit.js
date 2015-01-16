@@ -7,7 +7,18 @@ L.Edit.Control.Edit = L.ToolbarAction.extend({
 	},
 
 	options: {
-		selectedPathOptions: true,
+		selectedPathOptions: {
+			color: '#fe57a1', /* Hot pink all the things! */
+			opacity: 0.6,
+			dashArray: '10, 10',
+
+			fill: true,
+			fillColor: '#fe57a1',
+			fillOpacity: 0.1,
+
+			// Whether to user the existing layers color
+			maintainColor: false
+		},
 		toolbarIcon: { className: 'leaflet-draw-edit-edit' }
 	},
 

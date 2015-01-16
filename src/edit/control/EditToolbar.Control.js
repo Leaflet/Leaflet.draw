@@ -13,9 +13,9 @@ L.EditToolbar.Control = L.Toolbar.Control.extend({
 			featureGroup = this._arguments[1],
 			A = L.Toolbar.prototype._getActionConstructor.call(this, Action);
 
-		return A.extend({ 
+		return A.extend({
 			options: { featureGroup: featureGroup },
-			initialize: function() {
+			initialize: function () {
 				Action.prototype.initialize.call(this, map);
 			}
 		});
@@ -26,11 +26,11 @@ L.EditToolbar.Save = L.ToolbarAction.extend({
 	options: {
 		toolbarIcon: { html: 'Save' }
 	},
-	initialize: function(map, featureGroup, editing) {
+	initialize: function (map, featureGroup, editing) {
 		this.editing = editing;
 		L.ToolbarAction.prototype.initialize.call(this);
 	},
-	addHooks: function() {
+	addHooks: function () {
 		this.editing.save();
 		this.editing.disable();
 	}
@@ -40,12 +40,12 @@ L.EditToolbar.Undo = L.ToolbarAction.extend({
 	options: {
 		toolbarIcon: { html: 'Undo' }
 	},
-	initialize: function(map, featureGroup, editing) {
+	initialize: function (map, featureGroup, editing) {
 		this.editing = editing;
 		L.ToolbarAction.prototype.initialize.call(this);
 	},
-	addHooks: function() {
-		this.editing.revertLayers();		
+	addHooks: function () {
+		this.editing.revertLayers();
 		this.editing.disable();
 	}
 });

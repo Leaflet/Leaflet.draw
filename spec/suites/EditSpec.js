@@ -41,9 +41,8 @@ describe("L.Edit", function () {
 
 		beforeEach(function () {
 			drawnItems = new L.FeatureGroup().addTo(map);
-			edit = new L.EditToolbar.Edit(map, {
-				featureGroup: drawnItems,
-				selectedPathOptions: L.EditToolbar.prototype.options.edit.selectedPathOptions
+			edit = new L.Edit.Control.Edit(map, {
+				featureGroup: drawnItems
 			});
 			poly = new L.Polyline(L.latLng(41, -87), L.latLng(42, -88));
 		});
