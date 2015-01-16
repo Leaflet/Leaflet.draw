@@ -18,7 +18,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 		metric: true, // Whether to use the metric meaurement system or imperial
 		toolbarIcon: {
 			className: 'leaflet-draw-draw-circle',
-			tooltip: 'Hi'
+			tooltip: L.drawLocal.draw.toolbar.buttons.circle
 		}
 	},
 
