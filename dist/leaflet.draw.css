@@ -283,6 +283,7 @@
 	border: 4px dashed rgba(254, 87, 161, 0.6);
 	-webkit-border-radius: 4px;
 	        border-radius: 4px;
+	box-sizing: content-box;
 }
 
 .leaflet-edit-move {
