@@ -2,9 +2,6 @@
   "name": "leaflet-draw",
   "version": "0.2.3",
   "description": "Vector drawing plugin for Leaflet",
-  "dependencies": {
-    "leaflet-toolbar": "manleyjster/Leaflet.Toolbar"
-  },
   "devDependencies": {
     "leaflet": "~0.7.0",
     "jshint": "~2.3.0",
@@ -14,7 +11,8 @@
     "happen": "~0.1.3",
     "karma": "^0.12.19",
     "karma-mocha": "~0.1.0",
-    "karma-coverage": "~0.1.3"
+    "karma-coverage": "~0.1.3",
+    "leaflet-toolbar": "~0.1.2"
   },
   "main": "dist/leaflet.draw.js",
   "directories": {
