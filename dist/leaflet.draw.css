@@ -6,7 +6,7 @@
 	position: relative;
 }
 
-.leaflet-draw-toolbar {
+.leaflet-draw-toolbar.leaflet-control-toolbar {
 	margin-top: 12px;
 }
 
@@ -22,12 +22,12 @@
 	border-bottom-right-radius: 0;
 }
 
-.leaflet-draw-toolbar a {
+.leaflet-draw-toolbar > li > a {
 	background-image: url('images/spritesheet.png');
 	background-repeat: no-repeat;
 }
 
-.leaflet-retina .leaflet-draw-toolbar a {
+.leaflet-retina .leaflet-draw-toolbar > li > a {
 	background-image: url('images/spritesheet-2x.png');
 	background-size: 270px 30px;
 }
