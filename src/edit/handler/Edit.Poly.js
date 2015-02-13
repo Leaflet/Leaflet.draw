@@ -93,6 +93,7 @@ L.Edit.Poly = L.Handler.extend({
 		marker._origLatLng = latlng;
 		marker._index = index;
 
+		marker.on('dragstart', this._fireEditStart, this);
 		marker.on('drag', this._onMarkerDrag, this);
 		marker.on('dragend', this._fireEdit, this);
 
@@ -110,10 +111,15 @@ L.Edit.Poly = L.Handler.extend({
 		this._updateIndexes(i, -1);
 
 		marker
+			.off('dragstart', this._fireEditStart, this)
 			.off('drag', this._onMarkerDrag, this)
 			.off('dragend', this._fireEdit, this)
 			.off('click', this._onMarkerClick, this);
 	},
+	
+	_fireEditStart: function () {
+    		this._poly.fire('editstart');
+  	},
 
 	_fireEdit: function () {
 		this._poly.edited = true;
