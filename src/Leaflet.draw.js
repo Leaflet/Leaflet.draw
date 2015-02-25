@@ -33,7 +33,8 @@ L.drawLocal = {
 			circle: {
 				tooltip: {
 					start: 'Click and drag to draw circle.'
-				}
+				},
+				radius: 'Radius'
 			},
 			marker: {
 				tooltip: {

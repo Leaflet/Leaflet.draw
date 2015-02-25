@@ -27,6 +27,14 @@ L.Edit.Poly = L.Handler.extend({
 	},
 
 	addHooks: function () {
+		var poly = this._poly;
+
+		if (!(poly instanceof L.Polygon)) {
+			poly.options.editing.fill = false;
+		}
+
+		poly.setStyle(poly.options.editing);
+
 		if (this._poly._map) {
 
 			this._map = this._poly._map; // Set map
@@ -39,8 +47,12 @@ L.Edit.Poly = L.Handler.extend({
 	},
 
 	removeHooks: function () {
-		if (this._poly._map) {
-			this._poly._map.removeLayer(this._markerGroup);
+		var poly = this._poly;
+
+		poly.setStyle(poly.options.original);
+
+		if (poly._map) {
+			poly._map.removeLayer(this._markerGroup);
 			delete this._markerGroup;
 			delete this._markers;
 		}
