@@ -1,5 +1,5 @@
 L.Map.mergeOptions({
-  touchExtend: true
+	touchExtend: true
 });
 
 L.Map.TouchExtend = L.Handler.extend({

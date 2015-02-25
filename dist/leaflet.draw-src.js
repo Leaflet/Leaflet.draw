@@ -92,7 +92,7 @@ L.drawLocal = {
 				edit: 'Edit layers.',
 				editDisabled: 'No layers to edit.',
 				remove: 'Delete layers.',
-				removeDisabled: 'No layers to delete.'
+				removeDisabled: 'No layers to delete.',
 			}
 		},
 		handlers: {
@@ -230,7 +230,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	initialize: function (map, options) {
 		// if touch, switch to touch icon
-		if (L.Browser.touch){ 
+		if (L.Browser.touch) {
 			this.options.icon = this.options.touchIcon;
 		}
 
@@ -257,7 +257,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map.addLayer(this._markerGroup);
 
 			this._poly = new L.Polyline([], this.options.shapeOptions);
-
+			
 			this._tooltip.updateContent(this._getTooltipText());
 
 			// Make a transparent marker that will used to catch click events. These click
@@ -284,7 +284,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map
 				.on('mousemove', this._onMouseMove, this)
 				.on('mouseup', this._onMouseUp, this)
-				.on('zoomend', this._onZoomEnd, this);
 				.on('zoomlevelschange', this._onZoomEnd, this)
 				.on('click', this._onTouch, this);
 		}
@@ -360,7 +359,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._vertexChanged(latlng, true);
 	},
 
-	completeShape: function(){
+	completeShape: function () {
 		if (this._markers.length <= 1) {
 			return;
 		}
@@ -437,7 +436,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_onTouch: function (e) {
 		// #TODO: use touchstart and touchend vs using click(touch start & end).
-		if (L.Browser.touch){ // #TODO: get rid of this once leaflet fixes their click/touch.
+		if (L.Browser.touch) { // #TODO: get rid of this once leaflet fixes their click/touch.
 			this._onMouseDown(e);
 			this._onMouseUp(e);
 		}
@@ -1200,7 +1199,7 @@ L.Edit.Poly = L.Handler.extend({
 
 	initialize: function (poly, options) {
 		// if touch, switch to touch icon
-		if (L.Browser.touch){ 
+		if (L.Browser.touch) {
 			this.options.icon = this.options.touchIcon;
 		}
 
@@ -1336,6 +1335,7 @@ L.Edit.Poly = L.Handler.extend({
 	},
 
 	_onMarkerClick: function (e) {
+
 		var minPoints = L.Polygon && (this._poly instanceof L.Polygon) ? 4 : 3,
 			marker = e.target;
 
@@ -1372,7 +1372,7 @@ L.Edit.Poly = L.Handler.extend({
 		this._fireEdit();
 	},
 
-	_onTouchMove: function (e){
+	_onTouchMove: function (e) {
 
 		var layerPoint = this._map.mouseEventToLayerPoint(e.originalEvent.touches[0]),
 			latlng = this._map.layerPointToLatLng(layerPoint),
@@ -1529,7 +1529,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 
 	initialize: function (shape, options) {
 		// if touch, switch to touch icon
-		if (L.Browser.touch){ 
+		if (L.Browser.touch) {
 			this.options.moveIcon = this.options.touchMoveIcon;
 			this.options.resizeIcon = this.options.touchResizeIcon;
 		}
@@ -1540,16 +1540,17 @@ L.Edit.SimpleShape = L.Handler.extend({
 
 	addHooks: function () {
 		var shape = this._shape;
+		if (this._shape._map) {
+			this._map = this._shape._map;
+			shape.setStyle(shape.options.editing);
 
-		shape.setStyle(shape.options.editing);
-
-		if (shape._map) {
-			this._map = shape._map;
-
-			if (!this._markerGroup) {
-				this._initMarkers();
+			if (shape._map) {
+				this._map = shape._map;
+				if (!this._markerGroup) {
+					this._initMarkers();
+				}
+				this._map.addLayer(this._markerGroup);
 			}
-			this._map.addLayer(this._markerGroup);
 		}
 	},
 
@@ -1668,7 +1669,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 	_onTouchStart: function (e) {
 		L.Edit.SimpleShape.prototype._onMarkerDragStart.call(this, e);
 
-		if (typeof(this._getCorners) === "function") { 
+		if (typeof(this._getCorners) === 'function') {
 			// Save a reference to the opposite point
 			var corners = this._getCorners(),
 				marker = e.target,
@@ -1904,7 +1905,7 @@ L.Circle.addInitHook(function () {
 });
 
 L.Map.mergeOptions({
-  touchExtend: true
+	touchExtend: true
 });
 
 L.Map.TouchExtend = L.Handler.extend({
@@ -2469,6 +2470,7 @@ L.Toolbar = L.Class.extend({
 	},
 
 	_createButton: function (options) {
+
 		var link = L.DomUtil.create('a', options.className || '', options.container);
 		link.href = '#';
 
@@ -2924,8 +2926,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 		L.Handler.prototype.initialize.call(this, map);
 
 		L.setOptions(this, options);
-		// Set options to the default unless already set
-		this._selectedPathOptions = options.selectedPathOptions;
 
 		// Store the selectable layer group for ease of access
 		this._featureGroup = options.featureGroup;
@@ -3082,7 +3082,16 @@ L.EditToolbar.Edit = L.Handler.extend({
 			layer.options.editing = pathOptions;
 		}
 
-		layer.editing.enable();
+		if (this.isMarker) {
+			layer.dragging.enable();
+			layer
+				.on('dragend', this._onMarkerDragEnd)
+				// #TODO: remove when leaflet finally fixes their draggable so it's touch friendly again.
+				.on('touchmove', this._onTouchMove, this)
+				.on('touchend', this._onMarkerDragEnd, this);
+		} else {
+			layer.editing.enable();
+		}
 	},
 
 	_disableLayerEdit: function (e) {
@@ -3110,7 +3119,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			layer
 				.off('dragend', this._onMarkerDragEnd, this)
 				.off('touchmove', this._onTouchMove, this)
- 				.off('touchend', this._onMarkerDragEnd, this);
+				.off('touchend', this._onMarkerDragEnd, this);
 		} else {
 			layer.editing.disable();
 		}
@@ -3120,7 +3129,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this._tooltip.updatePosition(e.latlng);
 	},
 
-	_onTouchMove: function (e){
+	_onTouchMove: function (e) {
 		var touchEvent = e.originalEvent.changedTouches[0],
 			layerPoint = this._map.mouseEventToLayerPoint(touchEvent),
 			latlng = this._map.layerPointToLatLng(layerPoint);

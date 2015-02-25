@@ -22,7 +22,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 
 	initialize: function (shape, options) {
 		// if touch, switch to touch icon
-		if (L.Browser.touch){ 
+		if (L.Browser.touch) {
 			this.options.moveIcon = this.options.touchMoveIcon;
 			this.options.resizeIcon = this.options.touchResizeIcon;
 		}
@@ -34,18 +34,16 @@ L.Edit.SimpleShape = L.Handler.extend({
 	addHooks: function () {
 		var shape = this._shape;
 		if (this._shape._map) {
-
 			this._map = this._shape._map;
+			shape.setStyle(shape.options.editing);
 
-		shape.setStyle(shape.options.editing);
-
-		if (shape._map) {
-			this._map = shape._map;
-
-			if (!this._markerGroup) {
-				this._initMarkers();
+			if (shape._map) {
+				this._map = shape._map;
+				if (!this._markerGroup) {
+					this._initMarkers();
+				}
+				this._map.addLayer(this._markerGroup);
 			}
-			this._map.addLayer(this._markerGroup);
 		}
 	},
 
@@ -164,7 +162,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 	_onTouchStart: function (e) {
 		L.Edit.SimpleShape.prototype._onMarkerDragStart.call(this, e);
 
-		if (typeof(this._getCorners) === "function") { 
+		if (typeof(this._getCorners) === 'function') {
 			// Save a reference to the opposite point
 			var corners = this._getCorners(),
 				marker = e.target,

@@ -37,7 +37,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	initialize: function (map, options) {
 		// if touch, switch to touch icon
-		if (L.Browser.touch){ 
+		if (L.Browser.touch) {
 			this.options.icon = this.options.touchIcon;
 		}
 
@@ -166,7 +166,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._vertexChanged(latlng, true);
 	},
 
-	completeShape: function(){
+	completeShape: function () {
 		if (this._markers.length <= 1) {
 			return;
 		}
@@ -243,7 +243,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_onTouch: function (e) {
 		// #TODO: use touchstart and touchend vs using click(touch start & end).
-		if (L.Browser.touch){ // #TODO: get rid of this once leaflet fixes their click/touch.
+		if (L.Browser.touch) { // #TODO: get rid of this once leaflet fixes their click/touch.
 			this._onMouseDown(e);
 			this._onMouseUp(e);
 		}

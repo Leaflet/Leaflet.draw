@@ -18,7 +18,7 @@ L.Edit.Poly = L.Handler.extend({
 
 	initialize: function (poly, options) {
 		// if touch, switch to touch icon
-		if (L.Browser.touch){ 
+		if (L.Browser.touch) {
 			this.options.icon = this.options.touchIcon;
 		}
 
@@ -191,7 +191,7 @@ L.Edit.Poly = L.Handler.extend({
 		this._fireEdit();
 	},
 
-	_onTouchMove: function (e){
+	_onTouchMove: function (e) {
 
 		var layerPoint = this._map.mouseEventToLayerPoint(e.originalEvent.touches[0]),
 			latlng = this._map.layerPointToLatLng(layerPoint),
