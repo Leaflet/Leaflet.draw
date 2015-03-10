@@ -41,7 +41,7 @@
     "url": "https://github.com/Leaflet/Leaflet.draw.git"
   },
   "dependencies": {
-    "leaflet-dist": "0.7.x"
+    "leaflet": "^0.7.0"
   },
   "devDependencies": {
     "leaflet": "~0.7.0",
