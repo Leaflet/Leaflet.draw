@@ -133,6 +133,7 @@ L.Edit.Poly = L.Handler.extend({
 		}
 
 		this._poly.redraw();
+		this._poly.fire('editdrag');
 	},
 
 	_onMarkerClick: function (e) {
