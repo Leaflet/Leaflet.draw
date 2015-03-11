@@ -264,6 +264,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 			this._mouseMarker
 				.on('mousedown', this._onMouseDown, this)
+				.on('mouseout', this._onMouseOut, this)
 				.addTo(this._map);
 
 			this._map
@@ -290,6 +291,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this._mouseMarker
 			.off('mousedown', this._onMouseDown, this)
+			.off('mouseout', this._onMouseOut, this)
 			.off('mouseup', this._onMouseUp, this);
 		this._map.removeLayer(this._mouseMarker);
 		delete this._mouseMarker;
@@ -412,6 +414,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			}
 		}
 		this._mouseDownOrigin = null;
+	},
+
+	_onMouseOut: function () {
+		if (this._tooltip) {
+			this._tooltip._onMouseOut.call(this._tooltip)
+		}
 	},
 
 	_updateFinishHandler: function () {
@@ -2323,9 +2331,13 @@ L.Tooltip = L.Class.extend({
 
 		this._container = map.options.drawControlTooltips ? L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane) : null;
 		this._singleLineLabel = false;
+
+		this._map.on('mouseout', this._onMouseOut, this);
 	},
 
 	dispose: function () {
+		this._map.off('mouseout', this._onMouseOut, this);
+
 		if (this._container) {
 			this._popupPane.removeChild(this._container);
 			this._container = null;
@@ -2379,8 +2391,15 @@ L.Tooltip = L.Class.extend({
 			L.DomUtil.removeClass(this._container, 'leaflet-error-draw-tooltip');
 		}
 		return this;
+	},
+
+	_onMouseOut: function () {
+		if (this._container) {
+			this._container.style.visibility = 'hidden';
+		}
 	}
 });
+
 
 L.DrawToolbar = L.Toolbar.extend({
 

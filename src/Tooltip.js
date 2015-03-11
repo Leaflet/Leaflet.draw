@@ -5,9 +5,13 @@ L.Tooltip = L.Class.extend({
 
 		this._container = map.options.drawControlTooltips ? L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane) : null;
 		this._singleLineLabel = false;
+
+		this._map.on('mouseout', this._onMouseOut, this);
 	},
 
 	dispose: function () {
+		this._map.off('mouseout', this._onMouseOut, this);
+
 		if (this._container) {
 			this._popupPane.removeChild(this._container);
 			this._container = null;
@@ -61,5 +65,11 @@ L.Tooltip = L.Class.extend({
 			L.DomUtil.removeClass(this._container, 'leaflet-error-draw-tooltip');
 		}
 		return this;
+	},
+
+	_onMouseOut: function () {
+		if (this._container) {
+			this._container.style.visibility = 'hidden';
+		}
 	}
 });

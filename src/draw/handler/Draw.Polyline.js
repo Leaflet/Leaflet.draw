@@ -77,6 +77,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 			this._mouseMarker
 				.on('mousedown', this._onMouseDown, this)
+				.on('mouseout', this._onMouseOut, this)
 				.addTo(this._map);
 
 			this._map
@@ -103,6 +104,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this._mouseMarker
 			.off('mousedown', this._onMouseDown, this)
+			.off('mouseout', this._onMouseOut, this)
 			.off('mouseup', this._onMouseUp, this);
 		this._map.removeLayer(this._mouseMarker);
 		delete this._mouseMarker;
@@ -225,6 +227,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			}
 		}
 		this._mouseDownOrigin = null;
+	},
+
+	_onMouseOut: function () {
+		if (this._tooltip) {
+			this._tooltip._onMouseOut.call(this._tooltip)
+		}
 	},
 
 	_updateFinishHandler: function () {
