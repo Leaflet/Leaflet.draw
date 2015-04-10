@@ -185,7 +185,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onMouseMove: function (e) {
-		var newPos = L.point(e.originalEvent.clientX - 10, e.originalEvent.clientY - 10);
+		var newPos = this._map.mouseEventToLayerPoint(e.originalEvent);
 		var latlng = this._map.layerPointToLatLng(newPos);
 
 		// Save latlng
