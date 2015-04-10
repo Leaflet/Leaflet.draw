@@ -77,11 +77,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 			this._mouseMarker
 				.on('mousedown', this._onMouseDown, this)
-				.on('mouseup', this._onMouseUp, this)
-				.on('mousemove', this._onMouseMove, this)
+				.on('mouseup', this._onMouseUp, this) // Necessary for 0.8 compatibility
+				.on('mousemove', this._onMouseMove, this) // Necessary to prevent 0.8 stutter
 				.addTo(this._map);
 
 			this._map
+				.on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
 				.on('mousemove', this._onMouseMove, this)
 				.on('zoomend', this._onZoomEnd, this);
 		}
@@ -113,6 +114,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._clearGuides();
 
 		this._map
+			.off('mouseup', this._onMouseUp, this)
 			.off('mousemove', this._onMouseMove, this)
 			.off('zoomend', this._onZoomEnd, this);
 	},
