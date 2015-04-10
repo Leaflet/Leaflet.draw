@@ -77,11 +77,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 			this._mouseMarker
 				.on('mousedown', this._onMouseDown, this)
+				.on('mouseup', this._onMouseUp, this)
 				.addTo(this._map);
 
 			this._map
 				.on('mousemove', this._onMouseMove, this)
-				.on('mouseup', this._onMouseUp, this)
 				.on('zoomend', this._onZoomEnd, this);
 		}
 	},
