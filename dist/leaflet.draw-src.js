@@ -10,7 +10,7 @@
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
 
-L.drawVersion = '0.2.4-dev';
+L.drawVersion = '0.2.5-dev';
 
 L.drawLocal = {
 	draw: {
@@ -1222,6 +1222,7 @@ L.Edit.Poly = L.Handler.extend({
 		marker._origLatLng = latlng;
 		marker._index = index;
 
+		marker.on('dragstart', this._onMarkerDragStart, this);
 		marker.on('drag', this._onMarkerDrag, this);
 		marker.on('dragend', this._fireEdit, this);
 
@@ -1229,7 +1230,9 @@ L.Edit.Poly = L.Handler.extend({
 
 		return marker;
 	},
-
+	_onMarkerDragStart: function () {
+		this._poly.fire('editstart');
+	},
 	_removeMarker: function (marker) {
 		var i = marker._index;
 
@@ -1239,6 +1242,7 @@ L.Edit.Poly = L.Handler.extend({
 		this._updateIndexes(i, -1);
 
 		marker
+			.off('dragstart', this._onMarkerDragStart, this)
 			.off('drag', this._onMarkerDrag, this)
 			.off('dragend', this._fireEdit, this)
 			.off('click', this._onMarkerClick, this);
