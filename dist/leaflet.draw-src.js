@@ -1151,26 +1151,26 @@ L.Edit.Poly = L.Handler.extend({
 		L.setOptions(this, options);
 	},
 
-	_eachVertexHander: function (callback) {
+	_eachVertexHandler: function (callback) {
 		for (var i = 0; i < this._verticesHandlers.length; i++) {
 			callback(this._verticesHandlers[i]);
 		}
 	},
 
 	addHooks: function () {
-		this._eachVertexHander(function (handler) {
+		this._eachVertexHandler(function (handler) {
 			handler.addHooks();
 		});
 	},
 
 	removeHooks: function () {
-		this._eachVertexHander(function (handler) {
+		this._eachVertexHandler(function (handler) {
 			handler.removeHooks();
 		});
 	},
 
 	updateMarkers: function () {
-		this._eachVertexHander(function (handler) {
+		this._eachVertexHandler(function (handler) {
 			handler.updateMarkers();
 		});
 	}
@@ -1234,8 +1234,6 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 
 		var latlngs = this._latlngs,
 			i, j, len, marker;
-
-		// TODO refactor holes implementation in Polygon to support it here
 
 		for (i = 0, len = latlngs.length; i < len; i++) {
 
