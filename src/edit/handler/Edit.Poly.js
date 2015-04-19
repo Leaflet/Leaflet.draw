@@ -197,7 +197,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			marker = e.target;
 
 		// If removing this point would create an invalid polyline/polygon don't remove
-		if (this._poly._latlngs.length < minPoints) {
+		if (this._latlngs.length < minPoints) {
 			return;
 		}
 
