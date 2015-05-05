@@ -1,5 +1,5 @@
 {
-	"name": "leaflet-draw",
+	"name": "geoplex.leaflet-draw",
 	"description": "Vector drawing plugin for Leaflet",
 	"version": "0.2.4",
 	"main": [
