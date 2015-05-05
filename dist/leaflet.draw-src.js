@@ -1966,126 +1966,135 @@ L.Polygon.include({
 
 L.Control.Draw = L.Control.extend({
 
-	options: {
-		position: 'topleft',
-		draw: {},
-		edit: false
-	},
+    options: {
+        position: 'topleft',
+        draw: {},
+        edit: false
+    },
 
-	initialize: function (options) {
-		if (L.version < '0.7') {
-			throw new Error('Leaflet.draw 0.2.3+ requires Leaflet 0.7.0+. Download latest from https://github.com/Leaflet/Leaflet/');
-		}
+    initialize: function (options) {
+        if (L.version < '0.7') {
+            throw new Error('Leaflet.draw 0.2.3+ requires Leaflet 0.7.0+. Download latest from https://github.com/Leaflet/Leaflet/');
+        }
 
-		L.Control.prototype.initialize.call(this, options);
+        L.Control.prototype.initialize.call(this, options);
 
-		var toolbar;
+        var toolbar;
 
-		this._toolbars = {};
+        this._toolbars = {};
 
-		// Initialize toolbars
-		if (L.DrawToolbar && this.options.draw) {
-			toolbar = new L.DrawToolbar(this.options.draw);
-			this.options.edit.ContainerClassName = 'leaflet-draw-tools';
+        // Initialize toolbars
+        if (L.DrawToolbar && this.options.draw) {
+            this.options.draw.ContainerClassName = 'leaflet-draw-tools';
+            toolbar = new L.DrawToolbar(this.options.draw);
 
+            this._toolbars[L.DrawToolbar.TYPE] = toolbar;
 
-			this._toolbars[L.DrawToolbar.TYPE] = toolbar;
+            // Listen for when toolbar is enabled
+            this._toolbars[L.DrawToolbar.TYPE].on('enable', this._toolbarEnabled, this);
+        }
 
-			// Listen for when toolbar is enabled
-			this._toolbars[L.DrawToolbar.TYPE].on('enable', this._toolbarEnabled, this);
-		}
+        if (L.EditToolbar && this.options.edit) {
+            this.options.edit.ContainerClassName = 'leaflet-edit-tools';
+            toolbar = new L.EditToolbar(this.options.edit);
 
-		if (L.EditToolbar && this.options.edit) {
-			toolbar = new L.EditToolbar(this.options.edit);
-			this.options.edit.ContainerClassName = 'leaflet-edit-tools';
+            this._toolbars[L.EditToolbar.TYPE] = toolbar;
 
-			this._toolbars[L.EditToolbar.TYPE] = toolbar;
+            // Listen for when toolbar is enabled
+            this._toolbars[L.EditToolbar.TYPE].on('enable', this._toolbarEnabled, this);
+        }
+    },
 
-			// Listen for when toolbar is enabled
-			this._toolbars[L.EditToolbar.TYPE].on('enable', this._toolbarEnabled, this);
-		}
-	},
+    _hideTools: function (options) {
+        var el = this._container.getElementsByClassName(options.ContainerClassName)[0];
+        L.DomUtil.addClass(el, 'leaflet-draw-toolbar-hidden');
+    },
 
-	hideDrawTools: function () {
-		this._hideTools(this.options.edit);
-	},
+    _showTools: function (options) {
+        var el = this._container.getElementsByClassName(options.ContainerClassName)[0];
+        L.DomUtil.removeClass(el, 'leaflet-draw-toolbar-hidden');
+    },
 
-	showDrawTools: function () {
-		this._showTools(this.options.draw);
-	},
+    hideDrawTools: function () {
+        this._hideTools(this.options.draw);
+    },
 
-	hideEditTools: function () {
-		this._hideTools(this.options.edit);
-	},
+    showDrawTools: function () {
+        this._showTools(this.options.draw);
+    },
 
-	showEditTools: function () {
-		this._showTools(this.options.edit);
-	},
+    hideEditTools: function () {
+        this._hideTools(this.options.edit);
+    },
 
-	onAdd: function (map) {
-		var container = L.DomUtil.create('div', 'leaflet-draw'),
-			addedTopClass = false,
-			topClassName = 'leaflet-draw-toolbar-top',
-			toolbarContainer;
+    showEditTools: function () {
+        this._showTools(this.options.edit);
+    },
 
-		for (var toolbarId in this._toolbars) {
-			if (this._toolbars.hasOwnProperty(toolbarId)) {
-				toolbarContainer = this._toolbars[toolbarId].addToolbar(map);
+    onAdd: function (map) {
+        var container = L.DomUtil.create('div', 'leaflet-draw'),
+            addedTopClass = false,
+            topClassName = 'leaflet-draw-toolbar-top',
+            toolbarContainer;
 
-				if (toolbarContainer) {
-					// Add class to the first toolbar to remove the margin
-					if (!addedTopClass) {
-						if (!L.DomUtil.hasClass(toolbarContainer, topClassName)) {
-							L.DomUtil.addClass(toolbarContainer.childNodes[0], topClassName);
-						}
-						addedTopClass = true;
-					}
+        for (var toolbarId in this._toolbars) {
+            if (this._toolbars.hasOwnProperty(toolbarId)) {
+                toolbarContainer = this._toolbars[toolbarId].addToolbar(map);
 
-					container.appendChild(toolbarContainer);
-				}
-			}
-		}
+                if (toolbarContainer) {
+                    // Add class to the first toolbar to remove the margin
+                    if (!addedTopClass) {
+                        if (!L.DomUtil.hasClass(toolbarContainer, topClassName)) {
+                            L.DomUtil.addClass(toolbarContainer.childNodes[0], topClassName);
+                        }
+                        addedTopClass = true;
+                    }
 
-		return container;
-	},
+                    container.appendChild(toolbarContainer);
+                }
+            }
+        }
 
-	onRemove: function () {
-		for (var toolbarId in this._toolbars) {
-			if (this._toolbars.hasOwnProperty(toolbarId)) {
-				this._toolbars[toolbarId].removeToolbar();
-			}
-		}
-	},
+        return container;
+    },
 
-	setDrawingOptions: function (options) {
-		for (var toolbarId in this._toolbars) {
-			if (this._toolbars[toolbarId] instanceof L.DrawToolbar) {
-				this._toolbars[toolbarId].setOptions(options);
-			}
-		}
-	},
+    onRemove: function () {
+        for (var toolbarId in this._toolbars) {
+            if (this._toolbars.hasOwnProperty(toolbarId)) {
+                this._toolbars[toolbarId].removeToolbar();
+            }
+        }
+    },
 
-	_toolbarEnabled: function (e) {
-		var enabledToolbar = e.target;
+    setDrawingOptions: function (options) {
+        for (var toolbarId in this._toolbars) {
+            if (this._toolbars[toolbarId] instanceof L.DrawToolbar) {
+                this._toolbars[toolbarId].setOptions(options);
+            }
+        }
+    },
 
-		for (var toolbarId in this._toolbars) {
-			if (this._toolbars[toolbarId] !== enabledToolbar) {
-				this._toolbars[toolbarId].disable();
-			}
-		}
-	}
+    _toolbarEnabled: function (e) {
+        var enabledToolbar = e.target;
+
+        for (var toolbarId in this._toolbars) {
+            if (this._toolbars[toolbarId] !== enabledToolbar) {
+                this._toolbars[toolbarId].disable();
+            }
+        }
+    }
 });
 
 L.Map.mergeOptions({
-	drawControlTooltips: true,
-	drawControl: false
+    drawControlTooltips: true,
+    drawControl: false
 });
 
 L.Map.addInitHook(function () {
-	if (this.options.drawControl) {
-		this.drawControl = new L.Control.Draw();
-		this.addControl(this.drawControl);
-	}
+    if (this.options.drawControl) {
+        this.drawControl = new L.Control.Draw();
+        this.addControl(this.drawControl);
+    }
 });
 
 

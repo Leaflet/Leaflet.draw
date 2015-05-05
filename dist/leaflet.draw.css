@@ -301,3 +301,10 @@
 .leaflet-oldie .leaflet-draw-toolbar {
 	border: 1px solid #999;
 }
+
+/* ================================================================== */
+/* Utility classes
+/* ================================================================== */
+.leaflet-draw-toolbar-hidden {
+	visibility: hidden;
+}
