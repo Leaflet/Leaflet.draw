@@ -14,7 +14,9 @@ L.Toolbar = L.Class.extend({
 	},
 
 	disable: function () {
-		if (!this.enabled()) { return; }
+		if (!this.enabled()) {
+			return;
+		}
 
 		this._activeMode.handler.disable();
 	},
@@ -26,6 +28,7 @@ L.Toolbar = L.Class.extend({
 			modeHandlers = this.getModeHandlers(map),
 			i;
 
+		L.DomUtil.addClass(container, this.options.ContainerClassName || this._toolbarClass + '-container');
 		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
 		this._map = map;
 

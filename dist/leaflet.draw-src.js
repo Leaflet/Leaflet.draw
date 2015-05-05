@@ -1986,6 +1986,8 @@ L.Control.Draw = L.Control.extend({
 		// Initialize toolbars
 		if (L.DrawToolbar && this.options.draw) {
 			toolbar = new L.DrawToolbar(this.options.draw);
+			this.options.edit.ContainerClassName = 'leaflet-draw-tools';
+
 
 			this._toolbars[L.DrawToolbar.TYPE] = toolbar;
 
@@ -1995,12 +1997,29 @@ L.Control.Draw = L.Control.extend({
 
 		if (L.EditToolbar && this.options.edit) {
 			toolbar = new L.EditToolbar(this.options.edit);
+			this.options.edit.ContainerClassName = 'leaflet-edit-tools';
 
 			this._toolbars[L.EditToolbar.TYPE] = toolbar;
 
 			// Listen for when toolbar is enabled
 			this._toolbars[L.EditToolbar.TYPE].on('enable', this._toolbarEnabled, this);
 		}
+	},
+
+	hideDrawTools: function () {
+		this._hideTools(this.options.edit);
+	},
+
+	showDrawTools: function () {
+		this._showTools(this.options.draw);
+	},
+
+	hideEditTools: function () {
+		this._hideTools(this.options.edit);
+	},
+
+	showEditTools: function () {
+		this._showTools(this.options.edit);
 	},
 
 	onAdd: function (map) {
@@ -2086,7 +2105,9 @@ L.Toolbar = L.Class.extend({
 	},
 
 	disable: function () {
-		if (!this.enabled()) { return; }
+		if (!this.enabled()) {
+			return;
+		}
 
 		this._activeMode.handler.disable();
 	},
@@ -2098,6 +2119,7 @@ L.Toolbar = L.Class.extend({
 			modeHandlers = this.getModeHandlers(map),
 			i;
 
+		L.DomUtil.addClass(container, this.options.ContainerClassName || this._toolbarClass + '-container');
 		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
 		this._map = map;
 
