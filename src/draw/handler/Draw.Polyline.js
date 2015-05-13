@@ -102,8 +102,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		delete this._poly;
 
 		this._mouseMarker
-			.off('mousedown', this._onMouseDown, this)
-			.off('mouseup', this._onMouseUp, this);
+			.off('mousedown', this._onMouseDown, this);
 		this._map.removeLayer(this._mouseMarker);
 		delete this._mouseMarker;
 
@@ -112,6 +111,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this._map
 			.off('mousemove', this._onMouseMove, this)
+			.off('mouseup', this._onMouseUp, this)
 			.off('zoomend', this._onZoomEnd, this);
 	},
 
