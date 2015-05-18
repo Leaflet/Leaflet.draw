@@ -1,4 +1,7 @@
-L.Draw.RemoveLastPoint = L.ToolbarAction.extend({
+L.Draw = L.Draw || {};
+L.Draw.Control = L.Draw.Control || {};
+
+L.Draw.Control.RemoveLastPoint = L.ToolbarAction.extend({
 	options: {
 		toolbarIcon: { html: 'Delete last point' }
 	},

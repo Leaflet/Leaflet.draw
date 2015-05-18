@@ -1,4 +1,7 @@
-L.Draw.Cancel = L.ToolbarAction.extend({
+L.Draw = L.Draw || {};
+L.Draw.Control = L.Draw.Control || {};
+
+L.Draw.Control.Cancel = L.ToolbarAction.extend({
 	options: {
 		toolbarIcon: { html: 'Cancel' }
 	},

@@ -139,7 +139,7 @@ L.Toolbar.Control.prototype._getActionConstructor = function (Action, actionOpti
 
 /* Include sub-toolbars. */
 L.setOptions(L.Draw.Polygon.prototype, {
-	subToolbar: new L.Toolbar({ actions: [L.Draw.Cancel, L.Draw.RemoveLastPoint] }),
+	subToolbar: new L.Toolbar({ actions: [L.Draw.Control.Cancel, L.Draw.Control.RemoveLastPoint] }),
 
 	toolbarIcon: {
 		className: 'leaflet-draw-draw-polygon',
@@ -148,7 +148,7 @@ L.setOptions(L.Draw.Polygon.prototype, {
 });
 
 L.setOptions(L.Draw.Polyline.prototype, {
-	subToolbar: new L.Toolbar({ actions: [L.Draw.Cancel, L.Draw.RemoveLastPoint] }),
+	subToolbar: new L.Toolbar({ actions: [L.Draw.Control.Cancel, L.Draw.Control.RemoveLastPoint] }),
 
 	toolbarIcon: {
 		className: 'leaflet-draw-draw-polyline',
@@ -157,7 +157,7 @@ L.setOptions(L.Draw.Polyline.prototype, {
 });
 
 L.setOptions(L.Draw.Marker.prototype, {
-	subToolbar: new L.Toolbar({ actions: [L.Draw.Cancel] }),
+	subToolbar: new L.Toolbar({ actions: [L.Draw.Control.Cancel] }),
 
 	toolbarIcon: {
 		className: 'leaflet-draw-draw-marker',
@@ -166,7 +166,7 @@ L.setOptions(L.Draw.Marker.prototype, {
 });
 
 L.setOptions(L.Draw.Rectangle.prototype, {
-	subToolbar: new L.Toolbar({ actions: [L.Draw.Cancel] }),
+	subToolbar: new L.Toolbar({ actions: [L.Draw.Control.Cancel] }),
 
 	toolbarIcon: {
 		className: 'leaflet-draw-draw-rectangle',
@@ -175,7 +175,7 @@ L.setOptions(L.Draw.Rectangle.prototype, {
 });
 
 L.setOptions(L.Draw.Circle.prototype, {
-	subToolbar: new L.Toolbar({ actions: [L.Draw.Cancel] }),
+	subToolbar: new L.Toolbar({ actions: [L.Draw.Control.Cancel] }),
 
 	toolbarIcon: {
 		className: 'leaflet-draw-draw-circle',
