@@ -16,10 +16,6 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 			fillColor: null, //same as color by default
 			fillOpacity: 0.2,
 			clickable: true
-		},
-		toolbarIcon: {
-			className: 'leaflet-draw-draw-polygon',
-			tooltip: L.drawLocal.draw.toolbar.buttons.polygon
 		}
 	},
 

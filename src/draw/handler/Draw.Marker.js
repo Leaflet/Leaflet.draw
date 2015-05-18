@@ -6,11 +6,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	options: {
 		icon: new L.Icon.Default(),
 		repeatMode: false,
-		zIndexOffset: 2000, // This should be > than the highest z-index any markers
-		toolbarIcon: {
-			className: 'leaflet-draw-draw-marker',
-			tooltip: L.drawLocal.draw.toolbar.buttons.marker
-		}
+		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
 
 	initialize: function (map, options) {

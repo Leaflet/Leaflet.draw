@@ -4,10 +4,11 @@
 	<title>Leaflet.draw drawing and editing tools</title>
 
 	<link rel="stylesheet" href="libs/leaflet.css" />
+	<link rel="stylesheet" href="libs/leaflet.toolbar.css" />
 	<link rel="stylesheet" href="../dist/leaflet.draw.css" />
-	
 
 	<script src="libs/leaflet-src.js"></script>
+	<script src="libs/leaflet.toolbar-src.js"></script>
 
 	<script src="../src/Leaflet.draw.js"></script>
 
@@ -15,6 +16,7 @@
 	<script src="../src/edit/handler/Edit.SimpleShape.js"></script>
 	<script src="../src/edit/handler/Edit.Circle.js"></script>
 	<script src="../src/edit/handler/Edit.Rectangle.js"></script>
+	<script src="../src/edit/handler/Edit.Marker.js"></script>
 
 	<script src="../src/draw/handler/Draw.Feature.js"></script>
 	<script src="../src/draw/handler/Draw.Polyline.js"></script>
@@ -32,12 +34,20 @@
 
 	<script src="../src/Control.Draw.js"></script>
 	<script src="../src/Tooltip.js"></script>
-	<script src="../src/Toolbar.js"></script>
 
+	<script src="../src/draw/control/Draw.Cancel.js"></script>
+	<script src="../src/draw/control/Draw.RemoveLastPoint.js"></script>
 	<script src="../src/draw/DrawToolbar.js"></script>
+	<script src="../src/draw/control/DrawToolbar.Control.js"></script>
+
+	<script src="../src/edit/control/Edit.Control.Delete.js"></script>
+	<script src="../src/edit/control/Edit.Control.Edit.js"></script>
 	<script src="../src/edit/EditToolbar.js"></script>
-	<script src="../src/edit/handler/EditToolbar.Edit.js"></script>
-	<script src="../src/edit/handler/EditToolbar.Delete.js"></script>
+	<script src="../src/edit/control/EditToolbar.Control.js"></script>
+
+	<script src="../src/edit/popup/Edit.Popup.Delete.js"></script>
+	<script src="../src/edit/popup/Edit.Popup.Edit.js"></script>
+	<script src="../src/edit/popup/EditToolbar.Popup.js"></script>
 </head>
 <body>
 	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
@@ -55,7 +65,7 @@
 		L.drawLocal.draw.toolbar.buttons.polygon = 'Draw a sexy polygon!';
 
 		var drawControl = new L.Control.Draw({
-			position: 'topright',
+			position: 'topleft',
 			draw: {
 				polyline: {
 					metric: true
@@ -83,7 +93,7 @@
 				remove: false
 			}
 		});
-		map.addControl(drawControl);
+		drawControl.addTo(map);
 
 		map.on('draw:created', function (e) {
 			var type = e.layerType,

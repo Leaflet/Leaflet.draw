@@ -1,24 +1,32 @@
 L.EditToolbar.Control = L.Toolbar.Control.extend({
 	options: {
-		actions: [
-			L.Edit.Control.Edit,
-			L.Edit.Control.Delete
-		],
-		className: 'leaflet-draw-toolbar'
+		className: 'leaflet-draw-toolbar',
+		edit: {},
+		remove: {},
+		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
-	/* Accomodate Leaflet.draw design decision to pass featureGroup as an option rather than a parameter. */
-	_getActionConstructor: function (Action) {
-		var map = this._arguments[0],
-			featureGroup = this._arguments[1],
-			A = L.Toolbar.prototype._getActionConstructor.call(this, Action);
+	initialize: function (options) {
+		L.setOptions(this, options);
 
-		return A.extend({
-			options: { featureGroup: featureGroup },
-			initialize: function () {
-				Action.prototype.initialize.call(this, map);
+		this._actions = {};
+		this.options.actions = {};
+
+		if (this.options.edit) {
+			this.options.actions.edit = {
+				action: L.Edit.Control.Edit,
+				options: L.Util.extend(this.options.edit, { featureGroup: this.options.featureGroup })
 			}
-		});
+		}
+
+		if (this.options.remove) {
+			this.options.actions.remove = {
+				action: L.Edit.Control.Delete,
+				options: L.Util.extend(this.options.edit, { featureGroup: this.options.featureGroup })
+			}
+		}
+
+		L.Toolbar.Control.prototype.initialize.call(this, options);
 	}
 });
 
@@ -26,10 +34,12 @@ L.EditToolbar.Save = L.ToolbarAction.extend({
 	options: {
 		toolbarIcon: { html: 'Save' }
 	},
-	initialize: function (map, featureGroup, editing) {
+
+	initialize: function (map, editing) {
 		this.editing = editing;
 		L.ToolbarAction.prototype.initialize.call(this);
 	},
+
 	addHooks: function () {
 		this.editing.save();
 		this.editing.disable();
@@ -40,10 +50,12 @@ L.EditToolbar.Undo = L.ToolbarAction.extend({
 	options: {
 		toolbarIcon: { html: 'Undo' }
 	},
-	initialize: function (map, featureGroup, editing) {
+
+	initialize: function (map, editing) {
 		this.editing = editing;
 		L.ToolbarAction.prototype.initialize.call(this);
 	},
+
 	addHooks: function () {
 		this.editing.revertLayers();
 		this.editing.disable();
