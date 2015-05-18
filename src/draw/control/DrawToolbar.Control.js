@@ -108,35 +108,6 @@ L.Toolbar.Control.prototype._getActionConstructor = function (Action, actionOpti
 	});
 };
 
-
-/*L.Draw.Polygon.ToolbarAction = L.ToolbarAction.extend({
-	options: {
-
-	},
-
-	initialize: function (options) {
-		L.ToolbarAction.prototype.initialize.call(this, options);
-
-		this._drawHandler = new L.draw.Polygon();
-	},
-
-	enable: function () {
-		if (this._enabled) { return; }
-
-		L.ToolbarAction.prototype.enable.call(this);
-
-		this._drawHandler.enable();
-	},
-
-	disable: function () {
-		if (!this._enabled) { return; }
-
-		L.ToolbarAction.prototype.disable.call(this);
-
-		this._drawHandler.disable();
-	}
-});*/
-
 /* Include sub-toolbars. */
 L.setOptions(L.Draw.Polygon.prototype, {
 	subToolbar: new L.Toolbar({ actions: [L.Draw.Control.Cancel, L.Draw.Control.RemoveLastPoint] }),
