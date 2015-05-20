@@ -7,6 +7,10 @@ L.Draw.Control.ToolbarAction = L.ToolbarAction.extend({
 	initialize: function (map, options) {
 		this._drawHandler = new options.DrawAction(map, options);
 
+		this._drawHandler
+			.on('enabled', this.enable, this)
+			.on('disabled', this.disable, this);
+
 		L.ToolbarAction.prototype.initialize.call(this, options);
 	},
 
