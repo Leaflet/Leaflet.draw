@@ -99,11 +99,22 @@ L.Toolbar.Control.prototype._getActionConstructor = function (Action, actionOpti
 			Action.prototype.initialize.apply(this, args);
 		},
 		enable: function() {
+			if (toolbar._active == this) {
+				return;
+			}
+
 			/* Ensure that only one action in a toolbar will be active at a time. */
-			if (toolbar._active) { toolbar._active.disable(); }
+			if (toolbar._active) {
+				toolbar._active.disable();
+			}
 			toolbar._active = this;
 
 			Action.prototype.enable.call(this);
+		},
+		disable: function () {
+			toolbar._active = null;
+
+			Action.prototype.disable.call(this);
 		}
 	});
 };
