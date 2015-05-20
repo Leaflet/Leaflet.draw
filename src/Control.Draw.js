@@ -27,18 +27,12 @@ L.Control.Draw = L.Control.extend({
 			toolbar = new L.DrawToolbar.Control(drawOptions);
 			id = L.stamp(toolbar);
 			this._toolbars[id] = toolbar;
-
-			// Listen for when toolbar is enabled
-			this._toolbars[id].on('enable', this._toolbarEnabled, this);
 		}
 
 		if (L.EditToolbar.Control && this.options.edit) {
 			toolbar = new L.EditToolbar.Control(editOptions);
 			id = L.stamp(toolbar);
 			this._toolbars[id] = toolbar;
-
-			// Listen for when toolbar is enabled
-			this._toolbars[id].on('enable', this._toolbarEnabled, this);
 		}
 	},
 
@@ -69,16 +63,6 @@ L.Control.Draw = L.Control.extend({
 		for (var toolbarId in this._toolbars) {
 			if (this._toolbars[toolbarId] instanceof L.DrawToolbar.Control) {
 				this._toolbars[toolbarId].setOptions(options);
-			}
-		}
-	},
-
-	_toolbarEnabled: function (e) {
-		var enabledToolbar = e.target;
-
-		for (var toolbarId in this._toolbars) {
-			if (this._toolbars[toolbarId] !== enabledToolbar) {
-				this._toolbars[toolbarId].disable();
 			}
 		}
 	}
