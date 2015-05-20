@@ -16,36 +16,36 @@ L.DrawToolbar.Control = L.Toolbar.Control.extend({
 
 		if (this.options.polygon) {
 			this.options.actions.polygon = {
-				action: L.Draw.Polygon,
-				options: this.options.polygon
+				action: L.Draw.Control.Polygon,
+				options: L.Util.extend(this.options.polygon, { DrawAction: L.Draw.Polygon })
 			}
 		}
 
 		if (this.options.polyline) {
 			this.options.actions.polyline = {
-				action: L.Draw.Polyline,
-				options: this.options.polyline
+				action: L.Draw.Control.Polyline,
+				options: L.Util.extend(this.options.polyline, { DrawAction: L.Draw.Polyline })
 			}
 		}
 
 		if (this.options.circle) {
 			this.options.actions.circle = {
-				action: L.Draw.Circle,
-				options: this.options.circle
+				action: L.Draw.Control.Circle,
+				options: L.Util.extend(this.options.circle, { DrawAction: L.Draw.Circle })
 			}
 		}
 
 		if (this.options.rectangle) {
 			this.options.actions.rectangle = {
-				action: L.Draw.Rectangle,
-				options: this.options.rectangle
+				action: L.Draw.Control.Rectangle,
+				options: L.Util.extend(this.options.rectangle, { DrawAction: L.Draw.Rectangle })
 			}
 		}
 
 		if (this.options.marker) {
 			this.options.actions.marker = {
-				action: L.Draw.Marker,
-				options: this.options.marker
+				action: L.Draw.Control.Marker,
+				options: L.Util.extend(this.options.marker, { DrawAction: L.Draw.Marker })
 			}
 		}
 
@@ -109,7 +109,7 @@ L.Toolbar.Control.prototype._getActionConstructor = function (Action, actionOpti
 };
 
 /* Include sub-toolbars. */
-L.setOptions(L.Draw.Polygon.prototype, {
+/*L.setOptions(L.Draw.Polygon.prototype, {
 	subToolbar: new L.Toolbar({ actions: [L.Draw.Control.Cancel, L.Draw.Control.RemoveLastPoint] }),
 
 	toolbarIcon: {
@@ -152,5 +152,5 @@ L.setOptions(L.Draw.Circle.prototype, {
 		className: 'leaflet-draw-draw-circle',
 		tooltip: L.drawLocal.draw.toolbar.buttons.circle
 	}
-});
+});*/
 

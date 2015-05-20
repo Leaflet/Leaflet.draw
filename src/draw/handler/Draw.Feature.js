@@ -1,26 +1,26 @@
 L.Draw = {};
 
-L.Draw.Feature = L.ToolbarAction.extend({
+L.Draw.Feature = L.Handler.extend({
 	includes: L.Mixin.Events,
 
 	initialize: function (map, options) {
-		this._map = map;
+		L.Handler.prototype.initialize.call(this, map);
+
 		this._container = map._container;
 		this._overlayPane = map._panes.overlayPane;
 		this._popupPane = map._panes.popupPane;
 
 		// Merge default shapeOptions options with custom shapeOptions
-		if (options && options.shapeOptions) {
+		/*if (options && options.shapeOptions) {
 			options.shapeOptions = L.Util.extend({}, this.options.shapeOptions, options.shapeOptions);
-		}
-
-		L.ToolbarAction.prototype.initialize.call(this, options);
+		}*/
+		L.setOptions(this, options);
 	},
 
 	enable: function () {
 		if (this._enabled) { return; }
 
-		L.ToolbarAction.prototype.enable.call(this);
+		L.Handler.prototype.enable.call(this);
 
 		this.fire('enabled', { handler: this.type });
 
@@ -30,7 +30,7 @@ L.Draw.Feature = L.ToolbarAction.extend({
 	disable: function () {
 		if (!this._enabled) { return; }
 
-		L.ToolbarAction.prototype.disable.call(this);
+		L.Handler.prototype.disable.call(this);
 
 		this._map.fire('draw:drawstop', { layerType: this.type });
 
