@@ -58,7 +58,7 @@ L.DrawToolbar.Control = L.Toolbar.Control.extend({
 
 		for (var type in this._actions) {
 			if (this._actions.hasOwnProperty(type) && options.hasOwnProperty(type)) {
-				this._actions[type].setOptions(options[type]);
+				this._actions[type].drawHandler.setOptions(options[type]);
 			}
 		}
 	}
