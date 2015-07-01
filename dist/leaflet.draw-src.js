@@ -1397,6 +1397,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		}
 
 		this._poly.redraw();
+		this._poly.fire('editdrag');
 	},
 
 	_onMarkerClick: function (e) {
@@ -1721,6 +1722,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		}
 
 		this._shape.redraw();
+		this._shape.fire('editdrag');
 	},
 
 	_onMarkerDragEnd: function (e) {

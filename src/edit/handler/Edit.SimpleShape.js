@@ -150,6 +150,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		}
 
 		this._shape.redraw();
+		this._shape.fire('editdrag');
 	},
 
 	_onMarkerDragEnd: function (e) {
