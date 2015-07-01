@@ -3,8 +3,52 @@ L.Edit = L.Edit || {};
 /*
  * L.Edit.Poly is an editing handler for polylines and polygons.
  */
-
 L.Edit.Poly = L.Handler.extend({
+	options: {},
+
+	initialize: function (poly, options) {
+
+		this.latlngs = [poly._latlngs];
+		if (poly._holes) {
+			this.latlngs = this.latlngs.concat(poly._holes);
+		}
+
+		this._verticesHandlers = [];
+		for (var i = 0; i < this.latlngs.length; i++) {
+			this._verticesHandlers.push(new L.Edit.PolyVerticesEdit(poly, this.latlngs[i], options));
+		}
+
+		this._poly = poly;
+		L.setOptions(this, options);
+	},
+
+	_eachVertexHandler: function (callback) {
+		for (var i = 0; i < this._verticesHandlers.length; i++) {
+			callback(this._verticesHandlers[i]);
+		}
+	},
+
+	addHooks: function () {
+		this._eachVertexHandler(function (handler) {
+			handler.addHooks();
+		});
+	},
+
+	removeHooks: function () {
+		this._eachVertexHandler(function (handler) {
+			handler.removeHooks();
+		});
+	},
+
+	updateMarkers: function () {
+		this._eachVertexHandler(function (handler) {
+			handler.updateMarkers();
+		});
+	}
+
+});
+
+L.Edit.PolyVerticesEdit = L.Handler.extend({
 	options: {
 		icon: new L.DivIcon({
 			iconSize: new L.Point(8, 8),
@@ -16,13 +60,14 @@ L.Edit.Poly = L.Handler.extend({
 		}),
 	},
 
-	initialize: function (poly, options) {
+	initialize: function (poly, latlngs, options) {
 		// if touch, switch to touch icon
 		if (L.Browser.touch) {
 			this.options.icon = this.options.touchIcon;
 		}
-
 		this._poly = poly;
+		this._latlngs = latlngs;
+
 		L.setOptions(this, options);
 	},
 
@@ -69,10 +114,8 @@ L.Edit.Poly = L.Handler.extend({
 		}
 		this._markers = [];
 
-		var latlngs = this._poly._latlngs,
+		var latlngs = this._latlngs,
 			i, j, len, marker;
-
-		// TODO refactor holes implementation in Polygon to support it here
 
 		for (i = 0, len = latlngs.length; i < len; i++) {
 
@@ -107,6 +150,7 @@ L.Edit.Poly = L.Handler.extend({
 		marker._index = index;
 
 		marker
+			.on('dragstart', this._onMarkerDragStart, this)
 			.on('drag', this._onMarkerDrag, this)
 			.on('dragend', this._fireEdit, this)
 			.on('touchmove', this._onTouchMove, this)
@@ -117,15 +161,27 @@ L.Edit.Poly = L.Handler.extend({
 		return marker;
 	},
 
+	_onMarkerDragStart: function () {
+		this._poly.fire('editstart');
+	},
+
+	_spliceLatLngs: function () {
+		var removed = [].splice.apply(this._latlngs, arguments);
+		this._poly._convertLatLngs(this._latlngs, true);
+		this._poly.redraw();
+		return removed;
+	},
+
 	_removeMarker: function (marker) {
 		var i = marker._index;
 
 		this._markerGroup.removeLayer(marker);
 		this._markers.splice(i, 1);
-		this._poly.spliceLatLngs(i, 1);
+		this._spliceLatLngs(i, 1);
 		this._updateIndexes(i, -1);
 
 		marker
+			.off('dragstart', this._onMarkerDragStart, this)
 			.off('drag', this._onMarkerDrag, this)
 			.off('dragend', this._fireEdit, this)
 			.off('touchmove', this._onMarkerDrag, this)
@@ -159,7 +215,7 @@ L.Edit.Poly = L.Handler.extend({
 			marker = e.target;
 
 		// If removing this point would create an invalid polyline/polygon don't remove
-		if (this._poly._latlngs.length < minPoints) {
+		if (this._latlngs.length < minPoints) {
 			return;
 		}
 
@@ -240,7 +296,7 @@ L.Edit.Poly = L.Handler.extend({
 
 			latlng.lat = marker.getLatLng().lat;
 			latlng.lng = marker.getLatLng().lng;
-			this._poly.spliceLatLngs(i, 0, latlng);
+			this._spliceLatLngs(i, 0, latlng);
 			this._markers.splice(i, 0, marker);
 
 			marker.setOpacity(1);
