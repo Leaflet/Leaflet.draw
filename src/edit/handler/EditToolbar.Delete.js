@@ -101,7 +101,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 		layer.off('click', this._removeLayer, this);
 
-		// Remove from the deleted layers so we can't accidently revert if the user presses cancel
+		// Remove from the deleted layers so we can't accidentally revert if the user presses cancel
 		this._deletedLayers.removeLayer(layer);
 	},
 
