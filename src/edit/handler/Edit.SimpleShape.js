@@ -114,7 +114,9 @@ L.Edit.SimpleShape = L.Handler.extend({
 			.on('dragend', this._onMarkerDragEnd, this)
 			.on('touchstart', this._onTouchStart, this)
 			.on('touchmove', this._onTouchMove, this)
-			.on('touchend', this._onTouchEnd, this);
+			.on('MSPointerMove', this._onTouchMove, this)
+			.on('touchend', this._onTouchEnd, this)
+			.on('MSPointerUp', this._onTouchEnd, this);
 	},
 
 	_unbindMarker: function (marker) {
@@ -124,7 +126,9 @@ L.Edit.SimpleShape = L.Handler.extend({
 			.off('dragend', this._onMarkerDragEnd, this)
 			.off('touchstart', this._onTouchStart, this)
 			.off('touchmove', this._onTouchMove, this)
-			.off('touchend', this._onTouchEnd, this);
+			.off('MSPointerMove', this._onTouchMove, this)
+			.off('touchend', this._onTouchEnd, this)
+			.off('MSPointerUp', this._onTouchEnd, this);
 	},
 
 	_onMarkerDragStart: function (e) {

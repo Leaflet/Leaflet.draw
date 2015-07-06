@@ -1344,7 +1344,9 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			.on('drag', this._onMarkerDrag, this)
 			.on('dragend', this._fireEdit, this)
 			.on('touchmove', this._onTouchMove, this)
-			.on('touchend', this._fireEdit, this);
+			.on('MSPointerMove', this._onTouchMove, this)
+			.on('touchend', this._fireEdit, this)
+			.on('MSPointerUp', this._fireEdit, this);
 
 		this._markerGroup.addLayer(marker);
 
@@ -1686,7 +1688,9 @@ L.Edit.SimpleShape = L.Handler.extend({
 			.on('dragend', this._onMarkerDragEnd, this)
 			.on('touchstart', this._onTouchStart, this)
 			.on('touchmove', this._onTouchMove, this)
-			.on('touchend', this._onTouchEnd, this);
+			.on('MSPointerMove', this._onTouchMove, this)
+			.on('touchend', this._onTouchEnd, this)
+			.on('MSPointerUp', this._onTouchEnd, this);
 	},
 
 	_unbindMarker: function (marker) {
@@ -1696,7 +1700,9 @@ L.Edit.SimpleShape = L.Handler.extend({
 			.off('dragend', this._onMarkerDragEnd, this)
 			.off('touchstart', this._onTouchStart, this)
 			.off('touchmove', this._onTouchMove, this)
-			.off('touchend', this._onTouchEnd, this);
+			.off('MSPointerMove', this._onTouchMove, this)
+			.off('touchend', this._onTouchEnd, this)
+			.off('MSPointerUp', this._onTouchEnd, this);
 	},
 
 	_onMarkerDragStart: function (e) {
@@ -1984,18 +1990,24 @@ L.Map.TouchExtend = L.Handler.extend({
 
 	addHooks: function () {
 		L.DomEvent.on(this._container, 'touchstart', this._onTouchStart, this);
+		L.DomEvent.on(this._container, 'MSPointerDown', this._onTouchStart, this);
 		L.DomEvent.on(this._container, 'touchend', this._onTouchEnd, this);
+		L.DomEvent.on(this._container, 'MSPointerUp', this._onTouchEnd, this);
 		L.DomEvent.on(this._container, 'touchcancel', this._onTouchCancel, this);
 		L.DomEvent.on(this._container, 'touchleave', this._onTouchLeave, this);
 		L.DomEvent.on(this._container, 'touchmove', this._onTouchMove, this);
+		L.DomEvent.on(this._container, 'MSPointerMove', this._onTouchMove, this);
 	},
 
 	removeHooks: function () {
 		L.DomEvent.off(this._container, 'touchstart', this._onTouchStart);
+		L.DomEvent.off(this._container, 'MSPointerDowm', this._onTouchStart);
 		L.DomEvent.off(this._container, 'touchend', this._onTouchEnd);
+		L.DomEvent.off(this._container, 'MSPointerUp', this._onTouchEnd);
 		L.DomEvent.off(this._container, 'touchcancel', this._onTouchCancel);
 		L.DomEvent.off(this._container, 'touchleave', this._onTouchLeave);
 		L.DomEvent.off(this._container, 'touchmove', this._onTouchMove);
+		L.DomEvent.off(this._container, 'MSPointerMove', this._onTouchMove);
 	},
 	
 	_touchEvent: function (e, type) {
@@ -3060,6 +3072,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._map
 				.on('mousemove', this._onMouseMove, this)
 				.on('touchmove', this._onMouseMove, this)
+				.on('MSPointerMove', this._onMouseMove, this)
 				.on('click', this._editStyle, this);
 		}
 	},
@@ -3077,7 +3090,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 			this._map
 				.off('mousemove', this._onMouseMove, this)
-				.off('touchmove', this._onMouseMove, this);
+				.off('touchmove', this._onMouseMove, this)
+				.off('MSPointerMove', this._onMouseMove, this);
 		}
 	},
 
@@ -3165,7 +3179,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.on('dragend', this._onMarkerDragEnd)
 				// #TODO: remove when leaflet finally fixes their draggable so it's touch friendly again.
 				.on('touchmove', this._onTouchMove, this)
-				.on('touchend', this._onMarkerDragEnd, this);
+				.on('MSPointerMove', this._onTouchMove, this)
+				.on('touchend', this._onMarkerDragEnd, this)
+				.on('MSPointerUp', this._onMarkerDragEnd, this);
 		} else {
 			layer.editing.enable();
 		}
@@ -3196,7 +3212,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 			layer
 				.off('dragend', this._onMarkerDragEnd, this)
 				.off('touchmove', this._onTouchMove, this)
-				.off('touchend', this._onMarkerDragEnd, this);
+				.off('MSPointerMove', this._onTouchMove, this)
+				.off('touchend', this._onMarkerDragEnd, this)
+				.off('MSPointerUp', this._onMarkerDragEnd, this);
 		} else {
 			layer.editing.disable();
 		}

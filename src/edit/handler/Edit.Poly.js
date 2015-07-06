@@ -154,7 +154,9 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			.on('drag', this._onMarkerDrag, this)
 			.on('dragend', this._fireEdit, this)
 			.on('touchmove', this._onTouchMove, this)
-			.on('touchend', this._fireEdit, this);
+			.on('MSPointerMove', this._onTouchMove, this)
+			.on('touchend', this._fireEdit, this)
+			.on('MSPointerUp', this._fireEdit, this);
 
 		this._markerGroup.addLayer(marker);
 
