@@ -7,5 +7,9 @@ node_js:
   - "0.6"
   - "iojs"
   - "iojs-v1.0.4"
+matrix:
+  allow_failures:
+  - "0.8"
+  - "0.6"
 before_script:
   - npm install -g jake

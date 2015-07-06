@@ -1,3 +1,6 @@
+[![Build
+Status](https://secure.travis-ci.org/ddproxy/Leaflet.draw.png?branch=master)](http://travis-ci.org/ddproxy/Leaflet.draw)
+
 #Leaflet.draw With Touch
 This is a touch friendly version of Leaflet.draw that was created and maintained by Michael Guild (https://github.com/michaelguild13).
 
