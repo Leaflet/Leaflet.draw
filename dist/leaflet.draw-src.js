@@ -387,7 +387,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_vertexChanged: function (latlng, added) {
-		this._map.fire('draw:editveterxchanged', { layers: this._markerGroup });
+		this._map.fire('draw:drawvertex', { layers: this._markerGroup });
 		this._updateFinishHandler();
 
 		this._updateRunningMeasure(latlng, added);
@@ -1248,7 +1248,7 @@ L.Edit.Poly = L.Handler.extend({
 	_fireEdit: function () {
 		this._poly.edited = true;
 		this._poly.fire('edit');
-		this._poly._map.fire('draw:editveterxchanged', { layers: this._markerGroup });
+		this._poly._map.fire('draw:editvertex', { layers: this._markerGroup });
 	},
 
 	_onMarkerDrag: function (e) {
@@ -2689,12 +2689,10 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
 
 			this._tooltip = new L.Tooltip(this._map);
-			this._tooltip.updateContent({
-				text: L.drawLocal.edit.handlers.edit.tooltip.text,
-				subtext: L.drawLocal.edit.handlers.edit.tooltip.subtext
-			});
+			this._updateTooltip();
 
 			this._map.on('mousemove', this._onMouseMove, this);
+			this._map.on('draw:editvertex', this._updateTooltip, this);
 		}
 	},
 
@@ -2750,6 +2748,17 @@ L.EditToolbar.Edit = L.Handler.extend({
 				};
 			}
 		}
+	},
+
+	_getTooltipText: function(){
+		return ({
+			text: L.drawLocal.edit.handlers.edit.tooltip.text,
+			subtext: L.drawLocal.edit.handlers.edit.tooltip.subtext
+		});
+	},
+
+	_updateTooltip: function(){
+		this._tooltip.updateContent(this._getTooltipText());
 	},
 
 	_revertLayer: function (layer) {

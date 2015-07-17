@@ -128,6 +128,14 @@ Triggered when the user has finished a particular vector or marker.
 | --- | --- | ---
 | layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
 
+#### draw:drawvertex
+
+Triggered when a vertex is created on a polyline or polygon.
+
+| Property | Type | Description
+| --- | --- | ---
+| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just being added from the map.
+
 #### draw:editstart
 
 Triggered when the user starts edit mode by clicking the edit tool button.
@@ -136,13 +144,13 @@ Triggered when the user starts edit mode by clicking the edit tool button.
 | --- | --- | ---
 | handler | String | The type of edit this is. One of: `edit`
 
-#### draw:editveterxchanged
+#### draw:editvertex
 
-Triggered when a vertex is changed on a polyline or polygon.
+Triggered when a vertex is edited on a polyline or polygon.
 
 | Property | Type | Description
 | --- | --- | ---
-| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just being added or edited from the map.
+| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just being edited from the map.
 
 #### draw:editstop
 
