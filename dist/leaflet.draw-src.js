@@ -387,6 +387,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_vertexChanged: function (latlng, added) {
+		this._map.fire('draw:editveterxchanged', { latlng: latlng, added: added });
 		this._updateFinishHandler();
 
 		this._updateRunningMeasure(latlng, added);

@@ -136,6 +136,15 @@ Triggered when the user starts edit mode by clicking the edit tool button.
 | --- | --- | ---
 | handler | String | The type of edit this is. One of: `edit`
 
+#### draw:editveterxchanged
+
+Triggered when a vertex is changed on a polyline or polygon.
+
+| Property | Type | Description
+| --- | --- | ---
+| latlng | [LatLng](http://leafletjs.com/reference.html#latlng) | The coordinates where the changes happened.
+| added | Bool | Whether the vertex was added or removed.
+
 #### draw:editstop
 
 Triggered when the user has finshed editing (edit mode) and saves edits.
