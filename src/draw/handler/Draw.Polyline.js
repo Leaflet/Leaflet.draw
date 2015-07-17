@@ -200,7 +200,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_vertexChanged: function (latlng, added) {
-		this._map.fire('draw:editveterxchanged', { markers: this._markers, latlng: latlng, added: added });
+		this._map.fire('draw:editveterxchanged', { layers: this._markerGroup });
 		this._updateFinishHandler();
 
 		this._updateRunningMeasure(latlng, added);

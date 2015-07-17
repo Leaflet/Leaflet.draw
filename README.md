@@ -142,9 +142,7 @@ Triggered when a vertex is changed on a polyline or polygon.
 
 | Property | Type | Description
 | --- | --- | ---
-| markers | Array of [Marker](http://leafletjs.com/reference.html#marker) | The coordinates where the changes happened.
-| latlng | [LatLng](http://leafletjs.com/reference.html#latlng) | The coordinates where the changes happened.
-| added | Bool | Whether the vertex was added or removed.
+| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just being added or edited from the map.
 
 #### draw:editstop
 
