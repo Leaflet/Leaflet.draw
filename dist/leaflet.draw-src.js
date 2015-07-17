@@ -387,6 +387,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_vertexChanged: function (latlng, added) {
+		this._map.fire('draw:editveterxchanged', { layers: this._markerGroup });
 		this._updateFinishHandler();
 
 		this._updateRunningMeasure(latlng, added);
@@ -1247,6 +1248,7 @@ L.Edit.Poly = L.Handler.extend({
 	_fireEdit: function () {
 		this._poly.edited = true;
 		this._poly.fire('edit');
+		this._poly._map.fire('draw:editveterxchanged', { layers: this._markerGroup });
 	},
 
 	_onMarkerDrag: function (e) {
