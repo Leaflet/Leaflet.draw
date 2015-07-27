@@ -16,6 +16,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 		},
 		showRadius: true,
 		metric: true // Whether to use the metric meaurement system or imperial
+		feet: true // When not metric, use feet instead of yards for display
 	},
 
 	initialize: function (map, options) {
@@ -56,7 +57,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 
 			this._tooltip.updateContent({
 				text: this._endLabelText,
-				subtext: showRadius ? L.drawLocal.draw.handlers.circle.radius + ': ' + L.GeometryUtil.readableDistance(radius, useMetric) : ''
+				subtext: showRadius ? L.drawLocal.draw.handlers.circle.radius + ': ' + L.GeometryUtil.readableDistance(radius, useMetric, this.options.feet) : ''
 			});
 		}
 	}
