@@ -15,7 +15,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 			clickable: true
 		},
 		showRadius: true,
-		metric: true // Whether to use the metric meaurement system or imperial
+		metric: true, // Whether to use the metric meaurement system or imperial
 		feet: true // When not metric, use feet instead of yards for display
 	},
 
@@ -57,7 +57,8 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 
 			this._tooltip.updateContent({
 				text: this._endLabelText,
-				subtext: showRadius ? L.drawLocal.draw.handlers.circle.radius + ': ' + L.GeometryUtil.readableDistance(radius, useMetric, this.options.feet) : ''
+				subtext: showRadius ? L.drawLocal.draw.handlers.circle.radius + ': ' +
+					L.GeometryUtil.readableDistance(radius, useMetric, this.options.feet) : ''
 			});
 		}
 	}

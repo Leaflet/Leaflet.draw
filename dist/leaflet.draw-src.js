@@ -214,6 +214,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			clickable: true
 		},
 		metric: true, // Whether to use the metric meaurement system or imperial
+		feet: true, // When not metric, to use feet instead of yards for display.
 		showLength: true, // Whether to display distance in the tooltip
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
@@ -565,7 +566,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// calculate the distance from the last fixed point to the mouse position
 		distance = this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng);
 
-		return L.GeometryUtil.readableDistance(distance, this.options.metric);
+		return L.GeometryUtil.readableDistance(distance, this.options.metric, this.options.feet);
 	},
 
 	_showErrorTooltip: function () {
@@ -898,7 +899,8 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 			clickable: true
 		},
 		showRadius: true,
-		metric: true // Whether to use the metric meaurement system or imperial
+		metric: true, // Whether to use the metric meaurement system or imperial
+		feet: true // When not metric, use feet instead of yards for display
 	},
 
 	initialize: function (map, options) {
@@ -939,7 +941,8 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 
 			this._tooltip.updateContent({
 				text: this._endLabelText,
-				subtext: showRadius ? L.drawLocal.draw.handlers.circle.radius + ': ' + L.GeometryUtil.readableDistance(radius, useMetric) : ''
+				subtext: showRadius ? L.drawLocal.draw.handlers.circle.radius + ': ' +
+					L.GeometryUtil.readableDistance(radius, useMetric, this.options.feet) : ''
 			});
 		}
 	}
@@ -1809,7 +1812,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return areaStr;
 	},
 
-	readableDistance: function (distance, isMetric) {
+	readableDistance: function (distance, isMetric, useFeet) {
 		var distanceStr;
 
 		if (isMetric) {
@@ -1825,13 +1828,19 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 			if (distance > 1760) {
 				distanceStr = (distance / 1760).toFixed(2) + ' miles';
 			} else {
-				distanceStr = Math.ceil(distance) + ' yd';
+				var suffix = ' yd';
+				if (useFeet) {
+					distance = distance * 3;
+					suffix = ' ft';
+				}
+				distanceStr = Math.ceil(distance) + suffix;
 			}
 		}
 
 		return distanceStr;
 	}
 });
+
 
 L.Util.extend(L.LineUtil, {
 	// Checks to see if two line segments intersect. Does not handle degenerate cases.
