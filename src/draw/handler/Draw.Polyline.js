@@ -91,7 +91,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map
 				.on('mousemove', this._onMouseMove, this)
 				.on('mouseup', this._onMouseUp, this)
-				.on('zoomlevelschange', this._onZoomEnd, this)
+				.on('zoomlevelschange', this._onZoomChange, this)
 				.on('click', this._onTouch, this);
 		}
 	},
@@ -122,7 +122,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		this._map
 			.off('mousemove', this._onMouseMove, this)
-			.off('zoomend', this._onZoomEnd, this)
+			.off('mouseup', this._onMouseUp, this)
+			.off('zoomlevelschange', this._onZoomChange, this)
 			.off('click', this._onTouch, this);
 	},
 
@@ -200,7 +201,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		return true;
 	},
 
-	_onZoomEnd: function () {
+	_onZoomChange: function () {
 		this._updateGuide();
 	},
 
