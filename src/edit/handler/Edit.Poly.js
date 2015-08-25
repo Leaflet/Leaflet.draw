@@ -254,7 +254,7 @@ L.Edit.Poly = L.Handler.extend({
 	_spliceLatLngs: function (index, count, toAdd) {
 		var latLngs = this._isPolygon ? this._poly._latlngs[0] : this._poly._latlngs;
 
-		if (toAdd != null) {
+		if (toAdd) {
 			latLngs.splice(index, count, toAdd);
 		} else {
 			latLngs.splice(index, count);
