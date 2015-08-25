@@ -15,6 +15,8 @@ L.Edit.Poly = L.Handler.extend({
 	initialize: function (poly, options) {
 		this._poly = poly;
 		L.setOptions(this, options);
+
+		this._isPolygon = L.Polygon && (this._poly instanceof L.Polygon);
 	},
 
 	addHooks: function () {
@@ -50,7 +52,7 @@ L.Edit.Poly = L.Handler.extend({
 			i, j, len, marker;
 
 		//Polylines are a single array, Polygons are a nested array
-		if (L.Util.isArray(latlngs[0])) {
+		if (this._isPolygon) {
 			latlngs = latlngs[0];
 		}
 
@@ -100,7 +102,7 @@ L.Edit.Poly = L.Handler.extend({
 
 		this._markerGroup.removeLayer(marker);
 		this._markers.splice(i, 1);
-		this._poly.spliceLatLngs(i, 1);
+		this._spliceLatLngs(i, 1);
 		this._updateIndexes(i, -1);
 
 		marker
@@ -130,11 +132,12 @@ L.Edit.Poly = L.Handler.extend({
 	},
 
 	_onMarkerClick: function (e) {
-		var minPoints = L.Polygon && (this._poly instanceof L.Polygon) ? 4 : 3,
+		var isPolygon = this._isPolygon,
+			minPoints = isPolygon ? 4 : 3,
 			marker = e.target;
 
 		// If removing this point would create an invalid polyline/polygon don't remove
-		if (this._poly._latlngs.length < minPoints) {
+		if ((isPolygon ? this._poly._latlngs[0] : this._poly._latlngs).length < minPoints) {
 			return;
 		}
 
@@ -196,7 +199,7 @@ L.Edit.Poly = L.Handler.extend({
 
 			latlng.lat = marker.getLatLng().lat;
 			latlng.lng = marker.getLatLng().lng;
-			this._poly.spliceLatLngs(i, 0, latlng);
+			this._spliceLatLngs(i, 0, latlng);
 			this._markers.splice(i, 0, marker);
 
 			marker.setOpacity(1);
@@ -246,6 +249,18 @@ L.Edit.Poly = L.Handler.extend({
 		    p2 = map.project(marker2.getLatLng());
 
 		return map.unproject(p1._add(p2)._divideBy(2));
+	},
+
+	_spliceLatLngs: function (index, count, toAdd) {
+		var latLngs = this._isPolygon ? this._poly._latlngs[0] : this._poly._latlngs;
+
+		if (toAdd != null) {
+			latLngs.splice(index, count, toAdd);
+		} else {
+			latLngs.splice(index, count);
+		}
+
+		this._poly.redraw();
 	}
 });
 
