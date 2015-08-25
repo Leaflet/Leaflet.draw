@@ -60,8 +60,11 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 
 		// Offset the latlngs to the new center
 		for (var i = 0, l = latlngs.length; i < l; i++) {
-			offset = [latlngs[i].lat - center.lat, latlngs[i].lng - center.lng];
-			newLatLngs.push([newCenter.lat + offset[0], newCenter.lng + offset[1]]);
+			newLatLngs.push([]);
+			for (var j = 0, k = latlngs[i].length; j < k; j++) {
+				offset = [latlngs[i][j].lat - center.lat, latlngs[i][j].lng - center.lng];
+				newLatLngs[i].push([newCenter.lat + offset[0], newCenter.lng + offset[1]]);
+			}
 		}
 
 		this._shape.setLatLngs(newLatLngs);

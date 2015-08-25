@@ -20,11 +20,6 @@ L.Edit.Poly = L.Handler.extend({
 	addHooks: function () {
 		if (this._poly._map) {
 
-			//Terrible hack to un-nest nested polygons. See https://github.com/Leaflet/Leaflet/issues/2618
-			if (!this._poly._flat(this._poly._latlngs)) {
-				this._poly._latlngs = this._poly._latlngs[0];
-			}
-
 			if (!this._markerGroup) {
 				this._initMarkers();
 			}
@@ -53,6 +48,11 @@ L.Edit.Poly = L.Handler.extend({
 
 		var latlngs = this._poly._latlngs,
 			i, j, len, marker;
+
+		//Polylines are a single array, Polygons are a nested array
+		if (L.Util.isArray(latlngs[0])) {
+			latlngs = latlngs[0];
+		}
 
 		// TODO refactor holes implementation in Polygon to support it here
 
