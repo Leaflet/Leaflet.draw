@@ -122,7 +122,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		var lastMarker = this._markers.pop(),
 			poly = this._poly,
-			latlng = this._poly.spliceLatLngs(poly.getLatLngs().length - 1, 1)[0];
+			latlng = this._poly._spliceLatLngs(poly.getLatLngs().length - 1, 1)[0];
 
 		this._markerGroup.removeLayer(lastMarker);
 

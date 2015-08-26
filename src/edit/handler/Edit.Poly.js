@@ -102,7 +102,7 @@ L.Edit.Poly = L.Handler.extend({
 
 		this._markerGroup.removeLayer(marker);
 		this._markers.splice(i, 1);
-		this._spliceLatLngs(i, 1);
+		this._poly._spliceLatLngs(i, 1);
 		this._updateIndexes(i, -1);
 
 		marker
@@ -199,7 +199,7 @@ L.Edit.Poly = L.Handler.extend({
 
 			latlng.lat = marker.getLatLng().lat;
 			latlng.lng = marker.getLatLng().lng;
-			this._spliceLatLngs(i, 0, latlng);
+			this._poly._spliceLatLngs(i, 0, latlng);
 			this._markers.splice(i, 0, marker);
 
 			marker.setOpacity(1);
@@ -249,18 +249,6 @@ L.Edit.Poly = L.Handler.extend({
 		    p2 = map.project(marker2.getLatLng());
 
 		return map.unproject(p1._add(p2)._divideBy(2));
-	},
-
-	_spliceLatLngs: function (index, count, toAdd) {
-		var latLngs = this._isPolygon ? this._poly._latlngs[0] : this._poly._latlngs;
-
-		if (toAdd) {
-			latLngs.splice(index, count, toAdd);
-		} else {
-			latLngs.splice(index, count);
-		}
-
-		this._poly.redraw();
 	}
 });
 
@@ -294,3 +282,37 @@ var initHook = function () {
 
 L.Polyline.addInitHook(initHook);
 L.Polygon.addInitHook(initHook);
+
+L.Polyline.include({
+	_spliceLatLngs: function (index, count, toAdd) {
+		var latLngs = this._latlngs,
+			res;
+
+		if (toAdd) {
+			res = latLngs.splice(index, count, toAdd);
+		} else {
+			res = latLngs.splice(index, count);
+		}
+
+		this.redraw();
+
+		return res;
+	}
+});
+
+L.Polygon.include({
+	_spliceLatLngs: function (index, count, toAdd) {
+		var latLngs = this._latlngs[0],
+			res;
+
+		if (toAdd) {
+			res = latLngs.splice(index, count, toAdd);
+		} else {
+			res = latLngs.splice(index, count);
+		}
+
+		this.redraw();
+
+		return res;
+	}
+});
