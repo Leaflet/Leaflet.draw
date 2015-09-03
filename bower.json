@@ -1,7 +1,7 @@
 {
   "name": "leaflet-draw",
   "description": "Vector drawing plugin for Leaflet",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "main": [
     "dist/leaflet.draw-src.js",
     "dist/leaflet.draw.css",
