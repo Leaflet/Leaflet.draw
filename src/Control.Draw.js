@@ -51,10 +51,10 @@ L.Control.Draw = L.Control.extend({
 		return container;
 	},
 
-	onRemove: function () {
+	onRemove: function (map) {
 		for (var toolbarId in this._toolbars) {
 			if (this._toolbars.hasOwnProperty(toolbarId)) {
-				this._toolbars[toolbarId].removeToolbar();
+				map.removeLayer(this._toolbars[toolbarId]);
 			}
 		}
 	},
