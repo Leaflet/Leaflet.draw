@@ -64,7 +64,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map.addLayer(this._markerGroup);
 
 			this._poly = new L.Polyline([], this.options.shapeOptions);
-			
+
 			this._tooltip.updateContent(this._getTooltipText());
 
 			// Make a transparent marker that will used to catch click events. These click
@@ -245,11 +245,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_onTouch: function (e) {
 		// #TODO: use touchstart and touchend vs using click(touch start & end).
 		if (L.Browser.touch) { // #TODO: get rid of this once leaflet fixes their click/touch.
+			this._onMouseMove(e);
 			this._onMouseDown(e);
 			this._onMouseUp(e);
 		}
 	},
-	
+
 	_vertexChanged: function (latlng, added) {
 		this._updateFinishHandler();
 
