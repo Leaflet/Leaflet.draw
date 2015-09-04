@@ -231,7 +231,7 @@ Polygon options include all of the Polyline options plus the option to show the 
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map. 
+| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
 <a name="markeroptions" />
@@ -378,13 +378,28 @@ map.on('draw:created', function (e) {
 });
 ````
 
+### Show/Hide toolbar
+If you want to hide the draw tools conditionally;
+
+````js
+var drawControl = new L.Control.Draw({
+  ...
+});
+
+drawControl.hideDrawTools(); // Hide Drawing tools toolbar
+drawControl.showDrawTools(); // Show Drawing tools toolbar
+drawControl.hideEditTools(); // Hide Edit tools toolbar
+drawControl.showEditTools(); // Show Edit tools toolbar
+
+````
+
+
 ### Disabling a toolbar
 
 If you do not want a particular toolbar in your app you can turn it off by setting the toolbar to false.
 
 ````js
 var drawControl = new L.Control.Draw({
-	draw: false,
 	edit: {
 		featureGroup: editableLayers
 	}
@@ -426,7 +441,7 @@ drawControl.setDrawingOptions({
 
 ### Creating a custom build
 
-If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://github.com/Leaflet/Leaflet.draw/blob/master/build/build.html). 
+If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://github.com/Leaflet/Leaflet.draw/blob/master/build/build.html).
 
 See [edit handlers example](https://github.com/Leaflet/Leaflet.draw/blob/master/examples/edithandlers.html) which uses only the edit handlers.
 
