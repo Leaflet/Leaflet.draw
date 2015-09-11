@@ -227,6 +227,17 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		L.DomEvent.preventDefault(e.originalEvent);
 	},
 
+	_vertexChanged: function (latlng, added) {
+		this._map.fire('draw:drawvertex', { layers: this._markerGroup });
+		this._updateFinishHandler();
+
+		this._updateRunningMeasure(latlng, added);
+
+		this._clearGuides();
+
+		this._updateTooltip();
+	},
+
 	_onMouseDown: function (e) {
 		var originalEvent = e.originalEvent;
 		this._mouseDownOrigin = L.point(originalEvent.clientX, originalEvent.clientY);
@@ -251,16 +262,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._onMouseDown(e);
 			this._onMouseUp(e);
 		}
-	},
-	
-	_vertexChanged: function (latlng, added) {
-		this._updateFinishHandler();
-
-		this._updateRunningMeasure(latlng, added);
-
-		this._clearGuides();
-
-		this._updateTooltip();
 	},
 
 	_onMouseOut: function () {
