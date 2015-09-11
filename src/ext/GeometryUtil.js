@@ -43,7 +43,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return areaStr;
 	},
 
-	readableDistance: function (distance, isMetric) {
+	readableDistance: function (distance, isMetric, useFeet) {
 		var distanceStr;
 
 		if (isMetric) {
@@ -59,7 +59,12 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 			if (distance > 1760) {
 				distanceStr = (distance / 1760).toFixed(2) + ' miles';
 			} else {
-				distanceStr = Math.ceil(distance) + ' yd';
+				var suffix = ' yd';
+				if (useFeet) {
+					distance = distance * 3;
+					suffix = ' ft';
+				}
+				distanceStr = Math.ceil(distance) + suffix;
 			}
 		}
 
