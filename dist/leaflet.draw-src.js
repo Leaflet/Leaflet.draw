@@ -281,13 +281,16 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._mouseMarker
 				.on('mousedown', this._onMouseDown, this)
 				.on('mouseout', this._onMouseOut, this)
+				.on('mouseup', this._onMouseUp, this) // Necessary for 0.8 compatibility
+				.on('mousemove', this._onMouseMove, this) // Necessary to prevent 0.8 stutter
 				.addTo(this._map);
 
 			this._map
+				.on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
 				.on('mousemove', this._onMouseMove, this)
-				.on('mouseup', this._onMouseUp, this)
 				.on('zoomlevelschange', this._onZoomEnd, this)
-				.on('click', this._onTouch, this);
+				.on('click', this._onTouch, this)
+				.on('zoomend', this._onZoomEnd, this);
 		}
 	},
 
@@ -309,7 +312,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._mouseMarker
 			.off('mousedown', this._onMouseDown, this)
 			.off('mouseout', this._onMouseOut, this)
-			.off('mouseup', this._onMouseUp, this);
+			.off('mouseup', this._onMouseUp, this)
+			.off('mousemove', this._onMouseMove, this);
 		this._map.removeLayer(this._mouseMarker);
 		delete this._mouseMarker;
 
@@ -317,6 +321,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._clearGuides();
 
 		this._map
+			.off('mouseup', this._onMouseUp, this)
 			.off('mousemove', this._onMouseMove, this)
 			.off('mouseup', this._onMouseUp, this)
 			.off('zoomend', this._onZoomEnd, this)
@@ -402,8 +407,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onMouseMove: function (e) {
-		var newPos = e.layerPoint,
-			latlng = e.latlng;
+		var newPos = this._map.mouseEventToLayerPoint(e.originalEvent);
+		var latlng = this._map.layerPointToLatLng(newPos);
 
 		// Save latlng
 		// should this be moved to _updateGuide() ?
