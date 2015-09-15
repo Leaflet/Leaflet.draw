@@ -294,6 +294,14 @@
 	cursor: pointer;
 }
 
+.leaflet-edit-rotate {
+	cursor: move;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+	background: #FFFF33;
+}
+
+
 /* ================================================================== */
 /* Old IE styles
 /* ================================================================== */
