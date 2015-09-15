@@ -1,3 +1,6 @@
+[Rotation demo](http://jandm.github.io/Leaflet.draw/).
+
+
 # Important
 Leaflet.draw 0.2.3+ requires [Leaflet 0.7](https://github.com/Leaflet/Leaflet/archive/v0.7.zip) or higher.
 
