@@ -4,67 +4,24 @@ L.Edit = L.Edit || {};
  * L.Edit.Poly is an editing handler for polylines and polygons.
  */
 
-L.Edit.Poly = L.Handler.extend({
-	options: {
-		icon: new L.DivIcon({
-			iconSize: new L.Point(8, 8),
-			className: 'leaflet-div-icon leaflet-editing-icon'
-		})
+L.Edit.Poly = L.Edit.Path.extend({
+
+	_initMarkers : function() {
+		L.Edit.Path.prototype._initMarkers.call(this);
+		this._createEdgeMarkers();
 	},
 
-	initialize: function (poly, options) {
-		this._poly = poly;
-		L.setOptions(this, options);
-	},
-
-	addHooks: function () {
-		var poly = this._poly;
-
-		if (!(poly instanceof L.Polygon)) {
-			poly.options.editing.fill = false;
-		}
-
-		poly.setStyle(poly.options.editing);
-
-		if (this._poly._map) {
-			if (!this._markerGroup) {
-				this._initMarkers();
-			}
-			this._poly._map.addLayer(this._markerGroup);
-		}
-	},
-
-	removeHooks: function () {
-		var poly = this._poly;
-
-		poly.setStyle(poly.options.original);
-
-		if (poly._map) {
-			poly._map.removeLayer(this._markerGroup);
-			delete this._markerGroup;
-			delete this._markers;
-		}
-	},
-
-	updateMarkers: function () {
-		this._markerGroup.clearLayers();
-		this._initMarkers();
-	},
-
-	_initMarkers: function () {
-		if (!this._markerGroup) {
-			this._markerGroup = new L.LayerGroup();
-		}
+	_createEdgeMarkers: function () {
 		this._markers = [];
 
-		var latlngs = this._poly._latlngs,
+		var latlngs = this._shape._latlngs,
 			i, j, len, marker;
 
 		// TODO refactor holes implementation in Polygon to support it here
 
 		for (i = 0, len = latlngs.length; i < len; i++) {
 
-			marker = this._createMarker(latlngs[i], i);
+			marker = this._createEdgeMarker(latlngs[i], i);
 			marker.on('click', this._onMarkerClick, this);
 			this._markers.push(marker);
 		}
@@ -72,7 +29,7 @@ L.Edit.Poly = L.Handler.extend({
 		var markerLeft, markerRight;
 
 		for (i = 0, j = len - 1; i < len; j = i++) {
-			if (i === 0 && !(L.Polygon && (this._poly instanceof L.Polygon))) {
+			if (i === 0 && !(L.Polygon && (this._shape instanceof L.Polygon))) {
 				continue;
 			}
 
@@ -84,16 +41,16 @@ L.Edit.Poly = L.Handler.extend({
 		}
 	},
 
-	_createMarker: function (latlng, index) {
+	_createEdgeMarker: function (latlng, index) {
 		var marker = new L.Marker(latlng, {
 			draggable: true,
-			icon: this.options.icon
+			icon: this.options.edgeIcon
 		});
 
 		marker._origLatLng = latlng;
 		marker._index = index;
 
-		marker.on('drag', this._onMarkerDrag, this);
+		marker.on('drag', this._onEdgeMarkerDrag, this);
 		marker.on('dragend', this._fireEdit, this);
 
 		this._markerGroup.addLayer(marker);
@@ -106,21 +63,17 @@ L.Edit.Poly = L.Handler.extend({
 
 		this._markerGroup.removeLayer(marker);
 		this._markers.splice(i, 1);
-		this._poly.spliceLatLngs(i, 1);
+		this._shape.spliceLatLngs(i, 1);
 		this._updateIndexes(i, -1);
+		this._repositionAllMarkers();
 
 		marker
-			.off('drag', this._onMarkerDrag, this)
+			.off('drag', this._onEdgeMarkerDrag, this)
 			.off('dragend', this._fireEdit, this)
 			.off('click', this._onMarkerClick, this);
 	},
 
-	_fireEdit: function () {
-		this._poly.edited = true;
-		this._poly.fire('edit');
-	},
-
-	_onMarkerDrag: function (e) {
+	_onEdgeMarkerDrag: function (e) {
 		var marker = e.target;
 
 		L.extend(marker._origLatLng, marker._latlng);
@@ -131,16 +84,17 @@ L.Edit.Poly = L.Handler.extend({
 		if (marker._middleRight) {
 			marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next));
 		}
-
-		this._poly.redraw();
+		this._shape.getLatLngs()[marker._index] = marker._latlng;
+		this._shape.redraw();
+		this._repositionAllMarkers();
 	},
 
 	_onMarkerClick: function (e) {
-		var minPoints = L.Polygon && (this._poly instanceof L.Polygon) ? 4 : 3,
+		var minPoints = L.Polygon && (this._shape instanceof L.Polygon) ? 4 : 3,
 			marker = e.target;
 
 		// If removing this point would create an invalid polyline/polygon don't remove
-		if (this._poly._latlngs.length < minPoints) {
+		if (this._shape._latlngs.length < minPoints) {
 			return;
 		}
 
@@ -182,10 +136,10 @@ L.Edit.Poly = L.Handler.extend({
 
 	_createMiddleMarker: function (marker1, marker2) {
 		var latlng = this._getMiddleLatLng(marker1, marker2),
-		    marker = this._createMarker(latlng),
-		    onClick,
-		    onDragStart,
-		    onDragEnd;
+			marker = this._createEdgeMarker(latlng),
+			onClick,
+			onDragStart,
+			onDragEnd;
 
 		marker.setOpacity(0.6);
 
@@ -197,12 +151,12 @@ L.Edit.Poly = L.Handler.extend({
 			marker._index = i;
 
 			marker
-			    .off('click', onClick, this)
-			    .on('click', this._onMarkerClick, this);
+				.off('click', onClick, this)
+				.on('click', this._onMarkerClick, this);
 
 			latlng.lat = marker.getLatLng().lat;
 			latlng.lng = marker.getLatLng().lng;
-			this._poly.spliceLatLngs(i, 0, latlng);
+			this._shape.spliceLatLngs(i, 0, latlng);
 			this._markers.splice(i, 0, marker);
 
 			marker.setOpacity(1);
@@ -212,7 +166,7 @@ L.Edit.Poly = L.Handler.extend({
 			this._updatePrevNext(marker1, marker);
 			this._updatePrevNext(marker, marker2);
 
-			this._poly.fire('editstart');
+			this._shape.fire('editstart');
 		};
 
 		onDragEnd = function () {
@@ -230,9 +184,9 @@ L.Edit.Poly = L.Handler.extend({
 		};
 
 		marker
-		    .on('click', onClick, this)
-		    .on('dragstart', onDragStart, this)
-		    .on('dragend', onDragEnd, this);
+			.on('click', onClick, this)
+			.on('dragstart', onDragStart, this)
+			.on('dragend', onDragEnd, this);
 
 		this._markerGroup.addLayer(marker);
 	},
@@ -247,12 +201,29 @@ L.Edit.Poly = L.Handler.extend({
 	},
 
 	_getMiddleLatLng: function (marker1, marker2) {
-		var map = this._poly._map,
-		    p1 = map.project(marker1.getLatLng()),
-		    p2 = map.project(marker2.getLatLng());
+		var map = this._shape._map,
+			p1 = map.project(marker1.getLatLng()),
+			p2 = map.project(marker2.getLatLng());
 
 		return map.unproject(p1._add(p2)._divideBy(2));
+	},
+
+	_repositionAllMarkers: function () {
+		L.Edit.Path.prototype._repositionAllMarkers.call(this);
+
+		// reposition edge markers
+		for(var i = 0; i < this._markers.length; i++) {
+			var i1 = i, i2 = (i+1) % this._markers.length;
+			var marker1 = this._markers[i1];
+			var marker2 = this._markers[i2];
+			marker1.setLatLng(this._shape._latlngs[i1]);
+			marker2.setLatLng(this._shape._latlngs[i2]);
+			if(marker1._middleRight) {
+				marker1._middleRight.setLatLng(this._getMiddleLatLng(marker1, marker2));
+			}
+		}
 	}
+
 });
 
 L.Polyline.addInitHook(function () {
