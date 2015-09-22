@@ -214,6 +214,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			clickable: true
 		},
 		metric: true, // Whether to use the metric meaurement system or imperial
+		nautical: false, //Whether to use nautical miles
 		showLength: true, // Whether to display distance in the tooltip
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
@@ -565,7 +566,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// calculate the distance from the last fixed point to the mouse position
 		distance = this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng);
 
-		return L.GeometryUtil.readableDistance(distance, this.options.metric);
+		return L.GeometryUtil.readableDistance(distance, this.options.metric, this.options.nautical);
 	},
 
 	_showErrorTooltip: function () {
@@ -1809,28 +1810,29 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return areaStr;
 	},
 
-	readableDistance: function (distance, isMetric) {
-		var distanceStr;
+	readableDistance: function (distance, isMetric, isNmi) {
+            var distanceStr;
+            if (isMetric) {
+                // show metres when distance is < 1km, then show km
+				if (distance > 1000) {
+					distanceStr = (distance / 1000).toFixed(2) + ' km';
+				} else {
+                    distanceStr = Math.ceil(distance) + ' m';
+                }
+            } else if (isNmi) {
+                distance *= 0.00053996; // nautical miles in 1 meter
+                distanceStr = (distance).toFixed(2) + ' nmi';
+            } else {
+                distance *= 1.09361;
+                if (distance > 1760) {
+                    distanceStr = (distance / 1760).toFixed(2) + ' miles';
+                } else {
+                    distanceStr = Math.ceil(distance) + ' yd';
+                }
+            }
 
-		if (isMetric) {
-			// show metres when distance is < 1km, then show km
-			if (distance > 1000) {
-				distanceStr = (distance  / 1000).toFixed(2) + ' km';
-			} else {
-				distanceStr = Math.ceil(distance) + ' m';
-			}
-		} else {
-			distance *= 1.09361;
-
-			if (distance > 1760) {
-				distanceStr = (distance / 1760).toFixed(2) + ' miles';
-			} else {
-				distanceStr = Math.ceil(distance) + ' yd';
-			}
-		}
-
-		return distanceStr;
-	}
+            return distanceStr;
+        }
 });
 
 L.Util.extend(L.LineUtil, {
