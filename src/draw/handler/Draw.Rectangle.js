@@ -14,6 +14,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 			fillOpacity: 0.2,
 			clickable: true
 		},
+		showArea: false,
 		metric: true // Whether to use the metric meaurement system or imperial
 	},
 
@@ -48,7 +49,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 		if (shape) {
 			latLngs = this._shape.getLatLngs();
 			area = L.GeometryUtil.geodesicArea(latLngs);
-			subtext = L.GeometryUtil.readableArea(area, this.options.metric);
+			subtext = this.options.showArea ? L.GeometryUtil.readableArea(area, this.options.metric) : '';
 		}
 
 		return {
