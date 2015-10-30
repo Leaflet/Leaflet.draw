@@ -1700,7 +1700,15 @@ L.Edit.SimpleShape = L.Handler.extend({
 		}
 
 		this._shape.redraw();
-		
+
+		// fix hook marker not move in Cicle Edit
+		if (marker === this._moveMarker) {
+			this._moveMarker.setLatLng(this._shape.getLatLng());
+		}
+		else {
+			this.updateMarkers();
+		}
+
 		// prevent touchcancel in IOS
 		// e.preventDefault();
 		return false;
