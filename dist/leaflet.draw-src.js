@@ -1110,7 +1110,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	_onTouch: function (e) {
 		// called on click & tap, only really does any thing on tap
 		this._onMouseMove(e); // creates & places marker
-		this._onClick(); // permenantly places marker & ends interaction
+		this._onClick(); // permanently places marker & ends interaction
 	},
 
 	_fireCreatedEvent: function () {
@@ -2042,6 +2042,9 @@ L.Map.TouchExtend = L.Handler.extend({
 			touchEvent = e.touches[0];
 		} else if (e.pointerType === 'touch') {
 			touchEvent = e;
+            if (!this._filterClick(e)) {
+                return;
+            }
 		} else {
 			return;
 		}
@@ -2059,6 +2062,23 @@ L.Map.TouchExtend = L.Handler.extend({
 			originalEvent: e
 		});
 	},
+
+    /** Borrowed from Leaflet and modified for bool ops **/
+    _filterClick: function (e) {
+        var timeStamp = (e.timeStamp || e.originalEvent.timeStamp),
+            elapsed = L.DomEvent._lastClick && (timeStamp - L.DomEvent._lastClick);
+
+        // are they closer together than 500ms yet more than 100ms?
+        // Android typically triggers them ~300ms apart while multiple listeners
+        // on the same event should be triggered far faster;
+        // or check if click is simulated on the element, and if it is, reject any non-simulated events
+        if ((elapsed && elapsed > 100 && elapsed < 500) || (e.target._simulatedClick && !e._simulated)) {
+            L.DomEvent.stop(e);
+            return false;
+        }
+        L.DomEvent._lastClick = timeStamp;
+        return true;
+    },
 
 	_onTouchStart: function (e) {
 		if (!this._map._loaded) {
