@@ -100,7 +100,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	_onTouch: function (e) {
 		// called on click & tap, only really does any thing on tap
 		this._onMouseMove(e); // creates & places marker
-		this._onClick(); // permenantly places marker & ends interaction
+		this._onClick(); // permanently places marker & ends interaction
 	},
 
 	_fireCreatedEvent: function () {
