@@ -27,7 +27,10 @@ L.DrawToolbar = L.Toolbar.extend({
 			}
 		}
 
-		this._toolbarClass = 'leaflet-draw-draw';
+		if (!options.hasOwnProperty('buttoncss')) {
+			options.buttoncss = 'leaflet-draw-draw';
+		}
+
 		L.Toolbar.prototype.initialize.call(this, options);
 	},
 

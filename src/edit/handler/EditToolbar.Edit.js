@@ -70,7 +70,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
 
-			this._tooltip = new L.Draw.Tooltip(this._map);
+			this._tooltip = new L.Draw.Tooltip(this._map, this.options.tooltip);
 			this._tooltip.updateContent({
 				text: L.drawLocal.edit.handlers.edit.tooltip.text,
 				subtext: L.drawLocal.edit.handlers.edit.tooltip.subtext
@@ -206,7 +206,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 			layer.options.original = L.extend({}, layer.options);
 			layer.options.editing = pathOptions;
-
+		} else {
+			layer.options.original = L.extend({}, layer.options);
+			layer.options.editing = {};
 		}
 
 		if (layer instanceof L.Marker) {

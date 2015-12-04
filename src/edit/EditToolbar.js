@@ -46,6 +46,10 @@ L.EditToolbar = L.Toolbar.extend({
 			options.poly = L.extend({}, this.options.poly, options.poly);
 		}
 
+		if (!options.hasOwnProperty('buttoncss')) {
+			options.buttoncss = 'leaflet-draw-edit';
+		}
+
 		this._toolbarClass = 'leaflet-draw-edit';
 		L.Toolbar.prototype.initialize.call(this, options);
 
