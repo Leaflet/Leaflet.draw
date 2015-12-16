@@ -27,9 +27,6 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 
 	// @method initialize(): void
 	initialize: function (map, options) {
-		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
-		this.type = L.Draw.Circle.TYPE;
-
 		this._initialLabelText = L.drawLocal.draw.handlers.circle.tooltip.start;
 
 		L.Draw.SimpleShape.prototype.initialize.call(this, map, options);

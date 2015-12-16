@@ -57,9 +57,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			options.drawError = L.Util.extend({}, this.options.drawError, options.drawError);
 		}
 
-		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
-		this.type = L.Draw.Polyline.TYPE;
-
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 

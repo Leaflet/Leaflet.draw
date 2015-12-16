@@ -9,6 +9,11 @@ L.Draw.Feature = L.Handler.extend({
 
 	// @method initialize(): void
 	initialize: function (map, options) {
+		if (options.type) {
+			this.type = options.type;
+		} else {
+			this.type = this.constructor.TYPE;
+		}
 		this._map = map;
 		this._container = map._container;
 		this._overlayPane = map._panes.overlayPane;
