@@ -118,7 +118,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		}, this);
 	},
 
-	// @method save(): void
+	// @method save(): { map, layers[] }
 	// Save the layer geometries
 	save: function () {
 		var editedLayers = new L.LayerGroup();
@@ -128,7 +128,14 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.edited = false;
 			}
 		});
-		this._map.fire(L.Draw.Event.EDITED, { layers: editedLayers });
+
+// TODO: this may not be needed anymore
+//		this._map.fire(L.Draw.Event.EDITED, { layers: editedLayers });
+
+		return {
+			map: this._map,
+			layers: editedLayers
+		};
 	},
 
 	_backupLayer: function (layer) {
