@@ -128,14 +128,17 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.edited = false;
 			}
 		});
+	},
 
-// TODO: this may not be needed anymore
-//		this._map.fire(L.Draw.Event.EDITED, { layers: editedLayers });
+	getChanges: function () {
+		var editedLayers = new L.LayerGroup();
+		this._featureGroup.eachLayer(function (layer) {
+			if (layer.edited) {
+				editedLayers.addLayer(layer);
+			}
+		});
 
-		return {
-			map: this._map,
-			layers: editedLayers
-		};
+		return editedLayers;
 	},
 
 	_backupLayer: function (layer) {

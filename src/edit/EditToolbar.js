@@ -21,7 +21,8 @@ L.EditToolbar = L.Toolbar.extend({
 
 				// Whether to user the existing layers color
 				maintainColor: false
-			}
+			},
+			onBeforeSave: null
 		},
 		remove: {},
 		poly: null,
@@ -93,7 +94,7 @@ L.EditToolbar = L.Toolbar.extend({
 			{
 				title: L.drawLocal.edit.toolbar.actions.cancel.title,
 				text: L.drawLocal.edit.toolbar.actions.cancel.text,
-				callback: this.disable,
+				callback: this._cancel,
 				context: this
 			}
 		];
@@ -129,20 +130,21 @@ L.EditToolbar = L.Toolbar.extend({
 		this._activeMode.handler.revertLayers();
 
 		L.Toolbar.prototype.disable.call(this);
+	},
+
+	_cancel: function() {
+		this.disable();
 
 		editedLayers.map.fire('draw:edit-cancelled');
 	},
 
 	_save: function () {
-		var handler = this._activeMode.handler,
-			editedLayers;
-
-		editedLayers = handler.save();
-		if (this._activeMode) {
-			this._activeMode.handler.disable();
+		if (!this.options.edit.onBeforeSave || this.options.edit.onBeforeSave(this._activeMode.handler)) {
+			this._activeMode.handler.save();
+			if (this._activeMode) {
+				this._activeMode.handler.disable();
+			}
 		}
-
-		editedLayers.map.fire('draw:edited', { layers: editedLayers.layers });
 	},
 
 	_checkDisabled: function () {

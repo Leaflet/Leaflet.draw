@@ -148,7 +148,11 @@ L.Draw.Toolbar = L.Class.extend({
 			map.on('draw:available:' + type, this._createAvailableCallback(type), this);
 		}
 
-		// if no buttons were added, do not add the toolbar
+		map.on('draw:available', this._availableButtons, this);
+		map.on('draw:available:all', this._availableButtons, this);
+		map.on('draw:available:none', this._unavailableButtons, this);
+		map.on('draw:unavailable', this._unavailableButtons, this);
+
 		if (!buttonIndex) {
 			return;
 		}
@@ -167,6 +171,22 @@ L.Draw.Toolbar = L.Class.extend({
 		this.on('redraw', this._redraw, this);
 
 		return container;
+	},
+
+	_availableButtons: function(handlers) {
+		for (var handlerId in this._modes) {
+			if (this._modes.hasOwnProperty(handlerId) && (handlers.type === 'draw:available:all' || handlers.hasOwnProperty(handlerId))) {
+				this._available(handlerId);
+			}
+		}
+	},
+
+	_unavailableButtons: function(handlers) {
+		for (var handlerId in this._modes) {
+			if (this._modes.hasOwnProperty(handlerId) && (handlers.type === 'draw:available:none' || handlers.hasOwnProperty(handlerId))) {
+				this._unavailable(handlerId);
+			}
+		}
 	},
 
 	_createAvailableCallback: function(handlerId) {
@@ -234,7 +254,7 @@ L.Draw.Toolbar = L.Class.extend({
 			container: container,
 			callback: this._modes[type].handler.enable,
 			context: this._modes[type].handler,
-			cssClassName: cssClassNamev
+			cssClassName: cssClassName,
 			style: 'button'
 		});
 		this._modes[type].buttonIndex = buttonIndex;
@@ -319,6 +339,13 @@ L.Draw.Toolbar = L.Class.extend({
 	_available: function(handlerId) {
 		if (this._modes[handlerId]) {
 			this._modes[handlerId].available = true;
+			this._redrawButtons();
+		}
+	},
+
+	_unavailable: function(handlerId) {
+		if (this._modes[handlerId]) {
+			this._modes[handlerId].available = false;
 			this._redrawButtons();
 		}
 	},
