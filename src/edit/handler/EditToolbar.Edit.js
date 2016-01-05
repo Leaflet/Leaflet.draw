@@ -28,19 +28,30 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this.type = L.EditToolbar.Edit.TYPE;
 	},
 
+	destroy: function() {
+		this._featureGroup = null;
+		this.options.featureGroup = null;
+	},
+
 	// @method enable(): void
 	// Enable the edit toolbar
-	enable: function () {
+	enable: function (options) {
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
 		}
-		this.fire('enabled', { handler: this.type });
-		//this disable other handlers
 
+		if (options && options.options) {
+			L.setOptions(this, options.options);
+		}
+
+		// this disables other handlers
+		this.fire('enabled', {handler: this.type});
+
+		// allow drawLayer to be updated before beginning edition.
 		this._map.fire(L.Draw.Event.EDITSTART, { handler: this.type });
-		//allow drawLayer to be updated before beginning edition.
 
 		L.Handler.prototype.enable.call(this);
+
 		this._featureGroup
 			.on('layeradd', this._enableLayerEdit, this)
 			.on('layerremove', this._disableLayerEdit, this);
@@ -55,9 +66,13 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this._featureGroup
 			.off('layeradd', this._enableLayerEdit, this)
 			.off('layerremove', this._disableLayerEdit, this);
+
 		L.Handler.prototype.disable.call(this);
+
 		this._map.fire(L.Draw.Event.EDITSTOP, { handler: this.type });
 		this.fire('disabled', { handler: this.type });
+
+		this.options.layer = null;
 	},
 
 	// @method addHooks(): void
@@ -68,7 +83,11 @@ L.EditToolbar.Edit = L.Handler.extend({
 		if (map) {
 			map.getContainer().focus();
 
-			this._featureGroup.eachLayer(this._enableLayerEdit, this);
+			if (this.options.layer) {
+				this._enableLayerEdit(this.options.layer);
+			} else {
+				this._featureGroup.eachLayer(this._enableLayerEdit, this);
+			}
 
 			this._tooltip = new L.Draw.Tooltip(this._map, this.options.tooltip);
 			this._tooltip.updateContent({

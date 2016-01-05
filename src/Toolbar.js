@@ -148,6 +148,7 @@ L.Draw.Toolbar = L.Class.extend({
 			map.on('draw:available:' + type, this._createAvailableCallback(type), this);
 		}
 
+		// TODO: could collapse this into a single listener
 		map.on('draw:available', this._availableButtons, this);
 		map.on('draw:available:all', this._availableButtons, this);
 		map.on('draw:available:none', this._unavailableButtons, this);
@@ -174,36 +175,42 @@ L.Draw.Toolbar = L.Class.extend({
 	},
 
 	_availableButtons: function(handlers) {
+		var all = handlers.type === 'draw:available:all';
 		for (var handlerId in this._modes) {
-			if (this._modes.hasOwnProperty(handlerId) && (handlers.type === 'draw:available:all' || handlers.hasOwnProperty(handlerId))) {
-				this._available(handlerId);
+			if (this._modes.hasOwnProperty(handlerId) && (all || handlers.hasOwnProperty(handlerId))) {
+				this._available(handlerId, handlers[handlerId]);
 			}
 		}
 	},
 
 	_unavailableButtons: function(handlers) {
+		var all = handlers.type === 'draw:available:none';
 		for (var handlerId in this._modes) {
-			if (this._modes.hasOwnProperty(handlerId) && (handlers.type === 'draw:available:none' || handlers.hasOwnProperty(handlerId))) {
+			if (this._modes.hasOwnProperty(handlerId) && (all || handlers.hasOwnProperty(handlerId))) {
 				this._unavailable(handlerId);
 			}
 		}
 	},
 
 	_createAvailableCallback: function(handlerId) {
-		return function() {
-			this._available(handlerId);
+		return function(options) {
+			this._available(handlerId, options);
 		};
 	},
 
+	// @method removeToolbar(): void
+	// Removes the toolbar and drops the handler event listeners
 	removeToolbar: function (map) {
 		var handler;
 
 		// stop listening for redraw events
 		this.off('redraw');
 
-	// @method removeToolbar(): void
-	// Removes the toolbar and drops the handler event listeners
-	removeToolbar: function () {
+		map.off('draw:available', this._availableButtons, this);
+		map.off('draw:available:all', this._availableButtons, this);
+		map.off('draw:available:none', this._unavailableButtons, this);
+		map.off('draw:unavailable', this._unavailableButtons, this);
+
 		// Dispose each handler
 		for (var handlerId in this._modes) {
 			if (this._modes.hasOwnProperty(handlerId)) {
@@ -336,10 +343,17 @@ L.Draw.Toolbar = L.Class.extend({
 		return cssClass;
 	},
 
-	_available: function(handlerId) {
+	_available: function(handlerId, options) {
 		if (this._modes[handlerId]) {
 			this._modes[handlerId].available = true;
+			this._updateHandlerOptions(this._modes[handlerId].handler);
 			this._redrawButtons();
+		}
+	},
+
+	_updateHandlerOptions: function(handler, options) {
+		if (handler && options && options.options) {
+			L.setOptions(handler.options, options.options);
 		}
 	},
 
@@ -367,8 +381,10 @@ L.Draw.Toolbar = L.Class.extend({
 			.off(button, 'click', L.DomEvent.stopPropagation)
 			.off(button, 'mousedown', L.DomEvent.stopPropagation)
 			.off(button, 'dblclick', L.DomEvent.stopPropagation)
-			.off(button, 'click', L.DomEvent.preventDefault)
-			.off(button, 'click', callback);
+			.off(button, 'click', L.DomEvent.preventDefault);
+		if (callback) {
+			L.DomEvent.off(button, 'click', callback);
+		}
 	},
 
 	_handlerActivated: function (e) {
