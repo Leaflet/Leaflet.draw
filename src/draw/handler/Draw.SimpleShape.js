@@ -6,7 +6,8 @@ L.SimpleShape = {};
  */
 L.Draw.SimpleShape = L.Draw.Feature.extend({
 	options: {
-		repeatMode: false
+		repeatMode: false,
+		dragShape: false // TODO: original behaviour was 'true'
 	},
 
 	// @method initialize(): void
@@ -58,8 +59,10 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 				.off('touchstart', this._onMouseDown, this)
 				.off('touchmove', this._onMouseMove, this);
 
-			L.DomEvent.off(document, 'mouseup', this._onMouseUp, this);
-			L.DomEvent.off(document, 'touchend', this._onMouseUp, this);
+			if (this.options.dragShape) {
+				L.DomEvent.off(document, 'mouseup', this._onMouseUp, this);
+				L.DomEvent.off(document, 'touchend', this._onMouseUp, this);
+			}
 
 			// If the box element doesn't exist they must not have moved the mouse, so don't need to destroy/return
 			if (this._shape) {
@@ -77,13 +80,21 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	},
 
 	_onMouseDown: function (e) {
-		this._isDrawing = true;
-		this._startLatLng = e.latlng;
-
-		L.DomEvent
-			.on(document, 'mouseup', this._onMouseUp, this)
-			.on(document, 'touchend', this._onMouseUp, this)
-			.preventDefault(e.originalEvent);
+		if (this.options.dragShape) {
+			this._isDrawing = true;
+			this._startLatLng = e.latlng;
+			L.DomEvent
+				.on(document, 'mouseup', this._onMouseUp, this)
+				.on(document, 'touchend', this._onMouseUp, this)
+				.preventDefault(e.originalEvent);
+		} else {
+			if (this._isDrawing) {
+				this._finishShape();
+			} else {
+				this._isDrawing = true;
+				this._startLatLng = e.latlng;
+			}
+		}
 	},
 
 	_onMouseMove: function (e) {
@@ -96,7 +107,11 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		}
 	},
 
-	_onMouseUp: function () {
+	_onMouseUp: function (e) {
+		this._finishShape();
+	},
+
+	_finishShape: function () {
 		if (this._shape) {
 			this._fireCreatedEvent();
 		}
