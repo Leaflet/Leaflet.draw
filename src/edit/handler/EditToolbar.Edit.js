@@ -63,6 +63,13 @@ L.EditToolbar.Edit = L.Handler.extend({
 		if (!this._enabled) {
 			return;
 		}
+
+		this._featureGroup.eachLayer(function (layer) {
+			if (layer.edited) {
+				this._revertLayer(layer);
+			}
+		}, this);
+
 		this._featureGroup
 			.off('layeradd', this._enableLayerEdit, this)
 			.off('layerremove', this._disableLayerEdit, this);
