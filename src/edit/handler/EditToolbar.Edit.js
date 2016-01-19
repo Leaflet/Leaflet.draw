@@ -44,6 +44,14 @@ L.EditToolbar.Edit = L.Handler.extend({
 			L.setOptions(this, options.options);
 		}
 
+		// update feature group if it has changed
+		if (this.options.featureGroup !== this._featureGroup) {
+			this._featureGroup = this.options.featureGroup;
+			if (!(this._featureGroup instanceof L.FeatureGroup)) {
+				throw new Error('options.featureGroup must be a L.FeatureGroup');
+			}
+		}
+
 		// this disables other handlers
 		this.fire('enabled', {handler: this.type});
 
