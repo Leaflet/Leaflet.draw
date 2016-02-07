@@ -231,7 +231,7 @@ Polygon options include all of the Polyline options plus the option to show the 
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map. 
+| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
 <a name="markeroptions" />
@@ -243,8 +243,8 @@ Polygon options include all of the Polyline options plus the option to show the 
 | zIndexOffset | Number | `2000` | This should be a high number to ensure that you can draw over all other layers on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
-<a name="editoptions" />
-### EditOptions
+<a name="editpolyoptions" />
+### EditPolyOptions
 
 These options will allow you to configure the draw toolbar and its handlers.
 
@@ -253,6 +253,7 @@ These options will allow you to configure the draw toolbar and its handlers.
 | featureGroup | [Leaflet FeatureGroup](http://leafletjs.com/reference.html#featuregroup) | `null` | This is the FeatureGroup that stores all editable shapes. **THIS IS REQUIRED FOR THE EDIT TOOLBAR TO WORK**
 | edit | [EditHandlerOptions](#edithandleroptions) | `{ }` | Edit handler options. Set to `false` to disable handler.
 | remove | [DeleteHandlerOptions](#deletehandleroptions) | `{ }` | Delete handler options. Set to `false` to disable handler.
+| poly | [EditPolyOptions](#editpoly) |  `{ }` | Set polygon editing options
 
 <a name="edithandleroptions" />
 #### EditHandlerOptions
@@ -279,6 +280,15 @@ E.g. The edit options below will maintain the layer color and set the edit opaci
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
+
+
+<a name="editpoly" />
+#### EditPolyOptions
+
+| Option | Type | Default | Description
+| --- | --- | --- | ---
+| allowIntersection | Bool | `true` |  Determines if line segments can cross.
+
 
 <a name="drawlocal" />
 #### Customizing language and text in Leaflet.draw
@@ -426,7 +436,7 @@ drawControl.setDrawingOptions({
 
 ### Creating a custom build
 
-If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://github.com/Leaflet/Leaflet.draw/blob/master/build/build.html). 
+If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://github.com/Leaflet/Leaflet.draw/blob/master/build/build.html).
 
 See [edit handlers example](https://github.com/Leaflet/Leaflet.draw/blob/master/examples/edithandlers.html) which uses only the edit handlers.
 
