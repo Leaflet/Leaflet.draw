@@ -84,7 +84,7 @@ L.drawLocal = {
 				edit: 'Edit layers.',
 				editDisabled: 'No layers to edit.',
 				remove: 'Delete layers.',
-				removeDisabled: 'No layers to delete.',
+				removeDisabled: 'No layers to delete.'
 			}
 		},
 		handlers: {

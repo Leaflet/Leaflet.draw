@@ -92,7 +92,7 @@ L.drawLocal = {
 				edit: 'Edit layers.',
 				editDisabled: 'No layers to edit.',
 				remove: 'Delete layers.',
-				removeDisabled: 'No layers to delete.',
+				removeDisabled: 'No layers to delete.'
 			}
 		},
 		handlers: {
@@ -258,7 +258,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map.addLayer(this._markerGroup);
 
 			this._poly = new L.Polyline([], this.options.shapeOptions);
-			
+
 			this._tooltip.updateContent(this._getTooltipText());
 
 			// Make a transparent marker that will used to catch click events. These click
@@ -1455,7 +1455,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		var layerPoint = this._map.mouseEventToLayerPoint(e.originalEvent.touches[0]),
 			latlng = this._map.layerPointToLatLng(layerPoint),
 			marker = e.target;
-				
+
 		L.extend(marker._origLatLng, latlng);
 
 		if (marker._middleLeft) {
