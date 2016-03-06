@@ -65,7 +65,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._map.addLayer(this._markerGroup);
 
 			this._poly = new L.Polyline([], this.options.shapeOptions);
-			
+
 			this._tooltip.updateContent(this._getTooltipText());
 
 			// Make a transparent marker that will used to catch click events. These click

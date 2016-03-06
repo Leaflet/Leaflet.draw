@@ -256,7 +256,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		var layerPoint = this._map.mouseEventToLayerPoint(e.originalEvent.touches[0]),
 			latlng = this._map.layerPointToLatLng(layerPoint),
 			marker = e.target;
-				
+
 		L.extend(marker._origLatLng, latlng);
 
 		if (marker._middleLeft) {
