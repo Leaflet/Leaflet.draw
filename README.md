@@ -1,12 +1,6 @@
-[![Build
-Status](https://secure.travis-ci.org/ddproxy/Leaflet.draw.png?branch=master)](http://travis-ci.org/ddproxy/Leaflet.draw)
-
-#Leaflet.draw With Touch
-This is a touch friendly version of Leaflet.draw that was created and maintained by Michael Guild (https://github.com/michaelguild13).
-
-The touch support was initiated due to a demand for it at National Geographic for their Map Maker Projected (http://mapmaker.education.nationalgeographic.com/) that was created by Michael Guild and Daniel Schep (https://github.com/dschep)
-
 # Important
+
+[![Join the chat at https://gitter.im/Leaflet/Leaflet.draw](https://badges.gitter.im/Leaflet/Leaflet.draw.svg)](https://gitter.im/Leaflet/Leaflet.draw?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Leaflet.draw 0.2.3+ requires [Leaflet 0.7.x](https://github.com/Leaflet/Leaflet/releases).
 
 Support for Leaflet 1.0 is in development at the [leaflet-master](https://github.com/Leaflet/Leaflet.draw/tree/leaflet-master) branch.
@@ -138,14 +132,6 @@ Triggered when the user has finished a particular vector or marker.
 | --- | --- | ---
 | layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
 
-#### draw:drawvertex
-
-Triggered when a vertex is created on a polyline or polygon.
-
-| Property | Type | Description
-| --- | --- | ---
-| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just being added from the map.
-
 #### draw:editstart
 
 Triggered when the user starts edit mode by clicking the edit tool button.
@@ -153,14 +139,6 @@ Triggered when the user starts edit mode by clicking the edit tool button.
 | Property | Type | Description
 | --- | --- | ---
 | handler | String | The type of edit this is. One of: `edit`
-
-#### draw:editvertex
-
-Triggered when a vertex is edited on a polyline or polygon.
-
-| Property | Type | Description
-| --- | --- | ---
-| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just being edited from the map.
 
 #### draw:editstop
 
