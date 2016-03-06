@@ -14,10 +14,16 @@ Adds support for drawing and editing vectors and markers on [Leaflet maps](https
 Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGES](https://github.com/Leaflet/Leaflet.draw/blob/master/BREAKINGCHANGES.md) for how to upgrade.
 
 ## Table of Contents
+[Install](#install)  
 [Using the plugin](#using)  
 [Advanced Options](#options)  
 [Common tasks](#commontasks)  
 [Thanks](#thanks)
+
+<a name="install" />
+## Install
+
+To install the plugin run `npm install leaflet-draw` via command line in your project. You must also require this in your project like so: `var leaflet-draw = require('leaflet-draw');`
 
 <a name="using" />
 ## Using the plugin
@@ -250,7 +256,7 @@ Polygon options include all of the Polyline options plus the option to show the 
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map. 
+| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
 <a name="markeroptions" />
@@ -445,7 +451,7 @@ drawControl.setDrawingOptions({
 
 ### Creating a custom build
 
-If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://github.com/Leaflet/Leaflet.draw/blob/master/build/build.html). 
+If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://github.com/Leaflet/Leaflet.draw/blob/master/build/build.html).
 
 See [edit handlers example](https://github.com/Leaflet/Leaflet.draw/blob/master/examples/edithandlers.html) which uses only the edit handlers.
 
