@@ -163,5 +163,8 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 
+#Intellij
+.idea
+
 # Mac crap
 .DS_Store
