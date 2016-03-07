@@ -60,6 +60,13 @@ L.DrawToolbar = L.Toolbar.extend({
 	getActions: function (handler) {
 		return [
 			{
+				enabled: handler.completeShape,
+				title: L.drawLocal.draw.toolbar.finish.title,
+				text: L.drawLocal.draw.toolbar.finish.text,
+				callback: handler.completeShape,
+				context: handler
+			},
+			{
 				enabled: handler.deleteLastVertex,
 				title: L.drawLocal.draw.toolbar.undo.title,
 				text: L.drawLocal.draw.toolbar.undo.text,

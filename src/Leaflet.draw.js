@@ -7,9 +7,15 @@ L.drawVersion = '0.2.4-dev';
 L.drawLocal = {
 	draw: {
 		toolbar: {
+			// #TODO: this should be reorganized where actions are nested in actions
+			// ex: actions.undo  or actions.cancel
 			actions: {
 				title: 'Cancel drawing',
 				text: 'Cancel'
+			},
+			finish: {
+				title: 'Finish drawing',
+				text: 'Finish'
 			},
 			undo: {
 				title: 'Delete last point drawn',
@@ -78,7 +84,7 @@ L.drawLocal = {
 				edit: 'Edit layers.',
 				editDisabled: 'No layers to edit.',
 				remove: 'Delete layers.',
-				removeDisabled: 'No layers to delete.'
+				removeDisabled: 'No layers to delete.',
 			}
 		},
 		handlers: {

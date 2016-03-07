@@ -101,6 +101,7 @@ L.Toolbar = L.Class.extend({
 		this._modes[type].handler = handler;
 
 		this._modes[type].button = this._createButton({
+			type: type,
 			title: buttonTitle,
 			className: classNamePredix + '-' + type,
 			container: container,
@@ -116,6 +117,7 @@ L.Toolbar = L.Class.extend({
 	},
 
 	_createButton: function (options) {
+
 		var link = L.DomUtil.create('a', options.className || '', options.container);
 		link.href = '#';
 

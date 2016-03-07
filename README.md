@@ -1,3 +1,10 @@
+#Leaflet.draw With Touch
+This is a touch friendly version of Leaflet.draw that was created and maintained by Michael Guild (https://github.com/michaelguild13).
+
+Demo link : https://cdn.rawgit.com/michaelguild13/Leaflet.draw/master/examples/basic.html
+
+The touch support was initiated due to a demand for it at National Geographic for their Map Maker Projected (http://mapmaker.education.nationalgeographic.com/) that was created by Michael Guild and Daniel Schep (https://github.com/dschep)
+
 # Important
 Leaflet.draw 0.2.3+ requires [Leaflet 0.7.x](https://github.com/Leaflet/Leaflet/releases).
 
@@ -231,7 +238,7 @@ Polygon options include all of the Polyline options plus the option to show the 
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map. 
+| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
 <a name="markeroptions" />
@@ -426,7 +433,7 @@ drawControl.setDrawingOptions({
 
 ### Creating a custom build
 
-If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://github.com/Leaflet/Leaflet.draw/blob/master/build/build.html). 
+If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://github.com/Leaflet/Leaflet.draw/blob/master/build/build.html).
 
 See [edit handlers example](https://github.com/Leaflet/Leaflet.draw/blob/master/examples/edithandlers.html) which uses only the edit handlers.
 
