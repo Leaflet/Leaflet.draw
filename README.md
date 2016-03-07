@@ -1,4 +1,6 @@
 # Important
+
+[![Join the chat at https://gitter.im/Leaflet/Leaflet.draw](https://badges.gitter.im/Leaflet/Leaflet.draw.svg)](https://gitter.im/Leaflet/Leaflet.draw?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Leaflet.draw 0.2.3+ requires [Leaflet 0.7.x](https://github.com/Leaflet/Leaflet/releases).
 
 Support for Leaflet 1.0 is in development at the [leaflet-master](https://github.com/Leaflet/Leaflet.draw/tree/leaflet-master) branch.

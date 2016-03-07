@@ -58,12 +58,14 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
 
 			this._tooltip = new L.Tooltip(this._map);
-			this._tooltip.updateContent({
-				text: L.drawLocal.edit.handlers.edit.tooltip.text,
-				subtext: L.drawLocal.edit.handlers.edit.tooltip.subtext
-			});
+			this._updateTooltip();
 
-			this._map.on('mousemove', this._onMouseMove, this);
+			this._map
+				.on('mousemove', this._onMouseMove, this)
+				.on('touchmove', this._onMouseMove, this)
+				.on('MSPointerMove', this._onMouseMove, this)
+				.on('click', this._editStyle, this)
+                .on('draw:editvertex', this._updateTooltip, this);
 		}
 	},
 
@@ -78,7 +80,10 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._tooltip.dispose();
 			this._tooltip = null;
 
-			this._map.off('mousemove', this._onMouseMove, this);
+			this._map
+				.off('mousemove', this._onMouseMove, this)
+				.off('touchmove', this._onMouseMove, this)
+				.off('MSPointerMove', this._onMouseMove, this);
 		}
 	},
 
@@ -121,6 +126,17 @@ L.EditToolbar.Edit = L.Handler.extend({
 		}
 	},
 
+	_getTooltipText: function () {
+		return ({
+			text: L.drawLocal.edit.handlers.edit.tooltip.text,
+			subtext: L.drawLocal.edit.handlers.edit.tooltip.subtext
+		});
+	},
+
+	_updateTooltip: function () {
+		this._tooltip.updateContent(this._getTooltipText());
+	},
+
 	_revertLayer: function (layer) {
 		var id = L.Util.stamp(layer);
 		layer.edited = false;
@@ -160,7 +176,18 @@ L.EditToolbar.Edit = L.Handler.extend({
 			layer.options.editing = pathOptions;
 		}
 
-		layer.editing.enable();
+		if (this.isMarker) {
+			layer.dragging.enable();
+			layer
+				.on('dragend', this._onMarkerDragEnd)
+				// #TODO: remove when leaflet finally fixes their draggable so it's touch friendly again.
+				.on('touchmove', this._onTouchMove, this)
+				.on('MSPointerMove', this._onTouchMove, this)
+				.on('touchend', this._onMarkerDragEnd, this)
+				.on('MSPointerUp', this._onMarkerDragEnd, this);
+		} else {
+			layer.editing.enable();
+		}
 	},
 
 	_disableLayerEdit: function (e) {
@@ -171,10 +198,40 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		delete layer.options.editing;
 		delete layer.options.original;
+		// Reset layer styles to that of before select
+		if (this._selectedPathOptions) {
+			if (layer instanceof L.Marker) {
+				this._toggleMarkerHighlight(layer);
+			} else {
+				// reset the layer style to what is was before being selected
+				layer.setStyle(layer.options.previousOptions);
+				// remove the cached options for the layer object
+				delete layer.options.previousOptions;
+			}
+		}
+
+		if (layer instanceof L.Marker) {
+			layer.dragging.disable();
+			layer
+				.off('dragend', this._onMarkerDragEnd, this)
+				.off('touchmove', this._onTouchMove, this)
+				.off('MSPointerMove', this._onTouchMove, this)
+				.off('touchend', this._onMarkerDragEnd, this)
+				.off('MSPointerUp', this._onMarkerDragEnd, this);
+		} else {
+			layer.editing.disable();
+		}
 	},
 
 	_onMouseMove: function (e) {
 		this._tooltip.updatePosition(e.latlng);
+	},
+
+	_onTouchMove: function (e) {
+		var touchEvent = e.originalEvent.changedTouches[0],
+			layerPoint = this._map.mouseEventToLayerPoint(touchEvent),
+			latlng = this._map.layerPointToLatLng(layerPoint);
+		e.target.setLatLng(latlng);
 	},
 
 	_hasAvailableLayers: function () {

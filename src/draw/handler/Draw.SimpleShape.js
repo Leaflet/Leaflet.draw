@@ -27,7 +27,9 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 
 			this._map
 				.on('mousedown', this._onMouseDown, this)
-				.on('mousemove', this._onMouseMove, this);
+				.on('mousemove', this._onMouseMove, this)
+				.on('touchstart', this._onMouseDown, this)
+				.on('touchmove', this._onMouseMove, this);
 		}
 	},
 
@@ -43,9 +45,12 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 
 			this._map
 				.off('mousedown', this._onMouseDown, this)
-				.off('mousemove', this._onMouseMove, this);
+				.off('mousemove', this._onMouseMove, this)
+				.off('touchstart', this._onMouseDown, this)
+				.off('touchmove', this._onMouseMove, this);
 
 			L.DomEvent.off(document, 'mouseup', this._onMouseUp, this);
+			L.DomEvent.off(document, 'touchend', this._onMouseUp, this);
 
 			// If the box element doesn't exist they must not have moved the mouse, so don't need to destroy/return
 			if (this._shape) {
@@ -68,6 +73,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 
 		L.DomEvent
 			.on(document, 'mouseup', this._onMouseUp, this)
+			.on(document, 'touchend', this._onMouseUp, this)
 			.preventDefault(e.originalEvent);
 	},
 
