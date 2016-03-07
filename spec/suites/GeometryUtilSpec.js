@@ -15,11 +15,13 @@ describe("L.GeometryUtil", function () {
 		it("metric", function () {
 			expect(L.GeometryUtil.readableDistance(1000, true)).to.eql('1000 m');
 			expect(L.GeometryUtil.readableDistance(1500, true)).to.eql('1.50 km');
+			expect(L.GeometryUtil.readableDistance(1500, true, true)).to.eql('1500 m');
 		});
 
 		it("imperial", function () {
 			expect(L.GeometryUtil.readableDistance(1609.3488537961)).to.eql('1760 yd');
 			expect(L.GeometryUtil.readableDistance(1610.3488537961)).to.eql('1.00 miles');
+			expect(L.GeometryUtil.readableDistance(1610.3488537961, false, true)).to.eql('1761 yd');
 		});
 	});
 });

@@ -27,6 +27,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			clickable: true
 		},
 		metric: true, // Whether to use the metric meaurement system or imperial
+		fixed: false, // Whether to allow measurement unit to change
 		showLength: true, // Whether to display distance in the tooltip
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
@@ -378,7 +379,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// calculate the distance from the last fixed point to the mouse position
 		distance = this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng);
 
-		return L.GeometryUtil.readableDistance(distance, this.options.metric);
+		return L.GeometryUtil.readableDistance(distance, this.options.metric, this.options.fixed);
 	},
 
 	_showErrorTooltip: function () {
