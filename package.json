@@ -35,6 +35,12 @@
     "draw"
   ],
   "author": "Jacob Toye",
+  "contributors": [
+    {
+      "name" : "Jon West",
+      "email" : "ddproxy@gmail.com"
+    }
+  ],
   "license": "BSD",
   "readmeFilename": "README.md"
 }
