@@ -2,14 +2,20 @@
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
 
-L.drawVersion = '0.2.4-dev';
+L.drawVersion = '0.3.0-dev';
 
 L.drawLocal = {
 	draw: {
 		toolbar: {
+			// #TODO: this should be reorganized where actions are nested in actions
+			// ex: actions.undo  or actions.cancel
 			actions: {
 				title: 'Cancel drawing',
 				text: 'Cancel'
+			},
+			finish: {
+				title: 'Finish drawing',
+				text: 'Finish'
 			},
 			undo: {
 				title: 'Delete last point drawn',

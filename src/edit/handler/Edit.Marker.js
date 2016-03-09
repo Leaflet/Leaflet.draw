@@ -28,17 +28,17 @@ L.Edit.Marker = L.Handler.extend({
 	},
 
 	_toggleMarkerHighlight: function () {
+		var icon = this._marker._icon;
+
 
 		// Don't do anything if this layer is a marker but doesn't have an icon. Markers
-		// should usually have icons. If using Leaflet.draw with Leafler.markercluster there
+		// should usually have icons. If using Leaflet.draw with Leaflet.markercluster there
 		// is a chance that a marker doesn't.
-		if (!this._icon) {
+		if (!icon) {
 			return;
 		}
 		
 		// This is quite naughty, but I don't see another way of doing it. (short of setting a new icon)
-		var icon = this._icon;
-
 		icon.style.display = 'none';
 
 		if (L.DomUtil.hasClass(icon, 'leaflet-edit-marker-selected')) {

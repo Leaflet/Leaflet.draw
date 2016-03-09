@@ -1,3 +1,6 @@
+[![Build
+Status](https://secure.travis-ci.org/ddproxy/Leaflet.draw.png?branch=master)](http://travis-ci.org/ddproxy/Leaflet.draw)
+
 # Important
 Leaflet.draw 0.2.3+ requires [Leaflet 0.7.x](https://github.com/Leaflet/Leaflet/releases).
 
@@ -11,10 +14,16 @@ Adds support for drawing and editing vectors and markers on [Leaflet maps](https
 Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGES](https://github.com/Leaflet/Leaflet.draw/blob/master/BREAKINGCHANGES.md) for how to upgrade.
 
 ## Table of Contents
+[Install](#install)  
 [Using the plugin](#using)  
 [Advanced Options](#options)  
 [Common tasks](#commontasks)  
 [Thanks](#thanks)
+
+<a name="install" />
+## Install
+
+To install the plugin run `npm install leaflet-draw` via command line in your project. You must also require this in your project like so: `var leaflet-draw = require('leaflet-draw');`
 
 <a name="using" />
 ## Using the plugin
@@ -130,6 +139,14 @@ Triggered when the user has finished a particular vector or marker.
 | --- | --- | ---
 | layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
 
+#### draw:drawvertex
+
+Triggered when a vertex is created on a polyline or polygon.
+
+| Property | Type | Description
+| --- | --- | ---
+| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just being added from the map.
+
 #### draw:editstart
 
 Triggered when the user starts edit mode by clicking the edit tool button.
@@ -137,6 +154,14 @@ Triggered when the user starts edit mode by clicking the edit tool button.
 | Property | Type | Description
 | --- | --- | ---
 | handler | String | The type of edit this is. One of: `edit`
+
+#### draw:editvertex
+
+Triggered when a vertex is edited on a polyline or polygon.
+
+| Property | Type | Description
+| --- | --- | ---
+| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just being edited from the map.
 
 #### draw:editstop
 
@@ -231,7 +256,7 @@ Polygon options include all of the Polyline options plus the option to show the 
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
-| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map. 
+| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
 <a name="markeroptions" />
@@ -426,12 +451,16 @@ drawControl.setDrawingOptions({
 
 ### Creating a custom build
 
-If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://github.com/Leaflet/Leaflet.draw/blob/master/build/build.html). 
+If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://github.com/Leaflet/Leaflet.draw/blob/master/build/build.html).
 
 See [edit handlers example](https://github.com/Leaflet/Leaflet.draw/blob/master/examples/edithandlers.html) which uses only the edit handlers.
 
 <a name="thanks" />
 ## Thanks
+
+Touch friendly version of Leaflet.draw was created and maintained by Michael Guild (https://github.com/michaelguild13).
+
+The touch support was initiated due to a demand for it at National Geographic for their Map Maker Projected (http://mapmaker.education.nationalgeographic.com/) that was created by Michael Guild and Daniel Schep (https://github.com/dschep)
 
 Thanks so much to [@brunob](https://github.com/brunob), [@tnightingale](https://github.com/tnightingale), and [@shramov](https://github.com/shramov). I got a lot of ideas from their Leaflet plugins.
 

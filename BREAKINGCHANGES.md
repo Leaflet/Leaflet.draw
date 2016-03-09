@@ -4,7 +4,7 @@ There are a number of changes to the plugin in 0.2 that may break peoples implem
 
 ## Event consolidation
 
-Leaflet.draw 0.1 had a created event for each different shape that was created. 0.2 now consolitates these into a single created shape.
+Leaflet.draw 0.1 had a created event for each different shape that was created. 0.2 now consolidates these into a single created shape.
 
 The vector or marker is accessed by the `layer` property of the event arguments, the type of layer by the `layerType`.
 
@@ -51,4 +51,4 @@ The event argument has also changed from `drawingType` -> `layerType`.
 
 ## CSS changes
 
-There has been a whole bunch of CSS changes, if you have customized any of these plese see [leaflet.draw.css](https://github.com/Leaflet/Leaflet.draw/blob/master/dist/leaflet.draw.css).
+There has been a whole bunch of CSS changes, if you have customized any of these please see [leaflet.draw.css](https://github.com/Leaflet/Leaflet.draw/blob/master/dist/leaflet.draw.css).
