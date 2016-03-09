@@ -41,6 +41,6 @@
       "email" : "ddproxy@gmail.com"
     }
   ],
-  "license": "BSD",
+  "license": "MIT",
   "readmeFilename": "README.md"
 }
