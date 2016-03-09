@@ -5,6 +5,20 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
+## 0.3.0 (March 09, 2016)
+
+### Improvements
+
+ * Add support for touch devices
+ * Corrected license
+ * Linter
+
+### Bugfixes
+
+ * Added mouse handlers
+ * Fixed event listener leaks in Polyline
+ * Edit vertex event
+
 ## 0.2.4 (February 04, 2014)
 
 ### Improvements
@@ -120,7 +134,7 @@ Major new version. Added Edit toolbar which allows editing and deleting shapes.
  * Added 'drawing' event fired on the map when a draw handler is actived. (by [@ajbeaven](https://github.com/thegreat)). [#30](https://github.com/jacobtoye/Leaflet.draw/pull/30)
 
 ### Bugfixes
- 
+
  * Stopped L.Control.Draw from storing handlers in it's prototype. (by [@thegreat](https://github.com/thegreat)). [#37](https://github.com/jacobtoye/Leaflet.draw/pull/37)
 
 ## 0.1.4 (October 8, 2012)
