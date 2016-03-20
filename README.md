@@ -446,7 +446,7 @@ See [edit handlers example](https://github.com/Leaflet/Leaflet.draw/blob/master/
 
 To test you can install the npm dependencies:
 
-   npm install
+    npm install
 
 and then use:
 
