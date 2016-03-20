@@ -444,7 +444,11 @@ See [edit handlers example](https://github.com/Leaflet/Leaflet.draw/blob/master/
 
 ### Testing
 
-To test you can install the npm dependencies and then use:
+To test you can install the npm dependencies:
+
+   npm install
+
+and then use:
 
     jake test
 
