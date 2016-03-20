@@ -1138,11 +1138,18 @@ L.Edit.Poly = L.Handler.extend({
 		icon: new L.DivIcon({
 			iconSize: new L.Point(8, 8),
 			className: 'leaflet-div-icon leaflet-editing-icon'
-		})
+		}),
+		drawError: {
+			color: '#b00b00',
+			timeout: 1000
+		},
 	},
 
 	initialize: function (poly, options) {
 		this._poly = poly;
+		if (options && options.drawError) {
+			options.drawError = L.Util.extend({}, this.options.drawError, options.drawError);
+		}
 		L.setOptions(this, options);
 	},
 
@@ -1251,6 +1258,7 @@ L.Edit.Poly = L.Handler.extend({
 
 	_onMarkerDrag: function (e) {
 		var marker = e.target;
+		var poly = this._poly;
 
 		L.extend(marker._origLatLng, marker._latlng);
 
@@ -1261,6 +1269,35 @@ L.Edit.Poly = L.Handler.extend({
 			marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next));
 		}
 
+		if (poly.options.poly) {
+			var tooltip = poly._map._editTooltip; // Access the tooltip
+
+			// If we don't allow intersects and the polygon intersects
+			if (!poly.options.poly.allowIntersection && poly.intersects()) {
+
+				var originalColor = poly.options.color;
+				poly.setStyle({ color: this.options.drawError.color });
+
+				if (tooltip) {
+					tooltip.updateContent({
+						text: L.drawLocal.draw.handlers.polyline.error
+					 });
+				}
+
+				// Reset everything back to normal after a second
+				setTimeout(function(){
+					poly.setStyle({ color: originalColor });
+					if (tooltip) {
+						tooltip.updateContent({
+							text:  L.drawLocal.edit.handlers.edit.tooltip.text,
+							subtext:  L.drawLocal.edit.handlers.edit.tooltip.subtext
+						 });
+					}
+				}, 1000);
+				this._onMarkerClick(e); // Reset the marker to it's original position
+			}
+		}
+		
 		this._poly.redraw();
 	},
 
@@ -1345,11 +1382,13 @@ L.Edit.Poly = L.Handler.extend({
 		};
 
 		onDragEnd = function () {
+
 			marker.off('dragstart', onDragStart, this);
 			marker.off('dragend', onDragEnd, this);
 
 			this._createMiddleMarker(marker1, marker);
 			this._createMiddleMarker(marker, marker2);
+
 		};
 
 		onClick = function () {
@@ -1392,7 +1431,8 @@ L.Polyline.addInitHook(function () {
 	}
 
 	if (L.Edit.Poly) {
-		this.editing = new L.Edit.Poly(this);
+
+		this.editing = new L.Edit.Poly(this, this.options.poly);
 
 		if (this.options.editable) {
 			this.editing.enable();
@@ -2496,6 +2536,7 @@ L.EditToolbar = L.Toolbar.extend({
 			}
 		},
 		remove: {},
+		poly: null,
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
@@ -2512,6 +2553,10 @@ L.EditToolbar = L.Toolbar.extend({
 			options.remove = L.extend({}, this.options.remove, options.remove);
 		}
 
+		if (options.poly) {
+			options.poly = L.extend({}, this.options.poly, options.poly);
+		}
+
 		this._toolbarClass = 'leaflet-draw-edit';
 		L.Toolbar.prototype.initialize.call(this, options);
 
@@ -2525,7 +2570,8 @@ L.EditToolbar = L.Toolbar.extend({
 				enabled: this.options.edit,
 				handler: new L.EditToolbar.Edit(map, {
 					featureGroup: featureGroup,
-					selectedPathOptions: this.options.edit.selectedPathOptions
+					selectedPathOptions: this.options.edit.selectedPathOptions,
+					poly : this.options.poly
 				}),
 				title: L.drawLocal.edit.toolbar.buttons.edit
 			},
@@ -2692,6 +2738,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 				subtext: L.drawLocal.edit.handlers.edit.tooltip.subtext
 			});
 
+			// Quickly access the tooltip to update for intersection checking
+			map._editTooltip = this._tooltip;
+
 			this._map.on('mousemove', this._onMouseMove, this);
 		}
 	},
@@ -2770,10 +2819,15 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_enableLayerEdit: function (e) {
 		var layer = e.layer || e.target || e,
-			pathOptions;
+			pathOptions, poly;
 
 		// Back up this layer (if haven't before)
 		this._backupLayer(layer);
+
+		if (this.options.poly) {
+			poly = L.Util.extend({}, this.options.poly);
+			layer.options.poly = poly;
+		}
 
 		// Set different style for editing mode
 		if (this.options.selectedPathOptions) {
@@ -2787,6 +2841,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 			layer.options.original = L.extend({}, layer.options);
 			layer.options.editing = pathOptions;
+
 		}
 
 		layer.editing.enable();

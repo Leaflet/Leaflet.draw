@@ -143,7 +143,7 @@ L.Edit.Poly = L.Handler.extend({
 		if (poly.options.poly) {
 			var tooltip = poly._map._editTooltip; // Access the tooltip
 
-			// If we don't allow intersects and the polygon intersects
+			// If we don't allow intersections and the polygon intersects
 			if (!poly.options.poly.allowIntersection && poly.intersects()) {
 
 				var originalColor = poly.options.color;
@@ -152,23 +152,23 @@ L.Edit.Poly = L.Handler.extend({
 				if (tooltip) {
 					tooltip.updateContent({
 						text: L.drawLocal.draw.handlers.polyline.error
-					 });
+					});
 				}
 
 				// Reset everything back to normal after a second
-				setTimeout(function(){
+				setTimeout(function () {
 					poly.setStyle({ color: originalColor });
 					if (tooltip) {
 						tooltip.updateContent({
 							text:  L.drawLocal.edit.handlers.edit.tooltip.text,
 							subtext:  L.drawLocal.edit.handlers.edit.tooltip.subtext
-						 });
+						});
 					}
 				}, 1000);
 				this._onMarkerClick(e); // Reset the marker to it's original position
 			}
 		}
-		
+
 		this._poly.redraw();
 	},
 
