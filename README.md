@@ -441,6 +441,13 @@ If you only require certain handlers (and not the UI), you may wish to create a 
 See [edit handlers example](https://github.com/Leaflet/Leaflet.draw/blob/master/examples/edithandlers.html) which uses only the edit handlers.
 
 <a name="thanks" />
+
+### Testing
+
+To test you can install the npm dependencies and then use:
+
+    jake test
+
 ## Thanks
 
 Thanks so much to [@brunob](https://github.com/brunob), [@tnightingale](https://github.com/tnightingale), and [@shramov](https://github.com/shramov). I got a lot of ideas from their Leaflet plugins.
