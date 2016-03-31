@@ -13,7 +13,21 @@ describe("L.Edit", function () {
 			marker.editing.enable();
 		});
 
-		it("Is activated correctly when editing.enable() is called.", function () {});
+		it("Has the leaflet-edit-marker-selected class applied when enabled.", function () {
+			var editingClass = 'leaflet-edit-marker-selected';
+
+			expect(marker.editing.enabled()).to.equal(true);
+			expect(L.DomUtil.hasClass(marker._icon, editingClass)).to.equal(true);
+		});
+
+		it("Lacks the leaflet-edit-marker-selected class when disabled.", function () {
+			var editingClass = 'leaflet-edit-marker-selected';
+
+			marker.editing.disable();
+
+			expect(marker.editing.enabled()).to.equal(false);
+			expect(L.DomUtil.hasClass(marker._icon, editingClass)).to.equal(false);
+		});
 	});
 
 	describe("L.Edit.Circle", function () {
