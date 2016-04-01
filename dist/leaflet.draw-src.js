@@ -381,7 +381,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_finishShape: function () {
-		var intersects = this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true);
+		var intersects = this._poly.newLatLngIntersects(this._poly.getLatLngs()[this._poly.getLatLngs().length - 1]);
 
 		if ((!this.options.allowIntersection && intersects) || !this._shapeIsValid()) {
 			this._showErrorTooltip();
@@ -1256,6 +1256,12 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			iconSize: new L.Point(20, 20),
 			className: 'leaflet-div-icon leaflet-editing-icon leaflet-touch-icon'
 		}),
+		drawError: {
+			color: '#b00b00',
+			timeout: 1000
+		}
+
+
 	},
 
 	initialize: function (poly, latlngs, options) {
@@ -1264,8 +1270,13 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			this.options.icon = this.options.touchIcon;
 		}
 		this._poly = poly;
-		this._latlngs = latlngs;
 
+		if (options && options.drawError) {
+			options.drawError = L.Util.extend({}, this.options.drawError, options.drawError);
+		}
+
+		this._latlngs = latlngs;
+		
 		L.setOptions(this, options);
 	},
 
@@ -1397,6 +1408,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 
 	_onMarkerDrag: function (e) {
 		var marker = e.target;
+		var poly = this._poly;
 
 		L.extend(marker._origLatLng, marker._latlng);
 
@@ -1405,6 +1417,35 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		}
 		if (marker._middleRight) {
 			marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next));
+		}
+
+		if (poly.options.poly) {
+			var tooltip = poly._map._editTooltip; // Access the tooltip
+
+			// If we don't allow intersections and the polygon intersects
+			if (!poly.options.poly.allowIntersection && poly.intersects()) {
+
+				var originalColor = poly.options.color;
+				poly.setStyle({ color: this.options.drawError.color });
+
+				if (tooltip) {
+					tooltip.updateContent({
+						text: L.drawLocal.draw.handlers.polyline.error
+					});
+				}
+
+				// Reset everything back to normal after a second
+				setTimeout(function () {
+					poly.setStyle({ color: originalColor });
+					if (tooltip) {
+						tooltip.updateContent({
+							text:  L.drawLocal.edit.handlers.edit.tooltip.text,
+							subtext:  L.drawLocal.edit.handlers.edit.tooltip.subtext
+						});
+					}
+				}, 1000);
+				this._onMarkerClick(e); // Reset the marker to it's original position
+			}
 		}
 
 		this._poly.redraw();
@@ -1512,12 +1553,14 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		};
 
 		onDragEnd = function () {
+
 			marker.off('dragstart', onDragStart, this);
 			marker.off('dragend', onDragEnd, this);
 			marker.off('touchmove', onDragStart, this);
 
 			this._createMiddleMarker(marker1, marker);
 			this._createMiddleMarker(marker, marker2);
+
 		};
 
 		onClick = function () {
@@ -1561,7 +1604,8 @@ L.Polyline.addInitHook(function () {
 	}
 
 	if (L.Edit.Poly) {
-		this.editing = new L.Edit.Poly(this);
+
+		this.editing = new L.Edit.Poly(this, this.options.poly);
 
 		if (this.options.editable) {
 			this.editing.enable();
@@ -1580,6 +1624,7 @@ L.Polyline.addInitHook(function () {
 		}
 	});
 });
+
 
 L.Edit = L.Edit || {};
 
@@ -2999,6 +3044,7 @@ L.EditToolbar = L.Toolbar.extend({
 			}
 		},
 		remove: {},
+		poly: null,
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
@@ -3015,6 +3061,10 @@ L.EditToolbar = L.Toolbar.extend({
 			options.remove = L.extend({}, this.options.remove, options.remove);
 		}
 
+		if (options.poly) {
+			options.poly = L.extend({}, this.options.poly, options.poly);
+		}
+
 		this._toolbarClass = 'leaflet-draw-edit';
 		L.Toolbar.prototype.initialize.call(this, options);
 
@@ -3028,7 +3078,8 @@ L.EditToolbar = L.Toolbar.extend({
 				enabled: this.options.edit,
 				handler: new L.EditToolbar.Edit(map, {
 					featureGroup: featureGroup,
-					selectedPathOptions: this.options.edit.selectedPathOptions
+					selectedPathOptions: this.options.edit.selectedPathOptions,
+					poly : this.options.poly
 				}),
 				title: L.drawLocal.edit.toolbar.buttons.edit
 			},
@@ -3190,6 +3241,14 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
 
 			this._tooltip = new L.Tooltip(this._map);
+			this._tooltip.updateContent({
+				text: L.drawLocal.edit.handlers.edit.tooltip.text,
+				subtext: L.drawLocal.edit.handlers.edit.tooltip.subtext
+			});
+
+			// Quickly access the tooltip to update for intersection checking
+			map._editTooltip = this._tooltip;
+
 			this._updateTooltip();
 
 			this._map
@@ -3197,7 +3256,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.on('touchmove', this._onMouseMove, this)
 				.on('MSPointerMove', this._onMouseMove, this)
 				.on('click', this._editStyle, this)
-                .on('draw:editvertex', this._updateTooltip, this);
+				.on('draw:editvertex', this._updateTooltip, this);
 		}
 	},
 
@@ -3215,7 +3274,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._map
 				.off('mousemove', this._onMouseMove, this)
 				.off('touchmove', this._onMouseMove, this)
-				.off('MSPointerMove', this._onMouseMove, this);
+				.off('MSPointerMove', this._onMouseMove, this)
+				.off('click', this._editStyle, this)
+				.off('draw:editvertex', this._updateTooltip, this);
 		}
 	},
 
@@ -3289,10 +3350,15 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_enableLayerEdit: function (e) {
 		var layer = e.layer || e.target || e,
-			pathOptions;
+			pathOptions, poly;
 
 		// Back up this layer (if haven't before)
 		this._backupLayer(layer);
+
+		if (this.options.poly) {
+			poly = L.Util.extend({}, this.options.poly);
+			layer.options.poly = poly;
+		}
 
 		// Set different style for editing mode
 		if (this.options.selectedPathOptions) {
@@ -3306,6 +3372,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 			layer.options.original = L.extend({}, layer.options);
 			layer.options.editing = pathOptions;
+
 		}
 
 		if (this.isMarker) {

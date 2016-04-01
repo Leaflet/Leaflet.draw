@@ -52,7 +52,17 @@
 			drawnItems = L.featureGroup().addTo(map);
 
 		map.addControl(new L.Control.Draw({
-			edit: { featureGroup: drawnItems }
+			edit: {
+				featureGroup: drawnItems,
+				poly : {
+					allowIntersection : false
+				}
+			},
+			draw: {
+				polygon : {
+					allowIntersection: false
+				}
+			}
 		}));
 
 		map.on('draw:created', function(event) {
