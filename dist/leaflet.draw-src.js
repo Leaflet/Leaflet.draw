@@ -381,7 +381,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_finishShape: function () {
-		var intersects = this._poly.newLatLngIntersects(this._poly.getLatLngs()[0], true);
+		var intersects = this._poly.newLatLngIntersects(this._poly.getLatLngs()[this._poly.getLatLngs().length - 1]);
 
 		if ((!this.options.allowIntersection && intersects) || !this._shapeIsValid()) {
 			this._showErrorTooltip();
@@ -3256,8 +3256,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.on('touchmove', this._onMouseMove, this)
 				.on('MSPointerMove', this._onMouseMove, this)
 				.on('click', this._editStyle, this)
-                .on('draw:editvertex', this._updateTooltip, this);
-
+				.on('draw:editvertex', this._updateTooltip, this);
 		}
 	},
 
@@ -3275,7 +3274,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 			this._map
 				.off('mousemove', this._onMouseMove, this)
 				.off('touchmove', this._onMouseMove, this)
-				.off('MSPointerMove', this._onMouseMove, this);
+				.off('MSPointerMove', this._onMouseMove, this)
+				.off('click', this._editStyle, this)
+				.off('draw:editvertex', this._updateTooltip, this);
 		}
 	},
 
