@@ -19,11 +19,11 @@ L.Draw.Feature = L.Handler.extend({
 	enable: function () {
 		if (this._enabled) { return; }
 
+		L.Handler.prototype.enable.call(this);
+
 		this.fire('enabled', { handler: this.type });
 
 		this._map.fire('draw:drawstart', { layerType: this.type });
-
-		L.Handler.prototype.enable.call(this);
 	},
 
 	disable: function () {

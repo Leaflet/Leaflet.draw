@@ -8,8 +8,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 	initialize: function (map, options) {
 		L.Handler.prototype.initialize.call(this, map);
 
-		// Set options to the default unless already set
-		this._selectedPathOptions = options.selectedPathOptions;
+		L.setOptions(this, options);
 
 		// Store the selectable layer group for ease of access
 		this._featureGroup = options.featureGroup;
@@ -135,108 +134,43 @@ L.EditToolbar.Edit = L.Handler.extend({
 			} else if (layer instanceof L.Marker) { // Marker
 				layer.setLatLng(this._uneditedLayerProps[id].latlng);
 			}
+
+			layer.fire('revert-edited', { layer: layer });
 		}
-	},
-
-	_toggleMarkerHighlight: function (marker) {
-		if (!marker._icon) {
-			return;
-		}
-		// This is quite naughty, but I don't see another way of doing it. (short of setting a new icon)
-		var icon = marker._icon;
-
-		icon.style.display = 'none';
-
-		if (L.DomUtil.hasClass(icon, 'leaflet-edit-marker-selected')) {
-			L.DomUtil.removeClass(icon, 'leaflet-edit-marker-selected');
-			// Offset as the border will make the icon move.
-			this._offsetMarker(icon, -4);
-
-		} else {
-			L.DomUtil.addClass(icon, 'leaflet-edit-marker-selected');
-			// Offset as the border will make the icon move.
-			this._offsetMarker(icon, 4);
-		}
-
-		icon.style.display = '';
-	},
-
-	_offsetMarker: function (icon, offset) {
-		var iconMarginTop = parseInt(icon.style.marginTop, 10) - offset,
-			iconMarginLeft = parseInt(icon.style.marginLeft, 10) - offset;
-
-		icon.style.marginTop = iconMarginTop + 'px';
-		icon.style.marginLeft = iconMarginLeft + 'px';
 	},
 
 	_enableLayerEdit: function (e) {
 		var layer = e.layer || e.target || e,
-			isMarker = layer instanceof L.Marker,
 			pathOptions;
-
-		// Don't do anything if this layer is a marker but doesn't have an icon. Markers
-		// should usually have icons. If using Leaflet.draw with Leafler.markercluster there
-		// is a chance that a marker doesn't.
-		if (isMarker && !layer._icon) {
-			return;
-		}
 
 		// Back up this layer (if haven't before)
 		this._backupLayer(layer);
 
-		// Update layer style so appears editable
-		if (this._selectedPathOptions) {
-			pathOptions = L.Util.extend({}, this._selectedPathOptions);
+		// Set different style for editing mode
+		if (this.options.selectedPathOptions) {
+			pathOptions = L.Util.extend({}, this.options.selectedPathOptions);
 
-			if (isMarker) {
-				this._toggleMarkerHighlight(layer);
-			} else {
-				layer.options.previousOptions = L.Util.extend({ dashArray: null }, layer.options);
-
-				// Make sure that Polylines are not filled
-				if (!(layer instanceof L.Circle) && !(layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {
-					pathOptions.fill = false;
-				}
-
-				layer.setStyle(pathOptions);
+			// Use the existing color of the layer
+			if (pathOptions.maintainColor) {
+				pathOptions.color = layer.options.color;
+				pathOptions.fillColor = layer.options.fillColor;
 			}
+
+			layer.options.original = L.extend({}, layer.options);
+			layer.options.editing = pathOptions;
 		}
 
-		if (isMarker) {
-			layer.dragging.enable();
-			layer.on('dragend', this._onMarkerDragEnd);
-		} else {
-			layer.editing.enable();
-		}
+		layer.editing.enable();
 	},
 
 	_disableLayerEdit: function (e) {
 		var layer = e.layer || e.target || e;
+
 		layer.edited = false;
+		layer.editing.disable();
 
-		// Reset layer styles to that of before select
-		if (this._selectedPathOptions) {
-			if (layer instanceof L.Marker) {
-				this._toggleMarkerHighlight(layer);
-			} else {
-				// reset the layer style to what is was before being selected
-				layer.setStyle(layer.options.previousOptions);
-				// remove the cached options for the layer object
-				delete layer.options.previousOptions;
-			}
-		}
-
-		if (layer instanceof L.Marker) {
-			layer.dragging.disable();
-			layer.off('dragend', this._onMarkerDragEnd, this);
-		} else {
-			layer.editing.disable();
-		}
-	},
-
-	_onMarkerDragEnd: function (e) {
-		var layer = e.target;
-		layer.edited = true;
+		delete layer.options.editing;
+		delete layer.options.original;
 	},
 
 	_onMouseMove: function (e) {
