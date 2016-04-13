@@ -29,7 +29,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 				areaStr = area.toFixed(2) + ' m&sup2;';
 			}
 		} else {
-			area *= 0.836127; // Square yards in 1 meter
+			area /= 0.836127; // Square yards in 1 meter
 
 			if (area >= 3097600) { //3097600 square yards in 1 square mile
 				areaStr = (area / 3097600).toFixed(2) + ' mi&sup2;';

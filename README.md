@@ -1,7 +1,9 @@
 # Important
-Leaflet.draw 0.2.3+ requires [Leaflet 0.7](https://github.com/Leaflet/Leaflet/archive/v0.7.zip) or higher.
+Leaflet.draw 0.2.3+ requires [Leaflet 0.7.x](https://github.com/Leaflet/Leaflet/releases).
 
-#Leaflet.draw
+Support for Leaflet 1.0 is in development at the [leaflet-master](https://github.com/Leaflet/Leaflet.draw/tree/leaflet-master) branch.
+
+# Leaflet.draw
 Adds support for drawing and editing vectors and markers on [Leaflet maps](https://github.com/Leaflet/Leaflet). Check out the [demo](http://leaflet.github.com/Leaflet.draw/).
 
 #### Upgrading from Leaflet.draw 0.1
@@ -12,7 +14,7 @@ Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGE
 [Using the plugin](#using)  
 [Advanced Options](#options)  
 [Common tasks](#commontasks)  
-[Thanks](#thanks)  
+[Thanks](#thanks)
 
 <a name="using" />
 ## Using the plugin
@@ -258,6 +260,19 @@ These options will allow you to configure the draw toolbar and its handlers.
 | Option | Type | Default | Description
 | --- | --- | --- | ---
 | selectedPathOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/edit/handler/EditToolbar.Edit.js#L9) | The path options for how the layers will look while in edit mode. If this is set to null the editable path options will not be set.
+
+**Note:** To maintain the original layer color of the layer use `maintainColor: true` within `selectedPathOptions`.
+
+E.g. The edit options below will maintain the layer color and set the edit opacity to 0.3.
+
+````js
+{
+	selectedPathOptions: {
+		maintainColor: true,
+		opacity: 0.3
+	}
+}
+````
 
 <a name="deletehandleroptions" />
 #### DeleteHandlerOptions

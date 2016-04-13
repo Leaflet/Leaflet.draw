@@ -56,6 +56,12 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		this._isDrawing = false;
 	},
 
+	_getTooltipText: function () {
+		return {
+			text: this._endLabelText
+		};
+	},
+
 	_onMouseDown: function (e) {
 		this._isDrawing = true;
 		this._startLatLng = e.latlng;
@@ -70,7 +76,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 
 		this._tooltip.updatePosition(latlng);
 		if (this._isDrawing) {
-			this._tooltip.updateContent({ text: this._endLabelText });
+			this._tooltip.updateContent(this._getTooltipText());
 			this._drawShape(latlng);
 		}
 	},
