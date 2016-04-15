@@ -113,7 +113,9 @@ L.EditToolbar = L.Toolbar.extend({
 
 	_save: function () {
 		this._activeMode.handler.save();
-		this._activeMode.handler.disable();
+		if (this._activeMode) {
+			this._activeMode.handler.disable();
+		}
 	},
 
 	_checkDisabled: function () {
