@@ -412,7 +412,7 @@ map.on('draw:created', function (e) {
 		layer.bindPopup('A popup!');
 	}
 
-	drawnItems.addLayer(layer);
+	editableLayers.addLayer(layer);
 });
 ````
 
