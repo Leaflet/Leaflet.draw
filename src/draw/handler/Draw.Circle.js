@@ -15,7 +15,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 			clickable: true
 		},
 		showRadius: true,
-		metric: true, // Whether to use the metric meaurement system or imperial
+		metric: true, // Whether to use the metric measurement system or imperial
 		feet: true // When not metric, use feet instead of yards for display
 	},
 
