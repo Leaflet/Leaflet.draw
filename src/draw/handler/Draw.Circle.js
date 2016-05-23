@@ -29,10 +29,10 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 
 	_drawShape: function (latlng) {
 		if (!this._shape) {
-			this._shape = new L.Circle(this._startLatLng, this._startLatLng.distanceTo(latlng), this.options.shapeOptions);
+			this._shape = new L.Circle(this._startLatLng, this._map.distance(this._startLatLng, latlng), this.options.shapeOptions);
 			this._map.addLayer(this._shape);
 		} else {
-			this._shape.setRadius(this._startLatLng.distanceTo(latlng));
+			this._shape.setRadius(this._map.distance(this._startLatLng, latlng));
 		}
 	},
 
