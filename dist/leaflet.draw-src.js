@@ -222,7 +222,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			fill: false,
 			clickable: true
 		},
-		metric: true, // Whether to use the metric meaurement system or imperial
+		metric: true, // Whether to use the metric measurement system or imperial
 		feet: true, // When not metric, to use feet instead of yards for display.
 		showLength: true, // Whether to display distance in the tooltip
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
@@ -322,7 +322,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._map
 			.off('mouseup', this._onMouseUp, this)
 			.off('mousemove', this._onMouseMove, this)
-			.off('mouseup', this._onMouseUp, this)
+			.off('zoomlevelschange', this._onZoomEnd, this)
 			.off('zoomend', this._onZoomEnd, this)
 			.off('click', this._onTouch, this);
 	},
@@ -492,7 +492,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_updateGuide: function (newPos) {
-		var markerCount = this._markers.length;
+		var markerCount = this._markers ? this._markers.length : 0;
 
 		if (markerCount > 0) {
 			newPos = newPos || this._map.latLngToLayerPoint(this._currentLatLng);
@@ -957,7 +957,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 			clickable: true
 		},
 		showRadius: true,
-		metric: true, // Whether to use the metric meaurement system or imperial
+		metric: true, // Whether to use the metric measurement system or imperial
 		feet: true // When not metric, use feet instead of yards for display
 	},
 
@@ -1146,6 +1146,7 @@ L.Edit.Marker = L.Handler.extend({
 	_onDragEnd: function (e) {
 		var layer = e.target;
 		layer.edited = true;
+		this._map.fire('draw:editmove', {layer: layer});
 	},
 
 	_toggleMarkerHighlight: function () {
@@ -1158,7 +1159,7 @@ L.Edit.Marker = L.Handler.extend({
 		if (!icon) {
 			return;
 		}
-		
+
 		// This is quite naughty, but I don't see another way of doing it. (short of setting a new icon)
 		icon.style.display = 'none';
 
@@ -1211,13 +1212,10 @@ L.Edit.Poly = L.Handler.extend({
 			this.latlngs = this.latlngs.concat(poly._holes);
 		}
 
-		this._verticesHandlers = [];
-		for (var i = 0; i < this.latlngs.length; i++) {
-			this._verticesHandlers.push(new L.Edit.PolyVerticesEdit(poly, this.latlngs[i], options));
-		}
-
 		this._poly = poly;
 		L.setOptions(this, options);
+
+		this._poly.on('revert-edited', this._updateLatLngs, this);
 	},
 
 	_eachVertexHandler: function (callback) {
@@ -1227,6 +1225,7 @@ L.Edit.Poly = L.Handler.extend({
 	},
 
 	addHooks: function () {
+		this._initHandlers();
 		this._eachVertexHandler(function (handler) {
 			handler.addHooks();
 		});
@@ -1242,6 +1241,20 @@ L.Edit.Poly = L.Handler.extend({
 		this._eachVertexHandler(function (handler) {
 			handler.updateMarkers();
 		});
+	},
+
+	_initHandlers: function () {
+		this._verticesHandlers = [];
+		for (var i = 0; i < this.latlngs.length; i++) {
+			this._verticesHandlers.push(new L.Edit.PolyVerticesEdit(this._poly, this.latlngs[i], this.options));
+		}
+	},
+
+	_updateLatLngs: function (e) {
+		this.latlngs = [e.layer._latlngs];
+		if (e.layer._holes) {
+			this.latlngs = this.latlngs.concat(e.layer._holes);
+		}
 	}
 
 });
@@ -1276,7 +1289,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		}
 
 		this._latlngs = latlngs;
-		
+
 		L.setOptions(this, options);
 	},
 
@@ -1397,7 +1410,9 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			.off('dragend', this._fireEdit, this)
 			.off('touchmove', this._onMarkerDrag, this)
 			.off('touchend', this._fireEdit, this)
-			.off('click', this._onMarkerClick, this);
+			.off('click', this._onMarkerClick, this)
+			.off('MSPointerMove', this._onTouchMove, this)
+			.off('MSPointerUp', this._fireEdit, this);
 	},
 
 	_fireEdit: function () {
@@ -1553,14 +1568,12 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		};
 
 		onDragEnd = function () {
-
 			marker.off('dragstart', onDragStart, this);
 			marker.off('dragend', onDragEnd, this);
 			marker.off('touchmove', onDragStart, this);
 
 			this._createMiddleMarker(marker1, marker);
 			this._createMiddleMarker(marker, marker2);
-
 		};
 
 		onClick = function () {
@@ -1624,7 +1637,6 @@ L.Polyline.addInitHook(function () {
 		}
 	});
 });
-
 
 L.Edit = L.Edit || {};
 
@@ -1917,6 +1929,8 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 
 		// Reposition the resize markers
 		this._repositionCornerMarkers();
+
+		this._map.fire('draw:editmove', {layer: this._shape});
 	},
 
 	_resize: function (latlng) {
@@ -1928,6 +1942,8 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 		// Reposition the move marker
 		bounds = this._shape.getBounds();
 		this._moveMarker.setLatLng(bounds.getCenter());
+
+		this._map.fire('draw:editresize', {layer: this._shape});
 	},
 
 	_getCorners: function () {
@@ -1998,6 +2014,8 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
 
 		// Move the circle
 		this._shape.setLatLng(latlng);
+
+		this._map.fire('draw:editmove', {layer: this._shape});
 	},
 
 	_resize: function (latlng) {
@@ -2005,6 +2023,8 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
 			radius = moveLatLng.distanceTo(latlng);
 
 		this._shape.setRadius(radius);
+
+		this._map.fire('draw:editresize', {layer: this._shape});
 	}
 });
 
