@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/Leaflet/Leaflet.draw.svg?branch=master)](https://travis-ci.org/Leaflet/Leaflet.draw)
 
  Leaflet.draw: [![Join the chat at https://gitter.im/Leaflet/Leaflet.draw](https://badges.gitter.im/Leaflet/Leaflet.draw.svg)](https://gitter.im/Leaflet/Leaflet.draw?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
- 
+
  Leaflet: [![Gitter](https://badges.gitter.im/Leaflet/Leaflet.svg)](https://gitter.im/Leaflet/Leaflet?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 # Important
@@ -158,6 +158,22 @@ Triggered when the user starts edit mode by clicking the edit tool button.
 | Property | Type | Description
 | --- | --- | ---
 | handler | String | The type of edit this is. One of: `edit`
+
+#### draw:editmove
+
+Triggered as the user moves a rectangle, circle or marker.
+
+| Property | Type | Description
+| --- | --- | ---
+| layer | [ILayer](http://leafletjs.com/reference.html#ilayer) | Layer that was just moved.
+
+#### draw:editresized
+
+Triggered as the user resizes a rectangle or circle.
+
+| Property | Type | Description
+| --- | --- | ---
+| layer | [ILayer](http://leafletjs.com/reference.html#ilayer) | Layer that was just moved.
 
 #### draw:editvertex
 
