@@ -25,6 +25,7 @@ L.Edit.Marker = L.Handler.extend({
 	_onDragEnd: function (e) {
 		var layer = e.target;
 		layer.edited = true;
+		this._map.fire('draw:editmove', {layer: layer});
 	},
 
 	_toggleMarkerHighlight: function () {
@@ -37,7 +38,7 @@ L.Edit.Marker = L.Handler.extend({
 		if (!icon) {
 			return;
 		}
-		
+
 		// This is quite naughty, but I don't see another way of doing it. (short of setting a new icon)
 		icon.style.display = 'none';
 

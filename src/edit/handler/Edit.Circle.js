@@ -30,6 +30,8 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
 
 		// Move the circle
 		this._shape.setLatLng(latlng);
+
+		this._map.fire('draw:editmove', {layer: this._shape});
 	},
 
 	_resize: function (latlng) {
@@ -37,6 +39,8 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
 			radius = moveLatLng.distanceTo(latlng);
 
 		this._shape.setRadius(radius);
+
+		this._map.fire('draw:editresize', {layer: this._shape});
 	}
 });
 

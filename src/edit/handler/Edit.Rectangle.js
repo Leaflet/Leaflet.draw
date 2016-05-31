@@ -68,6 +68,8 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 
 		// Reposition the resize markers
 		this._repositionCornerMarkers();
+
+		this._map.fire('draw:editmove', {layer: this._shape});
 	},
 
 	_resize: function (latlng) {
@@ -79,6 +81,8 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 		// Reposition the move marker
 		bounds = this._shape.getBounds();
 		this._moveMarker.setLatLng(bounds.getCenter());
+
+		this._map.fire('draw:editresize', {layer: this._shape});
 	},
 
 	_getCorners: function () {
