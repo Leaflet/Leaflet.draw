@@ -43,20 +43,19 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return areaStr;
 	},
 
-	readableDistance: function (distance, isMetric, isFixed) {
+	readableDistance: function (distance, isMetric, useFeet, isAbsolute) {
 		var distanceStr;
 
 		if (isMetric) {
 			// show metres when distance is < 1km, then show km
-			if (distance > 1000 && !isFixed) {
+			if (distance > 1000 && !isAbsolute) {
 				distanceStr = (distance  / 1000).toFixed(2) + ' km';
 			} else {
 				distanceStr = Math.ceil(distance) + ' m';
 			}
 		} else {
 			distance *= 1.09361;
-
-			if (distance > 1760 && !isFixed) {
+			if (distance > 1760 && !isAbsolute) {
 				distanceStr = (distance / 1760).toFixed(2) + ' miles';
 			} else {
 				distanceStr = Math.ceil(distance) + ' yd';

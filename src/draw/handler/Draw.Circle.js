@@ -15,8 +15,9 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 			clickable: true
 		},
 		showRadius: true,
-		metric: true, // Whether to use the metric meaurement system or imperial
-		fixed: false // Whether to allow measurement unit to change
+		metric: true, // Whether to use the metric measurement system or imperial
+		feet: true, // When not metric, use feet instead of yards for display
+		absolute: false // Whether to allow measurement unit to change
 	},
 
 	initialize: function (map, options) {
@@ -46,7 +47,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 		var latlng = e.latlng,
 			showRadius = this.options.showRadius,
 			useMetric = this.options.metric,
-			isFixed = this.options.fixed,
+			isAbsolute = this.options.absolute,
 			radius;
 
 		this._tooltip.updatePosition(latlng);
@@ -58,7 +59,8 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 
 			this._tooltip.updateContent({
 				text: this._endLabelText,
-				subtext: showRadius ? L.drawLocal.draw.handlers.circle.radius + ': ' + L.GeometryUtil.readableDistance(radius, useMetric, isFixed) : ''
+				subtext: showRadius ? L.drawLocal.draw.handlers.circle.radius + ': ' +
+					L.GeometryUtil.readableDistance(radius, useMetric, this.options.feet, isAbsolute) : ''
 			});
 		}
 	}
