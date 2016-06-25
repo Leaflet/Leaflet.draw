@@ -210,7 +210,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onZoomEnd: function () {
-		this._updateGuide();
+		if (this._markers != null) {
+			this._updateGuide();
+		}
 	},
 
 	_onMouseMove: function (e) {
