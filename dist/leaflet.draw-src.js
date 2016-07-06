@@ -184,6 +184,7 @@ L.Draw.Feature = L.Handler.extend({
 
 	// Cancel drawing when the escape key is pressed
 	_cancelDrawing: function (e) {
+		this._map.fire('draw:canceled', { layerType: this.type });
 		if (e.keyCode === 27) {
 			this.disable();
 		}
@@ -275,6 +276,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 					opacity: 0,
 					zIndexOffset: this.options.zIndexOffset
 				});
+			}
+
+			if (!L.Browser.touch) {
+				this._map.on('mouseup', this._onMouseUp, this); // Necessary for 0.7 compatibility
 			}
 
 			this._mouseMarker
@@ -402,7 +407,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onZoomEnd: function () {
-		this._updateGuide();
+		if (this._markers !== null) {
+			this._updateGuide();
+		}
 	},
 
 	_onMouseMove: function (e) {
@@ -691,7 +698,8 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 			fillColor: null, //same as color by default
 			fillOpacity: 0.2,
 			clickable: true
-		}
+		},
+		metric: true // Whether to use the metric measurement system or imperial
 	},
 
 	initialize: function (map, options) {
@@ -1297,7 +1305,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		var poly = this._poly;
 
 		if (!(poly instanceof L.Polygon)) {
-			poly.options.editing.fill = false;
+			poly.options.fill = false;
 		}
 
 		poly.setStyle(poly.options.editing);

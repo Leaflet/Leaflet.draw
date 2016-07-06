@@ -85,7 +85,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				});
 			}
 
-			if(!L.Browser.touch){
+			if (!L.Browser.touch) {
 				this._map.on('mouseup', this._onMouseUp, this); // Necessary for 0.7 compatibility
 			}
 
