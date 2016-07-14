@@ -167,7 +167,7 @@ Triggered as the user moves a rectangle, circle or marker.
 | --- | --- | ---
 | layer | [ILayer](http://leafletjs.com/reference.html#ilayer) | Layer that was just moved.
 
-#### draw:editresized
+#### draw:editresize
 
 Triggered as the user resizes a rectangle or circle.
 
