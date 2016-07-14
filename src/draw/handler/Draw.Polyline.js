@@ -92,11 +92,17 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				.on('mousemove', this._onMouseMove, this) // Necessary to prevent 0.8 stutter
 				.addTo(this._map);
 
+			if (L.Browser.touch) { // #TODO: get rid of this once leaflet fixes their click/touch.
+				this._map
+					.on('click', this._onTouch, this);
+			} else {
+				this._map
+					.on('mouseup', this._onMouseUp, this); // Necessary for 0.7 compatibility
+			}
+
 			this._map
-				.on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
 				.on('mousemove', this._onMouseMove, this)
 				.on('zoomlevelschange', this._onZoomEnd, this)
-				.on('click', this._onTouch, this)
 				.on('zoomend', this._onZoomEnd, this);
 		}
 	},
@@ -265,10 +271,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_onTouch: function (e) {
 		// #TODO: use touchstart and touchend vs using click(touch start & end).
-		if (L.Browser.touch) { // #TODO: get rid of this once leaflet fixes their click/touch.
-			this._onMouseDown(e);
-			this._onMouseUp(e);
-		}
+		this._onMouseDown(e);
+		this._onMouseUp(e);
 	},
 
 	_onMouseOut: function () {
