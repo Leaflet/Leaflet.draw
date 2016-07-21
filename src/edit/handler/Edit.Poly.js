@@ -345,6 +345,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		marker1._middleRight = marker2._middleLeft = marker;
 
 		onDragStart = function () {
+			marker.off('touchmove', onDragStart, this);
 			var i = marker2._index;
 
 			marker._index = i;
