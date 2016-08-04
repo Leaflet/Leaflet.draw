@@ -71,6 +71,7 @@ L.Draw.Feature = L.Handler.extend({
 
 	// Cancel drawing when the escape key is pressed
 	_cancelDrawing: function (e) {
+		this._map.fire('draw:canceled', { layerType: this.type });
 		if (e.keyCode === 27) {
 			this.disable();
 		}

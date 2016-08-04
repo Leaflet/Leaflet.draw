@@ -85,6 +85,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				});
 			}
 
+			if (!L.Browser.touch) {
+				this._map.on('mouseup', this._onMouseUp, this); // Necessary for 0.7 compatibility
+			}
+
 			this._mouseMarker
 				.on('mousedown', this._onMouseDown, this)
 				.on('mouseout', this._onMouseOut, this)
@@ -210,7 +214,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onZoomEnd: function () {
-		if (this._markers != null) {
+		if (this._markers !== null) {
 			this._updateGuide();
 		}
 	},
