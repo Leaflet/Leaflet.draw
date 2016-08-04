@@ -1552,6 +1552,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		marker1._middleRight = marker2._middleLeft = marker;
 
 		onDragStart = function () {
+			marker.off('touchmove', onDragStart, this);
 			var i = marker2._index;
 
 			marker._index = i;
@@ -3164,7 +3165,9 @@ L.EditToolbar = L.Toolbar.extend({
 
 	_save: function () {
 		this._activeMode.handler.save();
-		this._activeMode.handler.disable();
+		if (this._activeMode) {
+			this._activeMode.handler.disable();
+		}
 	},
 
 	_checkDisabled: function () {
