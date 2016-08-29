@@ -33,6 +33,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		metric: true, // Whether to use the metric measurement system or imperial
 		feet: true, // When not metric, to use feet instead of yards for display.
 		showLength: true, // Whether to display distance in the tooltip
+		showSegmentLength: false, // Whether to include line segment length only, disreguarded if showLength is false
+		tooltipLengthLabel: '', // no label by default
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
 
@@ -430,9 +432,14 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			distance;
 
 		// calculate the distance from the last fixed point to the mouse position
-		distance = this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng);
+		if (this.options.showSegmentLength) {
+			distance = currentLatLng.distanceTo(previousLatLng);
+		} else {
+			distance = this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng);
+		}
 
-		return L.GeometryUtil.readableDistance(distance, this.options.metric, this.options.feet);
+		var distanceStr = L.GeometryUtil.readableDistance(distance, this.options.metric, this.options.feet);
+		return this.options.tooltipLengthLabel + distanceStr;
 	},
 
 	_showErrorTooltip: function () {
