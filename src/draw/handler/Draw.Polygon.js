@@ -62,8 +62,8 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 				text = L.drawLocal.draw.handlers.polygon.tooltip.end;
 				var areaStr = this._getMeasurementString();
 
-				if (distanceStr.length != 0) {
-					subtext = distanceStr + "<br />" + areaStr;
+				if (distanceStr.length !== 0) {
+					subtext = distanceStr + '<br />' + areaStr;
 				} else {
 					subtext = areaStr;
 				}
