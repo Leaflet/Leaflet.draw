@@ -7,6 +7,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 
 	options: {
 		showArea: false,
+		tooltipAreaLabel: '', // no default area label
 		shapeOptions: {
 			stroke: true,
 			color: '#f06eaa',
@@ -46,15 +47,27 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 	},
 
 	_getTooltipText: function () {
-		var text, subtext;
+		var showLength = this.options.showLength;
+		var text, subtext, distanceStr;
 
 		if (this._markers.length === 0) {
 			text = L.drawLocal.draw.handlers.polygon.tooltip.start;
-		} else if (this._markers.length < 3) {
-			text = L.drawLocal.draw.handlers.polygon.tooltip.cont;
 		} else {
-			text = L.drawLocal.draw.handlers.polygon.tooltip.end;
-			subtext = this._getMeasurementString();
+			distanceStr = showLength ? L.Draw.Polyline.prototype._getMeasurementString.call(this) : '';
+
+			if (this._markers.length < 3) {
+				text = L.drawLocal.draw.handlers.polygon.tooltip.cont;
+				subtext = distanceStr;
+			} else {
+				text = L.drawLocal.draw.handlers.polygon.tooltip.end;
+				var areaStr = this._getMeasurementString();
+
+				if (distanceStr.length !== 0) {
+					subtext = distanceStr + '<br />' + areaStr;
+				} else {
+					subtext = areaStr;
+				}
+			}
 		}
 
 		return {
@@ -70,7 +83,8 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 			return null;
 		}
 
-		return L.GeometryUtil.readableArea(area, this.options.metric);
+		var areaStr = L.GeometryUtil.readableArea(area, this.options.metric);
+		return this.options.tooltipAreaLabel + areaStr;
 	},
 
 	_shapeIsValid: function () {
