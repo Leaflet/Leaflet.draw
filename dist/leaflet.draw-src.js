@@ -458,11 +458,17 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			}
 		}
 		this._mouseDownOrigin = null;
+		this._lastMouseUpTime = Date.now(); // #TODO get rid of this once leaflet fixes click/touch, see _onTouch()
 	},
 
 	_onTouch: function (e) {
 		// #TODO: use touchstart and touchend vs using click(touch start & end).
-		if (L.Browser.touch) { // #TODO: get rid of this once leaflet fixes their click/touch.
+		// #TODO: get rid of check for interval and touch browser once leaflet fixes their click/touch.
+		// prevent two vertices from being created if touch+mouse device (_onMouseUp would call twice)
+		var callInterval = 10;
+		var timeSinceLastMouseUp = this._lastMouseUpTime ?
+			Date.now() - this._lastMouseUpTime : Infinity;
+		if (L.Browser.touch && timeSinceLastMouseUp > callInterval) {
 			this._onMouseDown(e);
 			this._onMouseUp(e);
 		}
