@@ -2,7 +2,7 @@
 	editControl: true
 });*/
 
-L.EditToolbar = L.Toolbar.extend({
+L.EditToolbar = L.Mixin.DrawToolbar.extend({
 	statics: {
 		TYPE: 'edit'
 	},
@@ -43,7 +43,7 @@ L.EditToolbar = L.Toolbar.extend({
 		}
 
 		this._toolbarClass = 'leaflet-draw-edit';
-		L.Toolbar.prototype.initialize.call(this, options);
+		L.Mixin.DrawToolbar.prototype.initialize.call(this, options);
 
 		this._selectedFeatureCount = 0;
 	},
@@ -88,7 +88,7 @@ L.EditToolbar = L.Toolbar.extend({
 	},
 
 	addToolbar: function (map) {
-		var container = L.Toolbar.prototype.addToolbar.call(this, map);
+		var container = L.Mixin.DrawToolbar.prototype.addToolbar.call(this, map);
 
 		this._checkDisabled();
 
@@ -100,7 +100,7 @@ L.EditToolbar = L.Toolbar.extend({
 	removeToolbar: function () {
 		this.options.featureGroup.off('layeradd layerremove', this._checkDisabled, this);
 
-		L.Toolbar.prototype.removeToolbar.call(this);
+		L.Mixin.DrawToolbar.prototype.removeToolbar.call(this);
 	},
 
 	disable: function () {
@@ -108,7 +108,7 @@ L.EditToolbar = L.Toolbar.extend({
 
 		this._activeMode.handler.revertLayers();
 
-		L.Toolbar.prototype.disable.call(this);
+		L.Mixin.DrawToolbar.prototype.disable.call(this);
 	},
 
 	_save: function () {

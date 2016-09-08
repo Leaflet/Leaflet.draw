@@ -1,4 +1,4 @@
-L.DrawToolbar = L.Toolbar.extend({
+L.DrawToolbar = L.Mixin.DrawToolbar.extend({
 
 	statics: {
 		TYPE: 'draw'
@@ -23,7 +23,7 @@ L.DrawToolbar = L.Toolbar.extend({
 		}
 
 		this._toolbarClass = 'leaflet-draw-draw';
-		L.Toolbar.prototype.initialize.call(this, options);
+		L.Mixin.DrawToolbar.prototype.initialize.call(this, options);
 	},
 
 	getModeHandlers: function (map) {
