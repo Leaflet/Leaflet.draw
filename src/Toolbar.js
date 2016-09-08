@@ -1,4 +1,4 @@
-L.Toolbar = L.Class.extend({
+L.Mixin.DrawToolbar = L.Class.extend({
 	includes: [L.Mixin.Events],
 
 	initialize: function (options) {
