@@ -174,9 +174,18 @@ L.Map.addInitHook('addHandler', 'touchExtend', L.Map.TouchExtend);
 // #TODO: find a better way of getting markers to support touch.
 L.Marker.Touch = L.Marker.extend({
 
-	// This is an exact copy of https://github.com/Leaflet/Leaflet/blob/v0.7/src/layer/marker/Marker.js
-	// with the addition of the touch event son line 15.
 	_initInteraction: function () {
+		if (!this.addInteractiveTarget) {
+			// 0.7.x support
+			return this._initInteractionLegacy();
+		}
+		// TODO this may need be updated to re-add touch events for 1.0+
+		return L.Marker.prototype._initInteraction.apply(this);
+	},
+
+	// This is an exact copy of https://github.com/Leaflet/Leaflet/blob/v0.7/src/layer/marker/Marker.js
+	// with the addition of the touch events on line 15.
+	_initInteractionLegacy: function () {
 
 		if (!this.options.clickable) {
 			return;

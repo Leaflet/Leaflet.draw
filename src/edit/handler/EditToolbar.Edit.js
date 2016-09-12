@@ -72,7 +72,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.on('mousemove', this._onMouseMove, this)
 				.on('touchmove', this._onMouseMove, this)
 				.on('MSPointerMove', this._onMouseMove, this)
-				.on('click', this._editStyle, this)
 				.on('draw:editvertex', this._updateTooltip, this);
 		}
 	},
@@ -92,7 +91,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.off('mousemove', this._onMouseMove, this)
 				.off('touchmove', this._onMouseMove, this)
 				.off('MSPointerMove', this._onMouseMove, this)
-				.off('click', this._editStyle, this)
 				.off('draw:editvertex', this._updateTooltip, this);
 		}
 	},
@@ -192,7 +190,10 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		}
 
-		if (this.isMarker) {
+		if (layer instanceof L.Marker) {
+			if (layer.editing) {
+				layer.editing.enable();
+			}
 			layer.dragging.enable();
 			layer
 				.on('dragend', this._onMarkerDragEnd)
@@ -210,7 +211,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 		var layer = e.layer || e.target || e;
 
 		layer.edited = false;
-		layer.editing.disable();
+		if (layer.editing) {
+			layer.editing.disable();
+		}
 
 		delete layer.options.editing;
 		delete layer.options.original;
@@ -241,6 +244,12 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_onMouseMove: function (e) {
 		this._tooltip.updatePosition(e.latlng);
+	},
+
+	_onMarkerDragEnd: function (e) {
+		var layer = e.target;
+		layer.edited = true;
+		this._map.fire('draw:editmove', {layer: layer});
 	},
 
 	_onTouchMove: function (e) {

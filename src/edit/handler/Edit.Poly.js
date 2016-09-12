@@ -19,6 +19,13 @@ L.Edit.Poly = L.Handler.extend({
 		this._poly.on('revert-edited', this._updateLatLngs, this);
 	},
 
+	// Compatibility method to normalize Poly* objects
+	// between 0.7.x and 1.0+
+	_defaultShape: function() {
+		if (!L.Polyline._flat) { return this._poly._latlngs; }
+		return L.Polyline._flat(this._poly._latlngs) ? this._poly._latlngs : this._poly._latlngs[0];
+	},
+
 	_eachVertexHandler: function (callback) {
 		for (var i = 0; i < this._verticesHandlers.length; i++) {
 			callback(this._verticesHandlers[i]);
@@ -94,11 +101,21 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		L.setOptions(this, options);
 	},
 
+	// Compatibility method to normalize Poly* objects
+	// between 0.7.x and 1.0+
+	_defaultShape: function() {
+		if (!L.Polyline._flat) { return this._latlngs; }
+		return L.Polyline._flat(this._latlngs) ? this._latlngs : this._latlngs[0];
+	},
+
 	addHooks: function () {
 		var poly = this._poly;
 
 		if (!(poly instanceof L.Polygon)) {
 			poly.options.fill = false;
+			if (poly.options.editing) {
+				poly.options.editing.fill = false;
+			}
 		}
 
 		poly.setStyle(poly.options.editing);
@@ -137,7 +154,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		}
 		this._markers = [];
 
-		var latlngs = this._latlngs,
+		var latlngs = this._defaultShape(),
 			i, j, len, marker;
 
 		for (i = 0, len = latlngs.length; i < len; i++) {
@@ -177,8 +194,8 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			.on('drag', this._onMarkerDrag, this)
 			.on('dragend', this._fireEdit, this)
 			.on('touchmove', this._onTouchMove, this)
-			.on('MSPointerMove', this._onTouchMove, this)
 			.on('touchend', this._fireEdit, this)
+			.on('MSPointerMove', this._onTouchMove, this)
 			.on('MSPointerUp', this._fireEdit, this);
 
 		this._markerGroup.addLayer(marker);
@@ -191,8 +208,9 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	},
 
 	_spliceLatLngs: function () {
-		var removed = [].splice.apply(this._latlngs, arguments);
-		this._poly._convertLatLngs(this._latlngs, true);
+		var latlngs = this._defaultShape();
+		var removed = [].splice.apply(latlngs, arguments);
+		this._poly._convertLatLngs(latlngs, true);
 		this._poly.redraw();
 		return removed;
 	},
@@ -274,7 +292,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			marker = e.target;
 
 		// If removing this point would create an invalid polyline/polygon don't remove
-		if (this._latlngs.length < minPoints) {
+		if (this._defaultShape().length < minPoints) {
 			return;
 		}
 
