@@ -147,9 +147,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var lastMarker = this._markers.pop(),
 			poly = this._poly,
 			// Replaces .spliceLatLngs()
-			latlngs = poly.getLatLngs();
-			latlng = latlngs.splice(-1, 1)[0]
-			this._poly.setLatLngs(latlngs);
+			latlngs = poly.getLatLngs(),
+			latlng = latlngs.splice(-1, 1)[0];
+		this._poly.setLatLngs(latlngs);
 
 		this._markerGroup.removeLayer(lastMarker);
 
@@ -197,7 +197,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_finishShape: function () {
 		var latlngs = this._poly._defaultShape ? this._poly._defaultShape() : this._poly.getLatLngs();
-		var intersects = this._poly.newLatLngIntersects(latlngs[latlngs.length-1]);
+		var intersects = this._poly.newLatLngIntersects(latlngs[latlngs.length - 1]);
 
 		if ((!this.options.allowIntersection && intersects) || !this._shapeIsValid()) {
 			this._showErrorTooltip();
