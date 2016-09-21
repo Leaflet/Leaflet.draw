@@ -339,7 +339,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		var lastMarker = this._markers.pop(),
 			poly = this._poly,
-			latlng = this._poly.spliceLatLngs(poly.getLatLngs().length - 1, 1)[0];
+			// Replaces .spliceLatLngs()
+			latlngs = poly.getLatLngs(),
+			latlng = latlngs.splice(-1, 1)[0];
+		this._poly.setLatLngs(latlngs);
 
 		this._markerGroup.removeLayer(lastMarker);
 
@@ -386,7 +389,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_finishShape: function () {
-		var intersects = this._poly.newLatLngIntersects(this._poly.getLatLngs()[this._poly.getLatLngs().length - 1]);
+		var latlngs = this._poly._defaultShape ? this._poly._defaultShape() : this._poly.getLatLngs();
+		var intersects = this._poly.newLatLngIntersects(latlngs[latlngs.length - 1]);
 
 		if ((!this.options.allowIntersection && intersects) || !this._shapeIsValid()) {
 			this._showErrorTooltip();
@@ -935,7 +939,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 			latLngs, area, subtext;
 
 		if (shape) {
-			latLngs = this._shape.getLatLngs();
+			latLngs = this._shape._defaultShape ? this._shape._defaultShape() : this._shape.getLatLngs();
 			area = L.GeometryUtil.geodesicArea(latLngs);
 			subtext = L.GeometryUtil.readableArea(area, this.options.metric);
 		}
@@ -1226,6 +1230,13 @@ L.Edit.Poly = L.Handler.extend({
 		this._poly.on('revert-edited', this._updateLatLngs, this);
 	},
 
+	// Compatibility method to normalize Poly* objects
+	// between 0.7.x and 1.0+
+	_defaultShape: function () {
+		if (!L.Polyline._flat) { return this._poly._latlngs; }
+		return L.Polyline._flat(this._poly._latlngs) ? this._poly._latlngs : this._poly._latlngs[0];
+	},
+
 	_eachVertexHandler: function (callback) {
 		for (var i = 0; i < this._verticesHandlers.length; i++) {
 			callback(this._verticesHandlers[i]);
@@ -1301,11 +1312,21 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		L.setOptions(this, options);
 	},
 
+	// Compatibility method to normalize Poly* objects
+	// between 0.7.x and 1.0+
+	_defaultShape: function () {
+		if (!L.Polyline._flat) { return this._latlngs; }
+		return L.Polyline._flat(this._latlngs) ? this._latlngs : this._latlngs[0];
+	},
+
 	addHooks: function () {
 		var poly = this._poly;
 
 		if (!(poly instanceof L.Polygon)) {
 			poly.options.fill = false;
+			if (poly.options.editing) {
+				poly.options.editing.fill = false;
+			}
 		}
 
 		poly.setStyle(poly.options.editing);
@@ -1344,7 +1365,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		}
 		this._markers = [];
 
-		var latlngs = this._latlngs,
+		var latlngs = this._defaultShape(),
 			i, j, len, marker;
 
 		for (i = 0, len = latlngs.length; i < len; i++) {
@@ -1384,8 +1405,8 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			.on('drag', this._onMarkerDrag, this)
 			.on('dragend', this._fireEdit, this)
 			.on('touchmove', this._onTouchMove, this)
-			.on('MSPointerMove', this._onTouchMove, this)
 			.on('touchend', this._fireEdit, this)
+			.on('MSPointerMove', this._onTouchMove, this)
 			.on('MSPointerUp', this._fireEdit, this);
 
 		this._markerGroup.addLayer(marker);
@@ -1398,8 +1419,9 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	},
 
 	_spliceLatLngs: function () {
-		var removed = [].splice.apply(this._latlngs, arguments);
-		this._poly._convertLatLngs(this._latlngs, true);
+		var latlngs = this._defaultShape();
+		var removed = [].splice.apply(latlngs, arguments);
+		this._poly._convertLatLngs(latlngs, true);
 		this._poly.redraw();
 		return removed;
 	},
@@ -1481,7 +1503,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			marker = e.target;
 
 		// If removing this point would create an invalid polyline/polygon don't remove
-		if (this._latlngs.length < minPoints) {
+		if (this._defaultShape().length < minPoints) {
 			return;
 		}
 
@@ -1646,6 +1668,7 @@ L.Polyline.addInitHook(function () {
 		}
 	});
 });
+
 
 L.Edit = L.Edit || {};
 
@@ -1923,7 +1946,7 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 	},
 
 	_move: function (newCenter) {
-		var latlngs = this._shape.getLatLngs(),
+		var latlngs = this._shape._defaultShape ? this._shape._defaultShape() : this._shape.getLatLngs(),
 			bounds = this._shape.getBounds(),
 			center = bounds.getCenter(),
 			offset, newLatLngs = [];
@@ -2235,9 +2258,18 @@ L.Map.addInitHook('addHandler', 'touchExtend', L.Map.TouchExtend);
 // #TODO: find a better way of getting markers to support touch.
 L.Marker.Touch = L.Marker.extend({
 
-	// This is an exact copy of https://github.com/Leaflet/Leaflet/blob/v0.7/src/layer/marker/Marker.js
-	// with the addition of the touch event son line 15.
 	_initInteraction: function () {
+		if (!this.addInteractiveTarget) {
+			// 0.7.x support
+			return this._initInteractionLegacy();
+		}
+		// TODO this may need be updated to re-add touch events for 1.0+
+		return L.Marker.prototype._initInteraction.apply(this);
+	},
+
+	// This is an exact copy of https://github.com/Leaflet/Leaflet/blob/v0.7/src/layer/marker/Marker.js
+	// with the addition of the touch events on line 15.
+	_initInteractionLegacy: function () {
 
 		if (!this.options.clickable) {
 			return;
@@ -2306,7 +2338,12 @@ L.LatLngUtil = {
 	cloneLatLngs: function (latlngs) {
 		var clone = [];
 		for (var i = 0, l = latlngs.length; i < l; i++) {
-			clone.push(this.cloneLatLng(latlngs[i]));
+			// Check for nested array (Polyline/Polygon)
+			if (Array.isArray(latlngs[i])) {
+				clone.push(L.LatLngUtil.cloneLatLngs(latlngs[i]));
+			} else {
+				clone.push(this.cloneLatLng(latlngs[i]));
+			}
 		}
 		return clone;
 	},
@@ -2316,12 +2353,13 @@ L.LatLngUtil = {
 	}
 };
 
+
 L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 	// Ported from the OpenLayers implementation. See https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Geometry/LinearRing.js#L270
 	geodesicArea: function (latLngs) {
 		var pointsCount = latLngs.length,
 			area = 0.0,
-			d2r = L.LatLng.DEG_TO_RAD,
+			d2r = Math.PI / 180,
 			p1, p2;
 
 		if (pointsCount > 2) {
@@ -2411,7 +2449,7 @@ L.Polyline.include({
 	// Check to see if this polyline has any linesegments that intersect.
 	// NOTE: does not support detecting intersection for degenerate cases.
 	intersects: function () {
-		var points = this._originalPoints,
+		var points = this._getProjectedPoints(),
 			len = points ? points.length : 0,
 			i, p, p1;
 
@@ -2447,7 +2485,7 @@ L.Polyline.include({
 	// newPoint must be a layer point.
 	// NOTE: does not support detecting intersection for degenerate cases.
 	newPointIntersects: function (newPoint, skipFirst) {
-		var points = this._originalPoints,
+		var points = this._getProjectedPoints(),
 			len = points ? points.length : 0,
 			lastPoint = points ? points[len - 1] : null,
 			// The previous previous line segment. Previous line segment doesn't need testing.
@@ -2463,18 +2501,18 @@ L.Polyline.include({
 	// Polylines with 2 sides can only intersect in cases where points are collinear (we don't support detecting these).
 	// Cannot have intersection when < 3 line segments (< 4 points)
 	_tooFewPointsForIntersection: function (extraPoints) {
-		var points = this._originalPoints,
+		var points = this._getProjectedPoints(),
 			len = points ? points.length : 0;
 		// Increment length by extraPoints if present
 		len += extraPoints || 0;
 
-		return !this._originalPoints || len <= 3;
+		return !points || len <= 3;
 	},
 
 	// Checks a line segment intersections with any line segments before its predecessor.
 	// Don't need to check the predecessor as will never intersect.
 	_lineSegmentsIntersectsRange: function (p, p1, maxIndex, minIndex) {
-		var points = this._originalPoints,
+		var points = this._getProjectedPoints(),
 			p2, p3;
 
 		minIndex = minIndex || 0;
@@ -2490,6 +2528,19 @@ L.Polyline.include({
 		}
 
 		return false;
+	},
+
+	_getProjectedPoints: function () {
+		if (!this._defaultShape) {
+			return this._originalPoints;
+		}
+		var points = [],
+			_shape = this._defaultShape();
+
+		for (var i = 0; i < _shape.length; i++) {
+			points.push(this._map.latLngToLayerPoint(_shape[i]));
+		}
+		return points;
 	}
 });
 
@@ -2498,7 +2549,7 @@ L.Polygon.include({
 	// Checks a polygon for any intersecting line segments. Ignores holes.
 	intersects: function () {
 		var polylineIntersects,
-			points = this._originalPoints,
+			points = this._getProjectedPoints(),
 			len, firstPoint, lastPoint, maxIndex;
 
 		if (this._tooFewPointsForIntersection()) {
@@ -2521,6 +2572,7 @@ L.Polygon.include({
 		return this._lineSegmentsIntersectsRange(lastPoint, firstPoint, maxIndex, 1);
 	}
 });
+
 
 L.Control.Draw = L.Control.extend({
 
@@ -3286,7 +3338,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.on('mousemove', this._onMouseMove, this)
 				.on('touchmove', this._onMouseMove, this)
 				.on('MSPointerMove', this._onMouseMove, this)
-				.on('click', this._editStyle, this)
 				.on('draw:editvertex', this._updateTooltip, this);
 		}
 	},
@@ -3306,7 +3357,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.off('mousemove', this._onMouseMove, this)
 				.off('touchmove', this._onMouseMove, this)
 				.off('MSPointerMove', this._onMouseMove, this)
-				.off('click', this._editStyle, this)
 				.off('draw:editvertex', this._updateTooltip, this);
 		}
 	},
@@ -3406,7 +3456,10 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		}
 
-		if (this.isMarker) {
+		if (layer instanceof L.Marker) {
+			if (layer.editing) {
+				layer.editing.enable();
+			}
 			layer.dragging.enable();
 			layer
 				.on('dragend', this._onMarkerDragEnd)
@@ -3424,7 +3477,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 		var layer = e.layer || e.target || e;
 
 		layer.edited = false;
-		layer.editing.disable();
+		if (layer.editing) {
+			layer.editing.disable();
+		}
 
 		delete layer.options.editing;
 		delete layer.options.original;
@@ -3455,6 +3510,12 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	_onMouseMove: function (e) {
 		this._tooltip.updatePosition(e.latlng);
+	},
+
+	_onMarkerDragEnd: function (e) {
+		var layer = e.target;
+		layer.edited = true;
+		this._map.fire('draw:editmove', {layer: layer});
 	},
 
 	_onTouchMove: function (e) {
