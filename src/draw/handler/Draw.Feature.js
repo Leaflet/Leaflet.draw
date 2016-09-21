@@ -1,4 +1,4 @@
-L.Draw = {};
+L.Draw = L.Draw || {};
 
 L.Draw.Feature = L.Handler.extend({
 	includes: L.Mixin.Events,
@@ -44,7 +44,7 @@ L.Draw.Feature = L.Handler.extend({
 
 			map.getContainer().focus();
 
-			this._tooltip = new L.Tooltip(this._map);
+			this._tooltip = new L.Draw.Tooltip(this._map);
 
 			L.DomEvent.on(this._container, 'keyup', this._cancelDrawing, this);
 		}
