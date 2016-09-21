@@ -130,7 +130,7 @@
             var layers = event.layers,
                 content = null;
             layers.eachLayer(function(layer) {
-                content = getPopupContent(null, layer);
+                content = getPopupContent(layer);
                 if (content !== null) {
                     layer.setPopupContent(content);
                 }
