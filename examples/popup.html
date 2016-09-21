@@ -75,7 +75,7 @@
 
         // Truncate value based on number of decimals
         var _round = function(num, len) {
-            return Math.round(num*(10**len))/(10**len);
+            return Math.round(num*(Math.pow(10, len)))/(Math.pow(10, len));
         };
         // Helper method to format LatLng object (x.xxxxxx, y.yyyyyy)
         var strLatLng = function(latlng) {
