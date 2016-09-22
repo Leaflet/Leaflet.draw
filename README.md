@@ -27,7 +27,7 @@ Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGE
 <a name="install" />
 ## Install
 
-To install the plugin run `npm install leaflet-draw` via command line in your project. You must also require this in your project like so: `var leaflet-draw = require('leaflet-draw');`
+To install the plugin run `npm install leaflet-draw` via command line in your project. You must also require this in your project like so: `var leafletDraw = require('leaflet-draw');`
 
 <a name="using" />
 ## Using the plugin
