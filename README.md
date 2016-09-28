@@ -250,7 +250,9 @@ Polyline and Polygon drawing handlers take the same options.
 | drawError | Object | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Polyline.js#L10) | Configuration options for the error that displays if an intersection is detected.
 | guidelineDistance | Number | `20` | Distance in pixels between each guide dash.
 | shapeOptions | [Leaflet Polyline options](http://leafletjs.com/reference.html#polyline-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Polyline.js#L20) | The options used when drawing the polyline/polygon on the map.
-| metric | Bool | `true` | Determines which measurement system (metric or imperial) is used.
+| metric | Bool | `true` | Set measurement to metric.
+| feet | Bool | `true` | Set measurement to feet - metric must be false.
+| nautic | Bool | `true` | Set measurement to nautic - metric and feet must be false.
 | zIndexOffset | Number | `2000` | This should be a high number to ensure that you can draw over all other layers on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
@@ -278,6 +280,9 @@ Polygon options include all of the Polyline options plus the option to show the 
 | --- | --- | --- | ---
 | shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
+| metric | Bool | `true` | Set measurement to metric.
+| feet | Bool | `true` | Set measurement to feet - metric must be false.
+| nautic | Bool | `true` | Set measurement to nautic - metric and feet must be false.
 
 <a name="markeroptions" />
 #### MarkerOptions
