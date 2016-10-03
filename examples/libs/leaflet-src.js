@@ -1,10 +1,10 @@
 /*
- Leaflet 1.0.0-rc.3, a JS library for interactive maps. http://leafletjs.com
- (c) 2010-2015 Vladimir Agafonkin, (c) 2010-2011 CloudMade
+ Leaflet 1.0.1+ffcfcc1, a JS library for interactive maps. http://leafletjs.com
+ (c) 2010-2016 Vladimir Agafonkin, (c) 2010-2011 CloudMade
 */
 (function (window, document, undefined) {
 var L = {
-	version: "1.0.0-rc.3"
+	version: "1.0.1+ffcfcc1"
 };
 
 function expose() {
@@ -497,10 +497,7 @@ L.Evented = L.Class.extend({
 		/* get/init listeners for type */
 		var typeListeners = this._events[type];
 		if (!typeListeners) {
-			typeListeners = {
-				listeners: [],
-				count: 0
-			};
+			typeListeners = [];
 			this._events[type] = typeListeners;
 		}
 
@@ -509,7 +506,7 @@ L.Evented = L.Class.extend({
 			context = undefined;
 		}
 		var newListener = {fn: fn, ctx: context},
-		    listeners = typeListeners.listeners;
+		    listeners = typeListeners;
 
 		// check if fn already there
 		for (var i = 0, len = listeners.length; i < len; i++) {
@@ -523,20 +520,17 @@ L.Evented = L.Class.extend({
 	},
 
 	_off: function (type, fn, context) {
-		var typeListeners,
-		    listeners,
+		var listeners,
 		    i,
 		    len;
 
 		if (!this._events) { return; }
 
-		typeListeners = this._events[type];
+		listeners = this._events[type];
 
-		if (!typeListeners) {
+		if (!listeners) {
 			return;
 		}
-
-		listeners = typeListeners.listeners;
 
 		if (!fn) {
 			// Set all removed listeners to noop so they are not called if remove happens in fire
@@ -547,7 +541,6 @@ L.Evented = L.Class.extend({
 			delete this._events[type];
 			return;
 		}
-
 
 		if (context === this) {
 			context = undefined;
@@ -563,11 +556,10 @@ L.Evented = L.Class.extend({
 
 					// set the removed listener to noop so that's not called if remove happens in fire
 					l.fn = L.Util.falseFn;
-					typeListeners.count--;
 
-					if (this._isFiring) {
+					if (this._firingCount) {
 						/* copy array in case events are being fired */
-						listeners = listeners.slice();
+						this._events[type] = listeners = listeners.slice();
 					}
 					listeners.splice(i, 1);
 
@@ -587,22 +579,16 @@ L.Evented = L.Class.extend({
 		var event = L.Util.extend({}, data, {type: type, target: this});
 
 		if (this._events) {
-			var typeListeners = this._events[type];
+			var listeners = this._events[type];
 
-			if (typeListeners) {
-				this._isFiring = true;
-				var listeners = typeListeners.listeners;
+			if (listeners) {
+				this._firingCount = (this._firingCount + 1) || 1;
 				for (var i = 0, len = listeners.length; i < len; i++) {
 					var l = listeners[i];
-                                        if (!l.fn) {
-                                            console.log("Invalid event: ", l, listeners);
-                                            console.log("arguments = ", arguments);
-                                            console.log("this._events ", this._events, this._events[type]);
-                                        }
 					l.fn.call(l.ctx || this, event);
 				}
 
-				this._isFiring = false;
+				this._firingCount--;
 			}
 		}
 
@@ -617,8 +603,8 @@ L.Evented = L.Class.extend({
 	// @method listens(type: String): Boolean
 	// Returns `true` if a particular event type has any listeners attached to it.
 	listens: function (type, propagate) {
-		var typeListeners = this._events && this._events[type];
-		if (typeListeners && typeListeners.count) { return true; }
+		var listeners = this._events && this._events[type];
+		if (listeners && listeners.length) { return true; }
 
 		if (propagate) {
 			// also check parents for listeners if event propagates
@@ -2099,13 +2085,13 @@ L.CRS = {
 	},
 
 	// @method zoom(scale: Number): Number
-	// Inverse of `scale()`, returns the zoom level correspondingto a scale
+	// Inverse of `scale()`, returns the zoom level corresponding to a scale
 	// factor of `scale`.
 	zoom: function (scale) {
 		return Math.log(scale / 256) / Math.LN2;
 	},
 
-	// @method getProjectedBounds(zoom): Bounds
+	// @method getProjectedBounds(zoom: Number): Bounds
 	// Returns the projection's bounds scaled and transformed for the provided `zoom`.
 	getProjectedBounds: function (zoom) {
 		if (this.infinite) { return null; }
@@ -2118,7 +2104,7 @@ L.CRS = {
 		return L.bounds(min, max);
 	},
 
-	// @method distance(latlng1: LatLng, latlng1: LatLng): Number
+	// @method distance(latlng1: LatLng, latlng2: LatLng): Number
 	// Returns the distance between two geographical coordinates.
 
 	// @property code: String
@@ -2666,11 +2652,19 @@ L.Map = L.Evented.extend({
 
 		this._initEvents(true);
 
+		if (this._containerId !== this._container._leaflet_id) {
+			throw new Error('Map container is being reused by another instance');
+		}
+
 		try {
 			// throws error in IE6-8
-			delete this._container._leaflet;
+			delete this._container._leaflet_id;
+			delete this._containerId;
 		} catch (e) {
-			this._container._leaflet = undefined;
+			/*eslint-disable */
+			this._container._leaflet_id = undefined;
+			/*eslint-enable */
+			this._containerId = undefined;
 		}
 
 		L.DomUtil.remove(this._mapPane);
@@ -2862,7 +2856,8 @@ L.Map = L.Evented.extend({
 	getScaleZoom: function (scale, fromZoom) {
 		var crs = this.options.crs;
 		fromZoom = fromZoom === undefined ? this._zoom : fromZoom;
-		return crs.zoom(scale * crs.scale(fromZoom));
+		var zoom = crs.zoom(scale * crs.scale(fromZoom));
+		return isNaN(zoom) ? Infinity : zoom;
 	},
 
 	// @method project(latlng: LatLng, zoom: Number): Point
@@ -2973,12 +2968,12 @@ L.Map = L.Evented.extend({
 
 		if (!container) {
 			throw new Error('Map container not found.');
-		} else if (container._leaflet) {
+		} else if (container._leaflet_id) {
 			throw new Error('Map container is already initialized.');
 		}
 
 		L.DomEvent.addListener(container, 'scroll', this._onScroll, this);
-		container._leaflet = true;
+		this._containerId = L.Util.stamp(container);
 	},
 
 	_initLayout: function () {
@@ -3104,14 +3099,14 @@ L.Map = L.Evented.extend({
 		this._pixelOrigin = this._getNewPixelOrigin(center);
 
 		// @event zoom: Event
-		// Fired repeteadly during any change in zoom level, including zoom
+		// Fired repeatedly during any change in zoom level, including zoom
 		// and fly animations.
 		if (zoomChanged || (data && data.pinch)) {	// Always fire 'zoom' if pinching because #3530
 			this.fire('zoom', data);
 		}
 
 		// @event move: Event
-		// Fired repeteadly during any movement of the map, including pan and
+		// Fired repeatedly during any movement of the map, including pan and
 		// fly animations.
 		return this.fire('move', data);
 	},
@@ -3187,7 +3182,7 @@ L.Map = L.Evented.extend({
 		// default browser context menu from showing if there are listeners on
 		// this event. Also fired on mobile when the user holds a single touch
 		// for a second (also called long press).
-		// @event keypress: Event
+		// @event keypress: KeyboardEvent
 		// Fired when the user presses a key from the keyboard while the map is focused.
 		L.DomEvent[onOff](this._container, 'click dblclick mousedown mouseup ' +
 			'mouseover mouseout mousemove contextmenu keypress', this._handleDOMEvent, this);
@@ -3904,7 +3899,7 @@ L.GridLayer = L.Layer.extend({
 	},
 
 	initialize: function (options) {
-		options = L.setOptions(this, options);
+		L.setOptions(this, options);
 	},
 
 	onAdd: function () {
@@ -3955,7 +3950,7 @@ L.GridLayer = L.Layer.extend({
 		return this.options.attribution;
 	},
 
-	// @method getContainer: String
+	// @method getContainer: HTMLElement
 	// Returns the HTML element that contains the tiles for this layer.
 	getContainer: function () {
 		return this._container;
@@ -4414,7 +4409,7 @@ L.GridLayer = L.Layer.extend({
 		});
 
 		if (queue.length !== 0) {
-			// if its the first batch of tiles to load
+			// if it's the first batch of tiles to load
 			if (!this._loading) {
 				this._loading = true;
 				// @event loading: Event
@@ -4463,8 +4458,13 @@ L.GridLayer = L.Layer.extend({
 		    nwPoint = coords.scaleBy(tileSize),
 		    sePoint = nwPoint.add(tileSize),
 
-		    nw = map.wrapLatLng(map.unproject(nwPoint, coords.z)),
-		    se = map.wrapLatLng(map.unproject(sePoint, coords.z));
+		    nw = map.unproject(nwPoint, coords.z),
+		    se = map.unproject(sePoint, coords.z);
+
+		if (!this.options.noWrap) {
+			nw = map.wrapLatLng(nw);
+			se = map.wrapLatLng(se);
+		}
 
 		return new L.LatLngBounds(nw, se);
 	},
@@ -4581,14 +4581,16 @@ L.GridLayer = L.Layer.extend({
 			this._pruneTiles();
 		}
 
-		L.DomUtil.addClass(tile.el, 'leaflet-tile-loaded');
+		if (!err) {
+			L.DomUtil.addClass(tile.el, 'leaflet-tile-loaded');
 
-		// @event tileload: TileEvent
-		// Fired when a tile loads.
-		this.fire('tileload', {
-			tile: tile.el,
-			coords: coords
-		});
+			// @event tileload: TileEvent
+			// Fired when a tile loads.
+			this.fire('tileload', {
+				tile: tile.el,
+				coords: coords
+			});
+		}
 
 		if (this._noTilesToLoad()) {
 			this._loading = false;
@@ -5100,7 +5102,7 @@ L.ImageOverlay = L.Layer.extend({
 		}
 	},
 
-	// @method setOpacity(): this
+	// @method setOpacity(opacity: Number): this
 	// Sets the opacity of the overlay.
 	setOpacity: function (opacity) {
 		this.options.opacity = opacity;
@@ -5379,12 +5381,24 @@ L.icon = function (options) {
 
 
 /*
- * L.Icon.Default is the blue marker icon used by default in Leaflet.
+ * @miniclass Icon.Default (Icon)
+ * @aka L.Icon.Default
+ * @section
+ *
+ * A trivial subclass of `Icon`, represents the icon to use in `Marker`s when
+ * no icon is specified. Points to the blue marker image distributed with Leaflet
+ * releases.
+ *
+ * In order to change the default icon, just change the properties of `L.Icon.Default.prototype.options`
+ * (which is a set of `Icon options`).
  */
 
 L.Icon.Default = L.Icon.extend({
 
 	options: {
+		iconUrl:       'marker-icon.png',
+		iconRetinaUrl: 'marker-icon-2x.png',
+		shadowUrl:     'marker-shadow.png',
 		iconSize:    [25, 41],
 		iconAnchor:  [12, 41],
 		popupAnchor: [1, -34],
@@ -5393,37 +5407,28 @@ L.Icon.Default = L.Icon.extend({
 	},
 
 	_getIconUrl: function (name) {
-		var key = name + 'Url';
-
-		if (this.options[key]) {
-			return this.options[key];
+		if (!L.Icon.Default.imagePath) {	// Deprecated, backwards-compatibility only
+			L.Icon.Default.imagePath = this._detectIconPath();
 		}
 
-		var path = L.Icon.Default.imagePath;
+		// @option imagePath: String
+		// `L.Icon.Default` will try to auto-detect the absolute location of the
+		// blue icon images. If you are placing these images in a non-standard
+		// way, set this option to point to the right absolute path.
+		return (this.options.imagePath || L.Icon.Default.imagePath) + L.Icon.prototype._getIconUrl.call(this, name);
+	},
 
-		if (!path) {
-			throw new Error('Couldn\'t autodetect L.Icon.Default.imagePath, set it manually.');
-		}
+	_detectIconPath: function () {
+		var el = L.DomUtil.create('div',  'leaflet-default-icon-path', document.body);
+		var path = L.DomUtil.getStyle(el, 'background-image') ||
+		           L.DomUtil.getStyle(el, 'backgroundImage');	// IE8
 
-		return path + '/marker-' + name + (L.Browser.retina && name === 'icon' ? '-2x' : '') + '.png';
+		document.body.removeChild(el);
+
+		return path.indexOf('url') === 0 ?
+			path.replace(/^url\([\"\']?/, '').replace(/marker-icon\.png[\"\']?\)$/, '') : '';
 	}
 });
-
-L.Icon.Default.imagePath = (function () {
-	var scripts = document.getElementsByTagName('script'),
-	    leafletRe = /[\/^]leaflet[\-\._]?([\w\-\._]*)\.js\??/;
-
-	var i, len, src, path;
-
-	for (i = 0, len = scripts.length; i < len; i++) {
-		src = scripts[i].src || '';
-
-		if (src.match(leafletRe)) {
-			path = src.split(leafletRe)[0];
-			return (path ? path + '/' : '') + 'images';
-		}
-	}
-}());
 
 
 
@@ -5446,7 +5451,7 @@ L.Marker = L.Layer.extend({
 	// @aka Marker options
 	options: {
 		// @option icon: Icon = *
-		// Icon class to use for rendering the marker. See [Icon documentation](#L.Icon) for details on how to customize the marker icon. Set to new `L.Icon.Default()` by default.
+		// Icon class to use for rendering the marker. See [Icon documentation](#L.Icon) for details on how to customize the marker icon. If not specified, a new `L.Icon.Default` is used.
 		icon: new L.Icon.Default(),
 
 		// Option inherited from "Interactive layer" abstract class
@@ -5848,11 +5853,6 @@ L.DivOverlay = L.Layer.extend({
 		// of the popup when opening it on some overlays.
 		offset: [0, 7],
 
-		// @option zoomAnimation: Boolean = true
-		// Whether to animate the popup on zoom. Disable it if you have
-		// problems with Flash content inside popups.
-		zoomAnimation: true,
-
 		// @option className: String = ''
 		// A custom CSS class name to assign to the popup.
 		className: '',
@@ -5869,7 +5869,7 @@ L.DivOverlay = L.Layer.extend({
 	},
 
 	onAdd: function (map) {
-		this._zoomAnimated = this._zoomAnimated && this.options.zoomAnimation;
+		this._zoomAnimated = map._zoomAnimated;
 
 		if (!this._container) {
 			this._initLayout();
@@ -6113,7 +6113,11 @@ L.Popup = L.DivOverlay.extend({
 		// Set it to `false` if you want to override the default behavior of
 		// the popup closing when user clicks the map (set globally by
 		// the Map's [closePopupOnClick](#map-closepopuponclick) option).
-		autoClose: true
+		autoClose: true,
+
+		// @option className: String = ''
+		// A custom CSS class name to assign to the popup.
+		className: ''
 	},
 
 	// @namespace Popup
@@ -6192,7 +6196,7 @@ L.Popup = L.DivOverlay.extend({
 		var prefix = 'leaflet-popup',
 		    container = this._container = L.DomUtil.create('div',
 			prefix + ' ' + (this.options.className || '') +
-			' leaflet-zoom-' + (this._zoomAnimated ? 'animated' : 'hide'));
+			' leaflet-zoom-animated');
 
 		if (this.options.closeButton) {
 			var closeButton = this._closeButton = L.DomUtil.create('a', prefix + '-close-button', container);
@@ -6259,9 +6263,7 @@ L.Popup = L.DivOverlay.extend({
 		    containerWidth = this._containerWidth,
 		    layerPos = new L.Point(this._containerLeft, -containerHeight - this._containerBottom);
 
-		if (this._zoomAnimated) {
-			layerPos._add(L.DomUtil.getPosition(this._container));
-		}
+		layerPos._add(L.DomUtil.getPosition(this._container));
 
 		var containerPos = map.layerPointToContainerPoint(layerPos),
 		    padding = L.point(this.options.autoPanPadding),
@@ -6733,7 +6735,7 @@ L.Tooltip = L.DivOverlay.extend({
 
 	_getAnchor: function () {
 		// Where should we anchor the tooltip on the source layer?
-		return L.point(this._source._getTooltipAnchor && !this.options.sticky ? this._source._getTooltipAnchor() : [0, 0]);
+		return L.point(this._source && this._source._getTooltipAnchor && !this.options.sticky ? this._source._getTooltipAnchor() : [0, 0]);
 	}
 
 });
@@ -6906,7 +6908,7 @@ L.Layer.include({
 	closeTooltip: function () {
 		if (this._tooltip) {
 			this._tooltip._close();
-			if (this._tooltip.options.interactive) {
+			if (this._tooltip.options.interactive && this._tooltip._container) {
 				L.DomUtil.removeClass(this._tooltip._container, 'leaflet-clickable');
 				this.removeInteractiveTarget(this._tooltip._container);
 			}
@@ -7149,14 +7151,19 @@ L.layerGroup = function (layers) {
  * @aka L.FeatureGroup
  * @inherits LayerGroup
  *
- * Extended `LayerGroup` that also has mouse events (propagated from members of the group) and a shared bindPopup method.
+ * Extended `LayerGroup` that makes it easier to do the same thing to all its member layers:
+ *  * [`bindPopup`](#layer-bindpopup) binds a popup to all of the layers at once (likewise with [`bindTooltip`](#layer-bindtooltip))
+ *  * Events are propagated to the `FeatureGroup`, so if the group has an event
+ * handler, it will handle events from any of the layers. This includes mouse events
+ * and custom events.
+ *  * Has `layeradd` and `layerremove` events
  *
  * @example
  *
  * ```js
  * L.featureGroup([marker1, marker2, polyline])
  * 	.bindPopup('Hello world!')
- * 	.on('click', function() { alert('Clicked on a group!'); })
+ * 	.on('click', function() { alert('Clicked on a member of the group!'); })
  * 	.addTo(map);
  * ```
  */
@@ -7172,6 +7179,8 @@ L.FeatureGroup = L.LayerGroup.extend({
 
 		L.LayerGroup.prototype.addLayer.call(this, layer);
 
+		// @event layeradd: LayerEvent
+		// Fired when a layer is added to this `FeatureGroup`
 		return this.fire('layeradd', {layer: layer});
 	},
 
@@ -7187,6 +7196,8 @@ L.FeatureGroup = L.LayerGroup.extend({
 
 		L.LayerGroup.prototype.removeLayer.call(this, layer);
 
+		// @event layerremove: LayerEvent
+		// Fired when a layer is removed from this `FeatureGroup`
 		return this.fire('layerremove', {layer: layer});
 	},
 
@@ -7244,6 +7255,9 @@ L.featureGroup = function (layers) {
  *
  * Do not use this class directly, use `SVG` and `Canvas` instead.
  *
+ * @event update: Event
+ * Fired when the renderer updates its bounds, center and zoom, for example when
+ * its map has moved
  */
 
 L.Renderer = L.Layer.extend({
@@ -7322,7 +7336,8 @@ L.Renderer = L.Layer.extend({
 	},
 
 	_update: function () {
-		// update pixel bounds of renderer container (for positioning/sizing/clipping later)
+		// Update pixel bounds of renderer container (for positioning/sizing/clipping later)
+		// Subclasses are responsible of firing the 'update' event.
 		var p = this.options.padding,
 		    size = this._map.getSize(),
 		    min = this._map.containerPointToLayerPoint(size.multiplyBy(-p)).round();
@@ -7453,16 +7468,17 @@ L.Path = L.Layer.extend({
 		this._renderer._initPath(this);
 		this._reset();
 		this._renderer._addPath(this);
+		this._renderer.on('update', this._update, this);
 	},
 
 	onRemove: function () {
 		this._renderer._removePath(this);
+		this._renderer.off('update', this._update, this);
 	},
 
 	getEvents: function () {
 		return {
 			zoomend: this._project,
-			moveend: this._update,
 			viewreset: this._reset
 		};
 	},
@@ -7860,6 +7876,11 @@ L.Polyline = L.Path.extend({
 	// @method getCenter(): LatLng
 	// Returns the center ([centroid](http://en.wikipedia.org/wiki/Centroid)) of the polyline.
 	getCenter: function () {
+		// throws error when not yet added to map as this center calculation requires projected coordinates
+		if (!this._map) {
+			throw new Error('Must add layer to map before using getCenter()');
+		}
+
 		var i, halfDist, segDist, dist, p1, p2, ratio,
 		    points = this._rings[0],
 		    len = points.length;
@@ -8164,6 +8185,11 @@ L.Polygon = L.Polyline.extend({
 	},
 
 	getCenter: function () {
+		// throws error when not yet added to map as this center calculation requires projected coordinates
+		if (!this._map) {
+			throw new Error('Must add layer to map before using getCenter()');
+		}
+
 		var i, j, p1, p2, f, area, x, y, center,
 		    points = this._rings[0],
 		    len = points.length;
@@ -8422,7 +8448,7 @@ L.circleMarker = function (latlng, options) {
  * @example
  *
  * ```js
- * L.circle([50.5, 30.5], 200).addTo(map);
+ * L.circle([50.5, 30.5], {radius: 200}).addTo(map);
  * ```
  */
 
@@ -8540,7 +8566,7 @@ L.circle = function (latlng, options, legacyOptions) {
  *
  * ```js
  * var map = L.map('map', {
- * 	renderer: L.svg();
+ * 	renderer: L.svg()
  * });
  * ```
  *
@@ -8598,6 +8624,8 @@ L.SVG = L.Renderer.extend({
 		// movement: update container viewBox so that we don't have to change coordinates of individual layers
 		L.DomUtil.setPosition(container, b.min);
 		container.setAttribute('viewBox', [b.min.x, b.min.y, size.x, size.y].join(' '));
+
+		this.fire('update');
 	},
 
 	// methods below are called by vector layers implementations
@@ -8794,6 +8822,7 @@ L.SVG.include(!L.Browser.vml ? {} : {
 	_update: function () {
 		if (this._map._animatingZoom) { return; }
 		L.Renderer.prototype._update.call(this);
+		this.fire('update');
 	},
 
 	_initPath: function (layer) {
@@ -8928,7 +8957,7 @@ if (L.Browser.vml) {
  *
  * ```js
  * var map = L.map('map', {
- * 	renderer: L.canvas();
+ * 	renderer: L.canvas()
  * });
  * ```
  *
@@ -8991,6 +9020,9 @@ L.Canvas = L.Renderer.extend({
 
 		// translate so we use the same path coordinates after canvas element moves
 		this._ctx.translate(-b.min.x, -b.min.y);
+
+		// Tell paths to redraw themselves
+		this.fire('update');
 	},
 
 	_initPath: function (layer) {
@@ -9296,7 +9328,7 @@ L.CircleMarker.prototype._containsPoint = function (p) {
  * @example
  *
  * ```js
- * L.geoJson(data, {
+ * L.geoJSON(data, {
  * 	style: function (feature) {
  * 		return {color: feature.properties.color};
  * 	}
@@ -9340,13 +9372,15 @@ L.GeoJSON = L.FeatureGroup.extend({
 	 * ```
 	 *
 	 * @option filter: Function = *
-	 * A `Function` that will be used to decide whether to show a feature or not.
-	 * The default is to show all features:
+	 * A `Function` that will be used to decide whether to include a feature or not.
+	 * The default is to include all features:
 	 * ```js
 	 * function (geoJsonFeature) {
 	 * 	return true;
 	 * }
 	 * ```
+	 * Note: dynamically changing the `filter` option will have effect only on newly
+	 * added data. It will _not_ re-evaluate already included features.
 	 *
 	 * @option coordsToLatLng: Function = *
 	 * A `Function` that will be used for converting GeoJSON coordinates to `LatLng`s.
@@ -9363,7 +9397,7 @@ L.GeoJSON = L.FeatureGroup.extend({
 		}
 	},
 
-	// @function addData( <GeoJSON> data ): Layer
+	// @method addData( <GeoJSON> data ): Layer
 	// Adds a GeoJSON object to the layer.
 	addData: function (geojson) {
 		var features = L.Util.isArray(geojson) ? geojson : geojson.features,
@@ -9400,7 +9434,7 @@ L.GeoJSON = L.FeatureGroup.extend({
 		return this.addLayer(layer);
 	},
 
-	// @function resetStyle( <Path> layer ): Layer
+	// @method resetStyle( <Path> layer ): Layer
 	// Resets the given vector layer's style to the original GeoJSON style, useful for resetting style after hover events.
 	resetStyle: function (layer) {
 		// reset any custom styles
@@ -9409,7 +9443,7 @@ L.GeoJSON = L.FeatureGroup.extend({
 		return this;
 	},
 
-	// @function setStyle( <Function> style ): Layer
+	// @method setStyle( <Function> style ): Layer
 	// Changes styles of GeoJSON vector layers with the given style function.
 	setStyle: function (style) {
 		return this.eachLayer(function (layer) {
@@ -12799,7 +12833,7 @@ L.Map.include(!zoomAnimated ? {} : {
 // @section Methods for modifying map state
 L.Map.include({
 
-	// @method flyTo(latlng: LatLng, zoom?: Number, options?: Zoom/Pan options): this
+	// @method flyTo(latlng: LatLng, zoom?: Number, options?: Zoom/pan options): this
 	// Sets the view of the map (geographical center and zoom) performing a smooth
 	// pan-zoom animation.
 	flyTo: function (targetCenter, targetZoom, options) {

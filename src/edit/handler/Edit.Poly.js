@@ -262,6 +262,14 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 				var originalColor = poly.options.color;
 				poly.setStyle({ color: this.options.drawError.color });
 
+				// Manually trigger 'dragend' behavior on marker we are about to remove
+				// WORKAROUND: introduced in 1.0.0-rc2, may be related to #4484
+				if (L.version.indexOf('0.7') != 0) {
+					marker.dragging._draggable._onUp(e);
+				}
+				this._onMarkerClick(e); // Remove violating marker
+				// FIXME: Reset the marker to it's original position (instead of remove)
+
 				if (tooltip) {
 					tooltip.updateContent({
 						text: L.drawLocal.draw.handlers.polyline.error
@@ -278,7 +286,6 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 						});
 					}
 				}, 1000);
-				this._onMarkerClick(e); // Reset the marker to it's original position
 			}
 		}
 
