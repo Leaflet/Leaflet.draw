@@ -111,7 +111,7 @@ L.drawLocal = {
 };
 
 
-L.Draw = {};
+L.Draw = L.Draw || {};
 
 L.Draw.Feature = L.Handler.extend({
 	includes: L.Mixin.Events,
@@ -157,7 +157,7 @@ L.Draw.Feature = L.Handler.extend({
 
 			map.getContainer().focus();
 
-			this._tooltip = new L.Tooltip(this._map);
+			this._tooltip = new L.Draw.Tooltip(this._map);
 
 			L.DomEvent.on(this._container, 'keyup', this._cancelDrawing, this);
 		}
@@ -190,6 +190,7 @@ L.Draw.Feature = L.Handler.extend({
 		}
 	}
 });
+
 
 L.Draw.Polyline = L.Draw.Feature.extend({
 	statics: {
@@ -1473,6 +1474,14 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 				var originalColor = poly.options.color;
 				poly.setStyle({ color: this.options.drawError.color });
 
+				// Manually trigger 'dragend' behavior on marker we are about to remove
+				// WORKAROUND: introduced in 1.0.0-rc2, may be related to #4484
+				if (L.version.indexOf('0.7') !== 0) {
+					marker.dragging._draggable._onUp(e);
+				}
+				this._onMarkerClick(e); // Remove violating marker
+				// FIXME: Reset the marker to it's original position (instead of remove)
+
 				if (tooltip) {
 					tooltip.updateContent({
 						text: L.drawLocal.draw.handlers.polyline.error
@@ -1489,7 +1498,6 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 						});
 					}
 				}, 1000);
-				this._onMarkerClick(e); // Reset the marker to it's original position
 			}
 		}
 
@@ -2929,7 +2937,8 @@ L.Toolbar = L.Class.extend({
 });
 
 
-L.Tooltip = L.Class.extend({
+L.Draw = L.Draw || {};
+L.Draw.Tooltip = L.Class.extend({
 	initialize: function (map) {
 		this._map = map;
 		this._popupPane = map._panes.popupPane;
@@ -3323,7 +3332,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
 
-			this._tooltip = new L.Tooltip(this._map);
+			this._tooltip = new L.Draw.Tooltip(this._map);
 			this._tooltip.updateContent({
 				text: L.drawLocal.edit.handlers.edit.tooltip.text,
 				subtext: L.drawLocal.edit.handlers.edit.tooltip.subtext
