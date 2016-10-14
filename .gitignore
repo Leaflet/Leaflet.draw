@@ -168,3 +168,10 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+
+#################
+## Sublime text
+#################
+
+*.sublime-project
+*.sublime-workspace
