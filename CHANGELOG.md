@@ -5,6 +5,21 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
+## 0.4.0 (October 13, 2016)
+
+### Improvements
+
+ * Add support for Leaflet 1.0.0+
+
+### Bugfixes
+
+ * New L.Draw.Tooltip to mitigate L.Tooltip collision
+ 
+### Potential Issues
+
+ * Several namespace changes, see BREAKINGCHANGES.md
+ * Cross support for both 0.7.0 and 1.0.0
+
 ## 0.3.0 (March 09, 2016)
 
 ### Improvements

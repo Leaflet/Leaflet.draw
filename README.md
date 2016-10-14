@@ -1,14 +1,15 @@
-
-[![Build Status](https://travis-ci.org/Leaflet/Leaflet.draw.svg?branch=master)](https://travis-ci.org/Leaflet/Leaflet.draw)
-
- Leaflet.draw: [![Join the chat at https://gitter.im/Leaflet/Leaflet.draw](https://badges.gitter.im/Leaflet/Leaflet.draw.svg)](https://gitter.im/Leaflet/Leaflet.draw?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
- Leaflet: [![Gitter](https://badges.gitter.im/Leaflet/Leaflet.svg)](https://gitter.im/Leaflet/Leaflet?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+|Build Status|Leaflet.draw Chat|Leaflet Chat|
+|---|---|---|
+|[![Build Status](https://travis-ci.org/Leaflet/Leaflet.draw.svg?branch=master)](https://travis-ci.org/Leaflet/Leaflet.draw)|[![Leaflet.draw Chat](https://badges.gitter.im/Leaflet/Leaflet.draw.svg)](https://gitter.im/Leaflet/Leaflet.draw?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)|[![Leaflet Chat](https://badges.gitter.im/Leaflet/Leaflet.svg)](https://gitter.im/Leaflet/Leaflet?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)|
 
 # Leaflet.draw
 Adds support for drawing and editing vectors and markers on [Leaflet maps](https://github.com/Leaflet/Leaflet). Check out the [demo](http://leaflet.github.com/Leaflet.draw/).
 
 Supports [Leaflet](https://github.com/Leaflet/Leaflet/releases) 0.7.x and 1.0.0+ branches.
+
+- Full Demo for Leaflet 1.0.0+: http://leaflet.github.io/Leaflet.draw/examples/full.html
+
+- Full Demo for Leaflet 0.7.0+: http://leaflet.github.io/Leaflet.draw/examples/0.7.x/full.html
 
 #### Upgrading from Leaflet.draw 0.1
 
