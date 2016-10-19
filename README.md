@@ -218,7 +218,7 @@ These options make up the root object that is used when initialising the Leaflet
 | --- | --- | --- | ---
 | position | String | `'topleft'` | The initial position of the control (one of the map corners). See [control positions](http://leafletjs.com/reference.html#control-positions).
 | draw | [DrawOptions](#drawoptions) | `{}` | The options used to configure the draw toolbar.
-| edit | [EditOptions](#editoptions) | `false` | The options used to configure the edit toolbar.
+| edit | [EditPolyOptions](#editpolyoptions) | `false` | The options used to configure the edit toolbar.
 
 <a name="drawoptions" />
 ### DrawOptions
