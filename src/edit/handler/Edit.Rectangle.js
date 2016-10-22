@@ -1,9 +1,16 @@
 L.Edit = L.Edit || {};
 
+
+L.Map.prototype.getRealCenter = function (bounds) {
+    var northEast = this.project(bounds._northEast),
+        southWest = this.project(bounds._southWest);
+    return(this.unproject([(northEast.x + southWest.x)/2, (northEast.y + southWest.y)/2]));
+}
+
 L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 	_createMoveMarker: function () {
 		var bounds = this._shape.getBounds(),
-			center = bounds.getCenter();
+			center = bounds.getRealCenter();
 
 		this._moveMarker = this._createMarker(center, this.options.moveIcon);
 	},
@@ -40,7 +47,7 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 		// Reset move marker position to the center
 		if (marker === this._moveMarker) {
 			bounds = this._shape.getBounds();
-			center = bounds.getCenter();
+			center = bounds.getRealCenter();
 
 			marker.setLatLng(center);
 		}
@@ -55,13 +62,18 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 	_move: function (newCenter) {
 		var latlngs = this._shape._defaultShape ? this._shape._defaultShape() : this._shape.getLatLngs(),
 			bounds = this._shape.getBounds(),
-			center = bounds.getCenter(),
 			offset, newLatLngs = [];
+		
+		var northEast = this._map.project(bounds._northEast),
+        	    southWest = this._map.project(bounds._southWest),
+        	    projectedCenter = new L.Point((northEast.x + southWest.x) / 2, (northEast.y + southWest.y) / 2),
+        	    projectedNewCenter = this._map.project(newCenter);
 
 		// Offset the latlngs to the new center
 		for (var i = 0, l = latlngs.length; i < l; i++) {
-			offset = [latlngs[i].lat - center.lat, latlngs[i].lng - center.lng];
-			newLatLngs.push([newCenter.lat + offset[0], newCenter.lng + offset[1]]);
+			var current = this._map.project(latlngs[i]);
+        		offset = [current.x - projectedCenter.x, current.y - projectedCenter.y];
+        		newLatLngs.push(this._map.unproject([projectedNewCenter.x + offset[0], projectedNewCenter.y + offset[1]]));
 		}
 
 		this._shape.setLatLngs(newLatLngs);
