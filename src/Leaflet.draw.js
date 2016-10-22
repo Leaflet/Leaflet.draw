@@ -2,7 +2,7 @@
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
 
-L.drawVersion = '0.3.0-dev';
+L.drawVersion = '0.4.0';
 
 L.drawLocal = {
 	draw: {

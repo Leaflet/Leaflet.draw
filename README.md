@@ -17,6 +17,7 @@ Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGE
 
 ## Table of Contents
 [Install](#install)  
+[CDN](#cdn)  
 [Using the plugin](#using)  
 [Advanced Options](#options)  
 [Common tasks](#commontasks)  
@@ -25,7 +26,27 @@ Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGE
 <a name="install" />
 ## Install
 
-To install the plugin run `npm install leaflet-draw` via command line in your project. You must also require this in your project like so: `var leaflet-draw = require('leaflet-draw');`
+# npm
+
+To install the plugin run `npm install leaflet-draw` via command line in your project. You must also require this in your project like so: `var leafletDraw = require('leaflet-draw');`
+# bower
+
+To install the plugin run `bower install leaflet-draw`.
+
+<a name="cdn" />
+## CDN
+
+Using unpkg
+```
+<link rel="stylesheet" href="https://unpkg.com/leaflet-draw@0.4.1/dist/leaflet.draw.css" />
+<script src="https://unpkg.com/leaflet-draw@0.4.1/dist/leaflet.draw.js"></script>
+```
+
+Using CDNJS
+```
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.0/leaflet.draw.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.0/leaflet.draw.js"></script>
+```
 
 <a name="using" />
 ## Using the plugin
@@ -218,7 +239,7 @@ These options make up the root object that is used when initialising the Leaflet
 | --- | --- | --- | ---
 | position | String | `'topleft'` | The initial position of the control (one of the map corners). See [control positions](http://leafletjs.com/reference.html#control-positions).
 | draw | [DrawOptions](#drawoptions) | `{}` | The options used to configure the draw toolbar.
-| edit | [EditOptions](#editoptions) | `false` | The options used to configure the edit toolbar.
+| edit | [EditPolyOptions](#editpolyoptions) | `false` | The options used to configure the edit toolbar.
 
 <a name="drawoptions" />
 ### DrawOptions
