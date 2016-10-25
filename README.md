@@ -288,6 +288,7 @@ Polygon options include all of the Polyline options plus the option to show the 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
 | shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Rectangle.js#L7) | The options used when drawing the rectangle on the map.
+| showArea | Bool | `true` | Show the area of the drawn rectangle in m², ha or km². **The area is only approximate and become less accurate the larger the rectangle is.**
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
 <a name="circleoptions" />
