@@ -14,6 +14,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 			fillOpacity: 0.2,
 			clickable: true
 		},
+		showArea: true,
 		metric: true // Whether to use the metric measurement system or imperial
 	},
 
@@ -43,12 +44,13 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	_getTooltipText: function () {
 		var tooltipText = L.Draw.SimpleShape.prototype._getTooltipText.call(this),
 			shape = this._shape,
+			showArea = this.options.showArea,
 			latLngs, area, subtext;
 
 		if (shape) {
 			latLngs = this._shape._defaultShape ? this._shape._defaultShape() : this._shape.getLatLngs();
 			area = L.GeometryUtil.geodesicArea(latLngs);
-			subtext = L.GeometryUtil.readableArea(area, this.options.metric);
+			subtext = showArea ? L.GeometryUtil.readableArea(area, this.options.metric) : '';
 		}
 
 		return {
