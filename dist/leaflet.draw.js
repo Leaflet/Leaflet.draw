@@ -191,6 +191,7 @@ L.Draw.Feature = L.Handler.extend({
   }
 });
 
+var debounce = null
 
 L.Draw.Polyline = L.Draw.Feature.extend({
   statics: {
@@ -291,7 +292,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
         .addTo(this._map);
 
       this._map
-        //.on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
+        .on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
         .on('mousemove', this._onMouseMove, this)
         .on('zoomlevelschange', this._onZoomEnd, this)
         .on('click', this._onTouch, this)
@@ -453,16 +454,21 @@ L.Draw.Polyline = L.Draw.Feature.extend({
   },
 
   _onMouseUp: function (e) {
-    if (this._mouseDownOrigin) {
-      // We detect clicks within a certain tolerance, otherwise let it
-      // be interpreted as a drag by the map
-      var distance = L.point(e.originalEvent.clientX, e.originalEvent.clientY)
-        .distanceTo(this._mouseDownOrigin);
-      if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
-        this.addVertex(e.latlng);
+    if (debounce) return
+    var that = this
+    debounce = setTimeout(function () {
+      if (that._mouseDownOrigin) {
+        // We detect clicks within a certain tolerance, otherwise let it
+        // be interpreted as a drag by the map
+        var distance = L.point(e.originalEvent.clientX, e.originalEvent.clientY)
+          .distanceTo(that._mouseDownOrigin);
+        if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
+          that.addVertex(e.latlng);
+        }
       }
-    }
-    this._mouseDownOrigin = null;
+      that._mouseDownOrigin = null;
+      debounce = null
+    }, 350)
   },
 
   _onTouch: function (e) {
