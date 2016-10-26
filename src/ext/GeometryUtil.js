@@ -43,7 +43,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return areaStr;
 	},
 
-	readableDistance: function (distance, isMetric, useFeet) {
+	readableDistance: function (distance, isMetric, useFeet, useNauticMile) {
 		var distanceStr;
 
 		if (isMetric) {
@@ -53,7 +53,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 			} else {
 				distanceStr = Math.ceil(distance) + ' m';
 			}
-		} else {
+		} else if (useFeet) {
 			distance *= 1.09361;
 
 			if (distance > 1760) {
@@ -66,6 +66,9 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 				}
 				distanceStr = Math.ceil(distance) + suffix;
 			}
+		} else if (useNauticMile) {
+			distance *= 0.53996;
+			distanceStr = (distance  / 1000).toFixed(2) + ' nm';
 		}
 
 		return distanceStr;
