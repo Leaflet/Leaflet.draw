@@ -85,10 +85,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				});
 			}
 
-			if (!L.Browser.touch) {
-				this._map.on('mouseup', this._onMouseUp, this); // Necessary for 0.7 compatibility
-			}
-
 			this._mouseMarker
 				.on('mousedown', this._onMouseDown, this)
 				.on('mouseout', this._onMouseOut, this)
@@ -100,7 +96,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				.on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
 				.on('mousemove', this._onMouseMove, this)
 				.on('zoomlevelschange', this._onZoomEnd, this)
-				.on('click', this._onTouch, this)
+				.on('touchstart', this._onTouch, this)
+				//.on('click', this._onTouch, this)
 				.on('zoomend', this._onZoomEnd, this);
 		}
 	},
@@ -255,14 +252,18 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_onMouseDown: function (e) {
 		var originalEvent = e.originalEvent;
-		this._mouseDownOrigin = L.point(originalEvent.clientX, originalEvent.clientY);
+		var clientX = originalEvent.clientX;
+		var clientY = originalEvent.clientY;
+		this._startPoint.call(this, clientX, clientY);
+
+	},
+	_startPoint: function (clientX, clientY) {
+		this._mouseDownOrigin = L.point(clientX, clientY);
 	},
 
-	_onMouseUp: function (e) {
+	_endPoint: function (clientX, clientY, e) {
 		if (this._mouseDownOrigin) {
-			// We detect clicks within a certain tolerance, otherwise let it
-			// be interpreted as a drag by the map
-			var distance = L.point(e.originalEvent.clientX, e.originalEvent.clientY)
+			var distance = L.point(clientX, clientY)
 				.distanceTo(this._mouseDownOrigin);
 			if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
 				this.addVertex(e.latlng);
@@ -272,10 +273,14 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onTouch: function (e) {
-		// #TODO: use touchstart and touchend vs using click(touch start & end).
-		if (L.Browser.touch) { // #TODO: get rid of this once leaflet fixes their click/touch.
-			this._onMouseDown(e);
-			this._onMouseUp(e);
+		var originalEvent = e.originalEvent;
+		var clientX;
+		var clientY;
+		if (originalEvent.touches && originalEvent.touches[0]) {
+			clientX = originalEvent.touches[0].clientX;
+			clientY = originalEvent.touches[0].clientY;
+			this._startPoint.call(this, clientX, clientY);
+			this._endPoint.call(this, clientX, clientY, e);
 		}
 	},
 
