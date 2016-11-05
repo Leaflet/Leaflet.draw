@@ -1,11 +1,17 @@
 L.Edit = L.Edit || {};
 
+/**
+ * @class L.Edit.Marker
+ * @aka Edit.Marker
+ */
 L.Edit.Marker = L.Handler.extend({
+	// @method initialize(): void
 	initialize: function (marker, options) {
 		this._marker = marker;
 		L.setOptions(this, options);
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var marker = this._marker;
 
@@ -14,6 +20,7 @@ L.Edit.Marker = L.Handler.extend({
 		this._toggleMarkerHighlight();
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		var marker = this._marker;
 

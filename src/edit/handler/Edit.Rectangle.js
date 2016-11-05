@@ -1,5 +1,9 @@
 L.Edit = L.Edit || {};
-
+/**
+ * @class L.Edit.Rectangle
+ * @aka Edit.Rectangle
+ * @inherits L.Edit.SimpleShape
+ */
 L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 	_createMoveMarker: function () {
 		var bounds = this._shape.getBounds(),

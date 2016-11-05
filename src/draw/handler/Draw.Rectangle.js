@@ -1,3 +1,8 @@
+/**
+ * @class L.Draw.Rectangle
+ * @aka Draw.Rectangle
+ * @inherits L.Draw.SimpleShape
+ */
 L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	statics: {
 		TYPE: 'rectangle'
@@ -17,6 +22,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 		metric: true // Whether to use the metric measurement system or imperial
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Rectangle.TYPE;

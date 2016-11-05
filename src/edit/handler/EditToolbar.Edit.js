@@ -1,3 +1,7 @@
+/**
+ * @class L.EditToolbar.Edit
+ * @aka EditToolbar.Edit
+ */
 L.EditToolbar.Edit = L.Handler.extend({
 	statics: {
 		TYPE: 'edit'
@@ -5,6 +9,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	includes: L.Mixin.Events,
 
+	// @method intialize(): void
 	initialize: function (map, options) {
 		L.Handler.prototype.initialize.call(this, map);
 
@@ -23,6 +28,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this.type = L.EditToolbar.Edit.TYPE;
 	},
 
+	// @method enable(): void
 	enable: function () {
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
@@ -39,6 +45,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			.on('layerremove', this._disableLayerEdit, this);
 	},
 
+	// @method disable(): void
 	disable: function () {
 		if (!this._enabled) { return; }
 		this._featureGroup
@@ -49,6 +56,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this.fire('disabled', {handler: this.type});
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var map = this._map;
 
@@ -76,6 +84,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		if (this._map) {
 			// Clean up selected layers.
@@ -95,12 +104,14 @@ L.EditToolbar.Edit = L.Handler.extend({
 		}
 	},
 
+	// @method revertLayers(): void
 	revertLayers: function () {
 		this._featureGroup.eachLayer(function (layer) {
 			this._revertLayer(layer);
 		}, this);
 	},
 
+	// @method save(): void
 	save: function () {
 		var editedLayers = new L.LayerGroup();
 		this._featureGroup.eachLayer(function (layer) {

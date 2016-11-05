@@ -1,5 +1,9 @@
 L.Edit = L.Edit || {};
-
+/**
+ * @class L.Edit.Circle
+ * @aka Edit.Circle
+ * @inherits L.Edit.SimpleShape
+ */
 L.Edit.Circle = L.Edit.SimpleShape.extend({
 	_createMoveMarker: function () {
 		var center = this._shape.getLatLng();

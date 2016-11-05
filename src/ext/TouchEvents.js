@@ -2,14 +2,22 @@ L.Map.mergeOptions({
 	touchExtend: true
 });
 
+/**
+ * @class L.Map.TouchExtend
+ * @aka TouchExtend
+ */
 L.Map.TouchExtend = L.Handler.extend({
 
+	// @method initialize(): void
+	// Sets TouchExtend private accessor variables
 	initialize: function (map) {
 		this._map = map;
 		this._container = map._container;
 		this._pane = map._panes.overlayPane;
 	},
 
+	// @method addHooks(): void
+	// Adds dom listener events to the map container
 	addHooks: function () {
 		L.DomEvent.on(this._container, 'touchstart', this._onTouchStart, this);
 		L.DomEvent.on(this._container, 'touchend', this._onTouchEnd, this);
@@ -26,6 +34,8 @@ L.Map.TouchExtend = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
+	// Removes dom listener events from the map container
 	removeHooks: function () {
 		L.DomEvent.off(this._container, 'touchstart', this._onTouchStart);
 		L.DomEvent.off(this._container, 'touchend', this._onTouchEnd);
@@ -170,8 +180,14 @@ L.Map.TouchExtend = L.Handler.extend({
 
 L.Map.addInitHook('addHandler', 'touchExtend', L.Map.TouchExtend);
 
-// This isn't full Touch support. This is just to get makers to also support dom touch events after creation
-// #TODO: find a better way of getting markers to support touch.
+
+/**
+ * @class L.Marker.Touch
+ * @aka Marker.Touch
+ *
+ * This isn't full Touch support. This is just to get makers to also support dom touch events after creation
+ * #TODO: find a better way of getting markers to support touch.
+ */
 L.Marker.Touch = L.Marker.extend({
 
 	_initInteraction: function () {
@@ -184,7 +200,7 @@ L.Marker.Touch = L.Marker.extend({
 	},
 
 	// This is an exact copy of https://github.com/Leaflet/Leaflet/blob/v0.7/src/layer/marker/Marker.js
-	// with the addition of the touch events on line 15.
+	// with the addition of the touch events
 	_initInteractionLegacy: function () {
 
 		if (!this.options.clickable) {
@@ -217,6 +233,7 @@ L.Marker.Touch = L.Marker.extend({
 			}
 		}
 	},
+
 	_detectIE: function () {
 		var ua = window.navigator.userAgent;
 

@@ -1,9 +1,11 @@
-/*
- * L.LatLngUtil contains different utility functions for LatLngs.
+/**
+ * @class L.LatLngUtil
+ * @aka LatLngUtil
  */
-
 L.LatLngUtil = {
 	// Clones a LatLngs[], returns [][]
+
+	// @method cloneLatLngs(): void
 	cloneLatLngs: function (latlngs) {
 		var clone = [];
 		for (var i = 0, l = latlngs.length; i < l; i++) {
@@ -17,6 +19,7 @@ L.LatLngUtil = {
 		return clone;
 	},
 
+	// @method cloneLatLng(): void
 	cloneLatLng: function (latlng) {
 		return L.latLng(latlng.lat, latlng.lng);
 	}

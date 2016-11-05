@@ -1,8 +1,14 @@
+
 L.Draw = L.Draw || {};
 
+/**
+ * @class L.Draw.Feature
+ * @aka Draw.Feature
+ */
 L.Draw.Feature = L.Handler.extend({
 	includes: L.Mixin.Events,
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		this._map = map;
 		this._container = map._container;
@@ -16,6 +22,7 @@ L.Draw.Feature = L.Handler.extend({
 		L.setOptions(this, options);
 	},
 
+	// @method enable(): void
 	enable: function () {
 		if (this._enabled) { return; }
 
@@ -26,6 +33,7 @@ L.Draw.Feature = L.Handler.extend({
 		this._map.fire('draw:drawstart', { layerType: this.type });
 	},
 
+	// @method initialize(): void
 	disable: function () {
 		if (!this._enabled) { return; }
 
@@ -36,6 +44,7 @@ L.Draw.Feature = L.Handler.extend({
 		this.fire('disabled', { handler: this.type });
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var map = this._map;
 
@@ -50,6 +59,7 @@ L.Draw.Feature = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		if (this._map) {
 			L.DomUtil.enableTextSelection();
@@ -61,6 +71,7 @@ L.Draw.Feature = L.Handler.extend({
 		}
 	},
 
+	// @method setOptions(): void
 	setOptions: function (options) {
 		L.setOptions(this, options);
 	},

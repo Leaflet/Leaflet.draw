@@ -1,7 +1,10 @@
 /*L.Map.mergeOptions({
 	editControl: true
 });*/
-
+/**
+ * @class L.EditToolbar
+ * @aka EditToolbar
+ */
 L.EditToolbar = L.Toolbar.extend({
 	statics: {
 		TYPE: 'edit'
@@ -25,6 +28,7 @@ L.EditToolbar = L.Toolbar.extend({
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
+	// @method intialize(): void
 	initialize: function (options) {
 		// Need to set this manually since null is an acceptable value here
 		if (options.edit) {
@@ -48,6 +52,7 @@ L.EditToolbar = L.Toolbar.extend({
 		this._selectedFeatureCount = 0;
 	},
 
+	// @method getModeHandlers(): void
 	getModeHandlers: function (map) {
 		var featureGroup = this.options.featureGroup;
 		return [
@@ -70,6 +75,7 @@ L.EditToolbar = L.Toolbar.extend({
 		];
 	},
 
+	// @method getActions(): void
 	getActions: function () {
 		return [
 			{
@@ -87,6 +93,7 @@ L.EditToolbar = L.Toolbar.extend({
 		];
 	},
 
+	// @method addToolbar(): void
 	addToolbar: function (map) {
 		var container = L.Toolbar.prototype.addToolbar.call(this, map);
 
@@ -97,12 +104,14 @@ L.EditToolbar = L.Toolbar.extend({
 		return container;
 	},
 
+	// @method removeToolbar(): void
 	removeToolbar: function () {
 		this.options.featureGroup.off('layeradd layerremove', this._checkDisabled, this);
 
 		L.Toolbar.prototype.removeToolbar.call(this);
 	},
 
+	// @method disable(): void
 	disable: function () {
 		if (!this.enabled()) { return; }
 

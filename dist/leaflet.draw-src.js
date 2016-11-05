@@ -1,121 +1,192 @@
 /*
-	Leaflet.draw, a plugin that adds drawing and editing tools to Leaflet powered maps.
-	(c) 2012-2016, Jacob Toye, Smartrak, Leaflet
+ Leaflet.draw 0.4.2+22db393, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
-	https://github.com/Leaflet/Leaflet.draw
-	http://leafletjs.com
-*/
-(function (window, document, undefined) {/*
+ https://github.com/Leaflet/Leaflet.draw
+ http://leafletjs.com
+ */
+(function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
+L.drawVersion = "0.4.2+22db393";
 
-L.drawVersion = '0.4.0';
-
+/**
+ * @class L.drawLocal
+ * @aka L.drawLocal
+ *
+ * The core toolbar class of the API — it is used to create the toolbar ui
+ *
+ * @example
+ * ```js
+ *      var modifiedDraw = L.drawLocal.extend({
+ *          draw: {
+ *              toolbar: {
+ *                  buttons: {
+ *                      polygon: 'Draw an awesome polygon'
+ *                  }
+ *              }
+ *          }
+ *      });
+ * ```
+ * The default state for the control is the draw toolbar just below the zoom control.
+ *  This will allow map users to draw vectors and markers.
+ *  **Please note the edit toolbar is not enabled by default.**
+ *
+ * To add the draw toolbar set the option drawControl: true in the map options.
+ * ```js
+ *      var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
+ *
+ *      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+ *          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+ *      }).addTo(map);
+ * ```
+ *
+ * ### Adding the edit toolbar
+ * To use the edit toolbar you must initialise the Leaflet.draw control and manually add it to the map.
+ *
+ * ```js
+ *      var map = L.map('map').setView([51.505, -0.09], 13);
+ *
+ *      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+ *          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+ *      }).addTo(map);
+ *
+ *      // FeatureGroup is to store editable layers
+ *      var drawnItems = new L.FeatureGroup();
+ *      map.addLayer(drawnItems);
+ *
+ *      var drawControl = new L.Control.Draw({
+ *          edit: {
+ *              featureGroup: drawnItems
+ *          }
+ *      });
+ *      map.addControl(drawControl);
+ * ```
+ *
+ * The key here is the featureGroup option. This tells the plugin which FeatureGroup contains the layers that
+ * should be editable. The featureGroup can contain 0 or more features with geometry types Point, LineString, and Polygon.
+ * Leaflet.draw does not work with multigeometry features such as MultiPoint, MultiLineString, MultiPolygon,
+ * or GeometryCollection. If you need to add multigeometry features to the draw plugin, convert them to a
+ * FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).
+ *
+ * ### Events
+ * Once you have successfully added the Leaflet.draw plugin to your map you will want to respond to the different
+ * actions users can initiate. The following events will be triggered on the map:
+ *
+ *
+ */
 L.drawLocal = {
-	draw: {
-		toolbar: {
-			// #TODO: this should be reorganized where actions are nested in actions
-			// ex: actions.undo  or actions.cancel
-			actions: {
-				title: 'Cancel drawing',
-				text: 'Cancel'
-			},
-			finish: {
-				title: 'Finish drawing',
-				text: 'Finish'
-			},
-			undo: {
-				title: 'Delete last point drawn',
-				text: 'Delete last point'
-			},
-			buttons: {
-				polyline: 'Draw a polyline',
-				polygon: 'Draw a polygon',
-				rectangle: 'Draw a rectangle',
-				circle: 'Draw a circle',
-				marker: 'Draw a marker'
-			}
-		},
-		handlers: {
-			circle: {
-				tooltip: {
-					start: 'Click and drag to draw circle.'
-				},
-				radius: 'Radius'
-			},
-			marker: {
-				tooltip: {
-					start: 'Click map to place marker.'
-				}
-			},
-			polygon: {
-				tooltip: {
-					start: 'Click to start drawing shape.',
-					cont: 'Click to continue drawing shape.',
-					end: 'Click first point to close this shape.'
-				}
-			},
-			polyline: {
-				error: '<strong>Error:</strong> shape edges cannot cross!',
-				tooltip: {
-					start: 'Click to start drawing line.',
-					cont: 'Click to continue drawing line.',
-					end: 'Click last point to finish line.'
-				}
-			},
-			rectangle: {
-				tooltip: {
-					start: 'Click and drag to draw rectangle.'
-				}
-			},
-			simpleshape: {
-				tooltip: {
-					end: 'Release mouse to finish drawing.'
-				}
-			}
-		}
-	},
-	edit: {
-		toolbar: {
-			actions: {
-				save: {
-					title: 'Save changes.',
-					text: 'Save'
-				},
-				cancel: {
-					title: 'Cancel editing, discards all changes.',
-					text: 'Cancel'
-				}
-			},
-			buttons: {
-				edit: 'Edit layers.',
-				editDisabled: 'No layers to edit.',
-				remove: 'Delete layers.',
-				removeDisabled: 'No layers to delete.'
-			}
-		},
-		handlers: {
-			edit: {
-				tooltip: {
-					text: 'Drag handles, or marker to edit feature.',
-					subtext: 'Click cancel to undo changes.'
-				}
-			},
-			remove: {
-				tooltip: {
-					text: 'Click on a feature to remove'
-				}
-			}
-		}
-	}
+    draw: {
+        toolbar: {
+            // #TODO: this should be reorganized where actions are nested in actions
+            // ex: actions.undo  or actions.cancel
+            actions: {
+                title: 'Cancel drawing',
+                text: 'Cancel'
+            },
+            finish: {
+                title: 'Finish drawing',
+                text: 'Finish'
+            },
+            undo: {
+                title: 'Delete last point drawn',
+                text: 'Delete last point'
+            },
+            buttons: {
+                polyline: 'Draw a polyline',
+                polygon: 'Draw a polygon',
+                rectangle: 'Draw a rectangle',
+                circle: 'Draw a circle',
+                marker: 'Draw a marker'
+            }
+        },
+        handlers: {
+            circle: {
+                tooltip: {
+                    start: 'Click and drag to draw circle.'
+                },
+                radius: 'Radius'
+            },
+            marker: {
+                tooltip: {
+                    start: 'Click map to place marker.'
+                }
+            },
+            polygon: {
+                tooltip: {
+                    start: 'Click to start drawing shape.',
+                    cont: 'Click to continue drawing shape.',
+                    end: 'Click first point to close this shape.'
+                }
+            },
+            polyline: {
+                error: '<strong>Error:</strong> shape edges cannot cross!',
+                tooltip: {
+                    start: 'Click to start drawing line.',
+                    cont: 'Click to continue drawing line.',
+                    end: 'Click last point to finish line.'
+                }
+            },
+            rectangle: {
+                tooltip: {
+                    start: 'Click and drag to draw rectangle.'
+                }
+            },
+            simpleshape: {
+                tooltip: {
+                    end: 'Release mouse to finish drawing.'
+                }
+            }
+        }
+    },
+    edit: {
+        toolbar: {
+            actions: {
+                save: {
+                    title: 'Save changes.',
+                    text: 'Save'
+                },
+                cancel: {
+                    title: 'Cancel editing, discards all changes.',
+                    text: 'Cancel'
+                }
+            },
+            buttons: {
+                edit: 'Edit layers.',
+                editDisabled: 'No layers to edit.',
+                remove: 'Delete layers.',
+                removeDisabled: 'No layers to delete.'
+            }
+        },
+        handlers: {
+            edit: {
+                tooltip: {
+                    text: 'Drag handles, or marker to edit feature.',
+                    subtext: 'Click cancel to undo changes.'
+                }
+            },
+            remove: {
+                tooltip: {
+                    text: 'Click on a feature to remove'
+                }
+            }
+        }
+    }
 };
+
+
 
 
 L.Draw = L.Draw || {};
 
+/**
+ * @class L.Draw.Feature
+ * @aka Draw.Feature
+ */
 L.Draw.Feature = L.Handler.extend({
 	includes: L.Mixin.Events,
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		this._map = map;
 		this._container = map._container;
@@ -129,6 +200,7 @@ L.Draw.Feature = L.Handler.extend({
 		L.setOptions(this, options);
 	},
 
+	// @method enable(): void
 	enable: function () {
 		if (this._enabled) { return; }
 
@@ -139,6 +211,7 @@ L.Draw.Feature = L.Handler.extend({
 		this._map.fire('draw:drawstart', { layerType: this.type });
 	},
 
+	// @method initialize(): void
 	disable: function () {
 		if (!this._enabled) { return; }
 
@@ -149,6 +222,7 @@ L.Draw.Feature = L.Handler.extend({
 		this.fire('disabled', { handler: this.type });
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var map = this._map;
 
@@ -163,6 +237,7 @@ L.Draw.Feature = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		if (this._map) {
 			L.DomUtil.enableTextSelection();
@@ -174,6 +249,7 @@ L.Draw.Feature = L.Handler.extend({
 		}
 	},
 
+	// @method setOptions(): void
 	setOptions: function (options) {
 		L.setOptions(this, options);
 	},
@@ -192,6 +268,12 @@ L.Draw.Feature = L.Handler.extend({
 });
 
 
+
+/**
+ * @class L.Draw.Polyline
+ * @aka Draw.Polyline
+ * @inherits L.Draw.Feature
+ */
 L.Draw.Polyline = L.Draw.Feature.extend({
 	statics: {
 		TYPE: 'polyline'
@@ -230,6 +312,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		// if touch, switch to touch icon
 		if (L.Browser.touch) {
@@ -250,6 +333,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
@@ -299,6 +383,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
 
@@ -333,6 +418,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			.off('click', this._onTouch, this);
 	},
 
+	// @method deleteLastVertex(): void
 	deleteLastVertex: function () {
 		if (this._markers.length <= 1) {
 			return;
@@ -354,6 +440,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._vertexChanged(latlng, false);
 	},
 
+	// @method addVertex(): void
 	addVertex: function (latlng) {
 		var markersLength = this._markers.length;
 
@@ -376,6 +463,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._vertexChanged(latlng, true);
 	},
 
+	// @method completeShape(): void
 	completeShape: function () {
 		if (this._markers.length <= 1) {
 			return;
@@ -685,6 +773,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 });
 
 
+
+/**
+ * @class L.Draw.Polygon
+ * @aka Draw.Polygon
+ * @inherits L.Draw.Polyline
+ */
 L.Draw.Polygon = L.Draw.Polyline.extend({
 	statics: {
 		TYPE: 'polygon'
@@ -707,6 +801,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		metric: true // Whether to use the metric measurement system or imperial
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		L.Draw.Polyline.prototype.initialize.call(this, map, options);
 
@@ -791,19 +886,26 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 });
 
 
-L.SimpleShape = {};
 
+L.SimpleShape = {};
+/**
+ * @class L.Draw.SimpleShape
+ * @aka Draw.SimpleShape
+ * @inherits L.Draw.Feature
+ */
 L.Draw.SimpleShape = L.Draw.Feature.extend({
 	options: {
 		repeatMode: false
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		this._endLabelText = L.drawLocal.draw.handlers.simpleshape.tooltip.end;
 
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
@@ -826,6 +928,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
 		if (this._map) {
@@ -892,6 +995,12 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	}
 });
 
+
+/**
+ * @class L.Draw.Rectangle
+ * @aka Draw.Rectangle
+ * @inherits L.Draw.SimpleShape
+ */
 L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	statics: {
 		TYPE: 'rectangle'
@@ -911,6 +1020,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 		metric: true // Whether to use the metric measurement system or imperial
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Rectangle.TYPE;
@@ -953,6 +1063,12 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 });
 
 
+
+/**
+ * @class L.Draw.Circle
+ * @aka Draw.Circle
+ * @inherits L.Draw.SimpleShape
+ */
 L.Draw.Circle = L.Draw.SimpleShape.extend({
 	statics: {
 		TYPE: 'circle'
@@ -974,6 +1090,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 		feet: true // When not metric, use feet instead of yards for display
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Circle.TYPE;
@@ -1020,6 +1137,12 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 });
 
 
+
+/**
+ * @class L.Draw.Marker
+ * @aka Draw.Marker
+ * @inherits L.Draw.Feature
+ */
 L.Draw.Marker = L.Draw.Feature.extend({
 	statics: {
 		TYPE: 'marker'
@@ -1031,6 +1154,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Marker.TYPE;
@@ -1038,6 +1162,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 
@@ -1066,6 +1191,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
 
@@ -1132,14 +1258,21 @@ L.Draw.Marker = L.Draw.Feature.extend({
 });
 
 
+
 L.Edit = L.Edit || {};
 
+/**
+ * @class L.Edit.Marker
+ * @aka Edit.Marker
+ */
 L.Edit.Marker = L.Handler.extend({
+	// @method initialize(): void
 	initialize: function (marker, options) {
 		this._marker = marker;
 		L.setOptions(this, options);
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var marker = this._marker;
 
@@ -1148,6 +1281,7 @@ L.Edit.Marker = L.Handler.extend({
 		this._toggleMarkerHighlight();
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		var marker = this._marker;
 
@@ -1210,14 +1344,17 @@ L.Marker.addInitHook(function () {
 });
 
 
+
 L.Edit = L.Edit || {};
 
-/*
- * L.Edit.Poly is an editing handler for polylines and polygons.
+/**
+ * @class L.Edit.Poly
+ * @aka Edit.Poly
  */
 L.Edit.Poly = L.Handler.extend({
 	options: {},
 
+	// @method initialize(): void
 	initialize: function (poly, options) {
 
 		this.latlngs = [poly._latlngs];
@@ -1244,6 +1381,7 @@ L.Edit.Poly = L.Handler.extend({
 		}
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		this._initHandlers();
 		this._eachVertexHandler(function (handler) {
@@ -1251,12 +1389,14 @@ L.Edit.Poly = L.Handler.extend({
 		});
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		this._eachVertexHandler(function (handler) {
 			handler.removeHooks();
 		});
 	},
 
+	// @method updateMarkers(): void
 	updateMarkers: function () {
 		this._eachVertexHandler(function (handler) {
 			handler.updateMarkers();
@@ -1279,6 +1419,10 @@ L.Edit.Poly = L.Handler.extend({
 
 });
 
+/**
+ * @class L.Edit.PolyVerticesEdit
+ * @aka Edit.PolyVerticesEdit
+ */
 L.Edit.PolyVerticesEdit = L.Handler.extend({
 	options: {
 		icon: new L.DivIcon({
@@ -1297,6 +1441,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 
 	},
 
+	// @method intialize(): void
 	initialize: function (poly, latlngs, options) {
 		// if touch, switch to touch icon
 		if (L.Browser.touch) {
@@ -1320,6 +1465,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		return L.Polyline._flat(this._latlngs) ? this._latlngs : this._latlngs[0];
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var poly = this._poly;
 
@@ -1343,6 +1489,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		var poly = this._poly;
 
@@ -1355,6 +1502,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		}
 	},
 
+	// @method updateMarkers(): void
 	updateMarkers: function () {
 		this._markerGroup.clearLayers();
 		this._initMarkers();
@@ -1678,8 +1826,12 @@ L.Polyline.addInitHook(function () {
 });
 
 
-L.Edit = L.Edit || {};
 
+L.Edit = L.Edit || {};
+/**
+ * @class L.Edit.SimpleShape
+ * @aka Edit.SimpleShape
+ */
 L.Edit.SimpleShape = L.Handler.extend({
 	options: {
 		moveIcon: new L.DivIcon({
@@ -1700,6 +1852,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		}),
 	},
 
+	// @method intialize(): void
 	initialize: function (shape, options) {
 		// if touch, switch to touch icon
 		if (L.Browser.touch) {
@@ -1711,6 +1864,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		L.Util.setOptions(this, options);
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var shape = this._shape;
 		if (this._shape._map) {
@@ -1727,6 +1881,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		var shape = this._shape;
 
@@ -1747,6 +1902,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		this._map = null;
 	},
 
+	// @method updateMarkers(): void
 	updateMarkers: function () {
 		this._markerGroup.clearLayers();
 		this._initMarkers();
@@ -1899,8 +2055,13 @@ L.Edit.SimpleShape = L.Handler.extend({
 });
 
 
-L.Edit = L.Edit || {};
 
+L.Edit = L.Edit || {};
+/**
+ * @class L.Edit.Rectangle
+ * @aka Edit.Rectangle
+ * @inherits L.Edit.SimpleShape
+ */
 L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 	_createMoveMarker: function () {
 		var bounds = this._shape.getBounds(),
@@ -2022,8 +2183,13 @@ L.Rectangle.addInitHook(function () {
 });
 
 
-L.Edit = L.Edit || {};
 
+L.Edit = L.Edit || {};
+/**
+ * @class L.Edit.Circle
+ * @aka Edit.Circle
+ * @inherits L.Edit.SimpleShape
+ */
 L.Edit.Circle = L.Edit.SimpleShape.extend({
 	_createMoveMarker: function () {
 		var center = this._shape.getLatLng();
@@ -2090,18 +2256,27 @@ L.Circle.addInitHook(function () {
 	});
 });
 
+
 L.Map.mergeOptions({
 	touchExtend: true
 });
 
+/**
+ * @class L.Map.TouchExtend
+ * @aka TouchExtend
+ */
 L.Map.TouchExtend = L.Handler.extend({
 
+	// @method initialize(): void
+	// Sets TouchExtend private accessor variables
 	initialize: function (map) {
 		this._map = map;
 		this._container = map._container;
 		this._pane = map._panes.overlayPane;
 	},
 
+	// @method addHooks(): void
+	// Adds dom listener events to the map container
 	addHooks: function () {
 		L.DomEvent.on(this._container, 'touchstart', this._onTouchStart, this);
 		L.DomEvent.on(this._container, 'touchend', this._onTouchEnd, this);
@@ -2118,6 +2293,8 @@ L.Map.TouchExtend = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
+	// Removes dom listener events from the map container
 	removeHooks: function () {
 		L.DomEvent.off(this._container, 'touchstart', this._onTouchStart);
 		L.DomEvent.off(this._container, 'touchend', this._onTouchEnd);
@@ -2262,8 +2439,14 @@ L.Map.TouchExtend = L.Handler.extend({
 
 L.Map.addInitHook('addHandler', 'touchExtend', L.Map.TouchExtend);
 
-// This isn't full Touch support. This is just to get makers to also support dom touch events after creation
-// #TODO: find a better way of getting markers to support touch.
+
+/**
+ * @class L.Marker.Touch
+ * @aka Marker.Touch
+ *
+ * This isn't full Touch support. This is just to get makers to also support dom touch events after creation
+ * #TODO: find a better way of getting markers to support touch.
+ */
 L.Marker.Touch = L.Marker.extend({
 
 	_initInteraction: function () {
@@ -2276,7 +2459,7 @@ L.Marker.Touch = L.Marker.extend({
 	},
 
 	// This is an exact copy of https://github.com/Leaflet/Leaflet/blob/v0.7/src/layer/marker/Marker.js
-	// with the addition of the touch events on line 15.
+	// with the addition of the touch events
 	_initInteractionLegacy: function () {
 
 		if (!this.options.clickable) {
@@ -2309,6 +2492,7 @@ L.Marker.Touch = L.Marker.extend({
 			}
 		}
 	},
+
 	_detectIE: function () {
 		var ua = window.navigator.userAgent;
 
@@ -2337,12 +2521,15 @@ L.Marker.Touch = L.Marker.extend({
 });
 
 
-/*
- * L.LatLngUtil contains different utility functions for LatLngs.
- */
 
+/**
+ * @class L.LatLngUtil
+ * @aka LatLngUtil
+ */
 L.LatLngUtil = {
 	// Clones a LatLngs[], returns [][]
+
+	// @method cloneLatLngs(): void
 	cloneLatLngs: function (latlngs) {
 		var clone = [];
 		for (var i = 0, l = latlngs.length; i < l; i++) {
@@ -2356,14 +2543,22 @@ L.LatLngUtil = {
 		return clone;
 	},
 
+	// @method cloneLatLng(): void
 	cloneLatLng: function (latlng) {
 		return L.latLng(latlng.lat, latlng.lng);
 	}
 };
 
 
+
+/**
+ * @class L.GeometryUtil
+ * @aka GeometryUtil
+ */
 L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 	// Ported from the OpenLayers implementation. See https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Geometry/LinearRing.js#L270
+
+	// @method geodesicArea(): void
 	geodesicArea: function (latLngs) {
 		var pointsCount = latLngs.length,
 			area = 0.0,
@@ -2383,6 +2578,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return Math.abs(area);
 	},
 
+	// @method readableArea(): void
 	readableArea: function (area, isMetric) {
 		var areaStr;
 
@@ -2407,6 +2603,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return areaStr;
 	},
 
+	// @method readableDistance(): void
 	readableDistance: function (distance, isMetric, useFeet) {
 		var distanceStr;
 
@@ -2437,7 +2634,15 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 });
 
 
+
+/**
+ * @class L.Util
+ * @aka Util
+ * @aka L.LineUtil
+ */
 L.Util.extend(L.LineUtil, {
+
+	// @method segmentsIntersect(): void
 	// Checks to see if two line segments intersect. Does not handle degenerate cases.
 	// http://compgeom.cs.uiuc.edu/~jeffe/teaching/373/notes/x06-sweepline.pdf
 	segmentsIntersect: function (/*Point*/ p, /*Point*/ p1, /*Point*/ p2, /*Point*/ p3) {
@@ -2453,7 +2658,14 @@ L.Util.extend(L.LineUtil, {
 	}
 });
 
+
+/**
+ * @class L.Polyline
+ * @aka Polyline
+ */
 L.Polyline.include({
+
+	// @method intersects(): void
 	// Check to see if this polyline has any linesegments that intersect.
 	// NOTE: does not support detecting intersection for degenerate cases.
 	intersects: function () {
@@ -2478,6 +2690,7 @@ L.Polyline.include({
 		return false;
 	},
 
+	// @method newLatLngIntersects(): void
 	// Check for intersection if new latlng was added to this polyline.
 	// NOTE: does not support detecting intersection for degenerate cases.
 	newLatLngIntersects: function (latlng, skipFirst) {
@@ -2489,6 +2702,7 @@ L.Polyline.include({
 		return this.newPointIntersects(this._map.latLngToLayerPoint(latlng), skipFirst);
 	},
 
+	// @method newPointIntersects(): void
 	// Check for intersection if new point was added to this polyline.
 	// newPoint must be a layer point.
 	// NOTE: does not support detecting intersection for degenerate cases.
@@ -2553,7 +2767,14 @@ L.Polyline.include({
 });
 
 
+
+/**
+ * @class L.Polygon
+ * @aka Polygon
+ */
 L.Polygon.include({
+
+	// @method intersects(): void
 	// Checks a polygon for any intersecting line segments. Ignores holes.
 	intersects: function () {
 		var polylineIntersects,
@@ -2582,14 +2803,22 @@ L.Polygon.include({
 });
 
 
+
+/**
+ * @class L.Control.Draw
+ * @aka L.Draw
+ */
 L.Control.Draw = L.Control.extend({
 
+	// Options
 	options: {
 		position: 'topleft',
 		draw: {},
 		edit: false
 	},
 
+	// @method initialize(): void
+	// Initializes draw control, toolbars from the options
 	initialize: function (options) {
 		if (L.version < '0.7') {
 			throw new Error('Leaflet.draw 0.2.3+ requires Leaflet 0.7.0+. Download latest from https://github.com/Leaflet/Leaflet/');
@@ -2622,6 +2851,8 @@ L.Control.Draw = L.Control.extend({
 		L.toolbar = this; //set global var for editing the toolbar
 	},
 
+	// @method onAdd(): container
+	// Adds the toolbar container to the map
 	onAdd: function (map) {
 		var container = L.DomUtil.create('div', 'leaflet-draw'),
 			addedTopClass = false,
@@ -2649,6 +2880,8 @@ L.Control.Draw = L.Control.extend({
 		return container;
 	},
 
+	// @method onRemove(): void
+	// Removes the toolbars from the map toolbar container
 	onRemove: function () {
 		for (var toolbarId in this._toolbars) {
 			if (this._toolbars.hasOwnProperty(toolbarId)) {
@@ -2657,6 +2890,8 @@ L.Control.Draw = L.Control.extend({
 		}
 	},
 
+	// @method setDrawingOptions(options): void
+	// Sets options to all toolbar instances
 	setDrawingOptions: function (options) {
 		for (var toolbarId in this._toolbars) {
 			if (this._toolbars[toolbarId] instanceof L.DrawToolbar) {
@@ -2689,9 +2924,29 @@ L.Map.addInitHook(function () {
 });
 
 
+
+/**
+ * @class L.Toolbar
+ * @aka Toolbar
+ *
+ * The toolbar class of the API — it is used to create the ui
+ * This will be depreciated
+ *
+ * @example
+ *
+ * ```js
+ * 	var toolbar = L.Toolbar();
+ * 	toolbar.addToolbar(map);
+ * ```
+ *
+ */
 L.Toolbar = L.Class.extend({
 	includes: [L.Mixin.Events],
 
+	// @section Methods for modifying the toolbar
+
+	// @method initialize(options): void
+	// Toolbar constructor
 	initialize: function (options) {
 		L.setOptions(this, options);
 
@@ -2700,16 +2955,22 @@ L.Toolbar = L.Class.extend({
 		this._activeMode = null;
 	},
 
+	// @method enabled(): boolean
+	// Gets a true/false of whether the toolbar is enabled
 	enabled: function () {
 		return this._activeMode !== null;
 	},
 
+	// @method disable(): void
+	// Disables the toolbar
 	disable: function () {
 		if (!this.enabled()) { return; }
 
 		this._activeMode.handler.disable();
 	},
 
+	// @method addToolbar(map): L.DomUtil
+	// Adds the toolbar to the map and returns the toolbar dom element
 	addToolbar: function (map) {
 		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
 			buttonIndex = 0,
@@ -2750,6 +3011,8 @@ L.Toolbar = L.Class.extend({
 		return container;
 	},
 
+	// @method removeToolbar(): void
+	// Removes the toolbar and drops the handler event listeners
 	removeToolbar: function () {
 		// Dispose each handler
 		for (var handlerId in this._modes) {
@@ -2937,8 +3200,28 @@ L.Toolbar = L.Class.extend({
 });
 
 
+
 L.Draw = L.Draw || {};
+/**
+ * @class L.Draw.Tooltip
+ * @aka Tooltip
+ *
+ * The tooltip class — it is used to display the tooltip while drawing
+ * This will be depreciated
+ *
+ * @example
+ *
+ * ```js
+ * 	var tooltip = L.Draw.Tooltip();
+ * ```
+ *
+ */
 L.Draw.Tooltip = L.Class.extend({
+
+	// @section Methods for modifying draw state
+
+	// @method initialize(map): void
+	// Tooltip constructor
 	initialize: function (map) {
 		this._map = map;
 		this._popupPane = map._panes.popupPane;
@@ -2949,6 +3232,8 @@ L.Draw.Tooltip = L.Class.extend({
 		this._map.on('mouseout', this._onMouseOut, this);
 	},
 
+	// @method dispose(): void
+	// Remove Tooltip DOM and unbind events
 	dispose: function () {
 		this._map.off('mouseout', this._onMouseOut, this);
 
@@ -2958,6 +3243,8 @@ L.Draw.Tooltip = L.Class.extend({
 		}
 	},
 
+	// @method updateContent(labelText): this
+	// Changes the tooltip text to string in function call
 	updateContent: function (labelText) {
 		if (!this._container) {
 			return this;
@@ -2981,6 +3268,8 @@ L.Draw.Tooltip = L.Class.extend({
 		return this;
 	},
 
+	// @method updatePosition(latlng): this
+	// Changes the location of the tooltip
 	updatePosition: function (latlng) {
 		var pos = this._map.latLngToLayerPoint(latlng),
 			tooltipContainer = this._container;
@@ -2993,6 +3282,8 @@ L.Draw.Tooltip = L.Class.extend({
 		return this;
 	},
 
+	// @method showAsError(): this
+	// Applies error class to tooltip
 	showAsError: function () {
 		if (this._container) {
 			L.DomUtil.addClass(this._container, 'leaflet-error-draw-tooltip');
@@ -3000,6 +3291,8 @@ L.Draw.Tooltip = L.Class.extend({
 		return this;
 	},
 
+	// @method removeError(): this
+	// Removes the error class from the tooltip
 	removeError: function () {
 		if (this._container) {
 			L.DomUtil.removeClass(this._container, 'leaflet-error-draw-tooltip');
@@ -3015,6 +3308,11 @@ L.Draw.Tooltip = L.Class.extend({
 });
 
 
+
+/**
+ * @class L.DrawToolbar
+ * @aka Toolbar
+ */
 L.DrawToolbar = L.Toolbar.extend({
 
 	statics: {
@@ -3029,6 +3327,7 @@ L.DrawToolbar = L.Toolbar.extend({
 		marker: {}
 	},
 
+	// @method initialize(): void
 	initialize: function (options) {
 		// Ensure that the options are merged correctly since L.extend is only shallow
 		for (var type in this.options) {
@@ -3043,6 +3342,7 @@ L.DrawToolbar = L.Toolbar.extend({
 		L.Toolbar.prototype.initialize.call(this, options);
 	},
 
+	// @method getModeHandlers(): void
 	getModeHandlers: function (map) {
 		return [
 			{
@@ -3073,7 +3373,7 @@ L.DrawToolbar = L.Toolbar.extend({
 		];
 	},
 
-	// Get the actions part of the toolbar
+	// @method getActions(): void
 	getActions: function (handler) {
 		return [
 			{
@@ -3099,6 +3399,7 @@ L.DrawToolbar = L.Toolbar.extend({
 		];
 	},
 
+	// @method setOptions(): void
 	setOptions: function (options) {
 		L.setOptions(this, options);
 
@@ -3111,10 +3412,14 @@ L.DrawToolbar = L.Toolbar.extend({
 });
 
 
+
 /*L.Map.mergeOptions({
 	editControl: true
 });*/
-
+/**
+ * @class L.EditToolbar
+ * @aka EditToolbar
+ */
 L.EditToolbar = L.Toolbar.extend({
 	statics: {
 		TYPE: 'edit'
@@ -3138,6 +3443,7 @@ L.EditToolbar = L.Toolbar.extend({
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
+	// @method intialize(): void
 	initialize: function (options) {
 		// Need to set this manually since null is an acceptable value here
 		if (options.edit) {
@@ -3161,6 +3467,7 @@ L.EditToolbar = L.Toolbar.extend({
 		this._selectedFeatureCount = 0;
 	},
 
+	// @method getModeHandlers(): void
 	getModeHandlers: function (map) {
 		var featureGroup = this.options.featureGroup;
 		return [
@@ -3183,6 +3490,7 @@ L.EditToolbar = L.Toolbar.extend({
 		];
 	},
 
+	// @method getActions(): void
 	getActions: function () {
 		return [
 			{
@@ -3200,6 +3508,7 @@ L.EditToolbar = L.Toolbar.extend({
 		];
 	},
 
+	// @method addToolbar(): void
 	addToolbar: function (map) {
 		var container = L.Toolbar.prototype.addToolbar.call(this, map);
 
@@ -3210,12 +3519,14 @@ L.EditToolbar = L.Toolbar.extend({
 		return container;
 	},
 
+	// @method removeToolbar(): void
 	removeToolbar: function () {
 		this.options.featureGroup.off('layeradd layerremove', this._checkDisabled, this);
 
 		L.Toolbar.prototype.removeToolbar.call(this);
 	},
 
+	// @method disable(): void
 	disable: function () {
 		if (!this.enabled()) { return; }
 
@@ -3273,6 +3584,11 @@ L.EditToolbar = L.Toolbar.extend({
 });
 
 
+
+/**
+ * @class L.EditToolbar.Edit
+ * @aka EditToolbar.Edit
+ */
 L.EditToolbar.Edit = L.Handler.extend({
 	statics: {
 		TYPE: 'edit'
@@ -3280,6 +3596,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	includes: L.Mixin.Events,
 
+	// @method intialize(): void
 	initialize: function (map, options) {
 		L.Handler.prototype.initialize.call(this, map);
 
@@ -3298,6 +3615,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this.type = L.EditToolbar.Edit.TYPE;
 	},
 
+	// @method enable(): void
 	enable: function () {
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
@@ -3314,6 +3632,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			.on('layerremove', this._disableLayerEdit, this);
 	},
 
+	// @method disable(): void
 	disable: function () {
 		if (!this._enabled) { return; }
 		this._featureGroup
@@ -3324,6 +3643,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this.fire('disabled', {handler: this.type});
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var map = this._map;
 
@@ -3351,6 +3671,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		if (this._map) {
 			// Clean up selected layers.
@@ -3370,12 +3691,14 @@ L.EditToolbar.Edit = L.Handler.extend({
 		}
 	},
 
+	// @method revertLayers(): void
 	revertLayers: function () {
 		this._featureGroup.eachLayer(function (layer) {
 			this._revertLayer(layer);
 		}, this);
 	},
 
+	// @method save(): void
 	save: function () {
 		var editedLayers = new L.LayerGroup();
 		this._featureGroup.eachLayer(function (layer) {
@@ -3540,6 +3863,11 @@ L.EditToolbar.Edit = L.Handler.extend({
 });
 
 
+
+/**
+ * @class L.EditToolbar.Delete
+ * @aka EditToolbar.Delete
+ */
 L.EditToolbar.Delete = L.Handler.extend({
 	statics: {
 		TYPE: 'remove' // not delete as delete is reserved in js
@@ -3547,6 +3875,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 	includes: L.Mixin.Events,
 
+	// @method intialize(): void
 	initialize: function (map, options) {
 		L.Handler.prototype.initialize.call(this, map);
 
@@ -3563,6 +3892,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 		this.type = L.EditToolbar.Delete.TYPE;
 	},
 
+	// @method enable(): void
 	enable: function () {
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
@@ -3578,6 +3908,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 			.on('layerremove', this._disableLayerDelete, this);
 	},
 
+	// @method disable(): void
 	disable: function () {
 		if (!this._enabled) { return; }
 
@@ -3592,6 +3923,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 		this.fire('disabled', { handler: this.type});
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var map = this._map;
 
@@ -3608,6 +3940,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		if (this._map) {
 			this._deletableLayers.eachLayer(this._disableLayerDelete, this);
@@ -3620,6 +3953,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 		}
 	},
 
+	// @method revertLayers(): void
 	revertLayers: function () {
 		// Iterate of the deleted layers and add them back into the featureGroup
 		this._deletedLayers.eachLayer(function (layer) {
@@ -3628,6 +3962,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 		}, this);
 	},
 
+	// @method save(): void
 	save: function () {
 		this._map.fire('draw:deleted', { layers: this._deletedLayers });
 	},
@@ -3667,4 +4002,6 @@ L.EditToolbar.Delete = L.Handler.extend({
 });
 
 
+
 }(window, document));
+//# sourceMappingURL=leaflet.draw-src.map

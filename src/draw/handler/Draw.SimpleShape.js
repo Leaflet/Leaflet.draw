@@ -1,16 +1,22 @@
 L.SimpleShape = {};
-
+/**
+ * @class L.Draw.SimpleShape
+ * @aka Draw.SimpleShape
+ * @inherits L.Draw.Feature
+ */
 L.Draw.SimpleShape = L.Draw.Feature.extend({
 	options: {
 		repeatMode: false
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		this._endLabelText = L.drawLocal.draw.handlers.simpleshape.tooltip.end;
 
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
@@ -33,6 +39,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
 		if (this._map) {

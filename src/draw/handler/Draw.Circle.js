@@ -1,3 +1,8 @@
+/**
+ * @class L.Draw.Circle
+ * @aka Draw.Circle
+ * @inherits L.Draw.SimpleShape
+ */
 L.Draw.Circle = L.Draw.SimpleShape.extend({
 	statics: {
 		TYPE: 'circle'
@@ -19,6 +24,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 		feet: true // When not metric, use feet instead of yards for display
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Circle.TYPE;

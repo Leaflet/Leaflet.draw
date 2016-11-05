@@ -3,13 +3,11 @@
 |[![Build Status](https://travis-ci.org/Leaflet/Leaflet.draw.svg?branch=master)](https://travis-ci.org/Leaflet/Leaflet.draw)|[![Leaflet.draw Chat](https://badges.gitter.im/Leaflet/Leaflet.draw.svg)](https://gitter.im/Leaflet/Leaflet.draw?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)|[![Leaflet Chat](https://badges.gitter.im/Leaflet/Leaflet.svg)](https://gitter.im/Leaflet/Leaflet?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)|
 
 # Leaflet.draw
-Adds support for drawing and editing vectors and markers on [Leaflet maps](https://github.com/Leaflet/Leaflet). Check out the [demo](http://leaflet.github.com/Leaflet.draw/).
+Adds support for drawing and editing vectors and markers on [Leaflet maps](https://github.com/Leaflet/Leaflet).
 
 Supports [Leaflet](https://github.com/Leaflet/Leaflet/releases) 0.7.x and 1.0.0+ branches.
 
-- Full Demo for Leaflet 1.0.0+: http://leaflet.github.io/Leaflet.draw/examples/full.html
-
-- Full Demo for Leaflet 0.7.0+: http://leaflet.github.io/Leaflet.draw/examples/0.7.x/full.html
+Please check out our new [Api Documentation](https://leaflet.github.io/Leaflet.draw/docs/leaflet-draw-latest.html)
 
 #### Upgrading from Leaflet.draw 0.1
 
@@ -23,7 +21,6 @@ Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGE
 [Common tasks](#commontasks)  
 [Thanks](#thanks)
 
-<a name="install" />
 ## Install
 
 # npm
@@ -33,7 +30,6 @@ To install the plugin run `npm install leaflet-draw` via command line in your pr
 
 To install the plugin run `bower install leaflet-draw`.
 
-<a name="cdn" />
 ## CDN
 
 Using unpkg
@@ -48,7 +44,6 @@ Using CDNJS
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.0/leaflet.draw.js"></script>
 ```
 
-<a name="using" />
 ## Using the plugin
 
 The default state for the control is the draw toolbar just below the zoom control. This will allow map users to draw vectors and markers. **Please note the edit toolbar is not enabled by default.**
@@ -65,167 +60,6 @@ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 ````
 
-### Adding the edit toolbar
-
-To use the edit toolbar you must initialise the Leaflet.draw control and manually add it to the map.
-
-````js
-// create a map in the "map" div, set the view to a given place and zoom
-var map = L.map('map').setView([51.505, -0.09], 13);
-
-// add an OpenStreetMap tile layer
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
-
-// Initialise the FeatureGroup to store editable layers
-var drawnItems = new L.FeatureGroup();
-map.addLayer(drawnItems);
-
-// Initialise the draw control and pass it the FeatureGroup of editable layers
-var drawControl = new L.Control.Draw({
-	edit: {
-		featureGroup: drawnItems
-	}
-});
-map.addControl(drawControl);
-````
-
-The key here is the `featureGroup` option. This tells the plugin which `FeatureGroup` contains the layers that should be editable.  The featureGroup can contain 0 or more features with geometry types `Point`, `LineString`, and `Polygon`.  **Leaflet.draw does not work with multigeometry features such as `MultiPoint`, `MultiLineString`, `MultiPolygon`, or `GeometryCollection`.**  If you need to add multigeometry features to the draw plugin, convert them to a FeatureCollection of non-multigeometries (`Point`s, `LineString`s, or `Polygon`s).
-
-### Events
-
-Once you have successfully added the Leaflet.draw plugin to your map you will want to respond to the different actions users can initiate. The following events will be triggered on the map:
-
-#### draw:created
-
-| Property | Type | Description
-| --- | --- | ---
-| layer | [Polyline](http://leafletjs.com/reference.html#polyline)/[Polygon](http://leafletjs.com/reference.html#polygon)/[Rectangle](http://leafletjs.com/reference.html#rectangle)/[Circle](http://leafletjs.com/reference.html#circle)/[Marker](http://leafletjs.com/reference.html#marker) | Layer that was just created.
-| layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
-
-
-Triggered when a new vector or marker has been created.
-
-````js
-map.on('draw:created', function (e) {
-	var type = e.layerType,
-		layer = e.layer;
-
-	if (type === 'marker') {
-		// Do marker specific actions
-	}
-
-	// Do whatever else you need to. (save to db, add to map etc)
-	map.addLayer(layer);
-});
-````
-
-#### draw:edited
-
-| Property | Type | Description
-| --- | --- | ---
-| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just edited on the map.
-
-Triggered when layers in the FeatureGroup, initialised with the plugin, have been edited and saved.
-
-````js
-map.on('draw:edited', function (e) {
-	var layers = e.layers;
-	layers.eachLayer(function (layer) {
-		//do whatever you want, most likely save back to db
-	});
-});
-````
-
-#### draw:deleted
-
-Triggered when layers have been removed (and saved) from the FeatureGroup.
-
-| Property | Type | Description
-| --- | --- | ---
-| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just removed from the map.
-
-#### draw:drawstart
-
-Triggered when the user has chosen to draw a particular vector or marker.
-
-| Property | Type | Description
-| --- | --- | ---
-| layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
-
-#### draw:drawstop
-
-Triggered when the user has finished a particular vector or marker.
-
-| Property | Type | Description
-| --- | --- | ---
-| layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
-
-#### draw:drawvertex
-
-Triggered when a vertex is created on a polyline or polygon.
-
-| Property | Type | Description
-| --- | --- | ---
-| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just being added from the map.
-
-#### draw:editstart
-
-Triggered when the user starts edit mode by clicking the edit tool button.
-
-| Property | Type | Description
-| --- | --- | ---
-| handler | String | The type of edit this is. One of: `edit`
-
-#### draw:editmove
-
-Triggered as the user moves a rectangle, circle or marker.
-
-| Property | Type | Description
-| --- | --- | ---
-| layer | [ILayer](http://leafletjs.com/reference.html#ilayer) | Layer that was just moved.
-
-#### draw:editresize
-
-Triggered as the user resizes a rectangle or circle.
-
-| Property | Type | Description
-| --- | --- | ---
-| layer | [ILayer](http://leafletjs.com/reference.html#ilayer) | Layer that was just moved.
-
-#### draw:editvertex
-
-Triggered when a vertex is edited on a polyline or polygon.
-
-| Property | Type | Description
-| --- | --- | ---
-| layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just being edited from the map.
-
-#### draw:editstop
-
-Triggered when the user has finshed editing (edit mode) and saves edits.
-
-| Property | Type | Description
-| --- | --- | ---
-| handler | String | The type of edit this is. One of: `edit`
-
-#### draw:deletestart
-
-Triggered when the user starts remove mode by clicking the remove tool button.
-
-| Property | Type | Description
-| --- | --- | ---
-| handler | String | The type of edit this is. One of: `remove`
-
-#### draw:deletestop
-
-Triggered when the user has finished removing shapes (remove mode) and saves.
-
-| Property | Type | Description
-| --- | --- | ---
-| handler | String | The type of edit this is. One of: `remove`
-
 <a name="options" />
 ## Advanced options
 
@@ -241,7 +75,6 @@ These options make up the root object that is used when initialising the Leaflet
 | draw | [DrawOptions](#drawoptions) | `{}` | The options used to configure the draw toolbar.
 | edit | [EditPolyOptions](#editpolyoptions) | `false` | The options used to configure the edit toolbar.
 
-<a name="drawoptions" />
 ### DrawOptions
 
 These options will allow you to configure the draw toolbar and its handlers.
@@ -258,7 +91,6 @@ These options will allow you to configure the draw toolbar and its handlers.
 
 The following options will allow you to configure the individual draw handlers.
 
-<a name="polylineoptions" />
 #### PolylineOptions
 
 Polyline and Polygon drawing handlers take the same options.
@@ -273,7 +105,6 @@ Polyline and Polygon drawing handlers take the same options.
 | zIndexOffset | Number | `2000` | This should be a high number to ensure that you can draw over all other layers on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
-<a name="polygonoptions" />
 #### PolygonOptions
 
 Polygon options include all of the Polyline options plus the option to show the approximate area.
@@ -282,7 +113,6 @@ Polygon options include all of the Polyline options plus the option to show the 
 | --- | --- | --- | ---
 | showArea | Bool | `false` | Show the area of the drawn polygon in m², ha or km². **The area is only approximate and become less accurate the larger the polygon is.**
 
-<a name="rectangleoptions" />
 #### RectangleOptions
 
 | Option | Type | Default | Description
@@ -290,7 +120,6 @@ Polygon options include all of the Polyline options plus the option to show the 
 | shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Rectangle.js#L7) | The options used when drawing the rectangle on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
-<a name="circleoptions" />
 #### CircleOptions
 
 | Option | Type | Default | Description
@@ -298,7 +127,6 @@ Polygon options include all of the Polyline options plus the option to show the 
 | shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
-<a name="markeroptions" />
 #### MarkerOptions
 
 | Option | Type | Default | Description
@@ -307,7 +135,6 @@ Polygon options include all of the Polyline options plus the option to show the 
 | zIndexOffset | Number | `2000` | This should be a high number to ensure that you can draw over all other layers on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
-<a name="editpolyoptions" />
 ### EditPolyOptions
 
 These options will allow you to configure the draw toolbar and its handlers.
@@ -319,7 +146,6 @@ These options will allow you to configure the draw toolbar and its handlers.
 | remove | [DeleteHandlerOptions](#deletehandleroptions) | `{ }` | Delete handler options. Set to `false` to disable handler.
 | poly | [EditPolyOptions](#editpoly) |  `{ }` | Set polygon editing options
 
-<a name="edithandleroptions" />
 #### EditHandlerOptions
 
 | Option | Type | Default | Description
@@ -339,14 +165,12 @@ E.g. The edit options below will maintain the layer color and set the edit opaci
 }
 ````
 
-<a name="deletehandleroptions" />
 #### DeleteHandlerOptions
 
 | Option | Type | Default | Description
 | --- | --- | --- | ---
 
 
-<a name="editpoly" />
 #### EditPolyOptions
 
 | Option | Type | Default | Description
@@ -354,7 +178,6 @@ E.g. The edit options below will maintain the layer color and set the edit opaci
 | allowIntersection | Bool | `true` |  Determines if line segments can cross.
 
 
-<a name="drawlocal" />
 #### Customizing language and text in Leaflet.draw
 
 Leaflet.draw uses the `L.drawLocal` configuration object to set any text used in the plugin. Customizing this will allow support for changing the text or supporting another language.
@@ -371,7 +194,6 @@ L.drawLocal.draw.toolbar.buttons.polygon = 'Draw a sexy polygon!';
 L.drawLocal.draw.handlers.rectangle.tooltip.start = 'Not telling...';
 ````
 
-<a name="commontasks" />
 ## Common tasks
 
 The following examples outline some common tasks.
@@ -385,7 +207,7 @@ The following example will show you how to:
 3. Use a custom marker.
 4. Disable the delete functionality.
 
-````js
+```js
 var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png',
 	cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18}),
 	map = new L.Map('map', {layers: [cloudmade], center: new L.LatLng(-37.7772, 175.2756), zoom: 15 });
@@ -450,37 +272,7 @@ map.on('draw:created', function (e) {
 
 	editableLayers.addLayer(layer);
 });
-````
-
-### Disabling a toolbar
-
-If you do not want a particular toolbar in your app you can turn it off by setting the toolbar to false.
-
-````js
-var drawControl = new L.Control.Draw({
-	draw: false,
-	edit: {
-		featureGroup: editableLayers
-	}
-});
-````
-
-### Disabling a toolbar item
-
-If you want to turn off a particular toolbar item, set it to false. The following disables drawing polygons and markers. It also turns off the ability to edit layers.
-
-````js
-var drawControl = new L.Control.Draw({
-	draw: {
-		polygon: false,
-		marker: false
-	},
-	edit: {
-		featureGroup: editableLayers,
-		edit: false
-	}
-});
-````
+```
 
 ### Changing a drawing handlers options
 
@@ -500,11 +292,9 @@ drawControl.setDrawingOptions({
 
 ### Creating a custom build
 
-If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://github.com/Leaflet/Leaflet.draw/blob/master/build/build.html).
+If you only require certain handlers (and not the UI), you may wish to create a custom build. You can generate the relevant jake command using the [build html file](https://leaflet.github.io/Leaflet.draw/build/build.html).
 
-See [edit handlers example](https://github.com/Leaflet/Leaflet.draw/blob/master/examples/edithandlers.html) which uses only the edit handlers.
-
-<a name="thanks" />
+See [edit handlers example](https://leaflet.github.io/Leaflet.draw/examples/edithandlers.html) which uses only the edit handlers.
 
 ### Testing
 
