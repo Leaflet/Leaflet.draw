@@ -65,7 +65,7 @@ task('docs', {}, function () {
     buildDocs();
 });
 
-task('default', ['test', 'build']);
+task('default', ['build', 'test']);
 
 jake.addListener('complete', function () {
     process.exit();

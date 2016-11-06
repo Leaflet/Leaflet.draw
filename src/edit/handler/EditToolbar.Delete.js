@@ -1,6 +1,7 @@
 /**
  * @class L.EditToolbar.Delete
  * @aka EditToolbar.Delete
+ * @inherits L.Handler
  */
 L.EditToolbar.Delete = L.Handler.extend({
 	statics: {

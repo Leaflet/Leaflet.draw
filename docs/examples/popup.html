@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="libs/leaflet.css" />
 
     <script src="../src/Leaflet.draw.js"></script>
+    <script src="../src/Leaflet.Draw.Event.js"></script>
     <link rel="stylesheet" href="../dist/leaflet.draw.css" />
 
     <script src="../src/Toolbar.js"></script>
@@ -116,7 +117,7 @@
         };
 
         // Object created - bind popup to layer, add to feature group
-        map.on('draw:created', function(event) {
+        map.on(L.Draw.Event.CREATED, function(event) {
             var layer = event.layer;
             var content = getPopupContent(layer);
             if (content !== null) {

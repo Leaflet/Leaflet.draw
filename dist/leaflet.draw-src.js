@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.2+22db393, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.2+fff5cf8, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,13 +8,27 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.2+22db393";
+L.drawVersion = "0.4.2+fff5cf8";
 
 /**
  * @class L.drawLocal
  * @aka L.drawLocal
  *
  * The core toolbar class of the API — it is used to create the toolbar ui
+ *
+ * ## Leaflet 1.0+ Examples
+ *
+ * - [Full Demo](./examples/full.html)
+ * - [Popup](./examples/popup.html)
+ * - [Snapping](./examples/snapping.html)
+ * - [Edit Handlers](./examples/edithandlers.html)
+ *
+ * ## Leaflet 0.7+ Examples
+ *
+ * - [Full Demo](./examples/0.7.x/full.html)
+ * - [Popup](./examples/0.7.x/popup.html)
+ * - [Snapping](./examples/0.7.x/snapping.html)
+ * - [Edit Handlers](./examples/0.7.x/edithandlers.html)
  *
  * @example
  * ```js
@@ -28,6 +42,7 @@ L.drawVersion = "0.4.2+22db393";
  *          }
  *      });
  * ```
+ *
  * The default state for the control is the draw toolbar just below the zoom control.
  *  This will allow map users to draw vectors and markers.
  *  **Please note the edit toolbar is not enabled by default.**
@@ -68,12 +83,186 @@ L.drawVersion = "0.4.2+22db393";
  * Leaflet.draw does not work with multigeometry features such as MultiPoint, MultiLineString, MultiPolygon,
  * or GeometryCollection. If you need to add multigeometry features to the draw plugin, convert them to a
  * FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).
+ */
+L.drawLocal = {
+    draw: {
+        toolbar: {
+            // #TODO: this should be reorganized where actions are nested in actions
+            // ex: actions.undo  or actions.cancel
+            actions: {
+                title: 'Cancel drawing',
+                text: 'Cancel'
+            },
+            finish: {
+                title: 'Finish drawing',
+                text: 'Finish'
+            },
+            undo: {
+                title: 'Delete last point drawn',
+                text: 'Delete last point'
+            },
+            buttons: {
+                polyline: 'Draw a polyline',
+                polygon: 'Draw a polygon',
+                rectangle: 'Draw a rectangle',
+                circle: 'Draw a circle',
+                marker: 'Draw a marker'
+            }
+        },
+        handlers: {
+            circle: {
+                tooltip: {
+                    start: 'Click and drag to draw circle.'
+                },
+                radius: 'Radius'
+            },
+            marker: {
+                tooltip: {
+                    start: 'Click map to place marker.'
+                }
+            },
+            polygon: {
+                tooltip: {
+                    start: 'Click to start drawing shape.',
+                    cont: 'Click to continue drawing shape.',
+                    end: 'Click first point to close this shape.'
+                }
+            },
+            polyline: {
+                error: '<strong>Error:</strong> shape edges cannot cross!',
+                tooltip: {
+                    start: 'Click to start drawing line.',
+                    cont: 'Click to continue drawing line.',
+                    end: 'Click last point to finish line.'
+                }
+            },
+            rectangle: {
+                tooltip: {
+                    start: 'Click and drag to draw rectangle.'
+                }
+            },
+            simpleshape: {
+                tooltip: {
+                    end: 'Release mouse to finish drawing.'
+                }
+            }
+        }
+    },
+    edit: {
+        toolbar: {
+            actions: {
+                save: {
+                    title: 'Save changes.',
+                    text: 'Save'
+                },
+                cancel: {
+                    title: 'Cancel editing, discards all changes.',
+                    text: 'Cancel'
+                }
+            },
+            buttons: {
+                edit: 'Edit layers.',
+                editDisabled: 'No layers to edit.',
+                remove: 'Delete layers.',
+                removeDisabled: 'No layers to delete.'
+            }
+        },
+        handlers: {
+            edit: {
+                tooltip: {
+                    text: 'Drag handles, or marker to edit feature.',
+                    subtext: 'Click cancel to undo changes.'
+                }
+            },
+            remove: {
+                tooltip: {
+                    text: 'Click on a feature to remove'
+                }
+            }
+        }
+    }
+};
+
+
+
+/**
+ * Leaflet.draw assumes that you have already included the Leaflet library.
+ */
+L.drawVersion = '0.4.2';
+
+/**
+ * @class L.drawLocal
+ * @aka L.drawLocal
  *
- * ### Events
- * Once you have successfully added the Leaflet.draw plugin to your map you will want to respond to the different
- * actions users can initiate. The following events will be triggered on the map:
+ * The core toolbar class of the API — it is used to create the toolbar ui
  *
+ * ## Leaflet 1.0+ Examples
  *
+ * - [Full Demo](./examples/full.html)
+ * - [Popup](./examples/popup.html)
+ * - [Snapping](./examples/snapping.html)
+ * - [Edit Handlers](./examples/edithandlers.html)
+ *
+ * ## Leaflet 0.7+ Examples
+ *
+ * - [Full Demo](./examples/0.7.x/full.html)
+ * - [Popup](./examples/0.7.x/popup.html)
+ * - [Snapping](./examples/0.7.x/snapping.html)
+ * - [Edit Handlers](./examples/0.7.x/edithandlers.html)
+ *
+ * @example
+ * ```js
+ *      var modifiedDraw = L.drawLocal.extend({
+ *          draw: {
+ *              toolbar: {
+ *                  buttons: {
+ *                      polygon: 'Draw an awesome polygon'
+ *                  }
+ *              }
+ *          }
+ *      });
+ * ```
+ *
+ * The default state for the control is the draw toolbar just below the zoom control.
+ *  This will allow map users to draw vectors and markers.
+ *  **Please note the edit toolbar is not enabled by default.**
+ *
+ * To add the draw toolbar set the option drawControl: true in the map options.
+ * ```js
+ *      var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
+ *
+ *      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+ *          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+ *      }).addTo(map);
+ * ```
+ *
+ * ### Adding the edit toolbar
+ * To use the edit toolbar you must initialise the Leaflet.draw control and manually add it to the map.
+ *
+ * ```js
+ *      var map = L.map('map').setView([51.505, -0.09], 13);
+ *
+ *      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+ *          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+ *      }).addTo(map);
+ *
+ *      // FeatureGroup is to store editable layers
+ *      var drawnItems = new L.FeatureGroup();
+ *      map.addLayer(drawnItems);
+ *
+ *      var drawControl = new L.Control.Draw({
+ *          edit: {
+ *              featureGroup: drawnItems
+ *          }
+ *      });
+ *      map.addControl(drawControl);
+ * ```
+ *
+ * The key here is the featureGroup option. This tells the plugin which FeatureGroup contains the layers that
+ * should be editable. The featureGroup can contain 0 or more features with geometry types Point, LineString, and Polygon.
+ * Leaflet.draw does not work with multigeometry features such as MultiPoint, MultiLineString, MultiPolygon,
+ * or GeometryCollection. If you need to add multigeometry features to the draw plugin, convert them to a
+ * FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).
  */
 L.drawLocal = {
     draw: {
@@ -255,7 +444,7 @@ L.Draw.Feature = L.Handler.extend({
 	},
 
 	_fireCreatedEvent: function (layer) {
-		this._map.fire('draw:created', { layer: layer, layerType: this.type });
+		this._map.fire(L.Draw.Event.CREATED, { layer: layer, layerType: this.type });
 	},
 
 	// Cancel drawing when the escape key is pressed
@@ -2935,268 +3124,300 @@ L.Map.addInitHook(function () {
  * @example
  *
  * ```js
- * 	var toolbar = L.Toolbar();
- * 	toolbar.addToolbar(map);
+ *    var toolbar = L.Toolbar();
+ *    toolbar.addToolbar(map);
  * ```
  *
+ * ### Disabling a toolbar
+ *
+ * If you do not want a particular toolbar in your app you can turn it off by setting the toolbar to false.
+ *
+ * ```js
+ *      var drawControl = new L.Control.Draw({
+ *          draw: false,
+ *          edit: {
+ *              featureGroup: editableLayers
+ *          }
+ *      });
+ * ```
+ *
+ * ### Disabling a toolbar item
+ *
+ * If you want to turn off a particular toolbar item, set it to false. The following disables drawing polygons and
+ * markers. It also turns off the ability to edit layers.
+ *
+ * ```js
+ *      var drawControl = new L.Control.Draw({
+ *          draw: {
+ *              polygon: false,
+ *              marker: false
+ *          },
+ *          edit: {
+ *              featureGroup: editableLayers,
+ *              edit: false
+ *          }
+ *      });
+ * ```
  */
 L.Toolbar = L.Class.extend({
-	includes: [L.Mixin.Events],
+    includes: [L.Mixin.Events],
 
-	// @section Methods for modifying the toolbar
+    // @section Methods for modifying the toolbar
 
-	// @method initialize(options): void
-	// Toolbar constructor
-	initialize: function (options) {
-		L.setOptions(this, options);
+    // @method initialize(options): void
+    // Toolbar constructor
+    initialize: function (options) {
+        L.setOptions(this, options);
 
-		this._modes = {};
-		this._actionButtons = [];
-		this._activeMode = null;
-	},
+        this._modes = {};
+        this._actionButtons = [];
+        this._activeMode = null;
+    },
 
-	// @method enabled(): boolean
-	// Gets a true/false of whether the toolbar is enabled
-	enabled: function () {
-		return this._activeMode !== null;
-	},
+    // @method enabled(): boolean
+    // Gets a true/false of whether the toolbar is enabled
+    enabled: function () {
+        return this._activeMode !== null;
+    },
 
-	// @method disable(): void
-	// Disables the toolbar
-	disable: function () {
-		if (!this.enabled()) { return; }
+    // @method disable(): void
+    // Disables the toolbar
+    disable: function () {
+        if (!this.enabled()) {
+            return;
+        }
 
-		this._activeMode.handler.disable();
-	},
+        this._activeMode.handler.disable();
+    },
 
-	// @method addToolbar(map): L.DomUtil
-	// Adds the toolbar to the map and returns the toolbar dom element
-	addToolbar: function (map) {
-		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
-			buttonIndex = 0,
-			buttonClassPrefix = this._toolbarClass || '',
-			modeHandlers = this.getModeHandlers(map),
-			i;
+    // @method addToolbar(map): L.DomUtil
+    // Adds the toolbar to the map and returns the toolbar dom element
+    addToolbar: function (map) {
+        var container = L.DomUtil.create('div', 'leaflet-draw-section'),
+            buttonIndex = 0,
+            buttonClassPrefix = this._toolbarClass || '',
+            modeHandlers = this.getModeHandlers(map),
+            i;
 
-		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
-		this._map = map;
+        this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
+        this._map = map;
 
-		for (i = 0; i < modeHandlers.length; i++) {
-			if (modeHandlers[i].enabled) {
-				this._initModeHandler(
-					modeHandlers[i].handler,
-					this._toolbarContainer,
-					buttonIndex++,
-					buttonClassPrefix,
-					modeHandlers[i].title
-				);
-			}
-		}
+        for (i = 0; i < modeHandlers.length; i++) {
+            if (modeHandlers[i].enabled) {
+                this._initModeHandler(
+                    modeHandlers[i].handler,
+                    this._toolbarContainer,
+                    buttonIndex++,
+                    buttonClassPrefix,
+                    modeHandlers[i].title
+                );
+            }
+        }
 
-		// if no buttons were added, do not add the toolbar
-		if (!buttonIndex) {
-			return;
-		}
+        // if no buttons were added, do not add the toolbar
+        if (!buttonIndex) {
+            return;
+        }
 
-		// Save button index of the last button, -1 as we would have ++ after the last button
-		this._lastButtonIndex = --buttonIndex;
+        // Save button index of the last button, -1 as we would have ++ after the last button
+        this._lastButtonIndex = --buttonIndex;
 
-		// Create empty actions part of the toolbar
-		this._actionsContainer = L.DomUtil.create('ul', 'leaflet-draw-actions');
+        // Create empty actions part of the toolbar
+        this._actionsContainer = L.DomUtil.create('ul', 'leaflet-draw-actions');
 
-		// Add draw and cancel containers to the control container
-		container.appendChild(this._toolbarContainer);
-		container.appendChild(this._actionsContainer);
+        // Add draw and cancel containers to the control container
+        container.appendChild(this._toolbarContainer);
+        container.appendChild(this._actionsContainer);
 
-		return container;
-	},
+        return container;
+    },
 
-	// @method removeToolbar(): void
-	// Removes the toolbar and drops the handler event listeners
-	removeToolbar: function () {
-		// Dispose each handler
-		for (var handlerId in this._modes) {
-			if (this._modes.hasOwnProperty(handlerId)) {
-				// Unbind handler button
-				this._disposeButton(
-					this._modes[handlerId].button,
-					this._modes[handlerId].handler.enable,
-					this._modes[handlerId].handler
-				);
+    // @method removeToolbar(): void
+    // Removes the toolbar and drops the handler event listeners
+    removeToolbar: function () {
+        // Dispose each handler
+        for (var handlerId in this._modes) {
+            if (this._modes.hasOwnProperty(handlerId)) {
+                // Unbind handler button
+                this._disposeButton(
+                    this._modes[handlerId].button,
+                    this._modes[handlerId].handler.enable,
+                    this._modes[handlerId].handler
+                );
 
-				// Make sure is disabled
-				this._modes[handlerId].handler.disable();
+                // Make sure is disabled
+                this._modes[handlerId].handler.disable();
 
-				// Unbind handler
-				this._modes[handlerId].handler
-					.off('enabled', this._handlerActivated, this)
-					.off('disabled', this._handlerDeactivated, this);
-			}
-		}
-		this._modes = {};
+                // Unbind handler
+                this._modes[handlerId].handler
+                    .off('enabled', this._handlerActivated, this)
+                    .off('disabled', this._handlerDeactivated, this);
+            }
+        }
+        this._modes = {};
 
-		// Dispose the actions toolbar
-		for (var i = 0, l = this._actionButtons.length; i < l; i++) {
-			this._disposeButton(
-				this._actionButtons[i].button,
-				this._actionButtons[i].callback,
-				this
-			);
-		}
-		this._actionButtons = [];
-		this._actionsContainer = null;
-	},
+        // Dispose the actions toolbar
+        for (var i = 0, l = this._actionButtons.length; i < l; i++) {
+            this._disposeButton(
+                this._actionButtons[i].button,
+                this._actionButtons[i].callback,
+                this
+            );
+        }
+        this._actionButtons = [];
+        this._actionsContainer = null;
+    },
 
-	_initModeHandler: function (handler, container, buttonIndex, classNamePredix, buttonTitle) {
-		var type = handler.type;
+    _initModeHandler: function (handler, container, buttonIndex, classNamePredix, buttonTitle) {
+        var type = handler.type;
 
-		this._modes[type] = {};
+        this._modes[type] = {};
 
-		this._modes[type].handler = handler;
+        this._modes[type].handler = handler;
 
-		this._modes[type].button = this._createButton({
-			type: type,
-			title: buttonTitle,
-			className: classNamePredix + '-' + type,
-			container: container,
-			callback: this._modes[type].handler.enable,
-			context: this._modes[type].handler
-		});
+        this._modes[type].button = this._createButton({
+            type: type,
+            title: buttonTitle,
+            className: classNamePredix + '-' + type,
+            container: container,
+            callback: this._modes[type].handler.enable,
+            context: this._modes[type].handler
+        });
 
-		this._modes[type].buttonIndex = buttonIndex;
+        this._modes[type].buttonIndex = buttonIndex;
 
-		this._modes[type].handler
-			.on('enabled', this._handlerActivated, this)
-			.on('disabled', this._handlerDeactivated, this);
-	},
+        this._modes[type].handler
+            .on('enabled', this._handlerActivated, this)
+            .on('disabled', this._handlerDeactivated, this);
+    },
 
-	_createButton: function (options) {
+    _createButton: function (options) {
 
-		var link = L.DomUtil.create('a', options.className || '', options.container);
-		link.href = '#';
+        var link = L.DomUtil.create('a', options.className || '', options.container);
+        link.href = '#';
 
-		if (options.text) {
-			link.innerHTML = options.text;
-		}
+        if (options.text) {
+            link.innerHTML = options.text;
+        }
 
-		if (options.title) {
-			link.title = options.title;
-		}
+        if (options.title) {
+            link.title = options.title;
+        }
 
-		L.DomEvent
-			.on(link, 'click', L.DomEvent.stopPropagation)
-			.on(link, 'mousedown', L.DomEvent.stopPropagation)
-			.on(link, 'dblclick', L.DomEvent.stopPropagation)
-			.on(link, 'click', L.DomEvent.preventDefault)
-			.on(link, 'click', options.callback, options.context);
+        L.DomEvent
+            .on(link, 'click', L.DomEvent.stopPropagation)
+            .on(link, 'mousedown', L.DomEvent.stopPropagation)
+            .on(link, 'dblclick', L.DomEvent.stopPropagation)
+            .on(link, 'click', L.DomEvent.preventDefault)
+            .on(link, 'click', options.callback, options.context);
 
-		return link;
-	},
+        return link;
+    },
 
-	_disposeButton: function (button, callback) {
-		L.DomEvent
-			.off(button, 'click', L.DomEvent.stopPropagation)
-			.off(button, 'mousedown', L.DomEvent.stopPropagation)
-			.off(button, 'dblclick', L.DomEvent.stopPropagation)
-			.off(button, 'click', L.DomEvent.preventDefault)
-			.off(button, 'click', callback);
-	},
+    _disposeButton: function (button, callback) {
+        L.DomEvent
+            .off(button, 'click', L.DomEvent.stopPropagation)
+            .off(button, 'mousedown', L.DomEvent.stopPropagation)
+            .off(button, 'dblclick', L.DomEvent.stopPropagation)
+            .off(button, 'click', L.DomEvent.preventDefault)
+            .off(button, 'click', callback);
+    },
 
-	_handlerActivated: function (e) {
-		// Disable active mode (if present)
-		this.disable();
+    _handlerActivated: function (e) {
+        // Disable active mode (if present)
+        this.disable();
 
-		// Cache new active feature
-		this._activeMode = this._modes[e.handler];
+        // Cache new active feature
+        this._activeMode = this._modes[e.handler];
 
-		L.DomUtil.addClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
+        L.DomUtil.addClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
 
-		this._showActionsToolbar();
+        this._showActionsToolbar();
 
-		this.fire('enable');
-	},
+        this.fire('enable');
+    },
 
-	_handlerDeactivated: function () {
-		this._hideActionsToolbar();
+    _handlerDeactivated: function () {
+        this._hideActionsToolbar();
 
-		L.DomUtil.removeClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
+        L.DomUtil.removeClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
 
-		this._activeMode = null;
+        this._activeMode = null;
 
-		this.fire('disable');
-	},
+        this.fire('disable');
+    },
 
-	_createActions: function (handler) {
-		var container = this._actionsContainer,
-			buttons = this.getActions(handler),
-			l = buttons.length,
-			li, di, dl, button;
+    _createActions: function (handler) {
+        var container = this._actionsContainer,
+            buttons = this.getActions(handler),
+            l = buttons.length,
+            li, di, dl, button;
 
-		// Dispose the actions toolbar (todo: dispose only not used buttons)
-		for (di = 0, dl = this._actionButtons.length; di < dl; di++) {
-			this._disposeButton(this._actionButtons[di].button, this._actionButtons[di].callback);
-		}
-		this._actionButtons = [];
+        // Dispose the actions toolbar (todo: dispose only not used buttons)
+        for (di = 0, dl = this._actionButtons.length; di < dl; di++) {
+            this._disposeButton(this._actionButtons[di].button, this._actionButtons[di].callback);
+        }
+        this._actionButtons = [];
 
-		// Remove all old buttons
-		while (container.firstChild) {
-			container.removeChild(container.firstChild);
-		}
+        // Remove all old buttons
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
 
-		for (var i = 0; i < l; i++) {
-			if ('enabled' in buttons[i] && !buttons[i].enabled) {
-				continue;
-			}
+        for (var i = 0; i < l; i++) {
+            if ('enabled' in buttons[i] && !buttons[i].enabled) {
+                continue;
+            }
 
-			li = L.DomUtil.create('li', '', container);
+            li = L.DomUtil.create('li', '', container);
 
-			button = this._createButton({
-				title: buttons[i].title,
-				text: buttons[i].text,
-				container: li,
-				callback: buttons[i].callback,
-				context: buttons[i].context
-			});
+            button = this._createButton({
+                title: buttons[i].title,
+                text: buttons[i].text,
+                container: li,
+                callback: buttons[i].callback,
+                context: buttons[i].context
+            });
 
-			this._actionButtons.push({
-				button: button,
-				callback: buttons[i].callback
-			});
-		}
-	},
+            this._actionButtons.push({
+                button: button,
+                callback: buttons[i].callback
+            });
+        }
+    },
 
-	_showActionsToolbar: function () {
-		var buttonIndex = this._activeMode.buttonIndex,
-			lastButtonIndex = this._lastButtonIndex,
-			toolbarPosition = this._activeMode.button.offsetTop - 1;
+    _showActionsToolbar: function () {
+        var buttonIndex = this._activeMode.buttonIndex,
+            lastButtonIndex = this._lastButtonIndex,
+            toolbarPosition = this._activeMode.button.offsetTop - 1;
 
-		// Recreate action buttons on every click
-		this._createActions(this._activeMode.handler);
+        // Recreate action buttons on every click
+        this._createActions(this._activeMode.handler);
 
-		// Correctly position the cancel button
-		this._actionsContainer.style.top = toolbarPosition + 'px';
+        // Correctly position the cancel button
+        this._actionsContainer.style.top = toolbarPosition + 'px';
 
-		if (buttonIndex === 0) {
-			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
-			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
-		}
+        if (buttonIndex === 0) {
+            L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
+            L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
+        }
 
-		if (buttonIndex === lastButtonIndex) {
-			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
-			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
-		}
+        if (buttonIndex === lastButtonIndex) {
+            L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
+            L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
+        }
 
-		this._actionsContainer.style.display = 'block';
-	},
+        this._actionsContainer.style.display = 'block';
+    },
 
-	_hideActionsToolbar: function () {
-		this._actionsContainer.style.display = 'none';
+    _hideActionsToolbar: function () {
+        this._actionsContainer.style.display = 'none';
 
-		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
-		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
-		L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-top');
-		L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
-	}
+        L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
+        L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
+        L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-top');
+        L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
+    }
 });
 
 
@@ -3867,6 +4088,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 /**
  * @class L.EditToolbar.Delete
  * @aka EditToolbar.Delete
+ * @inherits L.Handler
  */
 L.EditToolbar.Delete = L.Handler.extend({
 	statics: {

@@ -262,7 +262,7 @@ var options = {
 var drawControl = new L.Control.Draw(options);
 map.addControl(drawControl);
 
-map.on('draw:created', function (e) {
+map.on(L.Draw.Event.CREATED, function (e) {
 	var type = e.layerType,
 		layer = e.layer;
 
