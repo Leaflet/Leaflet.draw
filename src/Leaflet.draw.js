@@ -2,26 +2,13 @@
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
 L.drawVersion = '0.4.2';
+L.Draw = {};
 
 /**
  * @class L.drawLocal
  * @aka L.drawLocal
  *
  * The core toolbar class of the API — it is used to create the toolbar ui
- *
- * ## Leaflet 1.0+ Examples
- *
- * - [Full Demo](./examples/full.html)
- * - [Popup](./examples/popup.html)
- * - [Snapping](./examples/snapping.html)
- * - [Edit Handlers](./examples/edithandlers.html)
- *
- * ## Leaflet 0.7+ Examples
- *
- * - [Full Demo](./examples/0.7.x/full.html)
- * - [Popup](./examples/0.7.x/popup.html)
- * - [Snapping](./examples/0.7.x/snapping.html)
- * - [Edit Handlers](./examples/0.7.x/edithandlers.html)
  *
  * @example
  * ```js

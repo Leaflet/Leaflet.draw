@@ -44,23 +44,6 @@ Using CDNJS
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.0/leaflet.draw.js"></script>
 ```
 
-## Using the plugin
-
-The default state for the control is the draw toolbar just below the zoom control. This will allow map users to draw vectors and markers. **Please note the edit toolbar is not enabled by default.**
-
-To add the draw toolbar set the option `drawControl: true` in the map options.
-
-````js
-// create a map in the "map" div, set the view to a given place and zoom
-var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
-
-// add an OpenStreetMap tile layer
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
-````
-
-<a name="options" />
 ## Advanced options
 
 You can configure the plugin by using the different options listed here.

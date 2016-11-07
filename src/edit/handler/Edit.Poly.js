@@ -250,7 +250,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	_fireEdit: function () {
 		this._poly.edited = true;
 		this._poly.fire('edit');
-		this._poly._map.fire('draw:editvertex', { layers: this._markerGroup });
+		this._poly._map.fire(L.Draw.Event.EDITVERTEX, { layers: this._markerGroup });
 	},
 
 	_onMarkerDrag: function (e) {

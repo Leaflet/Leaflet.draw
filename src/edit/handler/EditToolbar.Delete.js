@@ -1,7 +1,6 @@
 /**
  * @class L.EditToolbar.Delete
  * @aka EditToolbar.Delete
- * @inherits L.Handler
  */
 L.EditToolbar.Delete = L.Handler.extend({
 	statics: {
@@ -34,7 +33,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 		}
 		this.fire('enabled', { handler: this.type});
 
-		this._map.fire('draw:deletestart', { handler: this.type });
+		this._map.fire(L.Draw.Event.DELETESTART, { handler: this.type });
 
 		L.Handler.prototype.enable.call(this);
 
@@ -53,7 +52,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 		L.Handler.prototype.disable.call(this);
 
-		this._map.fire('draw:deletestop', { handler: this.type });
+		this._map.fire(L.Draw.Event.DELETESTOP, { handler: this.type });
 
 		this.fire('disabled', { handler: this.type});
 	},
@@ -99,7 +98,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 	// @method save(): void
 	save: function () {
-		this._map.fire('draw:deleted', { layers: this._deletedLayers });
+		this._map.fire(L.Draw.Event.DELETED, { layers: this._deletedLayers });
 	},
 
 	_enableLayerDelete: function (e) {

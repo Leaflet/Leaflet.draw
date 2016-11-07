@@ -36,7 +36,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this.fire('enabled', {handler: this.type});
 			//this disable other handlers
 
-		this._map.fire('draw:editstart', { handler: this.type });
+		this._map.fire(L.Draw.Event.EDITSTART, { handler: this.type });
 			//allow drawLayer to be updated before beginning edition.
 
 		L.Handler.prototype.enable.call(this);
@@ -52,7 +52,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			.off('layeradd', this._enableLayerEdit, this)
 			.off('layerremove', this._disableLayerEdit, this);
 		L.Handler.prototype.disable.call(this);
-		this._map.fire('draw:editstop', { handler: this.type });
+		this._map.fire(L.Draw.Event.EDITSTOP, { handler: this.type });
 		this.fire('disabled', {handler: this.type});
 	},
 
@@ -80,7 +80,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.on('mousemove', this._onMouseMove, this)
 				.on('touchmove', this._onMouseMove, this)
 				.on('MSPointerMove', this._onMouseMove, this)
-				.on('draw:editvertex', this._updateTooltip, this);
+				.on(L.Draw.Event.EDITVERTEX, this._updateTooltip, this);
 		}
 	},
 
@@ -100,7 +100,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.off('mousemove', this._onMouseMove, this)
 				.off('touchmove', this._onMouseMove, this)
 				.off('MSPointerMove', this._onMouseMove, this)
-				.off('draw:editvertex', this._updateTooltip, this);
+				.off(L.Draw.Event.EDITVERTEX, this._updateTooltip, this);
 		}
 	},
 
@@ -120,7 +120,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.edited = false;
 			}
 		});
-		this._map.fire('draw:edited', {layers: editedLayers});
+		this._map.fire(L.Draw.Event.EDITED, {layers: editedLayers});
 	},
 
 	_backupLayer: function (layer) {
@@ -260,7 +260,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 	_onMarkerDragEnd: function (e) {
 		var layer = e.target;
 		layer.edited = true;
-		this._map.fire('draw:editmove', {layer: layer});
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: layer});
 	},
 
 	_onTouchMove: function (e) {

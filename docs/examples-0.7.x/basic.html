@@ -82,7 +82,7 @@
             drawnItems.addLayer(layer);
         });
 
-        map.on('draw:edited', function (e) {
+        map.on(L.Draw.Event.EDITED, function (e) {
             var layers = e.layers;
             var countOfEditedLayers = 0;
             layers.eachLayer(function(layer) {

@@ -30,7 +30,7 @@ L.Draw.Feature = L.Handler.extend({
 
 		this.fire('enabled', { handler: this.type });
 
-		this._map.fire('draw:drawstart', { layerType: this.type });
+		this._map.fire(L.Draw.Event.DRAWSTART, { layerType: this.type });
 	},
 
 	// @method initialize(): void
@@ -39,7 +39,7 @@ L.Draw.Feature = L.Handler.extend({
 
 		L.Handler.prototype.disable.call(this);
 
-		this._map.fire('draw:drawstop', { layerType: this.type });
+		this._map.fire(L.Draw.Event.DRAWSTOP, { layerType: this.type });
 
 		this.fire('disabled', { handler: this.type });
 	},

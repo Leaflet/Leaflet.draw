@@ -1,178 +1,156 @@
-
 /**
  * ### Events
  * Once you have successfully added the Leaflet.draw plugin to your map you will want to respond to the different
  * actions users can initiate. The following events will be triggered on the map:
  *
+ * @class L.Draw.Event
+ * @aka Draw.Event
  *
- * #### draw:created
- *
- * | Property | Type | Description
- * | --- | --- | ---
- * | layer | [Polyline](http://leafletjs.com/reference.html#polyline)/[Polygon](http://leafletjs.com/reference.html#polygon)/[Rectangle](http://leafletjs.com/reference.html#rectangle)/[Circle](http://leafletjs.com/reference.html#circle)/[Marker](http://leafletjs.com/reference.html#marker) | Layer that was just created.
- * | layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
- *
- *
- * Triggered when a new vector or marker has been created.
+ * Use `L.Draw.Event.EVENTNAME` constants to ensure events are correct.
  *
  * @example
  * ```js
- * map.on(L.Draw.Event.CREATED, function (e) {
- *    var type = e.layerType,
+ * map.on(L.Draw.Event.CREATED; function (e) {
+ *    var type = e.layerType;
  *        layer = e.layer;
  *
  *    if (type === 'marker') {
  *        // Do marker specific actions
  *    }
  *
- *    // Do whatever else you need to. (save to db, add to map etc)
+ *    // Do whatever else you need to. (save to db; add to map etc)
  *    map.addLayer(layer);
  *});
  * ```
  */
+L.Draw.Event = {};
+/**
+ * @event draw:created: PolyLine; Polygon; Rectangle; Circle; Marker | String
+ *
+ * Layer that was just created.
+ * The type of layer this is. One of: `polyline`; `polygon`; `rectangle`; `circle`; `marker`
+ * Triggered when a new vector or marker has been created.
+ *
+ */
 L.Draw.Event.CREATED = 'draw:created';
 
 /**
- * #### draw:edited
+ * @event draw:edited: LayerGroup
  *
- * | Property | Type | Description
- * | --- | --- | ---
- * | layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just edited on the map.
+ * List of all layers just edited on the map.
  *
  *
- * Triggered when layers in the FeatureGroup, initialised with the plugin, have been edited and saved.
+ * Triggered when layers in the FeatureGroup; initialised with the plugin; have been edited and saved.
  *
+ * @example
  * ```js
- * map.on('draw:edited', function (e) {
- *    var layers = e.layers;
- *    layers.eachLayer(function (layer) {
- *        //do whatever you want, most likely save back to db
- *    });
- *});
+ *      map.on('draw:edited'; function (e) {
+     *          var layers = e.layers;
+     *          layers.eachLayer(function (layer) {
+     *              //do whatever you want; most likely save back to db
+     *          });
+     *      });
  * ```
- *
  */
+L.Draw.Event.EDITED = 'draw:edited';
 
 /**
- * #### draw:deleted
+ * @event draw:deleted: LayerGroup
+ *
+ * List of all layers just removed from the map.
  *
  * Triggered when layers have been removed (and saved) from the FeatureGroup.
- *
- * | Property | Type | Description
- * | --- | --- | ---
- * | layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just removed from the map.
- *
- *
  */
+L.Draw.Event.DELETED = 'draw:deleted';
 
 /**
- * #### draw:drawstart
+ * @event draw:drawstart: String
+ *
+ * The type of layer this is. One of:`polyline`; `polygon`; `rectangle`; `circle`; `marker`
  *
  * Triggered when the user has chosen to draw a particular vector or marker.
- *
- *
- * | Property | Type | Description
- * | --- | --- | ---
- * | layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
- *
- *
  */
+L.Draw.Event.DRAWSTART = 'draw:drawstart';
 
 /**
- * #### draw:drawstop
+ * @event draw:drawstop: String
+ *
+ * The type of layer this is. One of: `polyline`; `polygon`; `rectangle`; `circle`; `marker`
  *
  * Triggered when the user has finished a particular vector or marker.
- *
- * | Property | Type | Description
- * | --- | --- | ---
- * | layerType | String | The type of layer this is. One of: `polyline`, `polygon`, `rectangle`, `circle`, `marker`
- *
  */
 
+L.Draw.Event.DRAWSTOP = 'draw:drawstop';
+
 /**
- * #### draw:drawvertex
+ * @event draw:drawvertex: LayerGroup
+ *
+ * List of all layers just being added from the map.
  *
  * Triggered when a vertex is created on a polyline or polygon.
- *
- * | Property | Type | Description
- * | --- | --- | ---
- * | layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just being added from the map.
- *
  */
+L.Draw.Event.DRAWVERTEX = 'draw:drawvertex';
 
 /**
- * #### draw:editstart
+ * @event draw:editstart: String
+ *
+ * The type of edit this is. One of: `edit`
  *
  * Triggered when the user starts edit mode by clicking the edit tool button.
- *
- * | Property | Type | Description
- * | --- | --- | ---
- * | handler | String | The type of edit this is. One of: `edit`
- *
  */
 
-/**
- * #### draw:editmove
- *
- * Triggered as the user moves a rectangle, circle or marker.
- *
- * | Property | Type | Description
- * | --- | --- | ---
- * | layer | [ILayer](http://leafletjs.com/reference.html#ilayer) | Layer that was just moved.
- *
- */
+L.Draw.Event.EDITSTART = 'draw:editstart';
 
 /**
- * #### draw:editresize
+ * @event draw:editmove: ILayer
+ *
+ *  Layer that was just moved.
+ *
+ * Triggered as the user moves a rectangle; circle or marker.
+ */
+L.Draw.Event.EDITMOVE = 'draw:editmove';
+
+/**
+ * @event draw:editresize: ILayer
+ *
+ * Layer that was just moved.
  *
  * Triggered as the user resizes a rectangle or circle.
- *
- * | Property | Type | Description
- * | --- | --- | ---
- * | layer | [ILayer](http://leafletjs.com/reference.html#ilayer) | Layer that was just moved.
- *
  */
+L.Draw.Event.EDITRESIZE = 'draw:editresize';
 
 /**
- * #### draw:editvertex
+ * @event draw:editvertex: LayerGroup
+ *
+ * List of all layers just being edited from the map.
  *
  * Triggered when a vertex is edited on a polyline or polygon.
- *
- * | Property | Type | Description
- * | --- | --- | ---
- * | layers | [LayerGroup](http://leafletjs.com/reference.html#layergroup) | List of all layers just being edited from the map.
- *
  */
+L.Draw.Event.EDITVERTEX = 'draw:editvertex';
 
 /**
- * #### draw:editstop
+ * @event draw:editstop: String
+ *
+ * The type of edit this is. One of: `edit`
  *
  * Triggered when the user has finshed editing (edit mode) and saves edits.
- *
- * | Property | Type | Description
- * | --- | --- | ---
- * | handler | String | The type of edit this is. One of: `edit`
- *
  */
+L.Draw.Event.EDITSTOP = 'draw:editstop';
 
 /**
- * #### draw:deletestart
+ * @event draw:deletestart: String
+ *
+ * The type of edit this is. One of: `remove`
  *
  * Triggered when the user starts remove mode by clicking the remove tool button.
- *
- * | Property | Type | Description
- * | --- | --- | ---
- * | handler | String | The type of edit this is. One of: `remove`
- *
  */
+L.Draw.Event.DELETESTART = 'draw:deletestart';
 
 /**
- * #### draw:deletestop
+ * @event draw:deletestop: String
+ *
+ * The type of edit this is. One of: `remove`
  *
  * Triggered when the user has finished removing shapes (remove mode) and saves.
- *
- * | Property | Type | Description
- * | --- | --- | ---
- * | handler | String | The type of edit this is. One of: `remove`
- *
  */
+L.Draw.Event.DELETESTOP = 'draw:deletestop';

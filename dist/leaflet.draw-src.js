@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.2+fff5cf8, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.2+58ba836, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,8 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.2+fff5cf8";
+L.drawVersion = "0.4.2+58ba836";
+L.Draw = {};
 
 /**
  * @class L.drawLocal
@@ -186,183 +187,161 @@ L.drawLocal = {
 
 
 /**
- * Leaflet.draw assumes that you have already included the Leaflet library.
- */
-L.drawVersion = '0.4.2';
-
-/**
- * @class L.drawLocal
- * @aka L.drawLocal
+ * ### Events
+ * Once you have successfully added the Leaflet.draw plugin to your map you will want to respond to the different
+ * actions users can initiate. The following events will be triggered on the map=
  *
- * The core toolbar class of the API — it is used to create the toolbar ui
+ * @class L.Draw.Event
+ * @aka Draw.Event
  *
- * ## Leaflet 1.0+ Examples
- *
- * - [Full Demo](./examples/full.html)
- * - [Popup](./examples/popup.html)
- * - [Snapping](./examples/snapping.html)
- * - [Edit Handlers](./examples/edithandlers.html)
- *
- * ## Leaflet 0.7+ Examples
- *
- * - [Full Demo](./examples/0.7.x/full.html)
- * - [Popup](./examples/0.7.x/popup.html)
- * - [Snapping](./examples/0.7.x/snapping.html)
- * - [Edit Handlers](./examples/0.7.x/edithandlers.html)
+ * Use `L.Draw.Event.EVENTNAME` constants to ensure events are correct.
  *
  * @example
  * ```js
- *      var modifiedDraw = L.drawLocal.extend({
- *          draw: {
- *              toolbar: {
- *                  buttons: {
- *                      polygon: 'Draw an awesome polygon'
- *                  }
- *              }
- *          }
- *      });
+ * map.on(L.Draw.Event.CREATED; function (e) {
+ *    var type = e.layerType;
+ *        layer = e.layer;
+ *
+ *    if (type === 'marker') {
+ *        // Do marker specific actions
+ *    }
+ *
+ *    // Do whatever else you need to. (save to db; add to map etc)
+ *    map.addLayer(layer);
+ *});
  * ```
- *
- * The default state for the control is the draw toolbar just below the zoom control.
- *  This will allow map users to draw vectors and markers.
- *  **Please note the edit toolbar is not enabled by default.**
- *
- * To add the draw toolbar set the option drawControl: true in the map options.
- * ```js
- *      var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
- *
- *      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
- *          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
- *      }).addTo(map);
- * ```
- *
- * ### Adding the edit toolbar
- * To use the edit toolbar you must initialise the Leaflet.draw control and manually add it to the map.
- *
- * ```js
- *      var map = L.map('map').setView([51.505, -0.09], 13);
- *
- *      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
- *          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
- *      }).addTo(map);
- *
- *      // FeatureGroup is to store editable layers
- *      var drawnItems = new L.FeatureGroup();
- *      map.addLayer(drawnItems);
- *
- *      var drawControl = new L.Control.Draw({
- *          edit: {
- *              featureGroup: drawnItems
- *          }
- *      });
- *      map.addControl(drawControl);
- * ```
- *
- * The key here is the featureGroup option. This tells the plugin which FeatureGroup contains the layers that
- * should be editable. The featureGroup can contain 0 or more features with geometry types Point, LineString, and Polygon.
- * Leaflet.draw does not work with multigeometry features such as MultiPoint, MultiLineString, MultiPolygon,
- * or GeometryCollection. If you need to add multigeometry features to the draw plugin, convert them to a
- * FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).
  */
-L.drawLocal = {
-    draw: {
-        toolbar: {
-            // #TODO: this should be reorganized where actions are nested in actions
-            // ex: actions.undo  or actions.cancel
-            actions: {
-                title: 'Cancel drawing',
-                text: 'Cancel'
-            },
-            finish: {
-                title: 'Finish drawing',
-                text: 'Finish'
-            },
-            undo: {
-                title: 'Delete last point drawn',
-                text: 'Delete last point'
-            },
-            buttons: {
-                polyline: 'Draw a polyline',
-                polygon: 'Draw a polygon',
-                rectangle: 'Draw a rectangle',
-                circle: 'Draw a circle',
-                marker: 'Draw a marker'
-            }
-        },
-        handlers: {
-            circle: {
-                tooltip: {
-                    start: 'Click and drag to draw circle.'
-                },
-                radius: 'Radius'
-            },
-            marker: {
-                tooltip: {
-                    start: 'Click map to place marker.'
-                }
-            },
-            polygon: {
-                tooltip: {
-                    start: 'Click to start drawing shape.',
-                    cont: 'Click to continue drawing shape.',
-                    end: 'Click first point to close this shape.'
-                }
-            },
-            polyline: {
-                error: '<strong>Error:</strong> shape edges cannot cross!',
-                tooltip: {
-                    start: 'Click to start drawing line.',
-                    cont: 'Click to continue drawing line.',
-                    end: 'Click last point to finish line.'
-                }
-            },
-            rectangle: {
-                tooltip: {
-                    start: 'Click and drag to draw rectangle.'
-                }
-            },
-            simpleshape: {
-                tooltip: {
-                    end: 'Release mouse to finish drawing.'
-                }
-            }
-        }
-    },
-    edit: {
-        toolbar: {
-            actions: {
-                save: {
-                    title: 'Save changes.',
-                    text: 'Save'
-                },
-                cancel: {
-                    title: 'Cancel editing, discards all changes.',
-                    text: 'Cancel'
-                }
-            },
-            buttons: {
-                edit: 'Edit layers.',
-                editDisabled: 'No layers to edit.',
-                remove: 'Delete layers.',
-                removeDisabled: 'No layers to delete.'
-            }
-        },
-        handlers: {
-            edit: {
-                tooltip: {
-                    text: 'Drag handles, or marker to edit feature.',
-                    subtext: 'Click cancel to undo changes.'
-                }
-            },
-            remove: {
-                tooltip: {
-                    text: 'Click on a feature to remove'
-                }
-            }
-        }
-    }
-};
+L.Draw.Event = {};
+/**
+ * @event draw:created= PolyLine; Polygon; Rectangle; Circle; Marker | String
+ *
+ * Layer that was just created.
+ * The type of layer this is. One of= `polyline`; `polygon`; `rectangle`; `circle`; `marker`
+ * Triggered when a new vector or marker has been created.
+ *
+ */
+L.Draw.Event.CREATED = 'draw:created';
 
+/**
+ * @event draw:edited= LayerGroup
+ *
+ * List of all layers just edited on the map.
+ *
+ *
+ * Triggered when layers in the FeatureGroup; initialised with the plugin; have been edited and saved.
+ *
+ * @example
+ * ```js
+ *      map.on('draw:edited'; function (e) {
+     *          var layers = e.layers;
+     *          layers.eachLayer(function (layer) {
+     *              //do whatever you want; most likely save back to db
+     *          });
+     *      });
+ * ```
+ */
+L.Draw.Event.EDITED = 'draw:edited';
+
+/**
+ * @event draw:deleted= LayerGroup
+ *
+ * List of all layers just removed from the map.
+ *
+ * Triggered when layers have been removed (and saved) from the FeatureGroup.
+ */
+L.Draw.Event.DELETED = 'draw:deleted';
+
+/**
+ * @event draw:drawstart= String
+ *
+ * The type of layer this is. One of= `polyline`; `polygon`; `rectangle`; `circle`; `marker`
+ *
+ * Triggered when the user has chosen to draw a particular vector or marker.
+ */
+L.Draw.Event.DRAWSTART = 'draw:drawstart';
+
+/**
+ * @event draw:drawstop= String
+ *
+ * The type of layer this is. One of= `polyline`; `polygon`; `rectangle`; `circle`; `marker`
+ *
+ * Triggered when the user has finished a particular vector or marker.
+ */
+
+L.Draw.Event.DRAWSTOP = 'draw:drawstop';
+
+/**
+ * @event draw:drawvertex= LayerGroup
+ *
+ * List of all layers just being added from the map.
+ *
+ * Triggered when a vertex is created on a polyline or polygon.
+ */
+L.Draw.Event.DRAWVERTEX = 'draw:drawvertex';
+
+/**
+ * @event draw:editstart= String
+ *
+ * The type of edit this is. One of= `edit`
+ *
+ * Triggered when the user starts edit mode by clicking the edit tool button.
+ */
+
+L.Draw.Event.EDITSTART = 'draw:editstart';
+
+/**
+ * @event draw:editmove= ILayer
+ *
+ *  Layer that was just moved.
+ *
+ * Triggered as the user moves a rectangle; circle or marker.
+ */
+L.Draw.Event.EDITMOVE = 'draw:editmove';
+
+/**
+ * @event draw:editresize= ILayer
+ *
+ * Layer that was just moved.
+ *
+ * Triggered as the user resizes a rectangle or circle.
+ */
+L.Draw.Event.EDITRESIZE = 'draw:editresize';
+
+/**
+ * @event draw:editvertex= LayerGroup
+ *
+ * List of all layers just being edited from the map.
+ *
+ * Triggered when a vertex is edited on a polyline or polygon.
+ */
+L.Draw.Event.EDITVERTEX = 'draw:editvertex';
+
+/**
+ * @event draw:editstop= String
+ *
+ * The type of edit this is. One of= `edit`
+ *
+ * Triggered when the user has finshed editing (edit mode) and saves edits.
+ */
+L.Draw.Event.EDITSTOP = 'draw:editstop';
+
+/**
+ * @event draw:deletestart= String
+ *
+ * The type of edit this is. One of= `remove`
+ *
+ * Triggered when the user starts remove mode by clicking the remove tool button.
+ */
+L.Draw.Event.DELETESTART = 'draw:deletestart';
+
+/**
+ * @event draw:deletestop= String
+ *
+ * The type of edit this is. One of= `remove`
+ *
+ * Triggered when the user has finished removing shapes (remove mode) and saves.
+ */
+L.Draw.Event.DELETESTOP = 'draw:deletestop';
 
 
 
@@ -397,7 +376,7 @@ L.Draw.Feature = L.Handler.extend({
 
 		this.fire('enabled', { handler: this.type });
 
-		this._map.fire('draw:drawstart', { layerType: this.type });
+		this._map.fire(L.Draw.Event.DRAWSTART, { layerType: this.type });
 	},
 
 	// @method initialize(): void
@@ -406,7 +385,7 @@ L.Draw.Feature = L.Handler.extend({
 
 		L.Handler.prototype.disable.call(this);
 
-		this._map.fire('draw:drawstop', { layerType: this.type });
+		this._map.fire(L.Draw.Event.DRAWSTOP, { layerType: this.type });
 
 		this.fire('disabled', { handler: this.type });
 	},
@@ -714,7 +693,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_vertexChanged: function (latlng, added) {
-		this._map.fire('draw:drawvertex', { layers: this._markerGroup });
+		this._map.fire(L.Draw.Event.DRAWVERTEX, { layers: this._markerGroup });
 		this._updateFinishHandler();
 
 		this._updateRunningMeasure(latlng, added);
@@ -1482,7 +1461,7 @@ L.Edit.Marker = L.Handler.extend({
 	_onDragEnd: function (e) {
 		var layer = e.target;
 		layer.edited = true;
-		this._map.fire('draw:editmove', {layer: layer});
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: layer});
 	},
 
 	_toggleMarkerHighlight: function () {
@@ -1786,7 +1765,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	_fireEdit: function () {
 		this._poly.edited = true;
 		this._poly.fire('edit');
-		this._poly._map.fire('draw:editvertex', { layers: this._markerGroup });
+		this._poly._map.fire(L.Draw.Event.EDITVERTEX, { layers: this._markerGroup });
 	},
 
 	_onMarkerDrag: function (e) {
@@ -2320,7 +2299,7 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 		// Reposition the resize markers
 		this._repositionCornerMarkers();
 
-		this._map.fire('draw:editmove', {layer: this._shape});
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: this._shape});
 	},
 
 	_resize: function (latlng) {
@@ -2333,7 +2312,7 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 		bounds = this._shape.getBounds();
 		this._moveMarker.setLatLng(bounds.getCenter());
 
-		this._map.fire('draw:editresize', {layer: this._shape});
+		this._map.fire(L.Draw.Event.EDITRESIZE, {layer: this._shape});
 	},
 
 	_getCorners: function () {
@@ -2410,7 +2389,7 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
 		// Move the circle
 		this._shape.setLatLng(latlng);
 
-		this._map.fire('draw:editmove', {layer: this._shape});
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: this._shape});
 	},
 
 	_resize: function (latlng) {
@@ -2419,7 +2398,7 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
 
 		this._shape.setRadius(radius);
 
-		this._map.fire('draw:editresize', {layer: this._shape});
+		this._map.fire(L.Draw.Event.EDITRESIZE, {layer: this._shape});
 	}
 });
 
@@ -3844,7 +3823,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this.fire('enabled', {handler: this.type});
 			//this disable other handlers
 
-		this._map.fire('draw:editstart', { handler: this.type });
+		this._map.fire(L.Draw.Event.EDITSTART, { handler: this.type });
 			//allow drawLayer to be updated before beginning edition.
 
 		L.Handler.prototype.enable.call(this);
@@ -3860,7 +3839,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			.off('layeradd', this._enableLayerEdit, this)
 			.off('layerremove', this._disableLayerEdit, this);
 		L.Handler.prototype.disable.call(this);
-		this._map.fire('draw:editstop', { handler: this.type });
+		this._map.fire(L.Draw.Event.EDITSTOP, { handler: this.type });
 		this.fire('disabled', {handler: this.type});
 	},
 
@@ -3888,7 +3867,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.on('mousemove', this._onMouseMove, this)
 				.on('touchmove', this._onMouseMove, this)
 				.on('MSPointerMove', this._onMouseMove, this)
-				.on('draw:editvertex', this._updateTooltip, this);
+				.on(L.Draw.Event.EDITVERTEX, this._updateTooltip, this);
 		}
 	},
 
@@ -3908,7 +3887,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.off('mousemove', this._onMouseMove, this)
 				.off('touchmove', this._onMouseMove, this)
 				.off('MSPointerMove', this._onMouseMove, this)
-				.off('draw:editvertex', this._updateTooltip, this);
+				.off(L.Draw.Event.EDITVERTEX, this._updateTooltip, this);
 		}
 	},
 
@@ -3928,7 +3907,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.edited = false;
 			}
 		});
-		this._map.fire('draw:edited', {layers: editedLayers});
+		this._map.fire(L.Draw.Event.EDITED, {layers: editedLayers});
 	},
 
 	_backupLayer: function (layer) {
@@ -4068,7 +4047,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 	_onMarkerDragEnd: function (e) {
 		var layer = e.target;
 		layer.edited = true;
-		this._map.fire('draw:editmove', {layer: layer});
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: layer});
 	},
 
 	_onTouchMove: function (e) {
@@ -4121,7 +4100,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 		}
 		this.fire('enabled', { handler: this.type});
 
-		this._map.fire('draw:deletestart', { handler: this.type });
+		this._map.fire(L.Draw.Event.DELETESTART, { handler: this.type });
 
 		L.Handler.prototype.enable.call(this);
 
@@ -4140,7 +4119,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 		L.Handler.prototype.disable.call(this);
 
-		this._map.fire('draw:deletestop', { handler: this.type });
+		this._map.fire(L.Draw.Event.DELETESTOP, { handler: this.type });
 
 		this.fire('disabled', { handler: this.type});
 	},
@@ -4186,7 +4165,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 	// @method save(): void
 	save: function () {
-		this._map.fire('draw:deleted', { layers: this._deletedLayers });
+		this._map.fire(L.Draw.Event.DELETED, { layers: this._deletedLayers });
 	},
 
 	_enableLayerDelete: function (e) {
