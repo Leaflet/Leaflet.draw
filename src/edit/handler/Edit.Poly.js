@@ -1,7 +1,8 @@
 L.Edit = L.Edit || {};
 
 /**
- * @class L.Edit.Poly
+ * @class L.Edit.Polyline
+ * @aka L.Edit.Poly
  * @aka Edit.Poly
  */
 L.Edit.Poly = L.Handler.extend({

@@ -23,9 +23,9 @@
         <div class="toc-col map-col">
             <h4>Draw</h4>
             <ul>
-                <li><a href="#l-drawlocal">Usage example</a></li>
-                <li><a href="#l-draw-factory">Creation</a></li>
-                <li><a href="#l-draw-option">Options</a></li>
+                <li><a href="#l-draw">Usage example</a></li>
+                <li><a href="#l-drawlocal">Local Options</a></li>
+                <li><a href="#options">Options</a></li>
                 <li><a href="#l-draw-event">Events</a></li>
             </ul>
         </div>
@@ -43,25 +43,25 @@
         <div class="toc-col">
             <h4>Draw Handlers</h4>
             <ul>
-                <li><a href="#l-draw-circle">Draw.Circle</a></li>
                 <li><a href="#l-draw-feature">Draw.Feature</a></li>
+                <li><a href="#l-draw-simpleShape">Draw.SimpleShape</a></li>
                 <li><a href="#l-draw-marker">Draw.Marker</a></li>
-                <li><a href="#l-draw-polygon">Draw.Polygon</a></li>
+                <li><a href="#l-draw-circle">Draw.Circle</a></li>
                 <li><a href="#l-draw-polyline">Draw.Polyline</a></li>
                 <li><a href="#l-draw-rectangle">Draw.Rectangle</a></li>
-                <li><a href="#l-draw-simpleShape">Draw.SimpleShape</a></li>
+                <li><a href="#l-draw-polygon">Draw.Polygon</a></li>
             </ul>
         </div>
         <div class="toc-col">
             <h4>Edit Handler</h4>
             <ul>
-                <li><a href="#l-edit-circle">Edit.Circle</a></li>
+                <li><a href="#l-edit-simpleShape">Edit.SimpleShape</a></li>
                 <li><a href="#l-edit-marker">Edit.Marker</a></li>
+                <li><a href="#l-edit-circle">Edit.Circle</a></li>
                 <li><a href="#l-edit-poly">Edit.Poly</a></li>
                 <li><a href="#l-edit-rectangle">Edit.Rectangle</a></li>
-                <li><a href="#l-edit-simpleShape">Edit.SimpleShape</a></li>
-                <li><a href="#l-edit-toolbar-delete">EditToolbar.Delete</a></li>
                 <li><a href="#l-edit-toolbar-edit">EditToolbar.Edit</a></li>
+                <li><a href="#l-edit-toolbar-delete">EditToolbar.Delete</a></li>
             </ul>
         </div>
         <div class="toc-col last-col">
@@ -69,14 +69,19 @@
             <ul>
                 <li><a href="#geometry-util">GeometryUtil</a></li>
                 <li><a href="#latLng-util">LatLngUtil</a></li>
-                <li><a href="#lineU-util">LineUtil.Intersect</a></li>
+                <li><a href="#line-util">LineUtil.Intersect</a></li>
                 <li><a href="#polygon">Polygon.Intersect</a></li>
                 <li><a href="#polyline">Polyline.Intersect</a></li>
                 <li><a href="#touch-events">TouchEvents</a></li>
             </ul>
         </div>
     </div>
-    <div class="row">
+    <div>
+        <p> This documentation is has been transcribed from the original README.MD to jsdoc's or natural docs style for
+            use with <a href="https://github.com/Leaflet/Leafdoc">Leafdoc</a>. If you identify a typo or have a
+            suggestion for this documentation, please feel free toedit the js comment blocks in the src directory,
+            build with 'jake docs' and submit a pull request.</p>
+
         <a anchor="leaflet-1-0-examples"></a>
         <h2 id="leaflet-1-0-examples">Leaflet 1.0+ Examples</h2>
         <ul>
@@ -96,10 +101,10 @@
         </ul>
     </div>
 
-    <h2 id='l-drawlocal'>L.drawLocal</h2><p>The core toolbar class of the API — it is used to create the toolbar ui</p>
+    <h2 id='l-draw'>L.Draw</h2><p>To add the draw toolbar set the option drawControl: true in the map options.</p>
 
 <section>
-<h3 id='l-drawlocal-example'>Usage example</h3>
+<h3 id='l-draw-example'>Usage example</h3>
 
 <section >
 
@@ -107,20 +112,6 @@
 
 
 
-<pre><code class="lang-js">     var modifiedDraw = L.drawLocal.extend({
-         draw: {
-             toolbar: {
-                 buttons: {
-                     polygon: &#39;Draw an awesome polygon&#39;
-                 }
-             }
-         }
-     });
-</code></pre>
-<p>The default state for the control is the draw toolbar just below the zoom control.
- This will allow map users to draw vectors and markers.
- <strong>Please note the edit toolbar is not enabled by default.</strong>
-To add the draw toolbar set the option drawControl: true in the map options.</p>
 <pre><code class="lang-js">     var map = L.map(&#39;map&#39;, {drawControl: true}).setView([51.505, -0.09], 13);
      L.tileLayer(&#39;http://{s}.tile.osm.org/{z}/{x}/{y}.png&#39;, {
          attribution: &#39;&amp;copy; &lt;a href=&quot;http://osm.org/copyright&quot;&gt;OpenStreetMap&lt;/a&gt; contributors&#39;
@@ -153,8 +144,311 @@ FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).</p>
 </section>
 
 
-</section><h2 id='l-draw-toolbar'>L.Draw.Toolbar</h2>
-<h2 id='l-draw-simpleshape'>L.Draw.SimpleShape</h2>
+</section><h2 id='l-drawlocal'>L.drawLocal</h2><p>The core toolbar class of the API — it is used to create the toolbar ui</p>
+
+<section>
+<h3 id='l-drawlocal-example'>Usage example</h3>
+
+<section >
+
+
+
+
+
+<pre><code class="lang-js">     var modifiedDraw = L.drawLocal.extend({
+         draw: {
+             toolbar: {
+                 buttons: {
+                     polygon: &#39;Draw an awesome polygon&#39;
+                 }
+             }
+         }
+     });
+</code></pre>
+<p>The default state for the control is the draw toolbar just below the zoom control.
+ This will allow map users to draw vectors and markers.
+ <strong>Please note the edit toolbar is not enabled by default.</strong></p>
+
+
+
+</section>
+
+
+</section><h2 id='l-draw-toolbar'>L.Draw.Toolbar</h2><p>The toolbar class of the API — it is used to create the ui
+This will be depreciated</p>
+
+<section>
+<h3 id='l-draw-toolbar-example'>Usage example</h3>
+
+<section >
+
+
+
+
+
+<pre><code class="lang-js">   var toolbar = L.Toolbar();
+   toolbar.addToolbar(map);
+</code></pre>
+<h3 id="disabling-a-toolbar">Disabling a toolbar</h3>
+<p>If you do not want a particular toolbar in your app you can turn it off by setting the toolbar to false.</p>
+<pre><code class="lang-js">     var drawControl = new L.Control.Draw({
+         draw: false,
+         edit: {
+             featureGroup: editableLayers
+         }
+     });
+</code></pre>
+<h3 id="disabling-a-toolbar-item">Disabling a toolbar item</h3>
+<p>If you want to turn off a particular toolbar item, set it to false. The following disables drawing polygons and
+markers. It also turns off the ability to edit layers.</p>
+<pre><code class="lang-js">     var drawControl = new L.Control.Draw({
+         draw: {
+             polygon: false,
+             marker: false
+         },
+         edit: {
+             featureGroup: editableLayers,
+             edit: false
+         }
+     });
+</code></pre>
+
+
+
+</section>
+
+
+</section><section>
+<h3 id='l-draw-toolbar-method'>Methods</h3>
+
+<section class='collapsable'>
+
+<h4 id='l-draw-toolbar-methods-for-modifying-the-toolbar'>Methods for modifying the toolbar</h4>
+
+
+<table><thead>
+	<tr>
+		<th>Method</th>
+		<th>Returns</th>
+		<th>Description</th>
+	</tr>
+	</thead><tbody>
+	<tr id='l-draw-toolbar-initialize'>
+		<td><code><b>initialize</b>(<i>options</i>)</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Toolbar constructor</p>
+</td>
+	</tr>
+	<tr id='l-draw-toolbar-enabled'>
+		<td><code><b>enabled</b>()</nobr></code></td>
+		<td><code>boolean</code></td>
+		<td><p>Gets a true/false of whether the toolbar is enabled</p>
+</td>
+	</tr>
+	<tr id='l-draw-toolbar-disable'>
+		<td><code><b>disable</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Disables the toolbar</p>
+</td>
+	</tr>
+	<tr id='l-draw-toolbar-addtoolbar'>
+		<td><code><b>addToolbar</b>(<i>map</i>)</nobr></code></td>
+		<td><code>L.DomUtil</code></td>
+		<td><p>Adds the toolbar to the map and returns the toolbar dom element</p>
+</td>
+	</tr>
+	<tr id='l-draw-toolbar-removetoolbar'>
+		<td><code><b>removeToolbar</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Removes the toolbar and drops the handler event listeners</p>
+</td>
+	</tr>
+</tbody></table>
+
+</section>
+
+
+</section><h2 id='l-draw-event'>L.Draw.Event</h2><p>Use <code>L.Draw.Event.EVENTNAME</code> constants to ensure events are correct.</p>
+
+<section>
+<h3 id='l-draw-event-example'>Usage example</h3>
+
+<section >
+
+
+
+
+
+<pre><code class="lang-js">map.on(L.Draw.Event.CREATED; function (e) {
+   var type = e.layerType;
+       layer = e.layer;
+   if (type === &#39;marker&#39;) {
+       // Do marker specific actions
+   }
+   // Do whatever else you need to. (save to db; add to map etc)
+   map.addLayer(layer);
+});
+</code></pre>
+<pre><code class="lang-js">     map.on(&#39;draw:edited&#39;; function (e) {
+         var layers = e.layers;
+         layers.eachLayer(function (layer) {
+             //do whatever you want; most likely save back to db
+         });
+     });
+</code></pre>
+
+
+
+</section>
+
+
+</section><section>
+<h3 id='l-draw-event-event'>Events</h3>
+
+<section >
+
+
+
+
+<table><thead>
+	<tr>
+		<th>Event</th>
+		<th>Data</th>
+		<th>Description</th>
+	</tr>
+	</thead><tbody>
+	<tr id='l-draw-event-draw:created'>
+		<td><code><b>draw:created</b>
+		<td><code>PolyLine</code></td>
+		<td>Polygon; Rectangle; Circle; Marker | String
+Layer that was just created.
+The type of layer this is. One of: <code>polyline</code>; <code>polygon</code>; <code>rectangle</code>; <code>circle</code>; <code>marker</code>
+Triggered when a new vector or marker has been created.</td>
+	</tr>
+	<tr id='l-draw-event-draw:edited'>
+		<td><code><b>draw:edited</b>
+		<td><code>LayerGroup</code></td>
+		<td>List of all layers just edited on the map.
+Triggered when layers in the FeatureGroup; initialised with the plugin; have been edited and saved.</td>
+	</tr>
+	<tr id='l-draw-event-draw:deleted'>
+		<td><code><b>draw:deleted</b>
+		<td><code>LayerGroup</code></td>
+		<td>List of all layers just removed from the map.
+Triggered when layers have been removed (and saved) from the FeatureGroup.</td>
+	</tr>
+	<tr id='l-draw-event-draw:drawstart'>
+		<td><code><b>draw:drawstart</b>
+		<td><code>String</code></td>
+		<td>The type of layer this is. One of:<code>polyline</code>; <code>polygon</code>; <code>rectangle</code>; <code>circle</code>; <code>marker</code>
+Triggered when the user has chosen to draw a particular vector or marker.</td>
+	</tr>
+	<tr id='l-draw-event-draw:drawstop'>
+		<td><code><b>draw:drawstop</b>
+		<td><code>String</code></td>
+		<td>The type of layer this is. One of: <code>polyline</code>; <code>polygon</code>; <code>rectangle</code>; <code>circle</code>; <code>marker</code>
+Triggered when the user has finished a particular vector or marker.</td>
+	</tr>
+	<tr id='l-draw-event-draw:drawvertex'>
+		<td><code><b>draw:drawvertex</b>
+		<td><code>LayerGroup</code></td>
+		<td>List of all layers just being added from the map.
+Triggered when a vertex is created on a polyline or polygon.</td>
+	</tr>
+	<tr id='l-draw-event-draw:editstart'>
+		<td><code><b>draw:editstart</b>
+		<td><code>String</code></td>
+		<td>The type of edit this is. One of: <code>edit</code>
+Triggered when the user starts edit mode by clicking the edit tool button.</td>
+	</tr>
+	<tr id='l-draw-event-draw:editmove'>
+		<td><code><b>draw:editmove</b>
+		<td><code>ILayer</code></td>
+		<td>Layer that was just moved.
+Triggered as the user moves a rectangle; circle or marker.</td>
+	</tr>
+	<tr id='l-draw-event-draw:editresize'>
+		<td><code><b>draw:editresize</b>
+		<td><code>ILayer</code></td>
+		<td>Layer that was just moved.
+Triggered as the user resizes a rectangle or circle.</td>
+	</tr>
+	<tr id='l-draw-event-draw:editvertex'>
+		<td><code><b>draw:editvertex</b>
+		<td><code>LayerGroup</code></td>
+		<td>List of all layers just being edited from the map.
+Triggered when a vertex is edited on a polyline or polygon.</td>
+	</tr>
+	<tr id='l-draw-event-draw:editstop'>
+		<td><code><b>draw:editstop</b>
+		<td><code>String</code></td>
+		<td>The type of edit this is. One of: <code>edit</code>
+Triggered when the user has finshed editing (edit mode) and saves edits.</td>
+	</tr>
+	<tr id='l-draw-event-draw:deletestart'>
+		<td><code><b>draw:deletestart</b>
+		<td><code>String</code></td>
+		<td>The type of edit this is. One of: <code>remove</code>
+Triggered when the user starts remove mode by clicking the remove tool button.</td>
+	</tr>
+	<tr id='l-draw-event-draw:deletestop'>
+		<td><code><b>draw:deletestop</b>
+		<td><code>String</code></td>
+		<td>The type of edit this is. One of: <code>remove</code>
+Triggered when the user has finished removing shapes (remove mode) and saves.</td>
+	</tr>
+</tbody></table>
+
+</section>
+
+
+</section><h2 id='l-draw-feature'>L.Draw.Feature</h2>
+<section>
+<h3 id='l-draw-feature-method'>Methods</h3>
+
+<section >
+
+
+
+
+<table><thead>
+	<tr>
+		<th>Method</th>
+		<th>Returns</th>
+		<th>Description</th>
+	</tr>
+	</thead><tbody>
+	<tr id='l-draw-feature-initialize'>
+		<td><code><b>initialize</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td></td>
+	</tr>
+	<tr id='l-draw-feature-enable'>
+		<td><code><b>enable</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td></td>
+	</tr>
+	<tr id='l-draw-feature-addhooks'>
+		<td><code><b>addHooks</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td></td>
+	</tr>
+	<tr id='l-draw-feature-removehooks'>
+		<td><code><b>removeHooks</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td></td>
+	</tr>
+	<tr id='l-draw-feature-setoptions'>
+		<td><code><b>setOptions</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td></td>
+	</tr>
+</tbody></table>
+
+</section>
+
+
+</section><h2 id='l-draw-simpleshape'>L.Draw.SimpleShape</h2>
 <section>
 <h3 id='l-draw-simpleshape-method'>Methods</h3>
 
@@ -375,52 +669,6 @@ FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).</p>
 </section></div>
 	</div>
 </div>
-
-</section><h2 id='l-draw-feature'>L.Draw.Feature</h2>
-<section>
-<h3 id='l-draw-feature-method'>Methods</h3>
-
-<section >
-
-
-
-
-<table><thead>
-	<tr>
-		<th>Method</th>
-		<th>Returns</th>
-		<th>Description</th>
-	</tr>
-	</thead><tbody>
-	<tr id='l-draw-feature-initialize'>
-		<td><code><b>initialize</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td></td>
-	</tr>
-	<tr id='l-draw-feature-enable'>
-		<td><code><b>enable</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td></td>
-	</tr>
-	<tr id='l-draw-feature-addhooks'>
-		<td><code><b>addHooks</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td></td>
-	</tr>
-	<tr id='l-draw-feature-removehooks'>
-		<td><code><b>removeHooks</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td></td>
-	</tr>
-	<tr id='l-draw-feature-setoptions'>
-		<td><code><b>setOptions</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td></td>
-	</tr>
-</tbody></table>
-
-</section>
-
 
 </section><h2 id='l-draw-polyline'>L.Draw.Polyline</h2>
 <section>
@@ -821,7 +1069,47 @@ FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).</p>
 </div>
 
 </section><h2 id='l-edit-polyline'>L.Edit.Polyline</h2>
-<h2 id='l-edit-rectangle'>L.Edit.Rectangle</h2>
+<section>
+<h3 id='l-edit-polyline-method'>Methods</h3>
+
+<section >
+
+
+
+
+<table><thead>
+	<tr>
+		<th>Method</th>
+		<th>Returns</th>
+		<th>Description</th>
+	</tr>
+	</thead><tbody>
+	<tr id='l-edit-polyline-initialize'>
+		<td><code><b>initialize</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td></td>
+	</tr>
+	<tr id='l-edit-polyline-addhooks'>
+		<td><code><b>addHooks</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td></td>
+	</tr>
+	<tr id='l-edit-polyline-removehooks'>
+		<td><code><b>removeHooks</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td></td>
+	</tr>
+	<tr id='l-edit-polyline-updatemarkers'>
+		<td><code><b>updateMarkers</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td></td>
+	</tr>
+</tbody></table>
+
+</section>
+
+
+</section><h2 id='l-edit-rectangle'>L.Edit.Rectangle</h2>
 <section>
 <h3 id=''>Methods</h3>
 
@@ -1097,234 +1385,6 @@ FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).</p>
 </section>
 
 
-</section><h2 id='l-draw-event'>L.Draw.Event</h2><p>Use <code>L.Draw.Event.EVENTNAME</code> constants to ensure events are correct.</p>
-
-<section>
-<h3 id='l-draw-event-example'>Usage example</h3>
-
-<section >
-
-
-
-
-
-<pre><code class="lang-js">map.on(L.Draw.Event.CREATED; function (e) {
-   var type = e.layerType;
-       layer = e.layer;
-   if (type === &#39;marker&#39;) {
-       // Do marker specific actions
-   }
-   // Do whatever else you need to. (save to db; add to map etc)
-   map.addLayer(layer);
-});
-</code></pre>
-<pre><code class="lang-js">     map.on(&#39;draw:edited&#39;; function (e) {
-         var layers = e.layers;
-         layers.eachLayer(function (layer) {
-             //do whatever you want; most likely save back to db
-         });
-     });
-</code></pre>
-
-
-
-</section>
-
-
-</section><section>
-<h3 id='l-draw-event-event'>Events</h3>
-
-<section >
-
-
-
-
-<table><thead>
-	<tr>
-		<th>Event</th>
-		<th>Data</th>
-		<th>Description</th>
-	</tr>
-	</thead><tbody>
-	<tr id='l-draw-event-draw:created'>
-		<td><code><b>draw:created</b>
-		<td><code>PolyLine</code></td>
-		<td>Polygon; Rectangle; Circle; Marker | String
-Layer that was just created.
-The type of layer this is. One of: <code>polyline</code>; <code>polygon</code>; <code>rectangle</code>; <code>circle</code>; <code>marker</code>
-Triggered when a new vector or marker has been created.</td>
-	</tr>
-	<tr id='l-draw-event-draw:edited'>
-		<td><code><b>draw:edited</b>
-		<td><code>LayerGroup</code></td>
-		<td>List of all layers just edited on the map.
-Triggered when layers in the FeatureGroup; initialised with the plugin; have been edited and saved.</td>
-	</tr>
-	<tr id='l-draw-event-draw:deleted'>
-		<td><code><b>draw:deleted</b>
-		<td><code>LayerGroup</code></td>
-		<td>List of all layers just removed from the map.
-Triggered when layers have been removed (and saved) from the FeatureGroup.</td>
-	</tr>
-	<tr id='l-draw-event-draw:drawstart'>
-		<td><code><b>draw:drawstart</b>
-		<td><code>String</code></td>
-		<td>The type of layer this is. One of:<code>polyline</code>; <code>polygon</code>; <code>rectangle</code>; <code>circle</code>; <code>marker</code>
-Triggered when the user has chosen to draw a particular vector or marker.</td>
-	</tr>
-	<tr id='l-draw-event-draw:drawstop'>
-		<td><code><b>draw:drawstop</b>
-		<td><code>String</code></td>
-		<td>The type of layer this is. One of: <code>polyline</code>; <code>polygon</code>; <code>rectangle</code>; <code>circle</code>; <code>marker</code>
-Triggered when the user has finished a particular vector or marker.</td>
-	</tr>
-	<tr id='l-draw-event-draw:drawvertex'>
-		<td><code><b>draw:drawvertex</b>
-		<td><code>LayerGroup</code></td>
-		<td>List of all layers just being added from the map.
-Triggered when a vertex is created on a polyline or polygon.</td>
-	</tr>
-	<tr id='l-draw-event-draw:editstart'>
-		<td><code><b>draw:editstart</b>
-		<td><code>String</code></td>
-		<td>The type of edit this is. One of: <code>edit</code>
-Triggered when the user starts edit mode by clicking the edit tool button.</td>
-	</tr>
-	<tr id='l-draw-event-draw:editmove'>
-		<td><code><b>draw:editmove</b>
-		<td><code>ILayer</code></td>
-		<td>Layer that was just moved.
-Triggered as the user moves a rectangle; circle or marker.</td>
-	</tr>
-	<tr id='l-draw-event-draw:editresize'>
-		<td><code><b>draw:editresize</b>
-		<td><code>ILayer</code></td>
-		<td>Layer that was just moved.
-Triggered as the user resizes a rectangle or circle.</td>
-	</tr>
-	<tr id='l-draw-event-draw:editvertex'>
-		<td><code><b>draw:editvertex</b>
-		<td><code>LayerGroup</code></td>
-		<td>List of all layers just being edited from the map.
-Triggered when a vertex is edited on a polyline or polygon.</td>
-	</tr>
-	<tr id='l-draw-event-draw:editstop'>
-		<td><code><b>draw:editstop</b>
-		<td><code>String</code></td>
-		<td>The type of edit this is. One of: <code>edit</code>
-Triggered when the user has finshed editing (edit mode) and saves edits.</td>
-	</tr>
-	<tr id='l-draw-event-draw:deletestart'>
-		<td><code><b>draw:deletestart</b>
-		<td><code>String</code></td>
-		<td>The type of edit this is. One of: <code>remove</code>
-Triggered when the user starts remove mode by clicking the remove tool button.</td>
-	</tr>
-	<tr id='l-draw-event-draw:deletestop'>
-		<td><code><b>draw:deletestop</b>
-		<td><code>String</code></td>
-		<td>The type of edit this is. One of: <code>remove</code>
-Triggered when the user has finished removing shapes (remove mode) and saves.</td>
-	</tr>
-</tbody></table>
-
-</section>
-
-
-</section><h2 id='l-toolbar'>L.Toolbar</h2><p>The toolbar class of the API — it is used to create the ui
-This will be depreciated</p>
-
-<section>
-<h3 id='l-toolbar-example'>Usage example</h3>
-
-<section >
-
-
-
-
-
-<pre><code class="lang-js">   var toolbar = L.Toolbar();
-   toolbar.addToolbar(map);
-</code></pre>
-<h3 id="disabling-a-toolbar">Disabling a toolbar</h3>
-<p>If you do not want a particular toolbar in your app you can turn it off by setting the toolbar to false.</p>
-<pre><code class="lang-js">     var drawControl = new L.Control.Draw({
-         draw: false,
-         edit: {
-             featureGroup: editableLayers
-         }
-     });
-</code></pre>
-<h3 id="disabling-a-toolbar-item">Disabling a toolbar item</h3>
-<p>If you want to turn off a particular toolbar item, set it to false. The following disables drawing polygons and
-markers. It also turns off the ability to edit layers.</p>
-<pre><code class="lang-js">     var drawControl = new L.Control.Draw({
-         draw: {
-             polygon: false,
-             marker: false
-         },
-         edit: {
-             featureGroup: editableLayers,
-             edit: false
-         }
-     });
-</code></pre>
-
-
-
-</section>
-
-
-</section><section>
-<h3 id='l-toolbar-method'>Methods</h3>
-
-<section class='collapsable'>
-
-<h4 id='l-toolbar-methods-for-modifying-the-toolbar'>Methods for modifying the toolbar</h4>
-
-
-<table><thead>
-	<tr>
-		<th>Method</th>
-		<th>Returns</th>
-		<th>Description</th>
-	</tr>
-	</thead><tbody>
-	<tr id='l-toolbar-initialize'>
-		<td><code><b>initialize</b>(<i>options</i>)</nobr></code></td>
-		<td><code>void</code></td>
-		<td><p>Toolbar constructor</p>
-</td>
-	</tr>
-	<tr id='l-toolbar-enabled'>
-		<td><code><b>enabled</b>()</nobr></code></td>
-		<td><code>boolean</code></td>
-		<td><p>Gets a true/false of whether the toolbar is enabled</p>
-</td>
-	</tr>
-	<tr id='l-toolbar-disable'>
-		<td><code><b>disable</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td><p>Disables the toolbar</p>
-</td>
-	</tr>
-	<tr id='l-toolbar-addtoolbar'>
-		<td><code><b>addToolbar</b>(<i>map</i>)</nobr></code></td>
-		<td><code>L.DomUtil</code></td>
-		<td><p>Adds the toolbar to the map and returns the toolbar dom element</p>
-</td>
-	</tr>
-	<tr id='l-toolbar-removetoolbar'>
-		<td><code><b>removeToolbar</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td><p>Removes the toolbar and drops the handler event listeners</p>
-</td>
-	</tr>
-</tbody></table>
-
-</section>
-
-
 </section><h2 id='l-draw-tooltip'>L.Draw.Tooltip</h2><p>The tooltip class — it is used to display the tooltip while drawing
 This will be depreciated</p>
 
@@ -1485,47 +1545,6 @@ This will be depreciated</p>
 	</tr>
 	<tr id='l-edittoolbar-disable'>
 		<td><code><b>disable</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td></td>
-	</tr>
-</tbody></table>
-
-</section>
-
-
-</section><h2 id='l-edit-poly'>L.Edit.Poly</h2>
-<section>
-<h3 id='l-edit-poly-method'>Methods</h3>
-
-<section >
-
-
-
-
-<table><thead>
-	<tr>
-		<th>Method</th>
-		<th>Returns</th>
-		<th>Description</th>
-	</tr>
-	</thead><tbody>
-	<tr id='l-edit-poly-initialize'>
-		<td><code><b>initialize</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td></td>
-	</tr>
-	<tr id='l-edit-poly-addhooks'>
-		<td><code><b>addHooks</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td></td>
-	</tr>
-	<tr id='l-edit-poly-removehooks'>
-		<td><code><b>removeHooks</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td></td>
-	</tr>
-	<tr id='l-edit-poly-updatemarkers'>
-		<td><code><b>updateMarkers</b>()</nobr></code></td>
 		<td><code>void</code></td>
 		<td></td>
 	</tr>
@@ -1714,6 +1733,328 @@ NOTE: does not support detecting intersection for degenerate cases.</p>
 
 </section><h2 id='l-marker-touch'>L.Marker.Touch</h2><p>This isn&#39;t full Touch support. This is just to get makers to also support dom touch events after creation</p>
 <p>#TODO: find a better way of getting markers to support touch.</p>
+
+<h2 id='install'>Install</h2><p>You have four methods of installing Leaflet.Draw, copy the leaflet.draw.js, css, and images from dist and embed directly
+into your application.</p>
+<h3 id="npm">npm</h3>
+<p>To install the plugin run <code>npm install leaflet-draw</code> via command line in your project.
+You must also require this in your project like so: <code>var leafletDraw = require(&#39;leaflet-draw&#39;);</code></p>
+<h3 id="bower">bower</h3>
+<p>To install the plugin run <code>bower install leaflet-draw</code>.</p>
+<h3 id="builder">Builder</h3>
+<p>There is a custom builder at <a href="../build/build.html">../build/build.html</a> to help make a custom package of Leaflet.Draw
+with the command line.</p>
+
+<h2 id='cdn&#x27;s'>CDN&#x27;s</h2><pre><code class="lang-html">&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css&quot;/&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+
+<h2 id='options'>Options</h2><p>You can configure the plugin by using the different options listed here. If you identify a typo or have a suggestion
+for this section of the documentation, please edit docs-misc.leafdoc in the build directory.</p>
+
+<h2 id='control-draw'>Control.Draw</h2><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>position</td>
+<td>String</td>
+<td><code>&#39;topleft&#39;</code></td>
+<td>The initial position of the control (one of the map corners). See <a href="http://leafletjs.com/reference.html#control-positions">control positions</a>.</td>
+</tr>
+<tr>
+<td>draw</td>
+<td><a href="#drawoptions">DrawOptions</a></td>
+<td><code>{}</code></td>
+<td>The options used to configure the draw toolbar.</td>
+</tr>
+<tr>
+<td>edit</td>
+<td><a href="#editpolyoptions">EditPolyOptions</a></td>
+<td><code>false</code></td>
+<td>The options used to configure the edit toolbar.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id='drawoptions'>DrawOptions</h2><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>polyline</td>
+<td><a href="#polylineoptions">PolylineOptions</a></td>
+<td><code>{ }</code></td>
+<td>Polyline draw handler options. Set to <code>false</code> to disable handler.</td>
+</tr>
+<tr>
+<td>polygon</td>
+<td><a href="#polygonoptions">PolygonOptions</a></td>
+<td><code>{ }</code></td>
+<td>Polygon draw handler options. Set to <code>false</code> to disable handler.</td>
+</tr>
+<tr>
+<td>rectangle</td>
+<td><a href="#rectangleoptions">RectangleOptions</a></td>
+<td><code>{ }</code></td>
+<td>Rectangle draw handler options. Set to <code>false</code> to disable handler.</td>
+</tr>
+<tr>
+<td>circle</td>
+<td><a href="#circleoptions">CircleOptions</a></td>
+<td><code>{ }</code></td>
+<td>Circle draw handler options. Set to <code>false</code> to disable handler.</td>
+</tr>
+<tr>
+<td>marker</td>
+<td><a href="#markeroptions">MarkerOptions</a></td>
+<td><code>{ }</code></td>
+<td>Marker draw handler options. Set to <code>false</code> to disable handler.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id='polylineoptions'>PolylineOptions</h2><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>allowIntersection</td>
+<td>Bool</td>
+<td><code>true</code></td>
+<td>Determines if line segments can cross.</td>
+</tr>
+<tr>
+<td>drawError</td>
+<td>Object</td>
+<td><a href="https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Polyline.js#L10">See code</a></td>
+<td>Configuration options for the error that displays if an intersection is detected.</td>
+</tr>
+<tr>
+<td>guidelineDistance</td>
+<td>Number</td>
+<td><code>20</code></td>
+<td>Distance in pixels between each guide dash.</td>
+</tr>
+<tr>
+<td>shapeOptions</td>
+<td><a href="http://leafletjs.com/reference.html#polyline-options">Leaflet Polyline options</a></td>
+<td><a href="https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Polyline.js#L20">See code</a></td>
+<td>The options used when drawing the polyline/polygon on the map.</td>
+</tr>
+<tr>
+<td>metric</td>
+<td>Bool</td>
+<td><code>true</code></td>
+<td>Determines which measurement system (metric or imperial) is used.</td>
+</tr>
+<tr>
+<td>zIndexOffset</td>
+<td>Number</td>
+<td><code>2000</code></td>
+<td>This should be a high number to ensure that you can draw over all other layers on the map.</td>
+</tr>
+<tr>
+<td>repeatMode</td>
+<td>Bool</td>
+<td><code>false</code></td>
+<td>Determines if the draw tool remains enabled after drawing a shape.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id='polygonoptions'>PolygonOptions</h2><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>showArea</td>
+<td>Bool</td>
+<td><code>false</code></td>
+<td>Show the area of the drawn polygon in m², ha or km². <strong>The area is only approximate and become less accurate the larger the polygon is.</strong></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id='rectangleoptions'>RectangleOptions</h2><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>shapeOptions</td>
+<td><a href="http://leafletjs.com/reference.html#path-options">Leaflet Path options</a></td>
+<td><a href="https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Rectangle.js#L7">See code</a></td>
+<td>The options used when drawing the rectangle on the map.</td>
+</tr>
+<tr>
+<td>repeatMode</td>
+<td>Bool</td>
+<td><code>false</code></td>
+<td>Determines if the draw tool remains enabled after drawing a shape.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id='circleoptions'>CircleOptions</h2><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>shapeOptions</td>
+<td><a href="http://leafletjs.com/reference.html#path-options">Leaflet Path options</a></td>
+<td><a href="https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7">See code</a></td>
+<td>The options used when drawing the circle on the map.</td>
+</tr>
+<tr>
+<td>repeatMode</td>
+<td>Bool</td>
+<td><code>false</code></td>
+<td>Determines if the draw tool remains enabled after drawing a shape.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id='markeroptions'>MarkerOptions</h2><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>icon</td>
+<td><a href="http://leafletjs.com/reference.html#icon">Leaflet Icon</a></td>
+<td><code>L.Icon.Default()</code></td>
+<td>The icon displayed when drawing a marker.</td>
+</tr>
+<tr>
+<td>zIndexOffset</td>
+<td>Number</td>
+<td><code>2000</code></td>
+<td>This should be a high number to ensure that you can draw over all other layers on the map.</td>
+</tr>
+<tr>
+<td>repeatMode</td>
+<td>Bool</td>
+<td><code>false</code></td>
+<td>Determines if the draw tool remains enabled after drawing a shape.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id='editpolyoptions'>EditPolyOptions</h2><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>featureGroup</td>
+<td><a href="http://leafletjs.com/reference.html#featuregroup">Leaflet FeatureGroup</a></td>
+<td><code>null</code></td>
+<td>This is the FeatureGroup that stores all editable shapes. <strong>THIS IS REQUIRED FOR THE EDIT TOOLBAR TO WORK</strong></td>
+</tr>
+<tr>
+<td>edit</td>
+<td><a href="#edithandleroptions">EditHandlerOptions</a></td>
+<td><code>{ }</code></td>
+<td>Edit handler options. Set to <code>false</code> to disable handler.</td>
+</tr>
+<tr>
+<td>remove</td>
+<td><a href="#deletehandleroptions">DeleteHandlerOptions</a></td>
+<td><code>{ }</code></td>
+<td>Delete handler options. Set to <code>false</code> to disable handler.</td>
+</tr>
+<tr>
+<td>poly</td>
+<td><a href="#editpoly">EditPolyOptions</a></td>
+<td><code>{ }</code></td>
+<td>Set polygon editing options</td>
+</tr>
+<tr>
+<td>allowIntersection</td>
+<td>Bool</td>
+<td><code>true</code></td>
+<td>Determines if line segments can cross.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id='edithandleroptions'>EditHandlerOptions</h2><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>selectedPathOptions</td>
+<td><a href="http://leafletjs.com/reference.html#path-options">Leaflet Path options</a></td>
+<td><a href="https://github.com/Leaflet/Leaflet.draw/blob/master/src/edit/handler/EditToolbar.Edit.js#L9">See code</a></td>
+<td>The path options for how the layers will look while in edit mode. If this is set to null the editable path options will not be set.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> To maintain the original layer color of the layer use <code>maintainColor: true</code> within <code>selectedPathOptions</code>.
+E.g. The edit options below will maintain the layer color and set the edit opacity to 0.3.</p>
+<pre><code class="lang-js">{
+    selectedPathOptions: {
+        maintainColor: true,
+        opacity: 0.3
+    }
+}
+</code></pre>
+
+<h2 id='version'>version</h2><p>A constant that represents the Leaflet.Draw version in use.</p>
+<pre><code class="lang-js">    L.drawVersion; // contains &quot;0.4.2&quot; (or whatever version is currently in use)
+</code></pre>
 
 
 

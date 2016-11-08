@@ -1,7 +1,9 @@
 This file just defines the order of the classes in the docs.
 
+@class L.Draw
 @class L.drawLocal
 @class L.Draw.Toolbar
+@class L.Draw.Event
 
 @class L.Draw.Feature
 @class L.Draw.SimpleShape

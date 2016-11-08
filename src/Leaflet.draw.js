@@ -2,32 +2,14 @@
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
 L.drawVersion = '0.4.2';
-L.Draw = {};
-
 /**
- * @class L.drawLocal
- * @aka L.drawLocal
+ * @class L.Draw
+ * @aka Draw
  *
- * The core toolbar class of the API — it is used to create the toolbar ui
- *
- * @example
- * ```js
- *      var modifiedDraw = L.drawLocal.extend({
- *          draw: {
- *              toolbar: {
- *                  buttons: {
- *                      polygon: 'Draw an awesome polygon'
- *                  }
- *              }
- *          }
- *      });
- * ```
- *
- * The default state for the control is the draw toolbar just below the zoom control.
- *  This will allow map users to draw vectors and markers.
- *  **Please note the edit toolbar is not enabled by default.**
  *
  * To add the draw toolbar set the option drawControl: true in the map options.
+ *
+ * @example
  * ```js
  *      var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
  *
@@ -63,6 +45,31 @@ L.Draw = {};
  * Leaflet.draw does not work with multigeometry features such as MultiPoint, MultiLineString, MultiPolygon,
  * or GeometryCollection. If you need to add multigeometry features to the draw plugin, convert them to a
  * FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).
+ */
+L.Draw = {};
+
+/**
+ * @class L.drawLocal
+ * @aka L.drawLocal
+ *
+ * The core toolbar class of the API — it is used to create the toolbar ui
+ *
+ * @example
+ * ```js
+ *      var modifiedDraw = L.drawLocal.extend({
+ *          draw: {
+ *              toolbar: {
+ *                  buttons: {
+ *                      polygon: 'Draw an awesome polygon'
+ *                  }
+ *              }
+ *          }
+ *      });
+ * ```
+ *
+ * The default state for the control is the draw toolbar just below the zoom control.
+ *  This will allow map users to draw vectors and markers.
+ *  **Please note the edit toolbar is not enabled by default.**
  */
 L.drawLocal = {
     draw: {

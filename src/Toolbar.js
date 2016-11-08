@@ -1,5 +1,5 @@
 /**
- * @class L.Toolbar
+ * @class L.Draw.Toolbar
  * @aka Toolbar
  *
  * The toolbar class of the API — it is used to create the ui

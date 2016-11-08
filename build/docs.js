@@ -15,6 +15,8 @@ function buildDocs() {
 	//doc.setLeadingChar('@');
 	doc.addFile('build/docs-index.leafdoc', false);
 	doc.addDir('src');
+	doc.addFile('build/docs-misc.leafdoc', false);
+
 
 	var out = doc.outputStr();
 
