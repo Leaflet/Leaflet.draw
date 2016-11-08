@@ -1,3 +1,8 @@
+/**
+ * @class L.Draw.Polygon
+ * @aka Draw.Polygon
+ * @inherits L.Draw.Polyline
+ */
 L.Draw.Polygon = L.Draw.Polyline.extend({
 	statics: {
 		TYPE: 'polygon'
@@ -20,6 +25,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		metric: true // Whether to use the metric measurement system or imperial
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		L.Draw.Polyline.prototype.initialize.call(this, map, options);
 

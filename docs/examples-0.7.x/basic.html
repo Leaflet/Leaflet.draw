@@ -9,6 +9,7 @@
     <script src="libs/leaflet-src.js"></script>
 
     <script src="../../src/Leaflet.draw.js"></script>
+    <script src="../src/Leaflet.Draw.Event.js"></script>
 
     <script src="../../src/edit/handler/Edit.Poly.js"></script>
     <script src="../../src/edit/handler/Edit.SimpleShape.js"></script>
@@ -70,7 +71,7 @@
         });
         map.addControl(drawControl);
 
-        map.on('draw:created', function (e) {
+        map.on(L.Draw.Event.CREATED, function (e) {
             var type = e.layerType,
                 layer = e.layer;
 
@@ -81,7 +82,7 @@
             drawnItems.addLayer(layer);
         });
 
-        map.on('draw:edited', function (e) {
+        map.on(L.Draw.Event.EDITED, function (e) {
             var layers = e.layers;
             var countOfEditedLayers = 0;
             layers.eachLayer(function(layer) {

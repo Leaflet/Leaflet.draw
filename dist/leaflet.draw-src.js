@@ -1,121 +1,360 @@
 /*
-	Leaflet.draw, a plugin that adds drawing and editing tools to Leaflet powered maps.
-	(c) 2012-2016, Jacob Toye, Smartrak, Leaflet
+ Leaflet.draw 0.4.2+58ba836, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
-	https://github.com/Leaflet/Leaflet.draw
-	http://leafletjs.com
-*/
-(function (window, document, undefined) {/*
+ https://github.com/Leaflet/Leaflet.draw
+ http://leafletjs.com
+ */
+(function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
+L.drawVersion = "0.4.2+58ba836";
+L.Draw = {};
 
-L.drawVersion = '0.4.0';
-
+/**
+ * @class L.drawLocal
+ * @aka L.drawLocal
+ *
+ * The core toolbar class of the API — it is used to create the toolbar ui
+ *
+ * ## Leaflet 1.0+ Examples
+ *
+ * - [Full Demo](./examples/full.html)
+ * - [Popup](./examples/popup.html)
+ * - [Snapping](./examples/snapping.html)
+ * - [Edit Handlers](./examples/edithandlers.html)
+ *
+ * ## Leaflet 0.7+ Examples
+ *
+ * - [Full Demo](./examples/0.7.x/full.html)
+ * - [Popup](./examples/0.7.x/popup.html)
+ * - [Snapping](./examples/0.7.x/snapping.html)
+ * - [Edit Handlers](./examples/0.7.x/edithandlers.html)
+ *
+ * @example
+ * ```js
+ *      var modifiedDraw = L.drawLocal.extend({
+ *          draw: {
+ *              toolbar: {
+ *                  buttons: {
+ *                      polygon: 'Draw an awesome polygon'
+ *                  }
+ *              }
+ *          }
+ *      });
+ * ```
+ *
+ * The default state for the control is the draw toolbar just below the zoom control.
+ *  This will allow map users to draw vectors and markers.
+ *  **Please note the edit toolbar is not enabled by default.**
+ *
+ * To add the draw toolbar set the option drawControl: true in the map options.
+ * ```js
+ *      var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
+ *
+ *      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+ *          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+ *      }).addTo(map);
+ * ```
+ *
+ * ### Adding the edit toolbar
+ * To use the edit toolbar you must initialise the Leaflet.draw control and manually add it to the map.
+ *
+ * ```js
+ *      var map = L.map('map').setView([51.505, -0.09], 13);
+ *
+ *      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+ *          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+ *      }).addTo(map);
+ *
+ *      // FeatureGroup is to store editable layers
+ *      var drawnItems = new L.FeatureGroup();
+ *      map.addLayer(drawnItems);
+ *
+ *      var drawControl = new L.Control.Draw({
+ *          edit: {
+ *              featureGroup: drawnItems
+ *          }
+ *      });
+ *      map.addControl(drawControl);
+ * ```
+ *
+ * The key here is the featureGroup option. This tells the plugin which FeatureGroup contains the layers that
+ * should be editable. The featureGroup can contain 0 or more features with geometry types Point, LineString, and Polygon.
+ * Leaflet.draw does not work with multigeometry features such as MultiPoint, MultiLineString, MultiPolygon,
+ * or GeometryCollection. If you need to add multigeometry features to the draw plugin, convert them to a
+ * FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).
+ */
 L.drawLocal = {
-	draw: {
-		toolbar: {
-			// #TODO: this should be reorganized where actions are nested in actions
-			// ex: actions.undo  or actions.cancel
-			actions: {
-				title: 'Cancel drawing',
-				text: 'Cancel'
-			},
-			finish: {
-				title: 'Finish drawing',
-				text: 'Finish'
-			},
-			undo: {
-				title: 'Delete last point drawn',
-				text: 'Delete last point'
-			},
-			buttons: {
-				polyline: 'Draw a polyline',
-				polygon: 'Draw a polygon',
-				rectangle: 'Draw a rectangle',
-				circle: 'Draw a circle',
-				marker: 'Draw a marker'
-			}
-		},
-		handlers: {
-			circle: {
-				tooltip: {
-					start: 'Click and drag to draw circle.'
-				},
-				radius: 'Radius'
-			},
-			marker: {
-				tooltip: {
-					start: 'Click map to place marker.'
-				}
-			},
-			polygon: {
-				tooltip: {
-					start: 'Click to start drawing shape.',
-					cont: 'Click to continue drawing shape.',
-					end: 'Click first point to close this shape.'
-				}
-			},
-			polyline: {
-				error: '<strong>Error:</strong> shape edges cannot cross!',
-				tooltip: {
-					start: 'Click to start drawing line.',
-					cont: 'Click to continue drawing line.',
-					end: 'Click last point to finish line.'
-				}
-			},
-			rectangle: {
-				tooltip: {
-					start: 'Click and drag to draw rectangle.'
-				}
-			},
-			simpleshape: {
-				tooltip: {
-					end: 'Release mouse to finish drawing.'
-				}
-			}
-		}
-	},
-	edit: {
-		toolbar: {
-			actions: {
-				save: {
-					title: 'Save changes.',
-					text: 'Save'
-				},
-				cancel: {
-					title: 'Cancel editing, discards all changes.',
-					text: 'Cancel'
-				}
-			},
-			buttons: {
-				edit: 'Edit layers.',
-				editDisabled: 'No layers to edit.',
-				remove: 'Delete layers.',
-				removeDisabled: 'No layers to delete.'
-			}
-		},
-		handlers: {
-			edit: {
-				tooltip: {
-					text: 'Drag handles, or marker to edit feature.',
-					subtext: 'Click cancel to undo changes.'
-				}
-			},
-			remove: {
-				tooltip: {
-					text: 'Click on a feature to remove'
-				}
-			}
-		}
-	}
+    draw: {
+        toolbar: {
+            // #TODO: this should be reorganized where actions are nested in actions
+            // ex: actions.undo  or actions.cancel
+            actions: {
+                title: 'Cancel drawing',
+                text: 'Cancel'
+            },
+            finish: {
+                title: 'Finish drawing',
+                text: 'Finish'
+            },
+            undo: {
+                title: 'Delete last point drawn',
+                text: 'Delete last point'
+            },
+            buttons: {
+                polyline: 'Draw a polyline',
+                polygon: 'Draw a polygon',
+                rectangle: 'Draw a rectangle',
+                circle: 'Draw a circle',
+                marker: 'Draw a marker'
+            }
+        },
+        handlers: {
+            circle: {
+                tooltip: {
+                    start: 'Click and drag to draw circle.'
+                },
+                radius: 'Radius'
+            },
+            marker: {
+                tooltip: {
+                    start: 'Click map to place marker.'
+                }
+            },
+            polygon: {
+                tooltip: {
+                    start: 'Click to start drawing shape.',
+                    cont: 'Click to continue drawing shape.',
+                    end: 'Click first point to close this shape.'
+                }
+            },
+            polyline: {
+                error: '<strong>Error:</strong> shape edges cannot cross!',
+                tooltip: {
+                    start: 'Click to start drawing line.',
+                    cont: 'Click to continue drawing line.',
+                    end: 'Click last point to finish line.'
+                }
+            },
+            rectangle: {
+                tooltip: {
+                    start: 'Click and drag to draw rectangle.'
+                }
+            },
+            simpleshape: {
+                tooltip: {
+                    end: 'Release mouse to finish drawing.'
+                }
+            }
+        }
+    },
+    edit: {
+        toolbar: {
+            actions: {
+                save: {
+                    title: 'Save changes.',
+                    text: 'Save'
+                },
+                cancel: {
+                    title: 'Cancel editing, discards all changes.',
+                    text: 'Cancel'
+                }
+            },
+            buttons: {
+                edit: 'Edit layers.',
+                editDisabled: 'No layers to edit.',
+                remove: 'Delete layers.',
+                removeDisabled: 'No layers to delete.'
+            }
+        },
+        handlers: {
+            edit: {
+                tooltip: {
+                    text: 'Drag handles, or marker to edit feature.',
+                    subtext: 'Click cancel to undo changes.'
+                }
+            },
+            remove: {
+                tooltip: {
+                    text: 'Click on a feature to remove'
+                }
+            }
+        }
+    }
 };
+
+
+
+/**
+ * ### Events
+ * Once you have successfully added the Leaflet.draw plugin to your map you will want to respond to the different
+ * actions users can initiate. The following events will be triggered on the map=
+ *
+ * @class L.Draw.Event
+ * @aka Draw.Event
+ *
+ * Use `L.Draw.Event.EVENTNAME` constants to ensure events are correct.
+ *
+ * @example
+ * ```js
+ * map.on(L.Draw.Event.CREATED; function (e) {
+ *    var type = e.layerType;
+ *        layer = e.layer;
+ *
+ *    if (type === 'marker') {
+ *        // Do marker specific actions
+ *    }
+ *
+ *    // Do whatever else you need to. (save to db; add to map etc)
+ *    map.addLayer(layer);
+ *});
+ * ```
+ */
+L.Draw.Event = {};
+/**
+ * @event draw:created= PolyLine; Polygon; Rectangle; Circle; Marker | String
+ *
+ * Layer that was just created.
+ * The type of layer this is. One of= `polyline`; `polygon`; `rectangle`; `circle`; `marker`
+ * Triggered when a new vector or marker has been created.
+ *
+ */
+L.Draw.Event.CREATED = 'draw:created';
+
+/**
+ * @event draw:edited= LayerGroup
+ *
+ * List of all layers just edited on the map.
+ *
+ *
+ * Triggered when layers in the FeatureGroup; initialised with the plugin; have been edited and saved.
+ *
+ * @example
+ * ```js
+ *      map.on('draw:edited'; function (e) {
+     *          var layers = e.layers;
+     *          layers.eachLayer(function (layer) {
+     *              //do whatever you want; most likely save back to db
+     *          });
+     *      });
+ * ```
+ */
+L.Draw.Event.EDITED = 'draw:edited';
+
+/**
+ * @event draw:deleted= LayerGroup
+ *
+ * List of all layers just removed from the map.
+ *
+ * Triggered when layers have been removed (and saved) from the FeatureGroup.
+ */
+L.Draw.Event.DELETED = 'draw:deleted';
+
+/**
+ * @event draw:drawstart= String
+ *
+ * The type of layer this is. One of= `polyline`; `polygon`; `rectangle`; `circle`; `marker`
+ *
+ * Triggered when the user has chosen to draw a particular vector or marker.
+ */
+L.Draw.Event.DRAWSTART = 'draw:drawstart';
+
+/**
+ * @event draw:drawstop= String
+ *
+ * The type of layer this is. One of= `polyline`; `polygon`; `rectangle`; `circle`; `marker`
+ *
+ * Triggered when the user has finished a particular vector or marker.
+ */
+
+L.Draw.Event.DRAWSTOP = 'draw:drawstop';
+
+/**
+ * @event draw:drawvertex= LayerGroup
+ *
+ * List of all layers just being added from the map.
+ *
+ * Triggered when a vertex is created on a polyline or polygon.
+ */
+L.Draw.Event.DRAWVERTEX = 'draw:drawvertex';
+
+/**
+ * @event draw:editstart= String
+ *
+ * The type of edit this is. One of= `edit`
+ *
+ * Triggered when the user starts edit mode by clicking the edit tool button.
+ */
+
+L.Draw.Event.EDITSTART = 'draw:editstart';
+
+/**
+ * @event draw:editmove= ILayer
+ *
+ *  Layer that was just moved.
+ *
+ * Triggered as the user moves a rectangle; circle or marker.
+ */
+L.Draw.Event.EDITMOVE = 'draw:editmove';
+
+/**
+ * @event draw:editresize= ILayer
+ *
+ * Layer that was just moved.
+ *
+ * Triggered as the user resizes a rectangle or circle.
+ */
+L.Draw.Event.EDITRESIZE = 'draw:editresize';
+
+/**
+ * @event draw:editvertex= LayerGroup
+ *
+ * List of all layers just being edited from the map.
+ *
+ * Triggered when a vertex is edited on a polyline or polygon.
+ */
+L.Draw.Event.EDITVERTEX = 'draw:editvertex';
+
+/**
+ * @event draw:editstop= String
+ *
+ * The type of edit this is. One of= `edit`
+ *
+ * Triggered when the user has finshed editing (edit mode) and saves edits.
+ */
+L.Draw.Event.EDITSTOP = 'draw:editstop';
+
+/**
+ * @event draw:deletestart= String
+ *
+ * The type of edit this is. One of= `remove`
+ *
+ * Triggered when the user starts remove mode by clicking the remove tool button.
+ */
+L.Draw.Event.DELETESTART = 'draw:deletestart';
+
+/**
+ * @event draw:deletestop= String
+ *
+ * The type of edit this is. One of= `remove`
+ *
+ * Triggered when the user has finished removing shapes (remove mode) and saves.
+ */
+L.Draw.Event.DELETESTOP = 'draw:deletestop';
+
 
 
 L.Draw = L.Draw || {};
 
+/**
+ * @class L.Draw.Feature
+ * @aka Draw.Feature
+ */
 L.Draw.Feature = L.Handler.extend({
 	includes: L.Mixin.Events,
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		this._map = map;
 		this._container = map._container;
@@ -129,6 +368,7 @@ L.Draw.Feature = L.Handler.extend({
 		L.setOptions(this, options);
 	},
 
+	// @method enable(): void
 	enable: function () {
 		if (this._enabled) { return; }
 
@@ -136,19 +376,21 @@ L.Draw.Feature = L.Handler.extend({
 
 		this.fire('enabled', { handler: this.type });
 
-		this._map.fire('draw:drawstart', { layerType: this.type });
+		this._map.fire(L.Draw.Event.DRAWSTART, { layerType: this.type });
 	},
 
+	// @method initialize(): void
 	disable: function () {
 		if (!this._enabled) { return; }
 
 		L.Handler.prototype.disable.call(this);
 
-		this._map.fire('draw:drawstop', { layerType: this.type });
+		this._map.fire(L.Draw.Event.DRAWSTOP, { layerType: this.type });
 
 		this.fire('disabled', { handler: this.type });
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var map = this._map;
 
@@ -163,6 +405,7 @@ L.Draw.Feature = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		if (this._map) {
 			L.DomUtil.enableTextSelection();
@@ -174,12 +417,13 @@ L.Draw.Feature = L.Handler.extend({
 		}
 	},
 
+	// @method setOptions(): void
 	setOptions: function (options) {
 		L.setOptions(this, options);
 	},
 
 	_fireCreatedEvent: function (layer) {
-		this._map.fire('draw:created', { layer: layer, layerType: this.type });
+		this._map.fire(L.Draw.Event.CREATED, { layer: layer, layerType: this.type });
 	},
 
 	// Cancel drawing when the escape key is pressed
@@ -192,6 +436,12 @@ L.Draw.Feature = L.Handler.extend({
 });
 
 
+
+/**
+ * @class L.Draw.Polyline
+ * @aka Draw.Polyline
+ * @inherits L.Draw.Feature
+ */
 L.Draw.Polyline = L.Draw.Feature.extend({
 	statics: {
 		TYPE: 'polyline'
@@ -230,6 +480,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		// if touch, switch to touch icon
 		if (L.Browser.touch) {
@@ -250,6 +501,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
@@ -299,6 +551,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
 
@@ -333,6 +586,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			.off('click', this._onTouch, this);
 	},
 
+	// @method deleteLastVertex(): void
 	deleteLastVertex: function () {
 		if (this._markers.length <= 1) {
 			return;
@@ -354,6 +608,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._vertexChanged(latlng, false);
 	},
 
+	// @method addVertex(): void
 	addVertex: function (latlng) {
 		var markersLength = this._markers.length;
 
@@ -376,6 +631,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._vertexChanged(latlng, true);
 	},
 
+	// @method completeShape(): void
 	completeShape: function () {
 		if (this._markers.length <= 1) {
 			return;
@@ -437,7 +693,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_vertexChanged: function (latlng, added) {
-		this._map.fire('draw:drawvertex', { layers: this._markerGroup });
+		this._map.fire(L.Draw.Event.DRAWVERTEX, { layers: this._markerGroup });
 		this._updateFinishHandler();
 
 		this._updateRunningMeasure(latlng, added);
@@ -685,6 +941,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 });
 
 
+
+/**
+ * @class L.Draw.Polygon
+ * @aka Draw.Polygon
+ * @inherits L.Draw.Polyline
+ */
 L.Draw.Polygon = L.Draw.Polyline.extend({
 	statics: {
 		TYPE: 'polygon'
@@ -707,6 +969,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		metric: true // Whether to use the metric measurement system or imperial
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		L.Draw.Polyline.prototype.initialize.call(this, map, options);
 
@@ -791,19 +1054,26 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 });
 
 
-L.SimpleShape = {};
 
+L.SimpleShape = {};
+/**
+ * @class L.Draw.SimpleShape
+ * @aka Draw.SimpleShape
+ * @inherits L.Draw.Feature
+ */
 L.Draw.SimpleShape = L.Draw.Feature.extend({
 	options: {
 		repeatMode: false
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		this._endLabelText = L.drawLocal.draw.handlers.simpleshape.tooltip.end;
 
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
@@ -826,6 +1096,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
 		if (this._map) {
@@ -892,6 +1163,12 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	}
 });
 
+
+/**
+ * @class L.Draw.Rectangle
+ * @aka Draw.Rectangle
+ * @inherits L.Draw.SimpleShape
+ */
 L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	statics: {
 		TYPE: 'rectangle'
@@ -911,6 +1188,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 		metric: true // Whether to use the metric measurement system or imperial
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Rectangle.TYPE;
@@ -953,6 +1231,12 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 });
 
 
+
+/**
+ * @class L.Draw.Circle
+ * @aka Draw.Circle
+ * @inherits L.Draw.SimpleShape
+ */
 L.Draw.Circle = L.Draw.SimpleShape.extend({
 	statics: {
 		TYPE: 'circle'
@@ -974,6 +1258,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 		feet: true // When not metric, use feet instead of yards for display
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Circle.TYPE;
@@ -1020,6 +1305,12 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 });
 
 
+
+/**
+ * @class L.Draw.Marker
+ * @aka Draw.Marker
+ * @inherits L.Draw.Feature
+ */
 L.Draw.Marker = L.Draw.Feature.extend({
 	statics: {
 		TYPE: 'marker'
@@ -1031,6 +1322,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Marker.TYPE;
@@ -1038,6 +1330,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 
@@ -1066,6 +1359,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
 
@@ -1132,14 +1426,21 @@ L.Draw.Marker = L.Draw.Feature.extend({
 });
 
 
+
 L.Edit = L.Edit || {};
 
+/**
+ * @class L.Edit.Marker
+ * @aka Edit.Marker
+ */
 L.Edit.Marker = L.Handler.extend({
+	// @method initialize(): void
 	initialize: function (marker, options) {
 		this._marker = marker;
 		L.setOptions(this, options);
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var marker = this._marker;
 
@@ -1148,6 +1449,7 @@ L.Edit.Marker = L.Handler.extend({
 		this._toggleMarkerHighlight();
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		var marker = this._marker;
 
@@ -1159,7 +1461,7 @@ L.Edit.Marker = L.Handler.extend({
 	_onDragEnd: function (e) {
 		var layer = e.target;
 		layer.edited = true;
-		this._map.fire('draw:editmove', {layer: layer});
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: layer});
 	},
 
 	_toggleMarkerHighlight: function () {
@@ -1210,14 +1512,17 @@ L.Marker.addInitHook(function () {
 });
 
 
+
 L.Edit = L.Edit || {};
 
-/*
- * L.Edit.Poly is an editing handler for polylines and polygons.
+/**
+ * @class L.Edit.Poly
+ * @aka Edit.Poly
  */
 L.Edit.Poly = L.Handler.extend({
 	options: {},
 
+	// @method initialize(): void
 	initialize: function (poly, options) {
 
 		this.latlngs = [poly._latlngs];
@@ -1244,6 +1549,7 @@ L.Edit.Poly = L.Handler.extend({
 		}
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		this._initHandlers();
 		this._eachVertexHandler(function (handler) {
@@ -1251,12 +1557,14 @@ L.Edit.Poly = L.Handler.extend({
 		});
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		this._eachVertexHandler(function (handler) {
 			handler.removeHooks();
 		});
 	},
 
+	// @method updateMarkers(): void
 	updateMarkers: function () {
 		this._eachVertexHandler(function (handler) {
 			handler.updateMarkers();
@@ -1279,6 +1587,10 @@ L.Edit.Poly = L.Handler.extend({
 
 });
 
+/**
+ * @class L.Edit.PolyVerticesEdit
+ * @aka Edit.PolyVerticesEdit
+ */
 L.Edit.PolyVerticesEdit = L.Handler.extend({
 	options: {
 		icon: new L.DivIcon({
@@ -1297,6 +1609,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 
 	},
 
+	// @method intialize(): void
 	initialize: function (poly, latlngs, options) {
 		// if touch, switch to touch icon
 		if (L.Browser.touch) {
@@ -1320,6 +1633,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		return L.Polyline._flat(this._latlngs) ? this._latlngs : this._latlngs[0];
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var poly = this._poly;
 
@@ -1343,6 +1657,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		var poly = this._poly;
 
@@ -1355,6 +1670,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		}
 	},
 
+	// @method updateMarkers(): void
 	updateMarkers: function () {
 		this._markerGroup.clearLayers();
 		this._initMarkers();
@@ -1449,7 +1765,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	_fireEdit: function () {
 		this._poly.edited = true;
 		this._poly.fire('edit');
-		this._poly._map.fire('draw:editvertex', { layers: this._markerGroup });
+		this._poly._map.fire(L.Draw.Event.EDITVERTEX, { layers: this._markerGroup });
 	},
 
 	_onMarkerDrag: function (e) {
@@ -1678,8 +1994,12 @@ L.Polyline.addInitHook(function () {
 });
 
 
-L.Edit = L.Edit || {};
 
+L.Edit = L.Edit || {};
+/**
+ * @class L.Edit.SimpleShape
+ * @aka Edit.SimpleShape
+ */
 L.Edit.SimpleShape = L.Handler.extend({
 	options: {
 		moveIcon: new L.DivIcon({
@@ -1700,6 +2020,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		}),
 	},
 
+	// @method intialize(): void
 	initialize: function (shape, options) {
 		// if touch, switch to touch icon
 		if (L.Browser.touch) {
@@ -1711,6 +2032,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		L.Util.setOptions(this, options);
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var shape = this._shape;
 		if (this._shape._map) {
@@ -1727,6 +2049,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		var shape = this._shape;
 
@@ -1747,6 +2070,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		this._map = null;
 	},
 
+	// @method updateMarkers(): void
 	updateMarkers: function () {
 		this._markerGroup.clearLayers();
 		this._initMarkers();
@@ -1899,8 +2223,13 @@ L.Edit.SimpleShape = L.Handler.extend({
 });
 
 
-L.Edit = L.Edit || {};
 
+L.Edit = L.Edit || {};
+/**
+ * @class L.Edit.Rectangle
+ * @aka Edit.Rectangle
+ * @inherits L.Edit.SimpleShape
+ */
 L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 	_createMoveMarker: function () {
 		var bounds = this._shape.getBounds(),
@@ -1970,7 +2299,7 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 		// Reposition the resize markers
 		this._repositionCornerMarkers();
 
-		this._map.fire('draw:editmove', {layer: this._shape});
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: this._shape});
 	},
 
 	_resize: function (latlng) {
@@ -1983,7 +2312,7 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 		bounds = this._shape.getBounds();
 		this._moveMarker.setLatLng(bounds.getCenter());
 
-		this._map.fire('draw:editresize', {layer: this._shape});
+		this._map.fire(L.Draw.Event.EDITRESIZE, {layer: this._shape});
 	},
 
 	_getCorners: function () {
@@ -2022,8 +2351,13 @@ L.Rectangle.addInitHook(function () {
 });
 
 
-L.Edit = L.Edit || {};
 
+L.Edit = L.Edit || {};
+/**
+ * @class L.Edit.Circle
+ * @aka Edit.Circle
+ * @inherits L.Edit.SimpleShape
+ */
 L.Edit.Circle = L.Edit.SimpleShape.extend({
 	_createMoveMarker: function () {
 		var center = this._shape.getLatLng();
@@ -2055,7 +2389,7 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
 		// Move the circle
 		this._shape.setLatLng(latlng);
 
-		this._map.fire('draw:editmove', {layer: this._shape});
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: this._shape});
 	},
 
 	_resize: function (latlng) {
@@ -2064,7 +2398,7 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
 
 		this._shape.setRadius(radius);
 
-		this._map.fire('draw:editresize', {layer: this._shape});
+		this._map.fire(L.Draw.Event.EDITRESIZE, {layer: this._shape});
 	}
 });
 
@@ -2090,18 +2424,27 @@ L.Circle.addInitHook(function () {
 	});
 });
 
+
 L.Map.mergeOptions({
 	touchExtend: true
 });
 
+/**
+ * @class L.Map.TouchExtend
+ * @aka TouchExtend
+ */
 L.Map.TouchExtend = L.Handler.extend({
 
+	// @method initialize(): void
+	// Sets TouchExtend private accessor variables
 	initialize: function (map) {
 		this._map = map;
 		this._container = map._container;
 		this._pane = map._panes.overlayPane;
 	},
 
+	// @method addHooks(): void
+	// Adds dom listener events to the map container
 	addHooks: function () {
 		L.DomEvent.on(this._container, 'touchstart', this._onTouchStart, this);
 		L.DomEvent.on(this._container, 'touchend', this._onTouchEnd, this);
@@ -2118,6 +2461,8 @@ L.Map.TouchExtend = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
+	// Removes dom listener events from the map container
 	removeHooks: function () {
 		L.DomEvent.off(this._container, 'touchstart', this._onTouchStart);
 		L.DomEvent.off(this._container, 'touchend', this._onTouchEnd);
@@ -2262,8 +2607,14 @@ L.Map.TouchExtend = L.Handler.extend({
 
 L.Map.addInitHook('addHandler', 'touchExtend', L.Map.TouchExtend);
 
-// This isn't full Touch support. This is just to get makers to also support dom touch events after creation
-// #TODO: find a better way of getting markers to support touch.
+
+/**
+ * @class L.Marker.Touch
+ * @aka Marker.Touch
+ *
+ * This isn't full Touch support. This is just to get makers to also support dom touch events after creation
+ * #TODO: find a better way of getting markers to support touch.
+ */
 L.Marker.Touch = L.Marker.extend({
 
 	_initInteraction: function () {
@@ -2276,7 +2627,7 @@ L.Marker.Touch = L.Marker.extend({
 	},
 
 	// This is an exact copy of https://github.com/Leaflet/Leaflet/blob/v0.7/src/layer/marker/Marker.js
-	// with the addition of the touch events on line 15.
+	// with the addition of the touch events
 	_initInteractionLegacy: function () {
 
 		if (!this.options.clickable) {
@@ -2309,6 +2660,7 @@ L.Marker.Touch = L.Marker.extend({
 			}
 		}
 	},
+
 	_detectIE: function () {
 		var ua = window.navigator.userAgent;
 
@@ -2337,12 +2689,15 @@ L.Marker.Touch = L.Marker.extend({
 });
 
 
-/*
- * L.LatLngUtil contains different utility functions for LatLngs.
- */
 
+/**
+ * @class L.LatLngUtil
+ * @aka LatLngUtil
+ */
 L.LatLngUtil = {
 	// Clones a LatLngs[], returns [][]
+
+	// @method cloneLatLngs(): void
 	cloneLatLngs: function (latlngs) {
 		var clone = [];
 		for (var i = 0, l = latlngs.length; i < l; i++) {
@@ -2356,14 +2711,22 @@ L.LatLngUtil = {
 		return clone;
 	},
 
+	// @method cloneLatLng(): void
 	cloneLatLng: function (latlng) {
 		return L.latLng(latlng.lat, latlng.lng);
 	}
 };
 
 
+
+/**
+ * @class L.GeometryUtil
+ * @aka GeometryUtil
+ */
 L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 	// Ported from the OpenLayers implementation. See https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Geometry/LinearRing.js#L270
+
+	// @method geodesicArea(): void
 	geodesicArea: function (latLngs) {
 		var pointsCount = latLngs.length,
 			area = 0.0,
@@ -2383,6 +2746,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return Math.abs(area);
 	},
 
+	// @method readableArea(): void
 	readableArea: function (area, isMetric) {
 		var areaStr;
 
@@ -2407,6 +2771,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return areaStr;
 	},
 
+	// @method readableDistance(): void
 	readableDistance: function (distance, isMetric, useFeet) {
 		var distanceStr;
 
@@ -2437,7 +2802,15 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 });
 
 
+
+/**
+ * @class L.Util
+ * @aka Util
+ * @aka L.LineUtil
+ */
 L.Util.extend(L.LineUtil, {
+
+	// @method segmentsIntersect(): void
 	// Checks to see if two line segments intersect. Does not handle degenerate cases.
 	// http://compgeom.cs.uiuc.edu/~jeffe/teaching/373/notes/x06-sweepline.pdf
 	segmentsIntersect: function (/*Point*/ p, /*Point*/ p1, /*Point*/ p2, /*Point*/ p3) {
@@ -2453,7 +2826,14 @@ L.Util.extend(L.LineUtil, {
 	}
 });
 
+
+/**
+ * @class L.Polyline
+ * @aka Polyline
+ */
 L.Polyline.include({
+
+	// @method intersects(): void
 	// Check to see if this polyline has any linesegments that intersect.
 	// NOTE: does not support detecting intersection for degenerate cases.
 	intersects: function () {
@@ -2478,6 +2858,7 @@ L.Polyline.include({
 		return false;
 	},
 
+	// @method newLatLngIntersects(): void
 	// Check for intersection if new latlng was added to this polyline.
 	// NOTE: does not support detecting intersection for degenerate cases.
 	newLatLngIntersects: function (latlng, skipFirst) {
@@ -2489,6 +2870,7 @@ L.Polyline.include({
 		return this.newPointIntersects(this._map.latLngToLayerPoint(latlng), skipFirst);
 	},
 
+	// @method newPointIntersects(): void
 	// Check for intersection if new point was added to this polyline.
 	// newPoint must be a layer point.
 	// NOTE: does not support detecting intersection for degenerate cases.
@@ -2553,7 +2935,14 @@ L.Polyline.include({
 });
 
 
+
+/**
+ * @class L.Polygon
+ * @aka Polygon
+ */
 L.Polygon.include({
+
+	// @method intersects(): void
 	// Checks a polygon for any intersecting line segments. Ignores holes.
 	intersects: function () {
 		var polylineIntersects,
@@ -2582,14 +2971,22 @@ L.Polygon.include({
 });
 
 
+
+/**
+ * @class L.Control.Draw
+ * @aka L.Draw
+ */
 L.Control.Draw = L.Control.extend({
 
+	// Options
 	options: {
 		position: 'topleft',
 		draw: {},
 		edit: false
 	},
 
+	// @method initialize(): void
+	// Initializes draw control, toolbars from the options
 	initialize: function (options) {
 		if (L.version < '0.7') {
 			throw new Error('Leaflet.draw 0.2.3+ requires Leaflet 0.7.0+. Download latest from https://github.com/Leaflet/Leaflet/');
@@ -2622,6 +3019,8 @@ L.Control.Draw = L.Control.extend({
 		L.toolbar = this; //set global var for editing the toolbar
 	},
 
+	// @method onAdd(): container
+	// Adds the toolbar container to the map
 	onAdd: function (map) {
 		var container = L.DomUtil.create('div', 'leaflet-draw'),
 			addedTopClass = false,
@@ -2649,6 +3048,8 @@ L.Control.Draw = L.Control.extend({
 		return container;
 	},
 
+	// @method onRemove(): void
+	// Removes the toolbars from the map toolbar container
 	onRemove: function () {
 		for (var toolbarId in this._toolbars) {
 			if (this._toolbars.hasOwnProperty(toolbarId)) {
@@ -2657,6 +3058,8 @@ L.Control.Draw = L.Control.extend({
 		}
 	},
 
+	// @method setDrawingOptions(options): void
+	// Sets options to all toolbar instances
 	setDrawingOptions: function (options) {
 		for (var toolbarId in this._toolbars) {
 			if (this._toolbars[toolbarId] instanceof L.DrawToolbar) {
@@ -2689,256 +3092,336 @@ L.Map.addInitHook(function () {
 });
 
 
+
+/**
+ * @class L.Toolbar
+ * @aka Toolbar
+ *
+ * The toolbar class of the API — it is used to create the ui
+ * This will be depreciated
+ *
+ * @example
+ *
+ * ```js
+ *    var toolbar = L.Toolbar();
+ *    toolbar.addToolbar(map);
+ * ```
+ *
+ * ### Disabling a toolbar
+ *
+ * If you do not want a particular toolbar in your app you can turn it off by setting the toolbar to false.
+ *
+ * ```js
+ *      var drawControl = new L.Control.Draw({
+ *          draw: false,
+ *          edit: {
+ *              featureGroup: editableLayers
+ *          }
+ *      });
+ * ```
+ *
+ * ### Disabling a toolbar item
+ *
+ * If you want to turn off a particular toolbar item, set it to false. The following disables drawing polygons and
+ * markers. It also turns off the ability to edit layers.
+ *
+ * ```js
+ *      var drawControl = new L.Control.Draw({
+ *          draw: {
+ *              polygon: false,
+ *              marker: false
+ *          },
+ *          edit: {
+ *              featureGroup: editableLayers,
+ *              edit: false
+ *          }
+ *      });
+ * ```
+ */
 L.Toolbar = L.Class.extend({
-	includes: [L.Mixin.Events],
+    includes: [L.Mixin.Events],
 
-	initialize: function (options) {
-		L.setOptions(this, options);
+    // @section Methods for modifying the toolbar
 
-		this._modes = {};
-		this._actionButtons = [];
-		this._activeMode = null;
-	},
+    // @method initialize(options): void
+    // Toolbar constructor
+    initialize: function (options) {
+        L.setOptions(this, options);
 
-	enabled: function () {
-		return this._activeMode !== null;
-	},
+        this._modes = {};
+        this._actionButtons = [];
+        this._activeMode = null;
+    },
 
-	disable: function () {
-		if (!this.enabled()) { return; }
+    // @method enabled(): boolean
+    // Gets a true/false of whether the toolbar is enabled
+    enabled: function () {
+        return this._activeMode !== null;
+    },
 
-		this._activeMode.handler.disable();
-	},
+    // @method disable(): void
+    // Disables the toolbar
+    disable: function () {
+        if (!this.enabled()) {
+            return;
+        }
 
-	addToolbar: function (map) {
-		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
-			buttonIndex = 0,
-			buttonClassPrefix = this._toolbarClass || '',
-			modeHandlers = this.getModeHandlers(map),
-			i;
+        this._activeMode.handler.disable();
+    },
 
-		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
-		this._map = map;
+    // @method addToolbar(map): L.DomUtil
+    // Adds the toolbar to the map and returns the toolbar dom element
+    addToolbar: function (map) {
+        var container = L.DomUtil.create('div', 'leaflet-draw-section'),
+            buttonIndex = 0,
+            buttonClassPrefix = this._toolbarClass || '',
+            modeHandlers = this.getModeHandlers(map),
+            i;
 
-		for (i = 0; i < modeHandlers.length; i++) {
-			if (modeHandlers[i].enabled) {
-				this._initModeHandler(
-					modeHandlers[i].handler,
-					this._toolbarContainer,
-					buttonIndex++,
-					buttonClassPrefix,
-					modeHandlers[i].title
-				);
-			}
-		}
+        this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
+        this._map = map;
 
-		// if no buttons were added, do not add the toolbar
-		if (!buttonIndex) {
-			return;
-		}
+        for (i = 0; i < modeHandlers.length; i++) {
+            if (modeHandlers[i].enabled) {
+                this._initModeHandler(
+                    modeHandlers[i].handler,
+                    this._toolbarContainer,
+                    buttonIndex++,
+                    buttonClassPrefix,
+                    modeHandlers[i].title
+                );
+            }
+        }
 
-		// Save button index of the last button, -1 as we would have ++ after the last button
-		this._lastButtonIndex = --buttonIndex;
+        // if no buttons were added, do not add the toolbar
+        if (!buttonIndex) {
+            return;
+        }
 
-		// Create empty actions part of the toolbar
-		this._actionsContainer = L.DomUtil.create('ul', 'leaflet-draw-actions');
+        // Save button index of the last button, -1 as we would have ++ after the last button
+        this._lastButtonIndex = --buttonIndex;
 
-		// Add draw and cancel containers to the control container
-		container.appendChild(this._toolbarContainer);
-		container.appendChild(this._actionsContainer);
+        // Create empty actions part of the toolbar
+        this._actionsContainer = L.DomUtil.create('ul', 'leaflet-draw-actions');
 
-		return container;
-	},
+        // Add draw and cancel containers to the control container
+        container.appendChild(this._toolbarContainer);
+        container.appendChild(this._actionsContainer);
 
-	removeToolbar: function () {
-		// Dispose each handler
-		for (var handlerId in this._modes) {
-			if (this._modes.hasOwnProperty(handlerId)) {
-				// Unbind handler button
-				this._disposeButton(
-					this._modes[handlerId].button,
-					this._modes[handlerId].handler.enable,
-					this._modes[handlerId].handler
-				);
+        return container;
+    },
 
-				// Make sure is disabled
-				this._modes[handlerId].handler.disable();
+    // @method removeToolbar(): void
+    // Removes the toolbar and drops the handler event listeners
+    removeToolbar: function () {
+        // Dispose each handler
+        for (var handlerId in this._modes) {
+            if (this._modes.hasOwnProperty(handlerId)) {
+                // Unbind handler button
+                this._disposeButton(
+                    this._modes[handlerId].button,
+                    this._modes[handlerId].handler.enable,
+                    this._modes[handlerId].handler
+                );
 
-				// Unbind handler
-				this._modes[handlerId].handler
-					.off('enabled', this._handlerActivated, this)
-					.off('disabled', this._handlerDeactivated, this);
-			}
-		}
-		this._modes = {};
+                // Make sure is disabled
+                this._modes[handlerId].handler.disable();
 
-		// Dispose the actions toolbar
-		for (var i = 0, l = this._actionButtons.length; i < l; i++) {
-			this._disposeButton(
-				this._actionButtons[i].button,
-				this._actionButtons[i].callback,
-				this
-			);
-		}
-		this._actionButtons = [];
-		this._actionsContainer = null;
-	},
+                // Unbind handler
+                this._modes[handlerId].handler
+                    .off('enabled', this._handlerActivated, this)
+                    .off('disabled', this._handlerDeactivated, this);
+            }
+        }
+        this._modes = {};
 
-	_initModeHandler: function (handler, container, buttonIndex, classNamePredix, buttonTitle) {
-		var type = handler.type;
+        // Dispose the actions toolbar
+        for (var i = 0, l = this._actionButtons.length; i < l; i++) {
+            this._disposeButton(
+                this._actionButtons[i].button,
+                this._actionButtons[i].callback,
+                this
+            );
+        }
+        this._actionButtons = [];
+        this._actionsContainer = null;
+    },
 
-		this._modes[type] = {};
+    _initModeHandler: function (handler, container, buttonIndex, classNamePredix, buttonTitle) {
+        var type = handler.type;
 
-		this._modes[type].handler = handler;
+        this._modes[type] = {};
 
-		this._modes[type].button = this._createButton({
-			type: type,
-			title: buttonTitle,
-			className: classNamePredix + '-' + type,
-			container: container,
-			callback: this._modes[type].handler.enable,
-			context: this._modes[type].handler
-		});
+        this._modes[type].handler = handler;
 
-		this._modes[type].buttonIndex = buttonIndex;
+        this._modes[type].button = this._createButton({
+            type: type,
+            title: buttonTitle,
+            className: classNamePredix + '-' + type,
+            container: container,
+            callback: this._modes[type].handler.enable,
+            context: this._modes[type].handler
+        });
 
-		this._modes[type].handler
-			.on('enabled', this._handlerActivated, this)
-			.on('disabled', this._handlerDeactivated, this);
-	},
+        this._modes[type].buttonIndex = buttonIndex;
 
-	_createButton: function (options) {
+        this._modes[type].handler
+            .on('enabled', this._handlerActivated, this)
+            .on('disabled', this._handlerDeactivated, this);
+    },
 
-		var link = L.DomUtil.create('a', options.className || '', options.container);
-		link.href = '#';
+    _createButton: function (options) {
 
-		if (options.text) {
-			link.innerHTML = options.text;
-		}
+        var link = L.DomUtil.create('a', options.className || '', options.container);
+        link.href = '#';
 
-		if (options.title) {
-			link.title = options.title;
-		}
+        if (options.text) {
+            link.innerHTML = options.text;
+        }
 
-		L.DomEvent
-			.on(link, 'click', L.DomEvent.stopPropagation)
-			.on(link, 'mousedown', L.DomEvent.stopPropagation)
-			.on(link, 'dblclick', L.DomEvent.stopPropagation)
-			.on(link, 'click', L.DomEvent.preventDefault)
-			.on(link, 'click', options.callback, options.context);
+        if (options.title) {
+            link.title = options.title;
+        }
 
-		return link;
-	},
+        L.DomEvent
+            .on(link, 'click', L.DomEvent.stopPropagation)
+            .on(link, 'mousedown', L.DomEvent.stopPropagation)
+            .on(link, 'dblclick', L.DomEvent.stopPropagation)
+            .on(link, 'click', L.DomEvent.preventDefault)
+            .on(link, 'click', options.callback, options.context);
 
-	_disposeButton: function (button, callback) {
-		L.DomEvent
-			.off(button, 'click', L.DomEvent.stopPropagation)
-			.off(button, 'mousedown', L.DomEvent.stopPropagation)
-			.off(button, 'dblclick', L.DomEvent.stopPropagation)
-			.off(button, 'click', L.DomEvent.preventDefault)
-			.off(button, 'click', callback);
-	},
+        return link;
+    },
 
-	_handlerActivated: function (e) {
-		// Disable active mode (if present)
-		this.disable();
+    _disposeButton: function (button, callback) {
+        L.DomEvent
+            .off(button, 'click', L.DomEvent.stopPropagation)
+            .off(button, 'mousedown', L.DomEvent.stopPropagation)
+            .off(button, 'dblclick', L.DomEvent.stopPropagation)
+            .off(button, 'click', L.DomEvent.preventDefault)
+            .off(button, 'click', callback);
+    },
 
-		// Cache new active feature
-		this._activeMode = this._modes[e.handler];
+    _handlerActivated: function (e) {
+        // Disable active mode (if present)
+        this.disable();
 
-		L.DomUtil.addClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
+        // Cache new active feature
+        this._activeMode = this._modes[e.handler];
 
-		this._showActionsToolbar();
+        L.DomUtil.addClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
 
-		this.fire('enable');
-	},
+        this._showActionsToolbar();
 
-	_handlerDeactivated: function () {
-		this._hideActionsToolbar();
+        this.fire('enable');
+    },
 
-		L.DomUtil.removeClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
+    _handlerDeactivated: function () {
+        this._hideActionsToolbar();
 
-		this._activeMode = null;
+        L.DomUtil.removeClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');
 
-		this.fire('disable');
-	},
+        this._activeMode = null;
 
-	_createActions: function (handler) {
-		var container = this._actionsContainer,
-			buttons = this.getActions(handler),
-			l = buttons.length,
-			li, di, dl, button;
+        this.fire('disable');
+    },
 
-		// Dispose the actions toolbar (todo: dispose only not used buttons)
-		for (di = 0, dl = this._actionButtons.length; di < dl; di++) {
-			this._disposeButton(this._actionButtons[di].button, this._actionButtons[di].callback);
-		}
-		this._actionButtons = [];
+    _createActions: function (handler) {
+        var container = this._actionsContainer,
+            buttons = this.getActions(handler),
+            l = buttons.length,
+            li, di, dl, button;
 
-		// Remove all old buttons
-		while (container.firstChild) {
-			container.removeChild(container.firstChild);
-		}
+        // Dispose the actions toolbar (todo: dispose only not used buttons)
+        for (di = 0, dl = this._actionButtons.length; di < dl; di++) {
+            this._disposeButton(this._actionButtons[di].button, this._actionButtons[di].callback);
+        }
+        this._actionButtons = [];
 
-		for (var i = 0; i < l; i++) {
-			if ('enabled' in buttons[i] && !buttons[i].enabled) {
-				continue;
-			}
+        // Remove all old buttons
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
 
-			li = L.DomUtil.create('li', '', container);
+        for (var i = 0; i < l; i++) {
+            if ('enabled' in buttons[i] && !buttons[i].enabled) {
+                continue;
+            }
 
-			button = this._createButton({
-				title: buttons[i].title,
-				text: buttons[i].text,
-				container: li,
-				callback: buttons[i].callback,
-				context: buttons[i].context
-			});
+            li = L.DomUtil.create('li', '', container);
 
-			this._actionButtons.push({
-				button: button,
-				callback: buttons[i].callback
-			});
-		}
-	},
+            button = this._createButton({
+                title: buttons[i].title,
+                text: buttons[i].text,
+                container: li,
+                callback: buttons[i].callback,
+                context: buttons[i].context
+            });
 
-	_showActionsToolbar: function () {
-		var buttonIndex = this._activeMode.buttonIndex,
-			lastButtonIndex = this._lastButtonIndex,
-			toolbarPosition = this._activeMode.button.offsetTop - 1;
+            this._actionButtons.push({
+                button: button,
+                callback: buttons[i].callback
+            });
+        }
+    },
 
-		// Recreate action buttons on every click
-		this._createActions(this._activeMode.handler);
+    _showActionsToolbar: function () {
+        var buttonIndex = this._activeMode.buttonIndex,
+            lastButtonIndex = this._lastButtonIndex,
+            toolbarPosition = this._activeMode.button.offsetTop - 1;
 
-		// Correctly position the cancel button
-		this._actionsContainer.style.top = toolbarPosition + 'px';
+        // Recreate action buttons on every click
+        this._createActions(this._activeMode.handler);
 
-		if (buttonIndex === 0) {
-			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
-			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
-		}
+        // Correctly position the cancel button
+        this._actionsContainer.style.top = toolbarPosition + 'px';
 
-		if (buttonIndex === lastButtonIndex) {
-			L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
-			L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
-		}
+        if (buttonIndex === 0) {
+            L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
+            L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
+        }
 
-		this._actionsContainer.style.display = 'block';
-	},
+        if (buttonIndex === lastButtonIndex) {
+            L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
+            L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
+        }
 
-	_hideActionsToolbar: function () {
-		this._actionsContainer.style.display = 'none';
+        this._actionsContainer.style.display = 'block';
+    },
 
-		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
-		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
-		L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-top');
-		L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
-	}
+    _hideActionsToolbar: function () {
+        this._actionsContainer.style.display = 'none';
+
+        L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
+        L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
+        L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-top');
+        L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
+    }
 });
 
 
+
 L.Draw = L.Draw || {};
+/**
+ * @class L.Draw.Tooltip
+ * @aka Tooltip
+ *
+ * The tooltip class — it is used to display the tooltip while drawing
+ * This will be depreciated
+ *
+ * @example
+ *
+ * ```js
+ * 	var tooltip = L.Draw.Tooltip();
+ * ```
+ *
+ */
 L.Draw.Tooltip = L.Class.extend({
+
+	// @section Methods for modifying draw state
+
+	// @method initialize(map): void
+	// Tooltip constructor
 	initialize: function (map) {
 		this._map = map;
 		this._popupPane = map._panes.popupPane;
@@ -2949,6 +3432,8 @@ L.Draw.Tooltip = L.Class.extend({
 		this._map.on('mouseout', this._onMouseOut, this);
 	},
 
+	// @method dispose(): void
+	// Remove Tooltip DOM and unbind events
 	dispose: function () {
 		this._map.off('mouseout', this._onMouseOut, this);
 
@@ -2958,6 +3443,8 @@ L.Draw.Tooltip = L.Class.extend({
 		}
 	},
 
+	// @method updateContent(labelText): this
+	// Changes the tooltip text to string in function call
 	updateContent: function (labelText) {
 		if (!this._container) {
 			return this;
@@ -2981,6 +3468,8 @@ L.Draw.Tooltip = L.Class.extend({
 		return this;
 	},
 
+	// @method updatePosition(latlng): this
+	// Changes the location of the tooltip
 	updatePosition: function (latlng) {
 		var pos = this._map.latLngToLayerPoint(latlng),
 			tooltipContainer = this._container;
@@ -2993,6 +3482,8 @@ L.Draw.Tooltip = L.Class.extend({
 		return this;
 	},
 
+	// @method showAsError(): this
+	// Applies error class to tooltip
 	showAsError: function () {
 		if (this._container) {
 			L.DomUtil.addClass(this._container, 'leaflet-error-draw-tooltip');
@@ -3000,6 +3491,8 @@ L.Draw.Tooltip = L.Class.extend({
 		return this;
 	},
 
+	// @method removeError(): this
+	// Removes the error class from the tooltip
 	removeError: function () {
 		if (this._container) {
 			L.DomUtil.removeClass(this._container, 'leaflet-error-draw-tooltip');
@@ -3015,6 +3508,11 @@ L.Draw.Tooltip = L.Class.extend({
 });
 
 
+
+/**
+ * @class L.DrawToolbar
+ * @aka Toolbar
+ */
 L.DrawToolbar = L.Toolbar.extend({
 
 	statics: {
@@ -3029,6 +3527,7 @@ L.DrawToolbar = L.Toolbar.extend({
 		marker: {}
 	},
 
+	// @method initialize(): void
 	initialize: function (options) {
 		// Ensure that the options are merged correctly since L.extend is only shallow
 		for (var type in this.options) {
@@ -3043,6 +3542,7 @@ L.DrawToolbar = L.Toolbar.extend({
 		L.Toolbar.prototype.initialize.call(this, options);
 	},
 
+	// @method getModeHandlers(): void
 	getModeHandlers: function (map) {
 		return [
 			{
@@ -3073,7 +3573,7 @@ L.DrawToolbar = L.Toolbar.extend({
 		];
 	},
 
-	// Get the actions part of the toolbar
+	// @method getActions(): void
 	getActions: function (handler) {
 		return [
 			{
@@ -3099,6 +3599,7 @@ L.DrawToolbar = L.Toolbar.extend({
 		];
 	},
 
+	// @method setOptions(): void
 	setOptions: function (options) {
 		L.setOptions(this, options);
 
@@ -3111,10 +3612,14 @@ L.DrawToolbar = L.Toolbar.extend({
 });
 
 
+
 /*L.Map.mergeOptions({
 	editControl: true
 });*/
-
+/**
+ * @class L.EditToolbar
+ * @aka EditToolbar
+ */
 L.EditToolbar = L.Toolbar.extend({
 	statics: {
 		TYPE: 'edit'
@@ -3138,6 +3643,7 @@ L.EditToolbar = L.Toolbar.extend({
 		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
 	},
 
+	// @method intialize(): void
 	initialize: function (options) {
 		// Need to set this manually since null is an acceptable value here
 		if (options.edit) {
@@ -3161,6 +3667,7 @@ L.EditToolbar = L.Toolbar.extend({
 		this._selectedFeatureCount = 0;
 	},
 
+	// @method getModeHandlers(): void
 	getModeHandlers: function (map) {
 		var featureGroup = this.options.featureGroup;
 		return [
@@ -3183,6 +3690,7 @@ L.EditToolbar = L.Toolbar.extend({
 		];
 	},
 
+	// @method getActions(): void
 	getActions: function () {
 		return [
 			{
@@ -3200,6 +3708,7 @@ L.EditToolbar = L.Toolbar.extend({
 		];
 	},
 
+	// @method addToolbar(): void
 	addToolbar: function (map) {
 		var container = L.Toolbar.prototype.addToolbar.call(this, map);
 
@@ -3210,12 +3719,14 @@ L.EditToolbar = L.Toolbar.extend({
 		return container;
 	},
 
+	// @method removeToolbar(): void
 	removeToolbar: function () {
 		this.options.featureGroup.off('layeradd layerremove', this._checkDisabled, this);
 
 		L.Toolbar.prototype.removeToolbar.call(this);
 	},
 
+	// @method disable(): void
 	disable: function () {
 		if (!this.enabled()) { return; }
 
@@ -3273,6 +3784,11 @@ L.EditToolbar = L.Toolbar.extend({
 });
 
 
+
+/**
+ * @class L.EditToolbar.Edit
+ * @aka EditToolbar.Edit
+ */
 L.EditToolbar.Edit = L.Handler.extend({
 	statics: {
 		TYPE: 'edit'
@@ -3280,6 +3796,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	includes: L.Mixin.Events,
 
+	// @method intialize(): void
 	initialize: function (map, options) {
 		L.Handler.prototype.initialize.call(this, map);
 
@@ -3298,6 +3815,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this.type = L.EditToolbar.Edit.TYPE;
 	},
 
+	// @method enable(): void
 	enable: function () {
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
@@ -3305,7 +3823,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this.fire('enabled', {handler: this.type});
 			//this disable other handlers
 
-		this._map.fire('draw:editstart', { handler: this.type });
+		this._map.fire(L.Draw.Event.EDITSTART, { handler: this.type });
 			//allow drawLayer to be updated before beginning edition.
 
 		L.Handler.prototype.enable.call(this);
@@ -3314,16 +3832,18 @@ L.EditToolbar.Edit = L.Handler.extend({
 			.on('layerremove', this._disableLayerEdit, this);
 	},
 
+	// @method disable(): void
 	disable: function () {
 		if (!this._enabled) { return; }
 		this._featureGroup
 			.off('layeradd', this._enableLayerEdit, this)
 			.off('layerremove', this._disableLayerEdit, this);
 		L.Handler.prototype.disable.call(this);
-		this._map.fire('draw:editstop', { handler: this.type });
+		this._map.fire(L.Draw.Event.EDITSTOP, { handler: this.type });
 		this.fire('disabled', {handler: this.type});
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var map = this._map;
 
@@ -3347,10 +3867,11 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.on('mousemove', this._onMouseMove, this)
 				.on('touchmove', this._onMouseMove, this)
 				.on('MSPointerMove', this._onMouseMove, this)
-				.on('draw:editvertex', this._updateTooltip, this);
+				.on(L.Draw.Event.EDITVERTEX, this._updateTooltip, this);
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		if (this._map) {
 			// Clean up selected layers.
@@ -3366,16 +3887,18 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.off('mousemove', this._onMouseMove, this)
 				.off('touchmove', this._onMouseMove, this)
 				.off('MSPointerMove', this._onMouseMove, this)
-				.off('draw:editvertex', this._updateTooltip, this);
+				.off(L.Draw.Event.EDITVERTEX, this._updateTooltip, this);
 		}
 	},
 
+	// @method revertLayers(): void
 	revertLayers: function () {
 		this._featureGroup.eachLayer(function (layer) {
 			this._revertLayer(layer);
 		}, this);
 	},
 
+	// @method save(): void
 	save: function () {
 		var editedLayers = new L.LayerGroup();
 		this._featureGroup.eachLayer(function (layer) {
@@ -3384,7 +3907,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.edited = false;
 			}
 		});
-		this._map.fire('draw:edited', {layers: editedLayers});
+		this._map.fire(L.Draw.Event.EDITED, {layers: editedLayers});
 	},
 
 	_backupLayer: function (layer) {
@@ -3524,7 +4047,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 	_onMarkerDragEnd: function (e) {
 		var layer = e.target;
 		layer.edited = true;
-		this._map.fire('draw:editmove', {layer: layer});
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: layer});
 	},
 
 	_onTouchMove: function (e) {
@@ -3540,6 +4063,12 @@ L.EditToolbar.Edit = L.Handler.extend({
 });
 
 
+
+/**
+ * @class L.EditToolbar.Delete
+ * @aka EditToolbar.Delete
+ * @inherits L.Handler
+ */
 L.EditToolbar.Delete = L.Handler.extend({
 	statics: {
 		TYPE: 'remove' // not delete as delete is reserved in js
@@ -3547,6 +4076,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 	includes: L.Mixin.Events,
 
+	// @method intialize(): void
 	initialize: function (map, options) {
 		L.Handler.prototype.initialize.call(this, map);
 
@@ -3563,13 +4093,14 @@ L.EditToolbar.Delete = L.Handler.extend({
 		this.type = L.EditToolbar.Delete.TYPE;
 	},
 
+	// @method enable(): void
 	enable: function () {
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
 		}
 		this.fire('enabled', { handler: this.type});
 
-		this._map.fire('draw:deletestart', { handler: this.type });
+		this._map.fire(L.Draw.Event.DELETESTART, { handler: this.type });
 
 		L.Handler.prototype.enable.call(this);
 
@@ -3578,6 +4109,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 			.on('layerremove', this._disableLayerDelete, this);
 	},
 
+	// @method disable(): void
 	disable: function () {
 		if (!this._enabled) { return; }
 
@@ -3587,11 +4119,12 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 		L.Handler.prototype.disable.call(this);
 
-		this._map.fire('draw:deletestop', { handler: this.type });
+		this._map.fire(L.Draw.Event.DELETESTOP, { handler: this.type });
 
 		this.fire('disabled', { handler: this.type});
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var map = this._map;
 
@@ -3608,6 +4141,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		if (this._map) {
 			this._deletableLayers.eachLayer(this._disableLayerDelete, this);
@@ -3620,6 +4154,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 		}
 	},
 
+	// @method revertLayers(): void
 	revertLayers: function () {
 		// Iterate of the deleted layers and add them back into the featureGroup
 		this._deletedLayers.eachLayer(function (layer) {
@@ -3628,8 +4163,9 @@ L.EditToolbar.Delete = L.Handler.extend({
 		}, this);
 	},
 
+	// @method save(): void
 	save: function () {
-		this._map.fire('draw:deleted', { layers: this._deletedLayers });
+		this._map.fire(L.Draw.Event.DELETED, { layers: this._deletedLayers });
 	},
 
 	_enableLayerDelete: function (e) {
@@ -3667,4 +4203,6 @@ L.EditToolbar.Delete = L.Handler.extend({
 });
 
 
+
 }(window, document));
+//# sourceMappingURL=leaflet.draw-src.map

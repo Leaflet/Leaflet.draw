@@ -1,3 +1,8 @@
+/**
+ * @class L.Draw.Polyline
+ * @aka Draw.Polyline
+ * @inherits L.Draw.Feature
+ */
 L.Draw.Polyline = L.Draw.Feature.extend({
 	statics: {
 		TYPE: 'polyline'
@@ -36,6 +41,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		// if touch, switch to touch icon
 		if (L.Browser.touch) {
@@ -56,6 +62,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
@@ -105,6 +112,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
 
@@ -139,6 +147,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			.off('click', this._onTouch, this);
 	},
 
+	// @method deleteLastVertex(): void
 	deleteLastVertex: function () {
 		if (this._markers.length <= 1) {
 			return;
@@ -160,6 +169,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._vertexChanged(latlng, false);
 	},
 
+	// @method addVertex(): void
 	addVertex: function (latlng) {
 		var markersLength = this._markers.length;
 
@@ -182,6 +192,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._vertexChanged(latlng, true);
 	},
 
+	// @method completeShape(): void
 	completeShape: function () {
 		if (this._markers.length <= 1) {
 			return;
@@ -243,7 +254,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_vertexChanged: function (latlng, added) {
-		this._map.fire('draw:drawvertex', { layers: this._markerGroup });
+		this._map.fire(L.Draw.Event.DRAWVERTEX, { layers: this._markerGroup });
 		this._updateFinishHandler();
 
 		this._updateRunningMeasure(latlng, added);
