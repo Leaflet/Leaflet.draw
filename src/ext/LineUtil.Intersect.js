@@ -1,7 +1,7 @@
 /**
- * @class L.Util
+ * @class L.LineUtil
  * @aka Util
- * @aka L.LineUtil
+ * @aka L.Utils
  */
 L.Util.extend(L.LineUtil, {
 

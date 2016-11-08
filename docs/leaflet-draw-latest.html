@@ -32,7 +32,7 @@
         <div class="toc-col">
             <h4>Controls</h4>
             <ul>
-                <li><a href="#l-toolbar">Draw.Toolbar</a></li>
+                <li><a href="#l-draw-toolbar">Draw.Toolbar</a></li>
             </ul>
             <h4>Examples</h4>
             <ul>
@@ -44,7 +44,7 @@
             <h4>Draw Handlers</h4>
             <ul>
                 <li><a href="#l-draw-feature">Draw.Feature</a></li>
-                <li><a href="#l-draw-simpleShape">Draw.SimpleShape</a></li>
+                <li><a href="#l-draw-simpleshape">Draw.SimpleShape</a></li>
                 <li><a href="#l-draw-marker">Draw.Marker</a></li>
                 <li><a href="#l-draw-circle">Draw.Circle</a></li>
                 <li><a href="#l-draw-polyline">Draw.Polyline</a></li>
@@ -55,24 +55,24 @@
         <div class="toc-col">
             <h4>Edit Handler</h4>
             <ul>
-                <li><a href="#l-edit-simpleShape">Edit.SimpleShape</a></li>
+                <li><a href="#l-edit-simpleshape">Edit.SimpleShape</a></li>
                 <li><a href="#l-edit-marker">Edit.Marker</a></li>
                 <li><a href="#l-edit-circle">Edit.Circle</a></li>
                 <li><a href="#l-edit-poly">Edit.Poly</a></li>
                 <li><a href="#l-edit-rectangle">Edit.Rectangle</a></li>
-                <li><a href="#l-edit-toolbar-edit">EditToolbar.Edit</a></li>
-                <li><a href="#l-edit-toolbar-delete">EditToolbar.Delete</a></li>
+                <li><a href="#l-edittoolbar-edit">EditToolbar.Edit</a></li>
+                <li><a href="#l-edittoolbar-delete">EditToolbar.Delete</a></li>
             </ul>
         </div>
         <div class="toc-col last-col">
             <h4>Utility</h4>
             <ul>
-                <li><a href="#geometry-util">GeometryUtil</a></li>
-                <li><a href="#latLng-util">LatLngUtil</a></li>
-                <li><a href="#line-util">LineUtil.Intersect</a></li>
-                <li><a href="#polygon">Polygon.Intersect</a></li>
-                <li><a href="#polyline">Polyline.Intersect</a></li>
-                <li><a href="#touch-events">TouchEvents</a></li>
+                <li><a href="#l-geometryutil">GeometryUtil</a></li>
+                <li><a href="#l-latlngutil">LatLngUtil</a></li>
+                <li><a href="#l-lineutil">LineUtil</a></li>
+                <li><a href="#l-polygon">Polygon</a></li>
+                <li><a href="#l-polyline">Polyline</a></li>
+                <li><a href="#l-map-touchextend">TouchExtend</a></li>
             </ul>
         </div>
     </div>
@@ -1336,11 +1336,144 @@ Triggered when the user has finished removing shapes (remove mode) and saves.</t
 </section>
 
 
-</section><h2 id='l-lineutil-intersect'>L.LineUtil.Intersect</h2>
-<h2 id='l-polygon-intersect'>L.Polygon.Intersect</h2>
-<h2 id='l-polyline-intersect'>L.Polyline.Intersect</h2>
-<h2 id='l-touchevents'>L.TouchEvents</h2>
-<h2 id='l-control-draw'>L.Control.Draw</h2>
+</section><h2 id='l-lineutil'>L.LineUtil</h2>
+<section>
+<h3 id='l-lineutil-method'>Methods</h3>
+
+<section >
+
+
+
+
+<table><thead>
+	<tr>
+		<th>Method</th>
+		<th>Returns</th>
+		<th>Description</th>
+	</tr>
+	</thead><tbody>
+	<tr id='l-lineutil-segmentsintersect'>
+		<td><code><b>segmentsIntersect</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Checks to see if two line segments intersect. Does not handle degenerate cases.
+<a href="http://compgeom.cs.uiuc.edu/~jeffe/teaching/373/notes/x06-sweepline.pdf">http://compgeom.cs.uiuc.edu/~jeffe/teaching/373/notes/x06-sweepline.pdf</a></p>
+</td>
+	</tr>
+</tbody></table>
+
+</section>
+
+
+</section><h2 id='l-polygon'>L.Polygon</h2>
+<section>
+<h3 id='l-polygon-method'>Methods</h3>
+
+<section >
+
+
+
+
+<table><thead>
+	<tr>
+		<th>Method</th>
+		<th>Returns</th>
+		<th>Description</th>
+	</tr>
+	</thead><tbody>
+	<tr id='l-polygon-intersects'>
+		<td><code><b>intersects</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Checks a polygon for any intersecting line segments. Ignores holes.</p>
+</td>
+	</tr>
+</tbody></table>
+
+</section>
+
+
+</section><h2 id='l-polyline'>L.Polyline</h2>
+<section>
+<h3 id='l-polyline-method'>Methods</h3>
+
+<section >
+
+
+
+
+<table><thead>
+	<tr>
+		<th>Method</th>
+		<th>Returns</th>
+		<th>Description</th>
+	</tr>
+	</thead><tbody>
+	<tr id='l-polyline-intersects'>
+		<td><code><b>intersects</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Check to see if this polyline has any linesegments that intersect.
+NOTE: does not support detecting intersection for degenerate cases.</p>
+</td>
+	</tr>
+	<tr id='l-polyline-newlatlngintersects'>
+		<td><code><b>newLatLngIntersects</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Check for intersection if new latlng was added to this polyline.
+NOTE: does not support detecting intersection for degenerate cases.</p>
+</td>
+	</tr>
+	<tr id='l-polyline-newpointintersects'>
+		<td><code><b>newPointIntersects</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Check for intersection if new point was added to this polyline.
+newPoint must be a layer point.
+NOTE: does not support detecting intersection for degenerate cases.</p>
+</td>
+	</tr>
+</tbody></table>
+
+</section>
+
+
+</section><h2 id='l-map-touchextend'>L.Map.TouchExtend</h2>
+<section>
+<h3 id='l-map-touchextend-method'>Methods</h3>
+
+<section >
+
+
+
+
+<table><thead>
+	<tr>
+		<th>Method</th>
+		<th>Returns</th>
+		<th>Description</th>
+	</tr>
+	</thead><tbody>
+	<tr id='l-map-touchextend-initialize'>
+		<td><code><b>initialize</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Sets TouchExtend private accessor variables</p>
+</td>
+	</tr>
+	<tr id='l-map-touchextend-addhooks'>
+		<td><code><b>addHooks</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Adds dom listener events to the map container</p>
+</td>
+	</tr>
+	<tr id='l-map-touchextend-removehooks'>
+		<td><code><b>removeHooks</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Removes dom listener events from the map container</p>
+</td>
+	</tr>
+</tbody></table>
+
+</section>
+
+
+</section><h2 id='l-control-draw'>L.Control.Draw</h2>
 <section>
 <h3 id='l-control-draw-method'>Methods</h3>
 
@@ -1588,143 +1721,6 @@ This will be depreciated</p>
 		<td><code><b>updateMarkers</b>()</nobr></code></td>
 		<td><code>void</code></td>
 		<td></td>
-	</tr>
-</tbody></table>
-
-</section>
-
-
-</section><h2 id='l-util'>L.Util</h2>
-<section>
-<h3 id='l-util-method'>Methods</h3>
-
-<section >
-
-
-
-
-<table><thead>
-	<tr>
-		<th>Method</th>
-		<th>Returns</th>
-		<th>Description</th>
-	</tr>
-	</thead><tbody>
-	<tr id='l-util-segmentsintersect'>
-		<td><code><b>segmentsIntersect</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td><p>Checks to see if two line segments intersect. Does not handle degenerate cases.
-<a href="http://compgeom.cs.uiuc.edu/~jeffe/teaching/373/notes/x06-sweepline.pdf">http://compgeom.cs.uiuc.edu/~jeffe/teaching/373/notes/x06-sweepline.pdf</a></p>
-</td>
-	</tr>
-</tbody></table>
-
-</section>
-
-
-</section><h2 id='l-polygon'>L.Polygon</h2>
-<section>
-<h3 id='l-polygon-method'>Methods</h3>
-
-<section >
-
-
-
-
-<table><thead>
-	<tr>
-		<th>Method</th>
-		<th>Returns</th>
-		<th>Description</th>
-	</tr>
-	</thead><tbody>
-	<tr id='l-polygon-intersects'>
-		<td><code><b>intersects</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td><p>Checks a polygon for any intersecting line segments. Ignores holes.</p>
-</td>
-	</tr>
-</tbody></table>
-
-</section>
-
-
-</section><h2 id='l-polyline'>L.Polyline</h2>
-<section>
-<h3 id='l-polyline-method'>Methods</h3>
-
-<section >
-
-
-
-
-<table><thead>
-	<tr>
-		<th>Method</th>
-		<th>Returns</th>
-		<th>Description</th>
-	</tr>
-	</thead><tbody>
-	<tr id='l-polyline-intersects'>
-		<td><code><b>intersects</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td><p>Check to see if this polyline has any linesegments that intersect.
-NOTE: does not support detecting intersection for degenerate cases.</p>
-</td>
-	</tr>
-	<tr id='l-polyline-newlatlngintersects'>
-		<td><code><b>newLatLngIntersects</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td><p>Check for intersection if new latlng was added to this polyline.
-NOTE: does not support detecting intersection for degenerate cases.</p>
-</td>
-	</tr>
-	<tr id='l-polyline-newpointintersects'>
-		<td><code><b>newPointIntersects</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td><p>Check for intersection if new point was added to this polyline.
-newPoint must be a layer point.
-NOTE: does not support detecting intersection for degenerate cases.</p>
-</td>
-	</tr>
-</tbody></table>
-
-</section>
-
-
-</section><h2 id='l-map-touchextend'>L.Map.TouchExtend</h2>
-<section>
-<h3 id='l-map-touchextend-method'>Methods</h3>
-
-<section >
-
-
-
-
-<table><thead>
-	<tr>
-		<th>Method</th>
-		<th>Returns</th>
-		<th>Description</th>
-	</tr>
-	</thead><tbody>
-	<tr id='l-map-touchextend-initialize'>
-		<td><code><b>initialize</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td><p>Sets TouchExtend private accessor variables</p>
-</td>
-	</tr>
-	<tr id='l-map-touchextend-addhooks'>
-		<td><code><b>addHooks</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td><p>Adds dom listener events to the map container</p>
-</td>
-	</tr>
-	<tr id='l-map-touchextend-removehooks'>
-		<td><code><b>removeHooks</b>()</nobr></code></td>
-		<td><code>void</code></td>
-		<td><p>Removes dom listener events from the map container</p>
-</td>
 	</tr>
 </tbody></table>
 

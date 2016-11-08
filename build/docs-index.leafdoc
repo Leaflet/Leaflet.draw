@@ -23,7 +23,7 @@ This file just defines the order of the classes in the docs.
 
 @class L.GeometryUtil
 @class L.LatLngUtil
-@class L.LineUtil.Intersect
-@class L.Polygon.Intersect
-@class L.Polyline.Intersect
-@class L.TouchEvents
+@class L.LineUtil
+@class L.Polygon
+@class L.Polyline
+@class L.Map.TouchExtend
