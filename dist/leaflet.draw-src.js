@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.2+58ba836, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.2+31630a9, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,47 +8,15 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.2+58ba836";
-L.Draw = {};
-
+L.drawVersion = "0.4.2+31630a9";
 /**
- * @class L.drawLocal
- * @aka L.drawLocal
+ * @class L.Draw
+ * @aka Draw
  *
- * The core toolbar class of the API — it is used to create the toolbar ui
- *
- * ## Leaflet 1.0+ Examples
- *
- * - [Full Demo](./examples/full.html)
- * - [Popup](./examples/popup.html)
- * - [Snapping](./examples/snapping.html)
- * - [Edit Handlers](./examples/edithandlers.html)
- *
- * ## Leaflet 0.7+ Examples
- *
- * - [Full Demo](./examples/0.7.x/full.html)
- * - [Popup](./examples/0.7.x/popup.html)
- * - [Snapping](./examples/0.7.x/snapping.html)
- * - [Edit Handlers](./examples/0.7.x/edithandlers.html)
- *
- * @example
- * ```js
- *      var modifiedDraw = L.drawLocal.extend({
- *          draw: {
- *              toolbar: {
- *                  buttons: {
- *                      polygon: 'Draw an awesome polygon'
- *                  }
- *              }
- *          }
- *      });
- * ```
- *
- * The default state for the control is the draw toolbar just below the zoom control.
- *  This will allow map users to draw vectors and markers.
- *  **Please note the edit toolbar is not enabled by default.**
  *
  * To add the draw toolbar set the option drawControl: true in the map options.
+ *
+ * @example
  * ```js
  *      var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
  *
@@ -84,6 +52,31 @@ L.Draw = {};
  * Leaflet.draw does not work with multigeometry features such as MultiPoint, MultiLineString, MultiPolygon,
  * or GeometryCollection. If you need to add multigeometry features to the draw plugin, convert them to a
  * FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).
+ */
+L.Draw = {};
+
+/**
+ * @class L.drawLocal
+ * @aka L.drawLocal
+ *
+ * The core toolbar class of the API — it is used to create the toolbar ui
+ *
+ * @example
+ * ```js
+ *      var modifiedDraw = L.drawLocal.extend({
+ *          draw: {
+ *              toolbar: {
+ *                  buttons: {
+ *                      polygon: 'Draw an awesome polygon'
+ *                  }
+ *              }
+ *          }
+ *      });
+ * ```
+ *
+ * The default state for the control is the draw toolbar just below the zoom control.
+ *  This will allow map users to draw vectors and markers.
+ *  **Please note the edit toolbar is not enabled by default.**
  */
 L.drawLocal = {
     draw: {
@@ -189,7 +182,7 @@ L.drawLocal = {
 /**
  * ### Events
  * Once you have successfully added the Leaflet.draw plugin to your map you will want to respond to the different
- * actions users can initiate. The following events will be triggered on the map=
+ * actions users can initiate. The following events will be triggered on the map:
  *
  * @class L.Draw.Event
  * @aka Draw.Event
@@ -213,17 +206,17 @@ L.drawLocal = {
  */
 L.Draw.Event = {};
 /**
- * @event draw:created= PolyLine; Polygon; Rectangle; Circle; Marker | String
+ * @event draw:created: PolyLine; Polygon; Rectangle; Circle; Marker | String
  *
  * Layer that was just created.
- * The type of layer this is. One of= `polyline`; `polygon`; `rectangle`; `circle`; `marker`
+ * The type of layer this is. One of: `polyline`; `polygon`; `rectangle`; `circle`; `marker`
  * Triggered when a new vector or marker has been created.
  *
  */
 L.Draw.Event.CREATED = 'draw:created';
 
 /**
- * @event draw:edited= LayerGroup
+ * @event draw:edited: LayerGroup
  *
  * List of all layers just edited on the map.
  *
@@ -243,7 +236,7 @@ L.Draw.Event.CREATED = 'draw:created';
 L.Draw.Event.EDITED = 'draw:edited';
 
 /**
- * @event draw:deleted= LayerGroup
+ * @event draw:deleted: LayerGroup
  *
  * List of all layers just removed from the map.
  *
@@ -252,18 +245,18 @@ L.Draw.Event.EDITED = 'draw:edited';
 L.Draw.Event.DELETED = 'draw:deleted';
 
 /**
- * @event draw:drawstart= String
+ * @event draw:drawstart: String
  *
- * The type of layer this is. One of= `polyline`; `polygon`; `rectangle`; `circle`; `marker`
+ * The type of layer this is. One of:`polyline`; `polygon`; `rectangle`; `circle`; `marker`
  *
  * Triggered when the user has chosen to draw a particular vector or marker.
  */
 L.Draw.Event.DRAWSTART = 'draw:drawstart';
 
 /**
- * @event draw:drawstop= String
+ * @event draw:drawstop: String
  *
- * The type of layer this is. One of= `polyline`; `polygon`; `rectangle`; `circle`; `marker`
+ * The type of layer this is. One of: `polyline`; `polygon`; `rectangle`; `circle`; `marker`
  *
  * Triggered when the user has finished a particular vector or marker.
  */
@@ -271,7 +264,7 @@ L.Draw.Event.DRAWSTART = 'draw:drawstart';
 L.Draw.Event.DRAWSTOP = 'draw:drawstop';
 
 /**
- * @event draw:drawvertex= LayerGroup
+ * @event draw:drawvertex: LayerGroup
  *
  * List of all layers just being added from the map.
  *
@@ -280,9 +273,9 @@ L.Draw.Event.DRAWSTOP = 'draw:drawstop';
 L.Draw.Event.DRAWVERTEX = 'draw:drawvertex';
 
 /**
- * @event draw:editstart= String
+ * @event draw:editstart: String
  *
- * The type of edit this is. One of= `edit`
+ * The type of edit this is. One of: `edit`
  *
  * Triggered when the user starts edit mode by clicking the edit tool button.
  */
@@ -290,7 +283,7 @@ L.Draw.Event.DRAWVERTEX = 'draw:drawvertex';
 L.Draw.Event.EDITSTART = 'draw:editstart';
 
 /**
- * @event draw:editmove= ILayer
+ * @event draw:editmove: ILayer
  *
  *  Layer that was just moved.
  *
@@ -299,7 +292,7 @@ L.Draw.Event.EDITSTART = 'draw:editstart';
 L.Draw.Event.EDITMOVE = 'draw:editmove';
 
 /**
- * @event draw:editresize= ILayer
+ * @event draw:editresize: ILayer
  *
  * Layer that was just moved.
  *
@@ -308,7 +301,7 @@ L.Draw.Event.EDITMOVE = 'draw:editmove';
 L.Draw.Event.EDITRESIZE = 'draw:editresize';
 
 /**
- * @event draw:editvertex= LayerGroup
+ * @event draw:editvertex: LayerGroup
  *
  * List of all layers just being edited from the map.
  *
@@ -317,27 +310,27 @@ L.Draw.Event.EDITRESIZE = 'draw:editresize';
 L.Draw.Event.EDITVERTEX = 'draw:editvertex';
 
 /**
- * @event draw:editstop= String
+ * @event draw:editstop: String
  *
- * The type of edit this is. One of= `edit`
+ * The type of edit this is. One of: `edit`
  *
  * Triggered when the user has finshed editing (edit mode) and saves edits.
  */
 L.Draw.Event.EDITSTOP = 'draw:editstop';
 
 /**
- * @event draw:deletestart= String
+ * @event draw:deletestart: String
  *
- * The type of edit this is. One of= `remove`
+ * The type of edit this is. One of: `remove`
  *
  * Triggered when the user starts remove mode by clicking the remove tool button.
  */
 L.Draw.Event.DELETESTART = 'draw:deletestart';
 
 /**
- * @event draw:deletestop= String
+ * @event draw:deletestop: String
  *
- * The type of edit this is. One of= `remove`
+ * The type of edit this is. One of: `remove`
  *
  * Triggered when the user has finished removing shapes (remove mode) and saves.
  */
@@ -1516,7 +1509,8 @@ L.Marker.addInitHook(function () {
 L.Edit = L.Edit || {};
 
 /**
- * @class L.Edit.Poly
+ * @class L.Edit.Polyline
+ * @aka L.Edit.Poly
  * @aka Edit.Poly
  */
 L.Edit.Poly = L.Handler.extend({
@@ -2804,9 +2798,9 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 
 
 /**
- * @class L.Util
+ * @class L.LineUtil
  * @aka Util
- * @aka L.LineUtil
+ * @aka L.Utils
  */
 L.Util.extend(L.LineUtil, {
 
@@ -3094,7 +3088,7 @@ L.Map.addInitHook(function () {
 
 
 /**
- * @class L.Toolbar
+ * @class L.Draw.Toolbar
  * @aka Toolbar
  *
  * The toolbar class of the API — it is used to create the ui
@@ -4067,7 +4061,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 /**
  * @class L.EditToolbar.Delete
  * @aka EditToolbar.Delete
- * @inherits L.Handler
  */
 L.EditToolbar.Delete = L.Handler.extend({
 	statics: {

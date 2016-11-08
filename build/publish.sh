@@ -11,7 +11,7 @@ git checkout -b build
 jake build[,,true]
 jake docs
 
-git add . -f
+git add -A
 
 git commit -m "v$VERSION"
 

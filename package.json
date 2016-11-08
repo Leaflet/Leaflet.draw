@@ -29,7 +29,7 @@
     "example": "examples"
   },
   "scripts": {
-    "build": "jake buidl",
+    "build": "jake build",
     "test": "jake test",
     "docs": "jake docs",
     "release": "./build/publish.sh"
