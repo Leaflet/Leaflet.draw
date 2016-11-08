@@ -9,7 +9,9 @@ npm test || exit 1
 git checkout -b build
 
 jake build[,,true]
-git add dist/leaflet.draw-src.js dist/leaflet.draw.js -f
+jake docs
+
+git add . -f
 
 git commit -m "v$VERSION"
 
