@@ -5,7 +5,8 @@
 L.LatLngUtil = {
 	// Clones a LatLngs[], returns [][]
 
-	// @method cloneLatLngs(): void
+	// @method cloneLatLngs(LatLngs[]): L.LatLngs[]
+	// Clone the latLng point or points or nested points and return an array with those points
 	cloneLatLngs: function (latlngs) {
 		var clone = [];
 		for (var i = 0, l = latlngs.length; i < l; i++) {
@@ -19,7 +20,8 @@ L.LatLngUtil = {
 		return clone;
 	},
 
-	// @method cloneLatLng(): void
+	// @method cloneLatLng(LatLng): L.LatLng
+	// Clone the latLng and return a new LatLng object.
 	cloneLatLng: function (latlng) {
 		return L.latLng(latlng.lat, latlng.lng);
 	}
