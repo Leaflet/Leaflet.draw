@@ -23,6 +23,7 @@ L.Draw.Feature = L.Handler.extend({
 	},
 
 	// @method enable(): void
+	// Enables this handler
 	enable: function () {
 		if (this._enabled) { return; }
 
@@ -45,6 +46,7 @@ L.Draw.Feature = L.Handler.extend({
 	},
 
 	// @method addHooks(): void
+	// Add's event listeners to this handler
 	addHooks: function () {
 		var map = this._map;
 
@@ -60,6 +62,7 @@ L.Draw.Feature = L.Handler.extend({
 	},
 
 	// @method removeHooks(): void
+	// Removes event listeners from this handler
 	removeHooks: function () {
 		if (this._map) {
 			L.DomUtil.enableTextSelection();
@@ -71,7 +74,8 @@ L.Draw.Feature = L.Handler.extend({
 		}
 	},
 
-	// @method setOptions(): void
+	// @method setOptions(object): void
+	// Sets new options to this handler
 	setOptions: function (options) {
 		L.setOptions(this, options);
 	},
