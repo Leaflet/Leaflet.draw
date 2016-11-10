@@ -8,7 +8,7 @@
 
     <script src="../../src/Leaflet.draw.js"></script>
     <script src="../../src/Leaflet.Draw.Event.js"></script>
-    <link rel="stylesheet" href="../../dist/leaflet.draw.css" />
+    <link rel="stylesheet" href="../../src/leaflet.draw.css" />
 
     <script src="../../src/Toolbar.js"></script>
     <script src="../../src/Tooltip.js"></script>
@@ -48,7 +48,7 @@
     <script>
         var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            osm = L.tileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib});
+            osm = L.tileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib}),
             map = new L.Map('map', {center: new L.LatLng(29.9792, 31.1344), zoom: 15}),
             drawnItems = L.featureGroup().addTo(map);
 

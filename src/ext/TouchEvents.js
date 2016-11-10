@@ -185,7 +185,7 @@ L.Map.addInitHook('addHandler', 'touchExtend', L.Map.TouchExtend);
  * @class L.Marker.Touch
  * @aka Marker.Touch
  *
- * This isn't full Touch support. This is just to get makers to also support dom touch events after creation
+ * This isn't full Touch support. This is just to get markers to also support dom touch events after creation
  * #TODO: find a better way of getting markers to support touch.
  */
 L.Marker.Touch = L.Marker.extend({

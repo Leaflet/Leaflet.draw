@@ -5,7 +5,7 @@
  */
 L.Util.extend(L.LineUtil, {
 
-	// @method segmentsIntersect(): void
+	// @method segmentsIntersect(): boolean
 	// Checks to see if two line segments intersect. Does not handle degenerate cases.
 	// http://compgeom.cs.uiuc.edu/~jeffe/teaching/373/notes/x06-sweepline.pdf
 	segmentsIntersect: function (/*Point*/ p, /*Point*/ p1, /*Point*/ p2, /*Point*/ p3) {
