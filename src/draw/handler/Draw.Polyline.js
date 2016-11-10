@@ -261,6 +261,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._mouseDownOrigin = L.point(clientX, clientY);
 	},
 
+	_onMouseUp: function (e) {
+		var originalEvent = e.originalEvent;
+		var clientX = originalEvent.clientX;
+		var clientY = originalEvent.clientY;
+		this._endPoint.call(this, clientX, clientY, e);
+	},
 	_endPoint: function (clientX, clientY, e) {
 		if (this._mouseDownOrigin) {
 			var distance = L.point(clientX, clientY)
