@@ -1,7 +1,8 @@
 var fs = require('fs'),
     UglifyJS = require('uglify-js'),
     zlib = require('zlib'),
-    SourceNode = require( 'source-map' ).SourceNode;
+    SourceNode = require('source-map').SourceNode,
+    UglifyCss = require('uglifycss');
 
 deps = require('./deps.js').deps;
 
@@ -93,8 +94,8 @@ function bundleFiles(files, copy, version) {
 
         fileNode.setSourceContent(files[i], contents);
 
-        for (var j=0; j<lineCount; j++) {
-            fileNode.add(new SourceNode(j+1, 0, files[i], lines[j] + '\n'));
+        for (var j = 0; j < lineCount; j++) {
+            fileNode.add(new SourceNode(j + 1, 0, files[i], lines[j] + '\n'));
         }
         node.add(fileNode);
 
@@ -112,7 +113,8 @@ function bundleFiles(files, copy, version) {
 
 function bytesToKB(bytes) {
     return (bytes / 1024).toFixed(2) + ' KB';
-};
+}
+
 
 exports.build = function (callback, version, compsBase32, buildName) {
 
@@ -133,10 +135,42 @@ exports.build = function (callback, version, compsBase32, buildName) {
         newSrc = bundle.src + '\n//# sourceMappingURL=' + mapFilename,
 
         oldSrc = loadSilently(srcPath),
-        srcDelta = getSizeDelta(newSrc, oldSrc, true);
+        srcDelta = getSizeDelta(newSrc, oldSrc, true),
 
-    console.log('\tUncompressed: ' + bytesToKB(newSrc.length) + srcDelta);
+        leafletDrawCssPath = './src/leaflet.draw.css',
+        compressedCssPath = './dist/leaflet.draw.css',
+        cssSource = loadSilently(leafletDrawCssPath),
+        oldCompressedCss = loadSilently(compressedCssPath),
+        cssSourcePath = './dist/leaflet.draw-src.css',
+        newCompressedCss;
 
+    try {
+        newCompressedCss = UglifyCss.processFiles(
+            [leafletDrawCssPath],
+            {maxLineLen: 500, expandVars: true}
+        )
+    } catch (e) {
+        console.error('UglifyCss failed to minify the files');
+        console.error(err);
+        callback(err);
+    }
+
+    var cssSrcDelta = getSizeDelta(newCompressedCss, oldCompressedCss, true);
+
+    console.log('\tCompressed Css: ' + bytesToKB(newCompressedCss.length) + cssSrcDelta);
+    try {
+        if (newCompressedCss !== oldCompressedCss) {
+            fs.writeFileSync(cssSourcePath, cssSource);
+            fs.writeFileSync(compressedCssPath, newCompressedCss);
+            console.log('\tSaved to ' + srcPath);
+        }
+    } catch (err) {
+        console.error('UglifyCSS failed to minify the files');
+        console.error(err);
+        callback(err);
+    }
+
+    console.log('\tUncompressed Js: ' + bytesToKB(newSrc.length) + srcDelta);
     if (newSrc !== oldSrc) {
         fs.writeFileSync(srcPath, newSrc);
         fs.writeFileSync(mapPath, bundle.srcmap);
@@ -152,7 +186,7 @@ exports.build = function (callback, version, compsBase32, buildName) {
                 warnings: true,
                 fromString: true
             }).code;
-    } catch(err) {
+    } catch (err) {
         console.error('UglifyJS failed to minify the files');
         console.error(err);
         callback(err);
@@ -175,11 +209,15 @@ exports.build = function (callback, version, compsBase32, buildName) {
     }
 
     zlib.gzip(newCompressed, function (err, gzipped) {
-        if (err) { return; }
+        if (err) {
+            return;
+        }
         newGzipped = gzipped;
         if (oldCompressed && (oldCompressed !== newCompressed)) {
             zlib.gzip(oldCompressed, function (err, oldGzipped) {
-                if (err) { return; }
+                if (err) {
+                    return;
+                }
                 gzippedDelta = getSizeDelta(gzipped, oldGzipped);
                 done();
             });
@@ -189,9 +227,9 @@ exports.build = function (callback, version, compsBase32, buildName) {
     });
 };
 
-exports.test = function(complete, fail) {
+exports.test = function (complete, fail) {
     var karma = require('karma'),
-        testConfig = {configFile : __dirname + '/../spec/karma.conf.js'};
+        testConfig = {configFile: __dirname + '/../spec/karma.conf.js'};
 
     testConfig.browsers = ['PhantomJSCustom'];
 
@@ -217,15 +255,15 @@ exports.test = function(complete, fail) {
             'src/**/*.js': 'coverage'
         };
         testConfig.coverageReporter = {
-            type : 'html',
-            dir : 'coverage/'
+            type: 'html',
+            dir: 'coverage/'
         };
         testConfig.reporters = ['coverage'];
     }
 
     console.log('Running tests...');
 
-    var server = new karma.Server(testConfig, function(exitCode) {
+    var server = new karma.Server(testConfig, function (exitCode) {
         if (!exitCode) {
             console.log('\tTests ran successfully.\n');
             complete();
