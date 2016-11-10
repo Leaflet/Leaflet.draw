@@ -1,6 +1,6 @@
 {
   "name": "leaflet-draw",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Vector drawing plugin for Leaflet",
   "devDependencies": {
     "happen": "^0.3.1",
@@ -29,7 +29,7 @@
     "example": "examples"
   },
   "scripts": {
-    "build": "jake build",
+    "build": "jake build -f ./Jakefile.js",
     "test": "jake test",
     "docs": "jake docs",
     "release": "./build/publish.sh"
@@ -57,7 +57,6 @@
   ],
   "license": "MIT",
   "readmeFilename": "README.md",
-
   "eslintConfig": {
     "root": true,
     "globals": {
@@ -88,5 +87,8 @@
       "key-spacing": 0,
       "consistent-return": 0
     }
+  },
+  "dependencies": {
+    "uglifycss": "0.0.25"
   }
 }
