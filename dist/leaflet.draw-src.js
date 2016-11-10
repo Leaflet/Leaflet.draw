@@ -327,6 +327,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			.off('mousemove', this._onMouseMove, this)
 			.off('zoomlevelschange', this._onZoomEnd, this)
 			.off('zoomend', this._onZoomEnd, this)
+			.off('touchstart', this._onTouch, this)
 			.off('click', this._onTouch, this);
 	},
 
