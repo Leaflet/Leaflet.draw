@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.2, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.3+e21f99b, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.2";
+L.drawVersion = "0.4.3+e21f99b";
 /**
  * @class L.Draw
  * @aka Draw
@@ -362,6 +362,7 @@ L.Draw.Feature = L.Handler.extend({
 	},
 
 	// @method enable(): void
+	// Enables this handler
 	enable: function () {
 		if (this._enabled) { return; }
 
@@ -384,6 +385,7 @@ L.Draw.Feature = L.Handler.extend({
 	},
 
 	// @method addHooks(): void
+	// Add's event listeners to this handler
 	addHooks: function () {
 		var map = this._map;
 
@@ -399,6 +401,7 @@ L.Draw.Feature = L.Handler.extend({
 	},
 
 	// @method removeHooks(): void
+	// Removes event listeners from this handler
 	removeHooks: function () {
 		if (this._map) {
 			L.DomUtil.enableTextSelection();
@@ -410,7 +413,8 @@ L.Draw.Feature = L.Handler.extend({
 		}
 	},
 
-	// @method setOptions(): void
+	// @method setOptions(object): void
+	// Sets new options to this handler
 	setOptions: function (options) {
 		L.setOptions(this, options);
 	},
@@ -1163,64 +1167,66 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
  * @inherits L.Draw.SimpleShape
  */
 L.Draw.Rectangle = L.Draw.SimpleShape.extend({
-	statics: {
-		TYPE: 'rectangle'
-	},
+    statics: {
+        TYPE: 'rectangle'
+    },
 
-	options: {
-		shapeOptions: {
-			stroke: true,
-			color: '#f06eaa',
-			weight: 4,
-			opacity: 0.5,
-			fill: true,
-			fillColor: null, //same as color by default
-			fillOpacity: 0.2,
-			clickable: true
-		},
-		metric: true // Whether to use the metric measurement system or imperial
-	},
+    options: {
+        shapeOptions: {
+            stroke: true,
+            color: '#f06eaa',
+            weight: 4,
+            opacity: 0.5,
+            fill: true,
+            fillColor: null, //same as color by default
+            fillOpacity: 0.2,
+            showArea: true,
+            clickable: true
+        },
+        metric: true // Whether to use the metric measurement system or imperial
+    },
 
-	// @method initialize(): void
-	initialize: function (map, options) {
-		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
-		this.type = L.Draw.Rectangle.TYPE;
+    // @method initialize(): void
+    initialize: function (map, options) {
+        // Save the type so super can fire, need to do this as cannot do this.TYPE :(
+        this.type = L.Draw.Rectangle.TYPE;
 
-		this._initialLabelText = L.drawLocal.draw.handlers.rectangle.tooltip.start;
+        this._initialLabelText = L.drawLocal.draw.handlers.rectangle.tooltip.start;
 
-		L.Draw.SimpleShape.prototype.initialize.call(this, map, options);
-	},
+        L.Draw.SimpleShape.prototype.initialize.call(this, map, options);
+    },
 
-	_drawShape: function (latlng) {
-		if (!this._shape) {
-			this._shape = new L.Rectangle(new L.LatLngBounds(this._startLatLng, latlng), this.options.shapeOptions);
-			this._map.addLayer(this._shape);
-		} else {
-			this._shape.setBounds(new L.LatLngBounds(this._startLatLng, latlng));
-		}
-	},
+    _drawShape: function (latlng) {
+        if (!this._shape) {
+            this._shape = new L.Rectangle(new L.LatLngBounds(this._startLatLng, latlng), this.options.shapeOptions);
+            this._map.addLayer(this._shape);
+        } else {
+            this._shape.setBounds(new L.LatLngBounds(this._startLatLng, latlng));
+        }
+    },
 
-	_fireCreatedEvent: function () {
-		var rectangle = new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions);
-		L.Draw.SimpleShape.prototype._fireCreatedEvent.call(this, rectangle);
-	},
+    _fireCreatedEvent: function () {
+        var rectangle = new L.Rectangle(this._shape.getBounds(), this.options.shapeOptions);
+        L.Draw.SimpleShape.prototype._fireCreatedEvent.call(this, rectangle);
+    },
 
-	_getTooltipText: function () {
-		var tooltipText = L.Draw.SimpleShape.prototype._getTooltipText.call(this),
-			shape = this._shape,
-			latLngs, area, subtext;
+    _getTooltipText: function () {
+        var tooltipText = L.Draw.SimpleShape.prototype._getTooltipText.call(this),
+            shape = this._shape,
+            showArea = this.options.showArea,
+            latLngs, area, subtext;
 
-		if (shape) {
-			latLngs = this._shape._defaultShape ? this._shape._defaultShape() : this._shape.getLatLngs();
-			area = L.GeometryUtil.geodesicArea(latLngs);
-			subtext = L.GeometryUtil.readableArea(area, this.options.metric);
-		}
+        if (shape) {
+            latLngs = this._shape._defaultShape ? this._shape._defaultShape() : this._shape.getLatLngs();
+            area = L.GeometryUtil.geodesicArea(latLngs);
+            subtext = showArea ? L.GeometryUtil.readableArea(area, this.options.metric) : ''
+        }
 
-		return {
-			text: tooltipText.text,
-			subtext: subtext
-		};
-	}
+        return {
+            text: tooltipText.text,
+            subtext: subtext
+        };
+    }
 });
 
 
@@ -2936,7 +2942,7 @@ L.Polyline.include({
  */
 L.Polygon.include({
 
-	// @method intersects(): void
+	// @method intersects(): boolean
 	// Checks a polygon for any intersecting line segments. Ignores holes.
 	intersects: function () {
 		var polylineIntersects,
