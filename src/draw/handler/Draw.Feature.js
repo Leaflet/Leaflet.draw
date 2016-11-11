@@ -1,8 +1,14 @@
+
 L.Draw = L.Draw || {};
 
+/**
+ * @class L.Draw.Feature
+ * @aka Draw.Feature
+ */
 L.Draw.Feature = L.Handler.extend({
 	includes: L.Mixin.Events,
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		this._map = map;
 		this._container = map._container;
@@ -16,6 +22,8 @@ L.Draw.Feature = L.Handler.extend({
 		L.setOptions(this, options);
 	},
 
+	// @method enable(): void
+	// Enables this handler
 	enable: function () {
 		if (this._enabled) { return; }
 
@@ -23,19 +31,22 @@ L.Draw.Feature = L.Handler.extend({
 
 		this.fire('enabled', { handler: this.type });
 
-		this._map.fire('draw:drawstart', { layerType: this.type });
+		this._map.fire(L.Draw.Event.DRAWSTART, { layerType: this.type });
 	},
 
+	// @method initialize(): void
 	disable: function () {
 		if (!this._enabled) { return; }
 
 		L.Handler.prototype.disable.call(this);
 
-		this._map.fire('draw:drawstop', { layerType: this.type });
+		this._map.fire(L.Draw.Event.DRAWSTOP, { layerType: this.type });
 
 		this.fire('disabled', { handler: this.type });
 	},
 
+	// @method addHooks(): void
+	// Add's event listeners to this handler
 	addHooks: function () {
 		var map = this._map;
 
@@ -50,6 +61,8 @@ L.Draw.Feature = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
+	// Removes event listeners from this handler
 	removeHooks: function () {
 		if (this._map) {
 			L.DomUtil.enableTextSelection();
@@ -61,12 +74,14 @@ L.Draw.Feature = L.Handler.extend({
 		}
 	},
 
+	// @method setOptions(object): void
+	// Sets new options to this handler
 	setOptions: function (options) {
 		L.setOptions(this, options);
 	},
 
 	_fireCreatedEvent: function (layer) {
-		this._map.fire('draw:created', { layer: layer, layerType: this.type });
+		this._map.fire(L.Draw.Event.CREATED, { layer: layer, layerType: this.type });
 	},
 
 	// Cancel drawing when the escape key is pressed

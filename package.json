@@ -1,27 +1,38 @@
 {
   "name": "leaflet-draw",
-  "version": "0.4.1",
+  "version": "0.4.3",
   "description": "Vector drawing plugin for Leaflet",
   "devDependencies": {
     "happen": "^0.3.1",
     "jake": "^8.0.15",
-    "jshint": "^2.9.3",
+    "eslint": "^3.5.0 <3.6.0",
+    "eslint-config-mourner": "^2.0.1",
     "karma": "^1.3.0",
-    "karma-coverage": "^1.1.1",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "~1.1.1",
+    "karma-firefox-launcher": "~1.0.0",
     "karma-mocha": "^1.2.0",
     "karma-phantomjs-launcher": "^1.0.2",
-    "leaflet": "~0.7.0",
+    "karma-safari-launcher": "~1.0.0",
+    "leafdoc": "^1.4.0",
+    "leaflet": "~1.0.0",
     "mocha": "^3.1.2",
-    "phantomjs": "^2.1.7",
-    "uglify-js": "^2.7.3"
+    "phantomjs-prebuilt": "^2.1.12",
+    "prosthetic-hand": "^1.3.1",
+    "uglify-js": "^2.7.3",
+    "source-map": "^0.5.6",
+    "git-rev": "^0.2.1"
   },
   "main": "dist/leaflet.draw.js",
+  "style": "dist/leaflet.draw.css",
   "directories": {
     "example": "examples"
   },
   "scripts": {
-    "build": "jake",
-    "test": "jake test"
+    "build": "jake build -f ./Jakefile.js",
+    "test": "jake test",
+    "docs": "jake docs",
+    "release": "./build/publish.sh"
   },
   "repository": {
     "type": "git",
@@ -45,5 +56,39 @@
     }
   ],
   "license": "MIT",
-  "readmeFilename": "README.md"
+  "readmeFilename": "README.md",
+  "eslintConfig": {
+    "root": true,
+    "globals": {
+      "L": true
+    },
+    "env": {
+      "commonjs": true,
+      "amd": true,
+      "node": false
+    },
+    "extends": "mourner",
+    "rules": {
+      "no-mixed-spaces-and-tabs": [
+        2,
+        "smart-tabs"
+      ],
+      "indent": [
+        2,
+        "tab",
+        {
+          "VariableDeclarator": 0
+        }
+      ],
+      "curly": 2,
+      "spaced-comment": 2,
+      "strict": 0,
+      "wrap-iife": 0,
+      "key-spacing": 0,
+      "consistent-return": 0
+    }
+  },
+  "dependencies": {
+    "uglifycss": "0.0.25"
+  }
 }

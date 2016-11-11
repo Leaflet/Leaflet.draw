@@ -1,11 +1,14 @@
 L.Edit = L.Edit || {};
 
-/*
- * L.Edit.Poly is an editing handler for polylines and polygons.
+/**
+ * @class L.Edit.Polyline
+ * @aka L.Edit.Poly
+ * @aka Edit.Poly
  */
 L.Edit.Poly = L.Handler.extend({
 	options: {},
 
+	// @method initialize(): void
 	initialize: function (poly, options) {
 
 		this.latlngs = [poly._latlngs];
@@ -32,6 +35,7 @@ L.Edit.Poly = L.Handler.extend({
 		}
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		this._initHandlers();
 		this._eachVertexHandler(function (handler) {
@@ -39,12 +43,14 @@ L.Edit.Poly = L.Handler.extend({
 		});
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		this._eachVertexHandler(function (handler) {
 			handler.removeHooks();
 		});
 	},
 
+	// @method updateMarkers(): void
 	updateMarkers: function () {
 		this._eachVertexHandler(function (handler) {
 			handler.updateMarkers();
@@ -67,6 +73,10 @@ L.Edit.Poly = L.Handler.extend({
 
 });
 
+/**
+ * @class L.Edit.PolyVerticesEdit
+ * @aka Edit.PolyVerticesEdit
+ */
 L.Edit.PolyVerticesEdit = L.Handler.extend({
 	options: {
 		icon: new L.DivIcon({
@@ -85,6 +95,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 
 	},
 
+	// @method intialize(): void
 	initialize: function (poly, latlngs, options) {
 		// if touch, switch to touch icon
 		if (L.Browser.touch) {
@@ -108,6 +119,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		return L.Polyline._flat(this._latlngs) ? this._latlngs : this._latlngs[0];
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var poly = this._poly;
 
@@ -131,6 +143,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		var poly = this._poly;
 
@@ -143,6 +156,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		}
 	},
 
+	// @method updateMarkers(): void
 	updateMarkers: function () {
 		this._markerGroup.clearLayers();
 		this._initMarkers();
@@ -237,7 +251,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	_fireEdit: function () {
 		this._poly.edited = true;
 		this._poly.fire('edit');
-		this._poly._map.fire('draw:editvertex', { layers: this._markerGroup });
+		this._poly._map.fire(L.Draw.Event.EDITVERTEX, { layers: this._markerGroup });
 	},
 
 	_onMarkerDrag: function (e) {

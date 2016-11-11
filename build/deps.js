@@ -1,7 +1,8 @@
 var deps = {
 	Core: {
 		src: [
-			'Leaflet.draw.js'
+			'Leaflet.draw.js',
+			'Leaflet.Draw.Event.js'
 		],
 		desc: 'The core of the plugin. Currently only includes the version.'
 	},

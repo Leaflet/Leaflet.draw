@@ -1,5 +1,11 @@
+/**
+ * @class L.GeometryUtil
+ * @aka GeometryUtil
+ */
 L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 	// Ported from the OpenLayers implementation. See https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Geometry/LinearRing.js#L270
+
+	// @method geodesicArea(): void
 	geodesicArea: function (latLngs) {
 		var pointsCount = latLngs.length,
 			area = 0.0,
@@ -19,6 +25,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return Math.abs(area);
 	},
 
+	// @method readableArea(): void
 	readableArea: function (area, isMetric) {
 		var areaStr;
 
@@ -43,6 +50,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return areaStr;
 	},
 
+	// @method readableDistance(): void
 	readableDistance: function (distance, isMetric, useFeet) {
 		var distanceStr;
 

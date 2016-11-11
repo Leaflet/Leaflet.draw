@@ -1,3 +1,7 @@
+/**
+ * @class L.EditToolbar.Edit
+ * @aka EditToolbar.Edit
+ */
 L.EditToolbar.Edit = L.Handler.extend({
 	statics: {
 		TYPE: 'edit'
@@ -5,6 +9,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 	includes: L.Mixin.Events,
 
+	// @method intialize(): void
 	initialize: function (map, options) {
 		L.Handler.prototype.initialize.call(this, map);
 
@@ -23,6 +28,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this.type = L.EditToolbar.Edit.TYPE;
 	},
 
+	// @method enable(): void
 	enable: function () {
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
@@ -30,7 +36,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this.fire('enabled', {handler: this.type});
 			//this disable other handlers
 
-		this._map.fire('draw:editstart', { handler: this.type });
+		this._map.fire(L.Draw.Event.EDITSTART, { handler: this.type });
 			//allow drawLayer to be updated before beginning edition.
 
 		L.Handler.prototype.enable.call(this);
@@ -39,16 +45,18 @@ L.EditToolbar.Edit = L.Handler.extend({
 			.on('layerremove', this._disableLayerEdit, this);
 	},
 
+	// @method disable(): void
 	disable: function () {
 		if (!this._enabled) { return; }
 		this._featureGroup
 			.off('layeradd', this._enableLayerEdit, this)
 			.off('layerremove', this._disableLayerEdit, this);
 		L.Handler.prototype.disable.call(this);
-		this._map.fire('draw:editstop', { handler: this.type });
+		this._map.fire(L.Draw.Event.EDITSTOP, { handler: this.type });
 		this.fire('disabled', {handler: this.type});
 	},
 
+	// @method addHooks(): void
 	addHooks: function () {
 		var map = this._map;
 
@@ -72,10 +80,11 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.on('mousemove', this._onMouseMove, this)
 				.on('touchmove', this._onMouseMove, this)
 				.on('MSPointerMove', this._onMouseMove, this)
-				.on('draw:editvertex', this._updateTooltip, this);
+				.on(L.Draw.Event.EDITVERTEX, this._updateTooltip, this);
 		}
 	},
 
+	// @method removeHooks(): void
 	removeHooks: function () {
 		if (this._map) {
 			// Clean up selected layers.
@@ -91,16 +100,18 @@ L.EditToolbar.Edit = L.Handler.extend({
 				.off('mousemove', this._onMouseMove, this)
 				.off('touchmove', this._onMouseMove, this)
 				.off('MSPointerMove', this._onMouseMove, this)
-				.off('draw:editvertex', this._updateTooltip, this);
+				.off(L.Draw.Event.EDITVERTEX, this._updateTooltip, this);
 		}
 	},
 
+	// @method revertLayers(): void
 	revertLayers: function () {
 		this._featureGroup.eachLayer(function (layer) {
 			this._revertLayer(layer);
 		}, this);
 	},
 
+	// @method save(): void
 	save: function () {
 		var editedLayers = new L.LayerGroup();
 		this._featureGroup.eachLayer(function (layer) {
@@ -109,7 +120,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.edited = false;
 			}
 		});
-		this._map.fire('draw:edited', {layers: editedLayers});
+		this._map.fire(L.Draw.Event.EDITED, {layers: editedLayers});
 	},
 
 	_backupLayer: function (layer) {
@@ -249,7 +260,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 	_onMarkerDragEnd: function (e) {
 		var layer = e.target;
 		layer.edited = true;
-		this._map.fire('draw:editmove', {layer: layer});
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: layer});
 	},
 
 	_onTouchMove: function (e) {

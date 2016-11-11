@@ -1,11 +1,18 @@
+/**
+ * @class L.Control.Draw
+ * @aka L.Draw
+ */
 L.Control.Draw = L.Control.extend({
 
+	// Options
 	options: {
 		position: 'topleft',
 		draw: {},
 		edit: false
 	},
 
+	// @method initialize(): void
+	// Initializes draw control, toolbars from the options
 	initialize: function (options) {
 		if (L.version < '0.7') {
 			throw new Error('Leaflet.draw 0.2.3+ requires Leaflet 0.7.0+. Download latest from https://github.com/Leaflet/Leaflet/');
@@ -38,6 +45,8 @@ L.Control.Draw = L.Control.extend({
 		L.toolbar = this; //set global var for editing the toolbar
 	},
 
+	// @method onAdd(): container
+	// Adds the toolbar container to the map
 	onAdd: function (map) {
 		var container = L.DomUtil.create('div', 'leaflet-draw'),
 			addedTopClass = false,
@@ -65,6 +74,8 @@ L.Control.Draw = L.Control.extend({
 		return container;
 	},
 
+	// @method onRemove(): void
+	// Removes the toolbars from the map toolbar container
 	onRemove: function () {
 		for (var toolbarId in this._toolbars) {
 			if (this._toolbars.hasOwnProperty(toolbarId)) {
@@ -73,6 +84,8 @@ L.Control.Draw = L.Control.extend({
 		}
 	},
 
+	// @method setDrawingOptions(options): void
+	// Sets options to all toolbar instances
 	setDrawingOptions: function (options) {
 		for (var toolbarId in this._toolbars) {
 			if (this._toolbars[toolbarId] instanceof L.DrawToolbar) {
