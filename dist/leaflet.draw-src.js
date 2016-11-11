@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.3+52d3990, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.3+367c9a7, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.3+52d3990";
+L.drawVersion = "0.4.3+367c9a7";
 /**
  * @class L.Draw
  * @aka Draw
@@ -540,7 +540,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				.on('mousemove', this._onMouseMove, this)
 				.on('zoomlevelschange', this._onZoomEnd, this)
 				.on('touchstart', this._onTouch, this)
-				//.on('click', this._onTouch, this)
 				.on('zoomend', this._onZoomEnd, this);
 		}
 	},
