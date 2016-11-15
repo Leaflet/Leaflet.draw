@@ -278,16 +278,20 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
 				this.addVertex(e.latlng);
 			}
+            
+            this._clickHandled = true;            
 		}
 		this._mouseDownOrigin = null;
 	},
 
 	_onTouch: function (e) {
 		// #TODO: use touchstart and touchend vs using click(touch start & end).
-		if (L.Browser.touch) { // #TODO: get rid of this once leaflet fixes their click/touch.
+		if (L.Browser.touch && !this._clickHandled) { // #TODO: get rid of this once leaflet fixes their click/touch.
 			this._onMouseDown(e);
 			this._onMouseUp(e);
 		}
+        
+        this._clickHandled = null;
 	},
 
 	_onMouseOut: function () {
