@@ -21,7 +21,8 @@ L.EditToolbar = L.Toolbar.extend({
 
 				// Whether to user the existing layers color
 				maintainColor: false
-			}
+			},
+			movable: false	// only L.Edit.Poly
 		},
 		remove: {},
 		poly: null,
@@ -62,7 +63,8 @@ L.EditToolbar = L.Toolbar.extend({
 				handler: new L.EditToolbar.Edit(map, {
 					featureGroup: featureGroup,
 					selectedPathOptions: this.options.edit.selectedPathOptions,
-					poly: this.options.poly
+					poly: this.options.poly,
+					movable: this.options.edit.movable
 				}),
 				title: L.drawLocal.edit.toolbar.buttons.edit
 			},
