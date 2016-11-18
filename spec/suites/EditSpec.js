@@ -62,7 +62,7 @@ describe("L.Edit", function () {
 				},
 				selectedPathOptions: L.EditToolbar.prototype.options.edit.selectedPathOptions
 			});
-			poly = new L.Polyline(L.latLng(41, -87), L.latLng(42, -88));
+			poly = new L.Polyline([L.latLng(41, -87), L.latLng(42, -88)]);
 		});
 
 		it("Should change the style of the polyline during editing mode.", function () {
