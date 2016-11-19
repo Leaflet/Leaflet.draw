@@ -99,7 +99,7 @@ L.Edit.Poly = L.Handler.extend({
 
 			if (!this._moveMarker) {
 
-				var latlng = this._poly.getCenter();
+				var latlng = this._getMoveMarkerLatLng();
 
 				this._moveMarker = new L.Marker.Touch(latlng, {
 					draggable: true,
@@ -152,7 +152,7 @@ L.Edit.Poly = L.Handler.extend({
 
 	_onEdit: function (e) {
 		if (this._moveMarker) {
-			var latlng = this._poly.getCenter();
+			var latlng = this._getMoveMarkerLatLng();
 
 			this._moveMarker.setLatLng(latlng);
 			this._moveMarker._origLatLng = latlng;
@@ -225,6 +225,23 @@ L.Edit.Poly = L.Handler.extend({
 		this.updateMarkers();
 
 		this._map.fire(L.Draw.Event.EDITMOVE, {layer: this._poly});
+	},
+
+	_getMoveMarkerLatLng: function () {
+		var latlng;
+
+		if (this._poly instanceof L.Polygon) {
+			latlng = this._poly.getCenter();
+		} else {
+			var latlngs = this._defaultShape();
+
+			var p1 = this._map.project(latlngs[0]);
+			var p2 = this._map.project(latlngs[1]);
+
+			var latlng = this._map.unproject(p1._multiplyBy(0.75)._add(p2._multiplyBy(0.25)));
+		}
+
+		return latlng;
 	}
 });
 
