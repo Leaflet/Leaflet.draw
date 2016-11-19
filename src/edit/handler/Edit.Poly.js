@@ -228,20 +228,13 @@ L.Edit.Poly = L.Handler.extend({
 	},
 
 	_getMoveMarkerLatLng: function () {
-		var latlng;
 
-		if (this._poly instanceof L.Polygon) {
-			latlng = this._poly.getCenter();
-		} else {
-			var latlngs = this._defaultShape();
+		var latlngs = this._defaultShape();
 
-			var p1 = this._map.project(latlngs[0]);
-			var p2 = this._map.project(latlngs[1]);
+		var p1 = this._map.project(latlngs[0]);
+		var p2 = this._map.project(latlngs[1]);
 
-			var latlng = this._map.unproject(p1._multiplyBy(0.75)._add(p2._multiplyBy(0.25)));
-		}
-
-		return latlng;
+		return this._map.unproject(p1._multiplyBy(0.75)._add(p2._multiplyBy(0.25)));
 	}
 });
 
