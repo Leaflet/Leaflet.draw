@@ -76,7 +76,9 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 			return null;
 		}
 
-		return L.GeometryUtil.readableArea(area, this.options.metric);
+		var distanceStr = L.Draw.Polyline.prototype._getMeasurementString.call(this);
+		var areaStr = L.GeometryUtil.readableArea(area, this.options.metric);
+		return distanceStr + '<br>' + areaStr;
 	},
 
 	_shapeIsValid: function () {
