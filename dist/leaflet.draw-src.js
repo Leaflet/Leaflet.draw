@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.3+e21f99b, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.3+f48f30b, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.3+e21f99b";
+L.drawVersion = "0.4.3+f48f30b";
 /**
  * @class L.Draw
  * @aka Draw
@@ -473,6 +473,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		},
 		metric: true, // Whether to use the metric measurement system or imperial
 		feet: true, // When not metric, to use feet instead of yards for display.
+		nautic: false, // When not metric, not feet use nautic mile for display
 		showLength: true, // Whether to display distance in the tooltip
 		zIndexOffset: 2000 // This should be > than the highest z-index any map layers
 	},
@@ -714,16 +715,20 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
 				this.addVertex(e.latlng);
 			}
+
+			this._clickHandled = true;
 		}
 		this._mouseDownOrigin = null;
 	},
 
 	_onTouch: function (e) {
 		// #TODO: use touchstart and touchend vs using click(touch start & end).
-		if (L.Browser.touch) { // #TODO: get rid of this once leaflet fixes their click/touch.
+		if (L.Browser.touch && !this._clickHandled) { // #TODO: get rid of this once leaflet fixes their click/touch.
 			this._onMouseDown(e);
 			this._onMouseUp(e);
 		}
+
+		this._clickHandled = null;
 	},
 
 	_onMouseOut: function () {
@@ -883,7 +888,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// calculate the distance from the last fixed point to the mouse position
 		distance = this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng);
 
-		return L.GeometryUtil.readableDistance(distance, this.options.metric, this.options.feet);
+		return L.GeometryUtil.readableDistance(distance, this.options.metric, this.options.feet, this.options.nautic);
 	},
 
 	_showErrorTooltip: function () {
@@ -1254,7 +1259,8 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 		},
 		showRadius: true,
 		metric: true, // Whether to use the metric measurement system or imperial
-		feet: true // When not metric, use feet instead of yards for display
+		feet: true, // When not metric, use feet instead of yards for display
+		nautic: false // When not metric, not feet use nautic mile for display
 	},
 
 	// @method initialize(): void
@@ -1297,7 +1303,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 			this._tooltip.updateContent({
 				text: this._endLabelText,
 				subtext: showRadius ? L.drawLocal.draw.handlers.circle.radius + ': ' +
-					L.GeometryUtil.readableDistance(radius, useMetric, this.options.feet) : ''
+					L.GeometryUtil.readableDistance(radius, useMetric, this.options.feet, this.options.nautic) : ''
 			});
 		}
 	}
@@ -1765,7 +1771,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	_fireEdit: function () {
 		this._poly.edited = true;
 		this._poly.fire('edit');
-		this._poly._map.fire(L.Draw.Event.EDITVERTEX, { layers: this._markerGroup });
+		this._poly._map.fire(L.Draw.Event.EDITVERTEX, { layers: this._markerGroup, poly: this._poly });
 	},
 
 	_onMarkerDrag: function (e) {
@@ -2612,7 +2618,7 @@ L.Map.addInitHook('addHandler', 'touchExtend', L.Map.TouchExtend);
  * @class L.Marker.Touch
  * @aka Marker.Touch
  *
- * This isn't full Touch support. This is just to get makers to also support dom touch events after creation
+ * This isn't full Touch support. This is just to get markers to also support dom touch events after creation
  * #TODO: find a better way of getting markers to support touch.
  */
 L.Marker.Touch = L.Marker.extend({
@@ -2697,7 +2703,8 @@ L.Marker.Touch = L.Marker.extend({
 L.LatLngUtil = {
 	// Clones a LatLngs[], returns [][]
 
-	// @method cloneLatLngs(): void
+	// @method cloneLatLngs(LatLngs[]): L.LatLngs[]
+	// Clone the latLng point or points or nested points and return an array with those points
 	cloneLatLngs: function (latlngs) {
 		var clone = [];
 		for (var i = 0, l = latlngs.length; i < l; i++) {
@@ -2711,7 +2718,8 @@ L.LatLngUtil = {
 		return clone;
 	},
 
-	// @method cloneLatLng(): void
+	// @method cloneLatLng(LatLng): L.LatLng
+	// Clone the latLng and return a new LatLng object.
 	cloneLatLng: function (latlng) {
 		return L.latLng(latlng.lat, latlng.lng);
 	}
@@ -2726,7 +2734,7 @@ L.LatLngUtil = {
 L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 	// Ported from the OpenLayers implementation. See https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Geometry/LinearRing.js#L270
 
-	// @method geodesicArea(): void
+	// @method geodesicArea(): number
 	geodesicArea: function (latLngs) {
 		var pointsCount = latLngs.length,
 			area = 0.0,
@@ -2746,7 +2754,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return Math.abs(area);
 	},
 
-	// @method readableArea(): void
+	// @method readableArea(): string
 	readableArea: function (area, isMetric) {
 		var areaStr;
 
@@ -2771,32 +2779,56 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return areaStr;
 	},
 
-	// @method readableDistance(): void
-	readableDistance: function (distance, isMetric, useFeet) {
-		var distanceStr;
+	// @method readableDistance(distance, isMetric, useFeet, isNauticalMile): string
+	// @method readableDistance(distance, units): string
+	// Converts metric distance to distance string.
+	readableDistance: function (distance, isMetric, isFeet, isNauticalMile) {
+		var distanceStr,
+			units;
 
-		if (isMetric) {
+		if (typeof isMetric == "string") {
+			units = isMetric;
+		} else {
+			if (isFeet) {
+				units = 'feet';
+			} else if (isNauticalMile) {
+				units = 'nauticalMile';
+			} else if (isMetric) {
+				units = 'metric';
+			} else {
+				units = 'yards';
+			}
+		}
+
+		switch (units) {
+		case 'metric':
 			// show metres when distance is < 1km, then show km
 			if (distance > 1000) {
-				distanceStr = (distance  / 1000).toFixed(2) + ' km';
+				distanceStr = (distance / 1000).toFixed(2) + ' km';
 			} else {
 				distanceStr = Math.ceil(distance) + ' m';
 			}
-		} else {
+			break;
+		case 'feet':
+			distance *= 1.09361 * 3;
+			distanceStr = Math.ceil(distance) + ' ft';
+
+			break;
+		case 'nauticalMile':
+			distance *= 0.53996;
+			distanceStr = (distance / 1000).toFixed(2) + ' nm';
+			break;
+		case 'yards':
+		default:
 			distance *= 1.09361;
 
 			if (distance > 1760) {
 				distanceStr = (distance / 1760).toFixed(2) + ' miles';
 			} else {
-				var suffix = ' yd';
-				if (useFeet) {
-					distance = distance * 3;
-					suffix = ' ft';
-				}
-				distanceStr = Math.ceil(distance) + suffix;
+				distanceStr = Math.ceil(distance) + ' yd';
 			}
+			break;
 		}
-
 		return distanceStr;
 	}
 });
@@ -2810,7 +2842,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
  */
 L.Util.extend(L.LineUtil, {
 
-	// @method segmentsIntersect(): void
+	// @method segmentsIntersect(): boolean
 	// Checks to see if two line segments intersect. Does not handle degenerate cases.
 	// http://compgeom.cs.uiuc.edu/~jeffe/teaching/373/notes/x06-sweepline.pdf
 	segmentsIntersect: function (/*Point*/ p, /*Point*/ p1, /*Point*/ p2, /*Point*/ p3) {
@@ -2833,7 +2865,7 @@ L.Util.extend(L.LineUtil, {
  */
 L.Polyline.include({
 
-	// @method intersects(): void
+	// @method intersects(): boolean
 	// Check to see if this polyline has any linesegments that intersect.
 	// NOTE: does not support detecting intersection for degenerate cases.
 	intersects: function () {
@@ -2858,7 +2890,7 @@ L.Polyline.include({
 		return false;
 	},
 
-	// @method newLatLngIntersects(): void
+	// @method newLatLngIntersects(): boolean
 	// Check for intersection if new latlng was added to this polyline.
 	// NOTE: does not support detecting intersection for degenerate cases.
 	newLatLngIntersects: function (latlng, skipFirst) {
@@ -2870,7 +2902,7 @@ L.Polyline.include({
 		return this.newPointIntersects(this._map.latLngToLayerPoint(latlng), skipFirst);
 	},
 
-	// @method newPointIntersects(): void
+	// @method newPointIntersects(): boolean
 	// Check for intersection if new point was added to this polyline.
 	// newPoint must be a layer point.
 	// NOTE: does not support detecting intersection for degenerate cases.
