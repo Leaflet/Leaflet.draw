@@ -1,4 +1,3 @@
-
 L.Draw = L.Draw || {};
 
 /**
@@ -25,7 +24,9 @@ L.Draw.Feature = L.Handler.extend({
 	// @method enable(): void
 	// Enables this handler
 	enable: function () {
-		if (this._enabled) { return; }
+		if (this._enabled) {
+			return;
+		}
 
 		L.Handler.prototype.enable.call(this);
 
@@ -36,7 +37,9 @@ L.Draw.Feature = L.Handler.extend({
 
 	// @method initialize(): void
 	disable: function () {
-		if (!this._enabled) { return; }
+		if (!this._enabled) {
+			return;
+		}
 
 		L.Handler.prototype.disable.call(this);
 

@@ -17,6 +17,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	},
 
 	// @method addHooks(): void
+	// Add listener hooks to this handler.
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
@@ -40,6 +41,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	},
 
 	// @method removeHooks(): void
+	// Remove listener hooks from this handler.
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
 		if (this._map) {

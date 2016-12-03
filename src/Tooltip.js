@@ -9,7 +9,7 @@ L.Draw = L.Draw || {};
  * @example
  *
  * ```js
- * 	var tooltip = L.Draw.Tooltip();
+ *    var tooltip = L.Draw.Tooltip();
  * ```
  *
  */
@@ -23,7 +23,8 @@ L.Draw.Tooltip = L.Class.extend({
 		this._map = map;
 		this._popupPane = map._panes.popupPane;
 
-		this._container = map.options.drawControlTooltips ? L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane) : null;
+		this._container = map.options.drawControlTooltips ?
+			L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane) : null;
 		this._singleLineLabel = false;
 
 		this._map.on('mouseout', this._onMouseOut, this);
@@ -59,7 +60,8 @@ L.Draw.Tooltip = L.Class.extend({
 		}
 
 		this._container.innerHTML =
-			(labelText.subtext.length > 0 ? '<span class="leaflet-draw-tooltip-subtext">' + labelText.subtext + '</span>' + '<br />' : '') +
+			(labelText.subtext.length > 0 ?
+			'<span class="leaflet-draw-tooltip-subtext">' + labelText.subtext + '</span>' + '<br />' : '') +
 			'<span>' + labelText.text + '</span>';
 
 		return this;

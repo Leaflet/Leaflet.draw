@@ -64,6 +64,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	// @method addHooks(): void
+	// Add listener hooks to this handler
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
@@ -110,6 +111,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	// @method removeHooks(): void
+	// Remove listener hooks from this handler.
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
 
@@ -146,6 +148,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	// @method deleteLastVertex(): void
+	// Remove the last vertex from the polyline, removes polyline from map if only one point exists.
 	deleteLastVertex: function () {
 		if (this._markers.length <= 1) {
 			return;
@@ -168,6 +171,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	// @method addVertex(): void
+	// Add a vertex to the end of the polyline
 	addVertex: function (latlng) {
 		var markersLength = this._markers.length;
 
@@ -191,6 +195,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	// @method completeShape(): void
+	// Closes the polyline between the first and last points
 	completeShape: function () {
 		if (this._markers.length <= 1) {
 			return;
@@ -220,8 +225,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		}
 	},
 
-	//Called to verify the shape is valid when the user tries to finish it
-	//Return false if the shape is not valid
+	// Called to verify the shape is valid when the user tries to finish it
+	// Return false if the shape is not valid
 	_shapeIsValid: function () {
 		return true;
 	},

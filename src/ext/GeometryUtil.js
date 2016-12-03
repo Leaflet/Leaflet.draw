@@ -25,7 +25,8 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return Math.abs(area);
 	},
 
-	// @method readableArea(): string
+	// @method readableArea(area, isMetric): string
+	// Returns a readable area string in yards or metric
 	readableArea: function (area, isMetric) {
 		var areaStr;
 
@@ -50,8 +51,11 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return areaStr;
 	},
 
-	// @method readableDistance(distance, isMetric, useFeet, isNauticalMile): string
 	// @method readableDistance(distance, units): string
+	// Converts a metric distance to one of [ feet, nauticalMile, metric or yards ] string
+	//
+	// @alternative
+	// @method readableDistance(distance, isMetric, useFeet, isNauticalMile): string
 	// Converts metric distance to distance string.
 	readableDistance: function (distance, isMetric, isFeet, isNauticalMile) {
 		var distanceStr,
