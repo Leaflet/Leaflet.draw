@@ -1,6 +1,6 @@
 {
   "name": "leaflet-draw",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "Vector drawing plugin for Leaflet",
   "devDependencies": {
     "eslint": "^3.5.0 <3.6.0",
@@ -28,9 +28,15 @@
   "style": "dist/leaflet.draw.css",
   "directories": {
     "example": "docs/example",
-    "doc": "docs/",
-    "dist": "dist/"
+    "doc": "docs/"
   },
+  "files": [
+    "dist/leaflet.draw.css",
+    "dist/leaflet.draw.js",
+    "dist/leaflet.draw-src.css",
+    "dist/leaflet.draw-src.js",
+    "dist/leaflet.draw-src.map"
+  ],
   "scripts": {
     "build": "jake build -f ./Jakefile.js",
     "test": "jake test",
