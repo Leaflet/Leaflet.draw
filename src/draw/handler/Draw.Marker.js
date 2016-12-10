@@ -1,3 +1,8 @@
+/**
+ * @class L.Draw.Marker
+ * @aka Draw.Marker
+ * @inherits L.Draw.Feature
+ */
 L.Draw.Marker = L.Draw.Feature.extend({
 	statics: {
 		TYPE: 'marker'
@@ -9,6 +14,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
 
+	// @method initialize(): void
 	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Marker.TYPE;
@@ -16,6 +22,8 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
 
+	// @method addHooks(): void
+	// Add listener hooks to this handler.
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 
@@ -44,6 +52,8 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		}
 	},
 
+	// @method removeHooks(): void
+	// Remove listener hooks from this handler.
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
 
@@ -66,7 +76,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	},
 
 	_onMouseMove: function (e) {
-		var latlng = e.latlng;
+        var latlng = L.LatLngUtil.pointToBounds(this._map.options.maxBounds, e.latlng);
 
 		this._tooltip.updatePosition(latlng);
 		this._mouseMarker.setLatLng(latlng);

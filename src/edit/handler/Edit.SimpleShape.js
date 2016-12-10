@@ -1,5 +1,8 @@
 L.Edit = L.Edit || {};
-
+/**
+ * @class L.Edit.SimpleShape
+ * @aka Edit.SimpleShape
+ */
 L.Edit.SimpleShape = L.Handler.extend({
 	options: {
 		moveIcon: new L.DivIcon({
@@ -20,6 +23,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		}),
 	},
 
+	// @method intialize(): void
 	initialize: function (shape, options) {
 		// if touch, switch to touch icon
 		if (L.Browser.touch) {
@@ -31,6 +35,8 @@ L.Edit.SimpleShape = L.Handler.extend({
 		L.Util.setOptions(this, options);
 	},
 
+	// @method addHooks(): void
+	// Add listener hooks to this handler
 	addHooks: function () {
 		var shape = this._shape;
 		if (this._shape._map) {
@@ -45,8 +51,15 @@ L.Edit.SimpleShape = L.Handler.extend({
 				this._map.addLayer(this._markerGroup);
 			}
 		}
+        
+        this._map.fire(L.Draw.Event.EDITHOOK, {
+            'editHandler' : this,
+            'layer': shape
+        });
 	},
 
+	// @method removeHooks(): void
+	// Remove listener hooks from this handler
 	removeHooks: function () {
 		var shape = this._shape;
 
@@ -67,6 +80,8 @@ L.Edit.SimpleShape = L.Handler.extend({
 		this._map = null;
 	},
 
+	// @method updateMarkers(): void
+	// Remove the edit markers from this layer
 	updateMarkers: function () {
 		this._markerGroup.clearLayers();
 		this._initMarkers();
@@ -141,6 +156,10 @@ L.Edit.SimpleShape = L.Handler.extend({
 	_fireEdit: function () {
 		this._shape.edited = true;
 		this._shape.fire('edit');
+        
+        if (this._shape._map) {
+            this._shape._map.fire(L.Draw.Event.EDITDONE);
+        }
 	},
 
 	_onMarkerDrag: function (e) {

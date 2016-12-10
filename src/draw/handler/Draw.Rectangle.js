@@ -1,3 +1,8 @@
+/**
+ * @class L.Draw.Rectangle
+ * @aka Draw.Rectangle
+ * @inherits L.Draw.SimpleShape
+ */
 L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	statics: {
 		TYPE: 'rectangle'
@@ -6,18 +11,20 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	options: {
 		shapeOptions: {
 			stroke: true,
-			color: '#f06eaa',
+			color: '#3388ff',
 			weight: 4,
 			opacity: 0.5,
 			fill: true,
 			fillColor: null, //same as color by default
 			fillOpacity: 0.2,
-			clickable: true
+            showArea: true,
+            clickable: true
 		},
 		metric: true // Whether to use the metric measurement system or imperial
 	},
 
-	initialize: function (map, options) {
+    // @method initialize(): void
+    initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Rectangle.TYPE;
 
@@ -27,11 +34,13 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	},
 
 	_drawShape: function (latlng) {
+        var bounds = L.LatLngUtil.boxToBounds(this._map.options.maxBounds, this._startLatLng, latlng);
+        
 		if (!this._shape) {
-			this._shape = new L.Rectangle(new L.LatLngBounds(this._startLatLng, latlng), this.options.shapeOptions);
+			this._shape = new L.Rectangle(bounds, this.options.shapeOptions);
 			this._map.addLayer(this._shape);
 		} else {
-			this._shape.setBounds(new L.LatLngBounds(this._startLatLng, latlng));
+			this._shape.setBounds(bounds);
 		}
 	},
 
@@ -43,13 +52,14 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	_getTooltipText: function () {
 		var tooltipText = L.Draw.SimpleShape.prototype._getTooltipText.call(this),
 			shape = this._shape,
-			latLngs, area, subtext;
+            showArea = this.options.showArea,
+            latLngs, area, subtext;
 
 		if (shape) {
 			latLngs = this._shape._defaultShape ? this._shape._defaultShape() : this._shape.getLatLngs();
 			area = L.GeometryUtil.geodesicArea(latLngs);
-			subtext = L.GeometryUtil.readableArea(area, this.options.metric);
-		}
+			subtext = showArea ? L.GeometryUtil.readableArea(area, this.options.metric) : ''
+        }
 
 		return {
 			text: tooltipText.text,

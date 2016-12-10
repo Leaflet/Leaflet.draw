@@ -5,6 +5,25 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
+## 0.4.2 (November 7, 2016)
+
+### Improvements
+
+ * Documentation is now automatically generated
+ * L.Draw.Event is new, has all events in string format
+
+### Bugfixes
+
+ * Travis tests
+
+## 0.4.1 (October 21, 2016)
+ 
+### Bugfixes
+
+ * fix markers becomming invisible when in edit mode
+ * Fix linking for EditPolyOptions
+ * Fixes very minor issue in readme with invalid variable name
+
 ## 0.4.0 (October 13, 2016)
 
 ### Improvements

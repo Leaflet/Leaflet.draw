@@ -1,5 +1,9 @@
 L.Edit = L.Edit || {};
-
+/**
+ * @class L.Edit.Circle
+ * @aka Edit.Circle
+ * @inherits L.Edit.SimpleShape
+ */
 L.Edit.Circle = L.Edit.SimpleShape.extend({
 	_createMoveMarker: function () {
 		var center = this._shape.getLatLng();
@@ -23,24 +27,58 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
 	},
 
 	_move: function (latlng) {
-		var resizemarkerPoint = this._getResizeMarkerPoint(latlng);
+        var moveOk = true;
+        
+        var originalCenter = this._shape.getLatLng().clone();
+        var bbounds = this._map.options.maxBounds;
+        
+		// force moves to be inside our bounds
+        var originalRadius = L.LatLngUtil.radiusToBounds(bbounds, originalCenter, this._getResizeMarkerPoint(originalCenter));
+        
+        if (bbounds) {
+            var resizemarkerPoint = this._getResizeMarkerPoint(latlng);
+            var moveToRadius = L.LatLngUtil.radiusToBounds(bbounds, latlng, resizemarkerPoint);
+            moveOk = (originalRadius - moveToRadius) < 0.01;
+        }
+        
+        if (moveOk) {
+            // Move the resize marker
+            this._resizeMarkers[0].setLatLng(resizemarkerPoint);
 
-		// Move the resize marker
-		this._resizeMarkers[0].setLatLng(resizemarkerPoint);
+            // Move the circle
+            this._shape.setLatLng(latlng);
+            this._moveMarker.setLatLng(latlng);
 
-		// Move the circle
-		this._shape.setLatLng(latlng);
-
-		this._map.fire('draw:editmove', {layer: this._shape});
+            this._map.fire(L.Draw.Event.EDITMOVE, {
+                layer: this._shape,
+                originalCenter: originalCenter,
+                newCenter: latlng,
+                editType: 'editcircle/Move',
+                editHandler: this
+            });
+        }
+        else {
+            this._moveMarker.setLatLng(originalCenter);
+        }
 	},
 
 	_resize: function (latlng) {
-		var moveLatLng = this._moveMarker.getLatLng(),
-			radius = moveLatLng.distanceTo(latlng);
-
+        var originalCenter = this._shape.getLatLng();
+        var bbounds = this._map.options.maxBounds;
+        
+        var originalRadius = L.LatLngUtil.radiusToBounds(bbounds, originalCenter, this._getResizeMarkerPoint(originalCenter));
+        
+		var moveLatLng = this._moveMarker.getLatLng();
+        var radius = L.LatLngUtil.radiusToBounds(bbounds, moveLatLng, latlng);
 		this._shape.setRadius(radius);
-
-		this._map.fire('draw:editresize', {layer: this._shape});
+        
+		this._map.fire(L.Draw.Event.EDITRESIZE, {
+            layer: this._shape,
+            originalRadius: originalRadius,
+            newRadius: radius,
+            editType: 'editcircle/Resize',
+            editHandler: this
+        });
 	}
 });
 

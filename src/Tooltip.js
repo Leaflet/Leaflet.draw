@@ -1,15 +1,37 @@
 L.Draw = L.Draw || {};
+/**
+ * @class L.Draw.Tooltip
+ * @aka Tooltip
+ *
+ * The tooltip class — it is used to display the tooltip while drawing
+ * This will be depreciated
+ *
+ * @example
+ *
+ * ```js
+ * 	var tooltip = L.Draw.Tooltip();
+ * ```
+ *
+ */
 L.Draw.Tooltip = L.Class.extend({
+
+	// @section Methods for modifying draw state
+
+	// @method initialize(map): void
+	// Tooltip constructor
 	initialize: function (map) {
 		this._map = map;
 		this._popupPane = map._panes.popupPane;
 
-		this._container = map.options.drawControlTooltips ? L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane) : null;
+		this._container = map.options.drawControlTooltips ?
+			L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane) : null;
 		this._singleLineLabel = false;
 
 		this._map.on('mouseout', this._onMouseOut, this);
 	},
 
+	// @method dispose(): void
+	// Remove Tooltip DOM and unbind events
 	dispose: function () {
 		this._map.off('mouseout', this._onMouseOut, this);
 
@@ -19,6 +41,8 @@ L.Draw.Tooltip = L.Class.extend({
 		}
 	},
 
+	// @method updateContent(labelText): this
+	// Changes the tooltip text to string in function call
 	updateContent: function (labelText) {
 		if (!this._container) {
 			return this;
@@ -36,12 +60,15 @@ L.Draw.Tooltip = L.Class.extend({
 		}
 
 		this._container.innerHTML =
-			(labelText.subtext.length > 0 ? '<span class="leaflet-draw-tooltip-subtext">' + labelText.subtext + '</span>' + '<br />' : '') +
+			(labelText.subtext.length > 0 ?
+			'<span class="leaflet-draw-tooltip-subtext">' + labelText.subtext + '</span>' + '<br />' : '') +
 			'<span>' + labelText.text + '</span>';
 
 		return this;
 	},
 
+	// @method updatePosition(latlng): this
+	// Changes the location of the tooltip
 	updatePosition: function (latlng) {
 		var pos = this._map.latLngToLayerPoint(latlng),
 			tooltipContainer = this._container;
@@ -54,6 +81,8 @@ L.Draw.Tooltip = L.Class.extend({
 		return this;
 	},
 
+	// @method showAsError(): this
+	// Applies error class to tooltip
 	showAsError: function () {
 		if (this._container) {
 			L.DomUtil.addClass(this._container, 'leaflet-error-draw-tooltip');
@@ -61,6 +90,8 @@ L.Draw.Tooltip = L.Class.extend({
 		return this;
 	},
 
+	// @method removeError(): this
+	// Removes the error class from the tooltip
 	removeError: function () {
 		if (this._container) {
 			L.DomUtil.removeClass(this._container, 'leaflet-error-draw-tooltip');

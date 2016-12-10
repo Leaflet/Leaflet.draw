@@ -1,4 +1,10 @@
+/**
+ * @class L.Polygon
+ * @aka Polygon
+ */
 L.Polygon.include({
+
+	// @method intersects(): boolean
 	// Checks a polygon for any intersecting line segments. Ignores holes.
 	intersects: function () {
 		var polylineIntersects,

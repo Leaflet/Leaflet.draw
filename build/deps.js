@@ -1,7 +1,8 @@
 var deps = {
 	Core: {
 		src: [
-			'Leaflet.draw.js'
+			'Leaflet.draw.js',
+			'Leaflet.Draw.Event.js'
 		],
 		desc: 'The core of the plugin. Currently only includes the version.'
 	},
@@ -70,6 +71,15 @@ var deps = {
 		],
 		desc: 'Edit toolbar.',
 		deps: ['EditHandlers', 'CommonUI']
+	},
+
+	Undo: {
+		src: [
+			'ext/UndoManager.js',
+			'ext/StateHandler.js',
+		],
+		desc: 'Ctrl-Z / Ctrl-Y undo/redo.',
+		deps: ['CommonUI']
 	}
 };
 
