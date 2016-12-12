@@ -268,6 +268,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onMouseDown: function (e) {
+		this._clickHandled = true;
 		var originalEvent = e.originalEvent;
 		var clientX = originalEvent.clientX;
 		var clientY = originalEvent.clientY;
@@ -283,19 +284,19 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var clientX = originalEvent.clientX;
 		var clientY = originalEvent.clientY;
 		this._endPoint.call(this, clientX, clientY, e);
+		this._clickHandled = null;
 	},
 	_endPoint: function (clientX, clientY, e) {
 		if (this._mouseDownOrigin) {
 			var distance = L.point(clientX, clientY)
 				.distanceTo(this._mouseDownOrigin);
-			var blarg = console.log, lastPtDistance = Infinity;
+			var lastPtDistance = Infinity;
 			if (this._markers.length > 0) {
-				lastPtDistance = L.point(clientX, clientY).distanceTo(this._markers[this._markers.length - 1]);
+				var lastMarkerPoint = this._map.latLngToContainerPoint(this._markers[this._markers.length - 1].getLatLng());
+				lastPtDistance = L.point(clientX, clientY).distanceTo(lastMarkerPoint);
 			}
-			blarg('distance to last marker ', lastPtDistance);
-			if (false) {
-				// check for distance to last point
-
+			if (lastPtDistance < 60 && L.Browser.touch) {
+				this._finishShape();
 			} else if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
 				this.addVertex(e.latlng);
 			}
@@ -303,16 +304,21 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._mouseDownOrigin = null;
 	},
 
+	// ontouch prevented by clickHandled flag because some browsers fire both click/touch events,
+	// causing unwanted behavior
 	_onTouch: function (e) {
 		var originalEvent = e.originalEvent;
 		var clientX;
 		var clientY;
-		if (originalEvent.touches && originalEvent.touches[0]) {
+		if (originalEvent.touches && originalEvent.touches[0] && !this._clickHandled) {
 			clientX = originalEvent.touches[0].clientX;
 			clientY = originalEvent.touches[0].clientY;
+			this._touchEvent = true;
 			this._startPoint.call(this, clientX, clientY);
 			this._endPoint.call(this, clientX, clientY, e);
+			this._touchEvent = false;
 		}
+		this._clickHandled = null;
 	},
 
 	_onMouseOut: function () {
