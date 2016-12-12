@@ -288,7 +288,15 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		if (this._mouseDownOrigin) {
 			var distance = L.point(clientX, clientY)
 				.distanceTo(this._mouseDownOrigin);
-			if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
+			var blarg = console.log, lastPtDistance = Infinity;
+			if (this._markers.length > 0) {
+				lastPtDistance = L.point(clientX, clientY).distanceTo(this._markers[this._markers.length - 1]);
+			}
+			blarg('distance to last marker ', lastPtDistance);
+			if (false) {
+				// check for distance to last point
+
+			} else if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
 				this.addVertex(e.latlng);
 			}
 		}
