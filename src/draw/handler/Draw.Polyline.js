@@ -267,7 +267,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onMouseDown: function (e) {
-		if (!this._clickHandled) {
+		if (!this._clickHandled && !this._touchHandled) {
 			this._clickHandled = true;
 			var originalEvent = e.originalEvent;
 			var clientX = originalEvent.clientX;
@@ -314,10 +314,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		if (originalEvent.touches && originalEvent.touches[0] && !this._clickHandled) {
 			clientX = originalEvent.touches[0].clientX;
 			clientY = originalEvent.touches[0].clientY;
-			this._touchEvent = true;
+			this._touchHandled = true;
 			this._startPoint.call(this, clientX, clientY);
 			this._endPoint.call(this, clientX, clientY, e);
-			this._touchEvent = false;
+			this._touchHandled = null;
 		}
 		this._clickHandled = null;
 	},
