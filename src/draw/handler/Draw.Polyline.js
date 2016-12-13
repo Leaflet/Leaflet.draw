@@ -1,3 +1,4 @@
+var blarg = console.log;
 /**
  * @class L.Draw.Polyline
  * @aka Draw.Polyline
@@ -268,13 +269,16 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onMouseDown: function (e) {
-		this._clickHandled = true;
-		var originalEvent = e.originalEvent;
-		var clientX = originalEvent.clientX;
-		var clientY = originalEvent.clientY;
-		this._startPoint.call(this, clientX, clientY);
-
+		blarg('mousedown ', e);
+		if (!this._clickHandled) {
+			this._clickHandled = true;
+			var originalEvent = e.originalEvent;
+			var clientX = originalEvent.clientX;
+			var clientY = originalEvent.clientY;
+			this._startPoint.call(this, clientX, clientY);
+		}
 	},
+
 	_startPoint: function (clientX, clientY) {
 		this._mouseDownOrigin = L.point(clientX, clientY);
 	},
@@ -307,6 +311,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// ontouch prevented by clickHandled flag because some browsers fire both click/touch events,
 	// causing unwanted behavior
 	_onTouch: function (e) {
+		blarg('ontouch ', e);
 		var originalEvent = e.originalEvent;
 		var clientX;
 		var clientY;
