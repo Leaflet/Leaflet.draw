@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.7+b2e4c1f, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.7+e4d8c83, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.7+b2e4c1f";
+L.drawVersion = "0.4.7+e4d8c83";
 /**
  * @class L.Draw
  * @aka Draw
@@ -437,7 +437,6 @@ L.Draw.Feature = L.Handler.extend({
 
 
 
-var blarg = console.log;
 /**
  * @class L.Draw.Polyline
  * @aka Draw.Polyline
@@ -614,7 +613,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// Add a vertex to the end of the polyline
 	addVertex: function (latlng) {
 		var markersLength = this._markers.length;
-
 		if (markersLength > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
 			this._showErrorTooltip();
 			return;
@@ -708,7 +706,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onMouseDown: function (e) {
-		blarg('mousedown ', e);
 		if (!this._clickHandled) {
 			this._clickHandled = true;
 			var originalEvent = e.originalEvent;
@@ -750,7 +747,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// ontouch prevented by clickHandled flag because some browsers fire both click/touch events,
 	// causing unwanted behavior
 	_onTouch: function (e) {
-		blarg('ontouch ', e);
 		var originalEvent = e.originalEvent;
 		var clientX;
 		var clientY;
