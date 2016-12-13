@@ -1,4 +1,3 @@
-var blarg = console.log;
 /**
  * @class L.Draw.Polyline
  * @aka Draw.Polyline
@@ -175,7 +174,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// Add a vertex to the end of the polyline
 	addVertex: function (latlng) {
 		var markersLength = this._markers.length;
-		console.log('addvertex ', this);
 		if (markersLength > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
 			this._showErrorTooltip();
 			return;
@@ -269,7 +267,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onMouseDown: function (e) {
-		blarg('mousedown ', e);
 		if (!this._clickHandled) {
 			this._clickHandled = true;
 			var originalEvent = e.originalEvent;
@@ -299,8 +296,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				var lastMarkerPoint = this._map.latLngToContainerPoint(this._markers[this._markers.length - 1].getLatLng());
 				lastPtDistance = L.point(clientX, clientY).distanceTo(lastMarkerPoint);
 			}
-			console.log('this._markers ', this._markers);
-			console.log('lastptdistance ', lastPtDistance);
 			if (lastPtDistance < 60 && L.Browser.touch) {
 				this._finishShape();
 			} else if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
@@ -313,7 +308,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// ontouch prevented by clickHandled flag because some browsers fire both click/touch events,
 	// causing unwanted behavior
 	_onTouch: function (e) {
-		blarg('ontouch ', e);
 		var originalEvent = e.originalEvent;
 		var clientX;
 		var clientY;
