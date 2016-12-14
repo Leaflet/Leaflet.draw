@@ -47,7 +47,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// if touch, switch to touch icon
 		if (L.Browser.touch) {
 			this.options.icon = this.options.touchIcon;
-			this.options.showLength = false;
 		}
 
 		// Need to set this here to ensure the correct message is used.
@@ -447,7 +446,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_getTooltipText: function () {
 		var showLength = this.options.showLength,
 			labelText, distanceStr;
-
+		if (L.Browser.touch) {
+			showLength = false; // if there's a better place to put this, feel free to move it
+		}
 		if (this._markers.length === 0) {
 			labelText = {
 				text: L.drawLocal.draw.handlers.polyline.tooltip.start
