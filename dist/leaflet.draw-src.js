@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.7+9ba5785, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.7+0cce84a, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.7+9ba5785";
+L.drawVersion = "0.4.7+0cce84a";
 /**
  * @class L.Draw
  * @aka Draw
@@ -749,7 +749,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			var lastPtDistance = Infinity;
 			if (this._markers.length > 0) {
 				var lastMarkerPoint = this._map.latLngToContainerPoint(this._markers[this._markers.length - 1].getLatLng());
-				lastPtDistance = this._mouseDownOrigin.distanceTo(lastMarkerPoint);
+				lastPtDistance = this._map.distance(this._mouseDownOrigin, lastMarkerPoint);
 			}
 			window.console.log('da lastptdistance ', lastPtDistance);
 			if (lastPtDistance < 60 && L.Browser.touch) {
