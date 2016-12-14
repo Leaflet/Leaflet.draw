@@ -307,17 +307,17 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		if (this._mouseDownOrigin) {
 			var dragCheckDistance = L.point(clientX, clientY)
 				.distanceTo(this._mouseDownOrigin);
-			var lastPtDistance = Infinity;
-			if (this._markers.length > 0) {
-				var lastMarkerPoint = this._map.latLngToContainerPoint(this._markers[this._markers.length - 1].getLatLng()),
-				potentialMarker = new L.Marker(e.latlng, {
-					icon: this.options.icon,
-					zIndexOffset: this.options.zIndexOffset * 2
-				});
-				var potentialMarkerPint = this._map.latLngToContainerPoint(potentialMarker.getLatLng());
-				lastPtDistance = lastMarkerPoint.distanceTo(potentialMarkerPint);
-			}
-			window.console.log('da lastptdistance ', lastPtDistance);
+			var lastPtDistance = this._calculateFinishDistance(e.latlng);
+			// if (this._markers.length > 0) {
+			// 	var lastMarkerPoint = this._map.latLngToContainerPoint(this._markers[this._markers.length - 1].getLatLng()),
+			// 	potentialMarker = new L.Marker(e.latlng, {
+			// 		icon: this.options.icon,
+			// 		zIndexOffset: this.options.zIndexOffset * 2
+			// 	});
+			// 	var potentialMarkerPint = this._map.latLngToContainerPoint(potentialMarker.getLatLng());
+			// 	lastPtDistance = lastMarkerPoint.distanceTo(potentialMarkerPint);
+			// }
+			// window.console.log('da lastptdistance ', lastPtDistance);
 			if (lastPtDistance < 60 && L.Browser.touch) {
 				this._finishShape();
 			} else if (Math.abs(dragCheckDistance) < 9 * (window.devicePixelRatio || 1)) {
@@ -350,6 +350,34 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		if (this._tooltip) {
 			this._tooltip._onMouseOut.call(this._tooltip);
 		}
+	},
+
+	// calculate if we are currently within close enough distance
+	// of the closing point (first point for shapes, last point for lines)
+	// this is semi-ugly code but the only reliable way i found to get the job done
+	// note: calculating point.distanceTo between mouseDownOrigin and last marker did NOT work
+	_calculateFinishDistance: function (potentialLatLng) {
+		var lastPtDistance
+		if (this._markers.length > 0) {
+				var finishMarker;
+				if (this.type === L.Draw.Polyline.TYPE) {
+					finishMarker = this._markers[this._markers.length - 1];
+				} else if (this.type === L.Draw.Polygon.TYPE) {
+					finishMarker = this._markers[0];
+				} else {
+					return Infinity;
+				}
+				var lastMarkerPoint = this._map.latLngToContainerPoint(finishMarker.getLatLng()),
+				potentialMarker = new L.Marker(potentialLatLng, {
+					icon: this.options.icon,
+					zIndexOffset: this.options.zIndexOffset * 2
+				});
+				var potentialMarkerPint = this._map.latLngToContainerPoint(potentialMarker.getLatLng());
+				lastPtDistance = lastMarkerPoint.distanceTo(potentialMarkerPint);
+			} else {
+				lastPtDistance = Infinity;
+			}
+			return lastPtDistance;
 	},
 
 	_updateFinishHandler: function () {
