@@ -107,7 +107,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				// .on('touchstart', this._onTouch, this)
 				.on('zoomend', this._onZoomEnd, this);
 
-			if (L.browser.touch) {
+			if (L.Browser.touch) {
 				this._map
 				.on('touchstart', this._onTouch, this);
 			} else {
