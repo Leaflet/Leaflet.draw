@@ -84,7 +84,6 @@ L.Polyline.include({
 			p3 = points[j];
 
 			if (L.LineUtil.segmentsIntersect(p, p1, p2, p3)) {
-				window.console.log('intersection true xxxx ');
 				return true;
 			}
 		}
