@@ -94,6 +94,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				});
 			}
 
+			// consider binding ONLY mousedown or ONLY touch depending on L.Browser.touch
 			this._mouseMarker
 				.on('mousedown', this._onMouseDown, this)
 				.on('mouseout', this._onMouseOut, this)
@@ -296,7 +297,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				var lastMarkerPoint = this._map.latLngToContainerPoint(this._markers[this._markers.length - 1].getLatLng());
 				lastPtDistance = L.point(clientX, clientY).distanceTo(lastMarkerPoint);
 			}
+			var blarg = console.log;
 			window.console.log('test logs: ', lastPtDistance, L.Browser.touch);
+			blarg('testing console log call');
 			if (lastPtDistance < 60 && L.Browser.touch) {
 				this._finishShape();
 			} else if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
