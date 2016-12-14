@@ -184,7 +184,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// Add a vertex to the end of the polyline
 	addVertex: function (latlng) {
 		var markersLength = this._markers.length;
-		if (markersLength > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
+		// markersLength must be greater than or equal to 2 before intersections can occur
+		if (markersLength >= 2 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
 			this._showErrorTooltip();
 			return;
 		}
@@ -247,7 +248,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onMouseMove: function (e) {
-		window.console.log('mousemove fn occurring');
 		var newPos = this._map.mouseEventToLayerPoint(e.originalEvent);
 		var latlng = this._map.layerPointToLatLng(newPos);
 

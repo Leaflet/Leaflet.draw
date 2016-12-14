@@ -22,6 +22,7 @@ L.Polyline.include({
 
 
 			if (this._lineSegmentsIntersectsRange(p, p1, i - 2)) {
+				window.console.log('intersection true yyyy ');
 				return true;
 			}
 		}
@@ -84,6 +85,7 @@ L.Polyline.include({
 			p3 = points[j];
 
 			if (L.LineUtil.segmentsIntersect(p, p1, p2, p3)) {
+				window.console.log('intersection true xxxx ');
 				return true;
 			}
 		}

@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.7+f07130a, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.7+9499747, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.7+f07130a";
+L.drawVersion = "0.4.7+9499747";
 /**
  * @class L.Draw
  * @aka Draw
@@ -623,7 +623,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// Add a vertex to the end of the polyline
 	addVertex: function (latlng) {
 		var markersLength = this._markers.length;
-		if (markersLength > 0 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
+		// markersLength must be greater than or equal to 2 before intersections can occur
+		if (markersLength >= 2 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
 			this._showErrorTooltip();
 			return;
 		}
@@ -686,7 +687,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onMouseMove: function (e) {
-		window.console.log('mousemove fn occurring');
 		var newPos = this._map.mouseEventToLayerPoint(e.originalEvent);
 		var latlng = this._map.layerPointToLatLng(newPos);
 
@@ -2981,6 +2981,7 @@ L.Polyline.include({
 
 
 			if (this._lineSegmentsIntersectsRange(p, p1, i - 2)) {
+				window.console.log('intersection true yyyy ');
 				return true;
 			}
 		}
@@ -3043,6 +3044,7 @@ L.Polyline.include({
 			p3 = points[j];
 
 			if (L.LineUtil.segmentsIntersect(p, p1, p2, p3)) {
+				window.console.log('intersection true xxxx ');
 				return true;
 			}
 		}
