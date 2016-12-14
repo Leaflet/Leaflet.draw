@@ -305,17 +305,22 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_endPoint: function (clientX, clientY, e) {
 		if (this._mouseDownOrigin) {
-			var distance = L.point(clientX, clientY)
+			var dragCheckDistance = L.point(clientX, clientY)
 				.distanceTo(this._mouseDownOrigin);
 			var lastPtDistance = Infinity;
 			if (this._markers.length > 0) {
-				var lastMarkerPoint = this._map.latLngToContainerPoint(this._markers[this._markers.length - 1].getLatLng());
-				lastPtDistance = this._map.distance(this._mouseDownOrigin, lastMarkerPoint);
+				var lastMarkerPoint = this._map.latLngToContainerPoint(this._markers[this._markers.length - 1].getLatLng()),
+				potentialMarker = new L.Marker(e.latlng, {
+					icon: this.options.icon,
+					zIndexOffset: this.options.zIndexOffset * 2
+				});
+				var potentialMarkerPint = this._map.latLngToContainerPoint(potentialMarker.getLatLng());
+				lastPtDistance = lastMarkerPoint.distanceTo(potentialMarkerPint);
 			}
 			window.console.log('da lastptdistance ', lastPtDistance);
 			if (lastPtDistance < 60 && L.Browser.touch) {
 				this._finishShape();
-			} else if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
+			} else if (Math.abs(dragCheckDistance) < 9 * (window.devicePixelRatio || 1)) {
 				this.addVertex(e.latlng);
 			}
 			this._enableNewMarkers(); // after a short pause, enable new markers
@@ -493,12 +498,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_getMeasurementString: function () {
-		window.console.log('entering fn');
 		var currentLatLng = this._currentLatLng,
 			previousLatLng = this._markers[this._markers.length - 1].getLatLng(),
 			distance;
-			// this currentlatlng is undefined sometimes?
-		window.console.log('were in getmeasurementstring ', currentLatLng, previousLatLng, distance);
+
 		// calculate the distance from the last fixed point to the mouse position
 		distance = this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng);
 
