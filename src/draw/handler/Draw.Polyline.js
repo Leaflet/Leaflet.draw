@@ -318,7 +318,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			// 	lastPtDistance = lastMarkerPoint.distanceTo(potentialMarkerPint);
 			// }
 			// window.console.log('da lastptdistance ', lastPtDistance);
-			if (lastPtDistance < 60 && L.Browser.touch) {
+			if (lastPtDistance < 10 && L.Browser.touch) {
 				this._finishShape();
 			} else if (Math.abs(dragCheckDistance) < 9 * (window.devicePixelRatio || 1)) {
 				this.addVertex(e.latlng);
@@ -377,6 +377,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			} else {
 				lastPtDistance = Infinity;
 			}
+			window.console.log('lastptdistance ', lastPtDistance);
 			return lastPtDistance;
 	},
 
