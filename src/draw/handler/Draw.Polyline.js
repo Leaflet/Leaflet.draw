@@ -247,6 +247,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onMouseMove: function (e) {
+		window.console.log('mousemove fn occurring');
 		var newPos = this._map.mouseEventToLayerPoint(e.originalEvent);
 		var latlng = this._map.layerPointToLatLng(newPos);
 
@@ -487,6 +488,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var currentLatLng = this._currentLatLng,
 			previousLatLng = this._markers[this._markers.length - 1].getLatLng(),
 			distance;
+			// this currentlatlng is undefined sometimes?
 		window.console.log('were in getmeasurementstring ', currentLatLng, previousLatLng, distance);
 		// calculate the distance from the last fixed point to the mouse position
 		distance = this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng);
