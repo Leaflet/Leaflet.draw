@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.7+bf6cea8, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.7+393cd59, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.7+bf6cea8";
+L.drawVersion = "0.4.7+393cd59";
 /**
  * @class L.Draw
  * @aka Draw
