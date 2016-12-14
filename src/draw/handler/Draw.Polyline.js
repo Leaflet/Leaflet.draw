@@ -278,8 +278,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onMouseDown: function (e) {
-		if (!this._clickHandled && !this._touchHandled) {
+		if (!this._clickHandled && !this._touchHandled && !this._disableMarkers) {
 			this._clickHandled = true;
+			this._disableNewMarkers();
 			var originalEvent = e.originalEvent;
 			var clientX = originalEvent.clientX;
 			var clientY = originalEvent.clientY;
@@ -313,6 +314,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			} else if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
 				this.addVertex(e.latlng);
 			}
+			this._enableNewMarkers(); // after a short pause, enable new markers
 		}
 		this._mouseDownOrigin = null;
 	},
@@ -323,9 +325,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var originalEvent = e.originalEvent;
 		var clientX;
 		var clientY;
-		if (originalEvent.touches && originalEvent.touches[0] && !this._clickHandled && !this._touchHandled) {
+		if (originalEvent.touches && originalEvent.touches[0] && !this._clickHandled && !this._touchHandled && !this._disableMarkers) {
 			clientX = originalEvent.touches[0].clientX;
 			clientY = originalEvent.touches[0].clientY;
+			this._disableNewMarkers();
 			this._touchHandled = true;
 			this._startPoint.call(this, clientX, clientY);
 			this._endPoint.call(this, clientX, clientY, e);
@@ -535,6 +538,19 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			clearTimeout(this._hideErrorTimeout);
 			this._hideErrorTimeout = null;
 		}
+	},
+
+	// disable new markers temporarily;
+	// this is to prevent duplicated touch/click events in some browsers
+	_disableNewMarkers: function () {
+		this._disableMarkers = true;
+	},
+
+	// see _disableNewMarkers
+	_enableNewMarkers: function () {
+		setTimeout(function() {
+			this._disableMarkers = false;
+		}.bind(this), 50);
 	},
 
 	_cleanUpShape: function () {

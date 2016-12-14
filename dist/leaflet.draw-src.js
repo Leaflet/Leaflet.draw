@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.7+79dd6e3, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.7+f07130a, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.7+79dd6e3";
+L.drawVersion = "0.4.7+f07130a";
 /**
  * @class L.Draw
  * @aka Draw
@@ -486,7 +486,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// if touch, switch to touch icon
 		if (L.Browser.touch) {
 			this.options.icon = this.options.touchIcon;
-			this.options.showLength = false;
 		}
 
 		// Need to set this here to ensure the correct message is used.
@@ -718,8 +717,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onMouseDown: function (e) {
-		if (!this._clickHandled && !this._touchHandled) {
+		if (!this._clickHandled && !this._touchHandled && !this._disableMarkers) {
 			this._clickHandled = true;
+			this._disableNewMarkers();
 			var originalEvent = e.originalEvent;
 			var clientX = originalEvent.clientX;
 			var clientY = originalEvent.clientY;
@@ -753,6 +753,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			} else if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
 				this.addVertex(e.latlng);
 			}
+			this._enableNewMarkers(); // after a short pause, enable new markers
 		}
 		this._mouseDownOrigin = null;
 	},
@@ -763,9 +764,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var originalEvent = e.originalEvent;
 		var clientX;
 		var clientY;
-		if (originalEvent.touches && originalEvent.touches[0] && !this._clickHandled && !this._touchHandled) {
+		if (originalEvent.touches && originalEvent.touches[0] && !this._clickHandled && !this._touchHandled && !this._disableMarkers) {
 			clientX = originalEvent.touches[0].clientX;
 			clientY = originalEvent.touches[0].clientY;
+			this._disableNewMarkers();
 			this._touchHandled = true;
 			this._startPoint.call(this, clientX, clientY);
 			this._endPoint.call(this, clientX, clientY, e);
@@ -886,7 +888,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_getTooltipText: function () {
 		var showLength = this.options.showLength,
 			labelText, distanceStr;
-
+		if (L.Browser.touch) {
+			showLength = false; // if there's a better place to put this, feel free to move it
+		}
 		if (this._markers.length === 0) {
 			labelText = {
 				text: L.drawLocal.draw.handlers.polyline.tooltip.start
@@ -973,6 +977,19 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			clearTimeout(this._hideErrorTimeout);
 			this._hideErrorTimeout = null;
 		}
+	},
+
+	// disable new markers temporarily;
+	// this is to prevent duplicated touch/click events in some browsers
+	_disableNewMarkers: function () {
+		this._disableMarkers = true;
+	},
+
+	// see _disableNewMarkers
+	_enableNewMarkers: function () {
+		setTimeout(function() {
+			this._disableMarkers = false;
+		}.bind(this), 50);
 	},
 
 	_cleanUpShape: function () {
