@@ -183,9 +183,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// @method addVertex(): void
 	// Add a vertex to the end of the polyline
 	addVertex: function (latlng) {
+		window.console.log('addvertex fn');
 		var markersLength = this._markers.length;
 		// markersLength must be greater than or equal to 2 before intersections can occur
 		if (markersLength >= 2 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
+			window.console.log('bad intersection');
 			this._showErrorTooltip();
 			return;
 		}
@@ -224,6 +226,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var intersects = this._poly.newLatLngIntersects(latlngs[latlngs.length - 1]);
 
 		if ((!this.options.allowIntersection && intersects) || !this._shapeIsValid()) {
+			window.console.log('invalid finishShape call');
 			this._showErrorTooltip();
 			return;
 		}
@@ -309,6 +312,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				var lastMarkerPoint = this._map.latLngToContainerPoint(this._markers[this._markers.length - 1].getLatLng());
 				lastPtDistance = L.point(clientX, clientY).distanceTo(lastMarkerPoint);
 			}
+			window.console.log('da lastptdistance ', lastPtDistance);
 			if (lastPtDistance < 60 && L.Browser.touch) {
 				this._finishShape();
 			} else if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {

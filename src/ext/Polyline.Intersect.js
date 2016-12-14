@@ -22,7 +22,6 @@ L.Polyline.include({
 
 
 			if (this._lineSegmentsIntersectsRange(p, p1, i - 2)) {
-				window.console.log('intersection true yyyy ');
 				return true;
 			}
 		}

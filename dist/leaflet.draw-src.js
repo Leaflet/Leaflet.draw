@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.7+9499747, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.7+daa1a54, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.7+9499747";
+L.drawVersion = "0.4.7+daa1a54";
 /**
  * @class L.Draw
  * @aka Draw
@@ -622,9 +622,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// @method addVertex(): void
 	// Add a vertex to the end of the polyline
 	addVertex: function (latlng) {
+		window.console.log('addvertex fn');
 		var markersLength = this._markers.length;
 		// markersLength must be greater than or equal to 2 before intersections can occur
 		if (markersLength >= 2 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
+			window.console.log('bad intersection');
 			this._showErrorTooltip();
 			return;
 		}
@@ -663,6 +665,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var intersects = this._poly.newLatLngIntersects(latlngs[latlngs.length - 1]);
 
 		if ((!this.options.allowIntersection && intersects) || !this._shapeIsValid()) {
+			window.console.log('invalid finishShape call');
 			this._showErrorTooltip();
 			return;
 		}
@@ -748,6 +751,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				var lastMarkerPoint = this._map.latLngToContainerPoint(this._markers[this._markers.length - 1].getLatLng());
 				lastPtDistance = L.point(clientX, clientY).distanceTo(lastMarkerPoint);
 			}
+			window.console.log('da lastptdistance ', lastPtDistance);
 			if (lastPtDistance < 60 && L.Browser.touch) {
 				this._finishShape();
 			} else if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
@@ -2981,7 +2985,6 @@ L.Polyline.include({
 
 
 			if (this._lineSegmentsIntersectsRange(p, p1, i - 2)) {
-				window.console.log('intersection true yyyy ');
 				return true;
 			}
 		}
