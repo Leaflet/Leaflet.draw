@@ -310,7 +310,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			var lastPtDistance = Infinity;
 			if (this._markers.length > 0) {
 				var lastMarkerPoint = this._map.latLngToContainerPoint(this._markers[this._markers.length - 1].getLatLng());
-				lastPtDistance = L.point(clientX, clientY).distanceTo(lastMarkerPoint);
+				lastPtDistance = this._mouseDownOrigin.distanceTo(lastMarkerPoint);
 			}
 			window.console.log('da lastptdistance ', lastPtDistance);
 			if (lastPtDistance < 60 && L.Browser.touch) {
