@@ -47,6 +47,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// if touch, switch to touch icon
 		if (L.Browser.touch) {
 			this.options.icon = this.options.touchIcon;
+			this.options.showLength = false;
 		}
 
 		// Need to set this here to ensure the correct message is used.
