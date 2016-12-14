@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.7+5669336, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.7+e579bff, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.7+5669336";
+L.drawVersion = "0.4.7+e579bff";
 /**
  * @class L.Draw
  * @aka Draw
@@ -535,9 +535,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 			// consider binding ONLY mousedown or ONLY touch depending on L.Browser.touch
 			this._mouseMarker
-				.on('mousedown', this._onMouseDown, this)
 				.on('mouseout', this._onMouseOut, this)
-				.on('mouseup', this._onMouseUp, this) // Necessary for 0.8 compatibility
 				.on('mousemove', this._onMouseMove, this) // Necessary to prevent 0.8 stutter
 				.addTo(this._map);
 
@@ -545,8 +543,19 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				.on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
 				.on('mousemove', this._onMouseMove, this)
 				.on('zoomlevelschange', this._onZoomEnd, this)
-				.on('touchstart', this._onTouch, this)
+				// .on('touchstart', this._onTouch, this)
 				.on('zoomend', this._onZoomEnd, this);
+
+			if (L.browser.touch) {
+				this._map
+				.on('touchstart', this._onTouch, this);
+			} else {
+				this._mouseMarker
+				.on('mousedown', this._onMouseDown, this)
+				.on('mouseup', this._onMouseUp, this); // Necessary for 0.8 compatibility
+			}
+
+
 		}
 	},
 
@@ -727,6 +736,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._endPoint.call(this, clientX, clientY, e);
 		this._clickHandled = null;
 	},
+
 	_endPoint: function (clientX, clientY, e) {
 		if (this._mouseDownOrigin) {
 			var distance = L.point(clientX, clientY)
@@ -736,9 +746,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				var lastMarkerPoint = this._map.latLngToContainerPoint(this._markers[this._markers.length - 1].getLatLng());
 				lastPtDistance = L.point(clientX, clientY).distanceTo(lastMarkerPoint);
 			}
-			var blarg = console.log;
-			window.console.log('test logs: ', lastPtDistance, L.Browser.touch);
-			blarg('testing console log call');
 			if (lastPtDistance < 60 && L.Browser.touch) {
 				this._finishShape();
 			} else if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
