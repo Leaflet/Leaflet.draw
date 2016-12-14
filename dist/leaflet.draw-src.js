@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.7+e4d8c83, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.7+bf6cea8, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.7+e4d8c83";
+L.drawVersion = "0.4.7+bf6cea8";
 /**
  * @class L.Draw
  * @aka Draw
@@ -706,7 +706,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onMouseDown: function (e) {
-		if (!this._clickHandled) {
+		if (!this._clickHandled && !this._touchHandled) {
 			this._clickHandled = true;
 			var originalEvent = e.originalEvent;
 			var clientX = originalEvent.clientX;
@@ -735,6 +735,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				var lastMarkerPoint = this._map.latLngToContainerPoint(this._markers[this._markers.length - 1].getLatLng());
 				lastPtDistance = L.point(clientX, clientY).distanceTo(lastMarkerPoint);
 			}
+			window.console.log('test logs: ', lastPtDistance, L.Browser.touch);
 			if (lastPtDistance < 60 && L.Browser.touch) {
 				this._finishShape();
 			} else if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
@@ -750,13 +751,13 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var originalEvent = e.originalEvent;
 		var clientX;
 		var clientY;
-		if (originalEvent.touches && originalEvent.touches[0] && !this._clickHandled) {
+		if (originalEvent.touches && originalEvent.touches[0] && !this._clickHandled && !this._touchHandled) {
 			clientX = originalEvent.touches[0].clientX;
 			clientY = originalEvent.touches[0].clientY;
-			this._touchEvent = true;
+			this._touchHandled = true;
 			this._startPoint.call(this, clientX, clientY);
 			this._endPoint.call(this, clientX, clientY, e);
-			this._touchEvent = false;
+			this._touchHandled = null;
 		}
 		this._clickHandled = null;
 	},
