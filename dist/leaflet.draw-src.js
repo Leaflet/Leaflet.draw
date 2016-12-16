@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.7+b17adc4, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.7+e76d742, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.7+b17adc4";
+L.drawVersion = "0.4.7+e76d742";
 /**
  * @class L.Draw
  * @aka Draw
@@ -533,7 +533,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				});
 			}
 
-			// consider binding ONLY mousedown or ONLY touch depending on L.Browser.touch
 			this._mouseMarker
 				.on('mouseout', this._onMouseOut, this)
 				.on('mousemove', this._onMouseMove, this) // Necessary to prevent 0.8 stutter
@@ -543,7 +542,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				.on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
 				.on('mousemove', this._onMouseMove, this)
 				.on('zoomlevelschange', this._onZoomEnd, this)
-				// .on('touchstart', this._onTouch, this)
 				.on('zoomend', this._onZoomEnd, this);
 
 			if (L.Browser.touch) {
@@ -718,6 +716,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_onMouseDown: function (e) {
 		if (!this._clickHandled && !this._touchHandled && !this._disableMarkers) {
+			this._onMouseMove(e);
 			this._clickHandled = true;
 			this._disableNewMarkers();
 			var originalEvent = e.originalEvent;
@@ -761,6 +760,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var clientX;
 		var clientY;
 		if (originalEvent.touches && originalEvent.touches[0] && !this._clickHandled && !this._touchHandled && !this._disableMarkers) {
+			this._onMouseMove(e);
 			clientX = originalEvent.touches[0].clientX;
 			clientY = originalEvent.touches[0].clientY;
 			this._disableNewMarkers();
