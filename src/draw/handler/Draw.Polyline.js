@@ -94,28 +94,19 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				});
 			}
 
-			// consider binding ONLY mousedown or ONLY touch depending on L.Browser.touch
 			this._mouseMarker
 				.on('mouseout', this._onMouseOut, this)
 				.on('mousemove', this._onMouseMove, this) // Necessary to prevent 0.8 stutter
+				.on('mousedown', this._onMouseDown, this)
+				.on('mouseup', this._onMouseUp, this) // Necessary for 0.8 compatibility
 				.addTo(this._map);
 
 			this._map
 				.on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
 				.on('mousemove', this._onMouseMove, this)
 				.on('zoomlevelschange', this._onZoomEnd, this)
-				// .on('touchstart', this._onTouch, this)
+				.on('touchstart', this._onTouch, this)
 				.on('zoomend', this._onZoomEnd, this);
-
-			if (L.Browser.touch) {
-				this._map
-				.on('touchstart', this._onTouch, this);
-			} else {
-				this._mouseMarker
-				.on('mousedown', this._onMouseDown, this)
-				.on('mouseup', this._onMouseUp, this); // Necessary for 0.8 compatibility
-			}
-
 
 		}
 	},
@@ -279,6 +270,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_onMouseDown: function (e) {
 		if (!this._clickHandled && !this._touchHandled && !this._disableMarkers) {
+			this._onMouseMove(e);
 			this._clickHandled = true;
 			this._disableNewMarkers();
 			var originalEvent = e.originalEvent;
