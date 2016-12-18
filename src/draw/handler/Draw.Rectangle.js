@@ -17,12 +17,14 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 			fill: true,
 			fillColor: null, //same as color by default
 			fillOpacity: 0.2,
-			showArea: true,clickable: true
+			showArea: true,
+			clickable: true
 		},
 		metric: true // Whether to use the metric measurement system or imperial
 	},
 
-	// @method initialize(): voidinitialize: function (map, options) {
+	// @method initialize(): void
+	initialize: function (map, options) {
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Rectangle.TYPE;
 

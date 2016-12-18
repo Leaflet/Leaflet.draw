@@ -35,6 +35,17 @@ L.Draw.Event = {};
 L.Draw.Event.CREATED = 'draw:created';
 
 /**
+ * @event draw:canceled: PolyLine; Polygon; Rectangle; Circle; Marker | String
+ *
+ * attributes:
+ *     layerType: The type of layer this is. One of: `polyline`; `polygon`; `rectangle`; `circle`; `marker`
+ *
+ * Triggered when a new vector or marker has been created.
+ *
+ */
+L.Draw.Event.CANCELED = 'draw:canceled';
+
+/**
  * @event draw:edited: LayerGroup
  *
  * List of all layers just edited on the map.
@@ -136,6 +147,43 @@ L.Draw.Event.EDITVERTEX = 'draw:editvertex';
  * Triggered when the user has finshed editing (edit mode) and saves edits.
  */
 L.Draw.Event.EDITSTOP = 'draw:editstop';
+
+/**
+ * @event draw:edithook: String
+ *
+ * attributes:
+ *     layer: the currently active
+ *     editHandler: The currently active edit handler.
+ vertex : existant and true if this is a PolyVerticesEdit object
+ *
+ * Triggered once for each editable layer, including each vertex set.
+ *
+ * Triggered immediately after addHooks is called; this is needed for using undo with snap,
+ * as simply grabbing layer.editing or layer.snapediting will fail if the user tries to
+ * undo immediately after entering edit mode (say, after saving some prior edits, so that
+ * there exists history in the editstack) but before they touch any objects for that edit
+ * session.
+ */
+L.Draw.Event.EDITHOOK = 'draw:edithook';
+
+/**
+ * @event draw:editdone: String
+ *
+ * attributes:
+ *     handler: The type of edit this is. One of: `edit`
+ *
+ * Triggered when the user has finshed editing (edit mode) and saves edits.
+ */
+L.Draw.Event.EDITDONE = 'draw:editdone';
+
+/**
+ * @event draw:editrevert: String
+ *
+ *
+ * Triggered when the user has intersected a poly during edit mode, in order
+ * to signal to the undomanager to ignore the last editvertex event.
+ */
+L.Draw.Event.EDITREVERT = 'draw:editrevert';
 
 /**
  * @event draw:deletestart: String

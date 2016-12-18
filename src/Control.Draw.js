@@ -4,83 +4,83 @@
  */
 L.Control.Draw = L.Control.extend({
 
-	// Options
-	options: {
-		position: 'topleft',
-		draw: {},
-		edit: false,
+    // Options
+    options: {
+        position: 'topleft',
+        draw: {},
+        edit: false,
         undoEnabled: true,
-		undoStackSize: 20, // set to -1 for infinite
-		undoKey: 'ctrl+z',
-		redoKey: 'ctrl+y'
-	},
+        undoStackSize: 20, // set to -1 for infinite
+        undoKey: 'ctrl+z',
+        redoKey: 'ctrl+y'
+    },
 
-	// @method initialize(): void
-	// Initializes draw control, toolbars from the options
-	initialize: function (options) {
-		if (L.version < '0.7') {
-			throw new Error('Leaflet.draw 0.2.3+ requires Leaflet 0.7.0+. Download latest from https://github.com/Leaflet/Leaflet/');
-		}
+    // @method initialize(): void
+    // Initializes draw control, toolbars from the options
+    initialize: function (options) {
+        if (L.version < '0.7') {
+            throw new Error('Leaflet.draw 0.2.3+ requires Leaflet 0.7.0+. Download latest from https://github.com/Leaflet/Leaflet/');
+        }
 
-		L.Control.prototype.initialize.call(this, options);
+        L.Control.prototype.initialize.call(this, options);
 
-		var toolbar;
+        var toolbar;
 
-		this._toolbars = {};
+        this._toolbars = {};
 
-		// Initialize toolbars
-		if (L.DrawToolbar && this.options.draw) {
-			toolbar = new L.DrawToolbar(this.options.draw);
+        // Initialize toolbars
+        if (L.DrawToolbar && this.options.draw) {
+            toolbar = new L.DrawToolbar(this.options.draw);
 
-			this._toolbars[L.DrawToolbar.TYPE] = toolbar;
+            this._toolbars[L.DrawToolbar.TYPE] = toolbar;
 
-			// Listen for when toolbar is enabled
-			this._toolbars[L.DrawToolbar.TYPE].on('enable', this._toolbarEnabled, this);
-		}
+            // Listen for when toolbar is enabled
+            this._toolbars[L.DrawToolbar.TYPE].on('enable', this._toolbarEnabled, this);
+        }
 
-		if (L.EditToolbar && this.options.edit) {
-			toolbar = new L.EditToolbar(this.options.edit);
+        if (L.EditToolbar && this.options.edit) {
+            toolbar = new L.EditToolbar(this.options.edit);
 
-			this._toolbars[L.EditToolbar.TYPE] = toolbar;
+            this._toolbars[L.EditToolbar.TYPE] = toolbar;
 
-			// Listen for when toolbar is enabled
-			this._toolbars[L.EditToolbar.TYPE].on('enable', this._toolbarEnabled, this);
-		}
-		L.toolbar = this; //set global var for editing the toolbar
-	},
+            // Listen for when toolbar is enabled
+            this._toolbars[L.EditToolbar.TYPE].on('enable', this._toolbarEnabled, this);
+        }
+        L.toolbar = this; //set global var for editing the toolbar
+    },
 
-	// @method onAdd(): container
-	// Adds the toolbar container to the map
-	onAdd: function (map) {
-		var container = L.DomUtil.create('div', 'leaflet-draw'),
-			addedTopClass = false,
-			topClassName = 'leaflet-draw-toolbar-top',
-			toolbarContainer;
+    // @method onAdd(): container
+    // Adds the toolbar container to the map
+    onAdd: function (map) {
+        var container = L.DomUtil.create('div', 'leaflet-draw'),
+            addedTopClass = false,
+            topClassName = 'leaflet-draw-toolbar-top',
+            toolbarContainer;
 
-		for (var toolbarId in this._toolbars) {
-			if (this._toolbars.hasOwnProperty(toolbarId)) {
-				toolbarContainer = this._toolbars[toolbarId].addToolbar(map);
+        for (var toolbarId in this._toolbars) {
+            if (this._toolbars.hasOwnProperty(toolbarId)) {
+                toolbarContainer = this._toolbars[toolbarId].addToolbar(map);
 
-				if (toolbarContainer) {
-					// Add class to the first toolbar to remove the margin
-					if (!addedTopClass) {
-						if (!L.DomUtil.hasClass(toolbarContainer, topClassName)) {
-							L.DomUtil.addClass(toolbarContainer.childNodes[0], topClassName);
-						}
-						addedTopClass = true;
-					}
+                if (toolbarContainer) {
+                    // Add class to the first toolbar to remove the margin
+                    if (!addedTopClass) {
+                        if (!L.DomUtil.hasClass(toolbarContainer, topClassName)) {
+                            L.DomUtil.addClass(toolbarContainer.childNodes[0], topClassName);
+                        }
+                        addedTopClass = true;
+                    }
 
-					container.appendChild(toolbarContainer);
-				}
-			}
-		}
+                    container.appendChild(toolbarContainer);
+                }
+            }
+        }
 
         if (L.Draw.UndoManager && this.options.undoEnabled) {
             if (this.hasOwnProperty('undoManager')) {
                 this.undoManager.enable();
             }
             else {
-                this.undoManager = new L.Draw.UndoManager(map, drawnItems, {
+                this.undoManager = new L.Draw.UndoManager(map, this.options.edit.featureGroup, {
                     maxStackSize: this.options.undoStackSize,
                     undoKey: this.options.undoKey,
                     redoKey: this.options.redoKey
@@ -88,52 +88,52 @@ L.Control.Draw = L.Control.extend({
             }
         }
 
-		return container;
-	},
+        return container;
+    },
 
-	// @method onRemove(): void
-	// Removes the toolbars from the map toolbar container
-	onRemove: function () {
-		for (var toolbarId in this._toolbars) {
-			if (this._toolbars.hasOwnProperty(toolbarId)) {
-				this._toolbars[toolbarId].removeToolbar();
-			}
-		}
-        
+    // @method onRemove(): void
+    // Removes the toolbars from the map toolbar container
+    onRemove: function () {
+        for (var toolbarId in this._toolbars) {
+            if (this._toolbars.hasOwnProperty(toolbarId)) {
+                this._toolbars[toolbarId].removeToolbar();
+            }
+        }
+
         if (this.hasOwnProperty('undoManager')) {
             this.undoManager.disable();
         }
-	},
+    },
 
-	// @method setDrawingOptions(options): void
-	// Sets options to all toolbar instances
-	setDrawingOptions: function (options) {
-		for (var toolbarId in this._toolbars) {
-			if (this._toolbars[toolbarId] instanceof L.DrawToolbar) {
-				this._toolbars[toolbarId].setOptions(options);
-			}
-		}
-	},
+    // @method setDrawingOptions(options): void
+    // Sets options to all toolbar instances
+    setDrawingOptions: function (options) {
+        for (var toolbarId in this._toolbars) {
+            if (this._toolbars[toolbarId] instanceof L.DrawToolbar) {
+                this._toolbars[toolbarId].setOptions(options);
+            }
+        }
+    },
 
-	_toolbarEnabled: function (e) {
-		var enabledToolbar = e.target;
+    _toolbarEnabled: function (e) {
+        var enabledToolbar = e.target;
 
-		for (var toolbarId in this._toolbars) {
-			if (this._toolbars[toolbarId] !== enabledToolbar) {
-				this._toolbars[toolbarId].disable();
-			}
-		}
-	}
+        for (var toolbarId in this._toolbars) {
+            if (this._toolbars[toolbarId] !== enabledToolbar) {
+                this._toolbars[toolbarId].disable();
+            }
+        }
+    }
 });
 
 L.Map.mergeOptions({
-	drawControlTooltips: true,
-	drawControl: false
+    drawControlTooltips: true,
+    drawControl: false
 });
 
 L.Map.addInitHook(function () {
-	if (this.options.drawControl) {
-		this.drawControl = new L.Control.Draw();
-		this.addControl(this.drawControl);
-	}
+    if (this.options.drawControl) {
+        this.drawControl = new L.Control.Draw();
+        this.addControl(this.drawControl);
+    }
 });

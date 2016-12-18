@@ -50,6 +50,7 @@ L.Toolbar = L.Class.extend({
 
 	// @method initialize(options): void
 	// Toolbar constructor
+	initialize: function (options) {
 		L.setOptions(this, options);
 
 		this._modes = {};
@@ -59,18 +60,23 @@ L.Toolbar = L.Class.extend({
 
 	// @method enabled(): boolean
 	// Gets a true/false of whether the toolbar is enabled
+	enabled: function () {
 		return this._activeMode !== null;
 	},
 
 	// @method disable(): void
-	// Disables the toolbardisable: function () {
-		if (!this.enabled()) { return; }
+	// Disables the toolbar
+	disable: function () {
+		if (!this.enabled()) {
+			return;
+		}
 
 		this._activeMode.handler.disable();
 	},
 
 	// @method addToolbar(map): L.DomUtil
 	// Adds the toolbar to the map and returns the toolbar dom element
+	addToolbar: function (map) {
 		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
 			buttonIndex = 0,
 			buttonClassPrefix = this._toolbarClass || '',

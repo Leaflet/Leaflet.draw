@@ -325,6 +325,14 @@ Layer that was just created.
 The type of layer this is. One of: <code>polyline</code>; <code>polygon</code>; <code>rectangle</code>; <code>circle</code>; <code>marker</code>
 Triggered when a new vector or marker has been created.</td>
 	</tr>
+	<tr id='l-draw-event-draw:canceled'>
+		<td><code><b>draw:canceled</b>
+		<td><code>PolyLine</code></td>
+		<td>Polygon; Rectangle; Circle; Marker | String
+attributes:
+    layerType: The type of layer this is. One of: <code>polyline</code>; <code>polygon</code>; <code>rectangle</code>; <code>circle</code>; <code>marker</code>
+Triggered when a new vector or marker has been created.</td>
+	</tr>
 	<tr id='l-draw-event-draw:edited'>
 		<td><code><b>draw:edited</b>
 		<td><code>LayerGroup</code></td>
@@ -384,6 +392,33 @@ Triggered when a vertex is edited on a polyline or polygon.</td>
 		<td><code>String</code></td>
 		<td>The type of edit this is. One of: <code>edit</code>
 Triggered when the user has finshed editing (edit mode) and saves edits.</td>
+	</tr>
+	<tr id='l-draw-event-draw:edithook'>
+		<td><code><b>draw:edithook</b>
+		<td><code>String</code></td>
+		<td>attributes:
+    layer: the currently active
+    editHandler: The currently active edit handler.
+ vertex : existant and true if this is a PolyVerticesEdit object
+Triggered once for each editable layer, including each vertex set.
+Triggered immediately after addHooks is called; this is needed for using undo with snap,
+as simply grabbing layer.editing or layer.snapediting will fail if the user tries to
+undo immediately after entering edit mode (say, after saving some prior edits, so that
+there exists history in the editstack) but before they touch any objects for that edit
+session.</td>
+	</tr>
+	<tr id='l-draw-event-draw:editdone'>
+		<td><code><b>draw:editdone</b>
+		<td><code>String</code></td>
+		<td>attributes:
+    handler: The type of edit this is. One of: <code>edit</code>
+Triggered when the user has finshed editing (edit mode) and saves edits.</td>
+	</tr>
+	<tr id='l-draw-event-draw:editrevert'>
+		<td><code><b>draw:editrevert</b>
+		<td><code>String</code></td>
+		<td>Triggered when the user has intersected a poly during edit mode, in order
+to signal to the undomanager to ignore the last editvertex event.</td>
 	</tr>
 	<tr id='l-draw-event-draw:deletestart'>
 		<td><code><b>draw:deletestart</b>
