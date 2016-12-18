@@ -8,7 +8,11 @@ L.Control.Draw = L.Control.extend({
 	options: {
 		position: 'topleft',
 		draw: {},
-		edit: false
+		edit: false,
+        undoEnabled: true,
+		undoStackSize: 20, // set to -1 for infinite
+		undoKey: 'ctrl+z',
+		redoKey: 'ctrl+y'
 	},
 
 	// @method initialize(): void
@@ -71,6 +75,19 @@ L.Control.Draw = L.Control.extend({
 			}
 		}
 
+        if (L.Draw.UndoManager && this.options.undoEnabled) {
+            if (this.hasOwnProperty('undoManager')) {
+                this.undoManager.enable();
+            }
+            else {
+                this.undoManager = new L.Draw.UndoManager(map, drawnItems, {
+                    maxStackSize: this.options.undoStackSize,
+                    undoKey: this.options.undoKey,
+                    redoKey: this.options.redoKey
+                });
+            }
+        }
+
 		return container;
 	},
 
@@ -82,6 +99,10 @@ L.Control.Draw = L.Control.extend({
 				this._toolbars[toolbarId].removeToolbar();
 			}
 		}
+        
+        if (this.hasOwnProperty('undoManager')) {
+            this.undoManager.disable();
+        }
 	},
 
 	// @method setDrawingOptions(options): void

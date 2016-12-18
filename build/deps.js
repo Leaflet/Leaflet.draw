@@ -71,6 +71,15 @@ var deps = {
 		],
 		desc: 'Edit toolbar.',
 		deps: ['EditHandlers', 'CommonUI']
+	},
+
+	Undo: {
+		src: [
+			'ext/UndoManager.js',
+			'ext/StateHandler.js',
+		],
+		desc: 'Ctrl-Z / Ctrl-Y undo/redo.',
+		deps: ['CommonUI']
 	}
 };
 

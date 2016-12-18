@@ -218,6 +218,7 @@ L.Marker.Touch = L.Marker.extend({
 					  'touchstart',
 					  'touchend',
 					  'touchmove'];
+
 		if (this._detectIE) {
 			events.concat(['MSPointerDown',
 						   'MSPointerUp',

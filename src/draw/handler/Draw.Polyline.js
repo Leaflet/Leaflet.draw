@@ -11,7 +11,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	Poly: L.Polyline,
 
 	options: {
-		allowIntersection: true,
+		allowIntersection: false,
 		repeatMode: false,
 		drawError: {
 			color: '#b00b00',
@@ -257,7 +257,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_vertexChanged: function (latlng, added) {
-		this._map.fire(L.Draw.Event.DRAWVERTEX, { layers: this._markerGroup });
+		this._map.fire(L.Draw.Event.DRAWVERTEX, { layers: this._markerGroup, drawHandler: this });
 		this._updateFinishHandler();
 
 		this._updateRunningMeasure(latlng, added);
@@ -284,12 +284,16 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var clientY = originalEvent.clientY;
 		this._endPoint.call(this, clientX, clientY, e);
 	},
+
 	_endPoint: function (clientX, clientY, e) {
 		if (this._mouseDownOrigin) {
 			var distance = L.point(clientX, clientY)
 				.distanceTo(this._mouseDownOrigin);
 			if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
-				this.addVertex(e.latlng);
+                var bbounds = this._map.options.maxBounds;
+                if (bbounds && bbounds.contains(e.latlng)) {
+                    this.addVertex(e.latlng);
+                }
 			}
 		}
 		this._mouseDownOrigin = null;

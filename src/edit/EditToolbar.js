@@ -1,5 +1,5 @@
 /*L.Map.mergeOptions({
- editControl: true
+    editControl: true
  });*/
 /**
  * @class L.EditToolbar
@@ -56,14 +56,28 @@ L.EditToolbar = L.Toolbar.extend({
 	// Get mode handlers information
 	getModeHandlers: function (map) {
 		var featureGroup = this.options.featureGroup;
+		var editHandler;
+
+		if (L.EditToolbar.SnapEdit) {
+			editHandler = new L.EditToolbar.SnapEdit(map, {
+                snapOptions: this.options.snapOptions,
+				featureGroup: featureGroup,
+				selectedPathOptions: this.options.edit.selectedPathOptions,
+				poly: this.options.poly
+			});
+		}
+		else {
+			editHandler = new L.EditToolbar.Edit(map, {
+                featureGroup: featureGroup,
+				selectedPathOptions: this.options.edit.selectedPathOptions,
+				poly: this.options.poly
+			});
+		}
+
 		return [
 			{
 				enabled: this.options.edit,
-				handler: new L.EditToolbar.Edit(map, {
-					featureGroup: featureGroup,
-					selectedPathOptions: this.options.edit.selectedPathOptions,
-					poly: this.options.poly
-				}),
+				handler: editHandler,
 				title: L.drawLocal.edit.toolbar.buttons.edit
 			},
 			{

@@ -51,6 +51,11 @@ L.Edit.SimpleShape = L.Handler.extend({
 				this._map.addLayer(this._markerGroup);
 			}
 		}
+        
+        this._map.fire(L.Draw.Event.EDITHOOK, {
+            'editHandler' : this,
+            'layer': shape
+        });
 	},
 
 	// @method removeHooks(): void
@@ -151,6 +156,10 @@ L.Edit.SimpleShape = L.Handler.extend({
 	_fireEdit: function () {
 		this._shape.edited = true;
 		this._shape.fire('edit');
+        
+        if (this._shape._map) {
+            this._shape._map.fire(L.Draw.Event.EDITDONE);
+        }
 	},
 
 	_onMarkerDrag: function (e) {
