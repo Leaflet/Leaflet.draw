@@ -25,6 +25,7 @@
             <ul>
                 <li><a href="#l-draw">Usage example</a></li>
                 <li><a href="#l-drawlocal">Local Options</a></li>
+                <li><a href="#l-undo">Undo</a></li>
                 <li><a href="#options">Options</a></li>
                 <li><a href="#l-draw-event">Events</a></li>
             </ul>
@@ -89,6 +90,7 @@
             <li><a href="./examples/popup.html">Popup</a></li>
             <li><a href="./examples/snapping.html">Snapping</a></li>
             <li><a href="./examples/edithandlers.html">Edit Handlers</a></li>
+            <li><a href="./examples/crssimple_snapping.html">L.Draw with CRS.Simple, also with snapping</a></li>
         </ul>
         <a anchor="leaflet-0-7-examples"></a>
         <h2 id="leaflet-0-7-examples">Leaflet 0.7+ Examples</h2>
@@ -174,6 +176,9 @@ FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).</p>
 </section>
 
 
+</section><h2 id='l-undo'>Undo</h2><p>Undo for all draw and edit commands is available by default, via L.Draw.UndoManager. If you wish to disable it, set the option <i>undoEnabled</i> to false when creating the drawControl. The default undo key is "ctrl+Z" while the default redo key is "ctrl+Y" - you can set these to something different with the options <i>undoKey</i> and <i>redoKey</i>. If you need to use some sort of alternative key binding methodology (e.g. via jquery hotkeys, or however), it's recommended that you redefine L.Draw.StateHandler.bindKey at some point before your L.Control.Draw is instantiated. </p>
+
+<section>
 </section><h2 id='l-draw-toolbar'>L.Draw.Toolbar</h2><p>The toolbar class of the API — it is used to create the ui
 This will be depreciated</p>
 
@@ -313,89 +318,89 @@ markers. It also turns off the ability to edit layers.</p>
 <table><thead>
 	<tr>
 		<th>Event</th>
+        <th>Triggered</th>
 		<th>Data</th>
-		<th>Description</th>
 	</tr>
 	</thead><tbody>
 	<tr id='l-draw-event-draw:created'>
-		<td><code><b>draw:created</b>
-		<td><code>PolyLine</code></td>
-		<td>Polygon; Rectangle; Circle; Marker | String
-Layer that was just created.
-The type of layer this is. One of: <code>polyline</code>; <code>polygon</code>; <code>rectangle</code>; <code>circle</code>; <code>marker</code>
-Triggered when a new vector or marker has been created.</td>
+		<td><code><b>draw:created</b></code></td>
+        <td>After a layer has been created. (for polyline and polygon, once it has finished, not per-vertex)</td>
+		<td>
+        <code>layer</code>: Layer that was just created.<br/> 
+        <code>layerType</code>: String. The type of layer this is. One of: `polyline`; `polygon`; `rectangle`; `circle`; `marker`
+        </td>
+	</tr>
+	<tr id='l-draw-event-draw:canceled'>
+		<td><code><b>draw:canceled</b></code></td>
+        <td>After clicking cancel, pressing escape, or switching from one mode to another.</td>
+		<td>
+        <code>layerType</code>: String. The type of layer that was canceled. One of: `polyline`; `polygon`; `rectangle`; `circle`; `marker`
+        </td>
 	</tr>
 	<tr id='l-draw-event-draw:edited'>
-		<td><code><b>draw:edited</b>
-		<td><code>LayerGroup</code></td>
-		<td>List of all layers just edited on the map.
-Triggered when layers in the FeatureGroup; initialised with the plugin; have been edited and saved.</td>
+		<td><code><b>draw:edited</b></code></td>
+        <td>After clicking "finish" in edit mode.</td>
+		<td>
+        <code>layers</code>: List of all layers that have been edited in this edit session.
+        </td>
 	</tr>
 	<tr id='l-draw-event-draw:deleted'>
-		<td><code><b>draw:deleted</b>
-		<td><code>LayerGroup</code></td>
-		<td>List of all layers just removed from the map.
-Triggered when layers have been removed (and saved) from the FeatureGroup.</td>
+		<td><code><b>draw:deleted</b></code></td>
+        <td>After clicking "finish" in delete mode.</td>
+		<td>
+        <code>layers</code>: List of all layers just removed from the map.
+        </td>
 	</tr>
 	<tr id='l-draw-event-draw:drawstart'>
-		<td><code><b>draw:drawstart</b>
-		<td><code>String</code></td>
-		<td>The type of layer this is. One of:<code>polyline</code>; <code>polygon</code>; <code>rectangle</code>; <code>circle</code>; <code>marker</code>
-Triggered when the user has chosen to draw a particular vector or marker.</td>
+		<td><code><b>draw:drawstart</b></code></td>
+		<td>After clicking a drawing button.</td>
+		<td>layerType: String. The type of layer the user has started drawing. One of:`polyline`; `polygon`; `rectangle`; `circle`; `marker`</td>
 	</tr>
 	<tr id='l-draw-event-draw:drawstop'>
-		<td><code><b>draw:drawstop</b>
-		<td><code>String</code></td>
-		<td>The type of layer this is. One of: <code>polyline</code>; <code>polygon</code>; <code>rectangle</code>; <code>circle</code>; <code>marker</code>
-Triggered when the user has finished a particular vector or marker.</td>
+		<td><code><b>draw:drawstop</b></code></td>
+		<td>After clicking a drawing button.</td>
+		<td><code>layerType</code>: String. The type of layer the user has finished drawing. One of:`polyline`; `polygon`; `rectangle`; `circle`; `marker`</td>
 	</tr>
 	<tr id='l-draw-event-draw:drawvertex'>
-		<td><code><b>draw:drawvertex</b>
-		<td><code>LayerGroup</code></td>
-		<td>List of all layers just being added from the map.
-Triggered when a vertex is created on a polyline or polygon.</td>
+		<td><code><b>draw:drawvertex</b></code></td>
+		<td>After creating a new vertex during draw mode.</td>
+		<td><code>layers</code>: List of all layers just being added from the map.
+        <code>drawHandler</code>: Currently active L.Draw.Polyline handler.</td>
 	</tr>
 	<tr id='l-draw-event-draw:editstart'>
-		<td><code><b>draw:editstart</b>
-		<td><code>String</code></td>
-		<td>The type of edit this is. One of: <code>edit</code>
-Triggered when the user starts edit mode by clicking the edit tool button.</td>
+		<td><code><b>draw:editstart</b></code></td>
+		<td>After the user starts edit mode by clicking the edit tool button.</td>
+		<td><code>handler</code>: String. The type of handler this is. Value: <code>edit</code></td>
 	</tr>
 	<tr id='l-draw-event-draw:editmove'>
-		<td><code><b>draw:editmove</b>
-		<td><code>ILayer</code></td>
-		<td>Layer that was just moved.
-Triggered as the user moves a rectangle; circle or marker.</td>
+		<td><code><b>draw:editmove</b></code></td>
+		<td>After the user moves a poly, rectangle, circle, or marker.</td>
+		<td>See <code>Leaflet.Draw.Event.js</code> for full details.</td>
 	</tr>
 	<tr id='l-draw-event-draw:editresize'>
-		<td><code><b>draw:editresize</b>
-		<td><code>ILayer</code></td>
-		<td>Layer that was just moved.
-Triggered as the user resizes a rectangle or circle.</td>
+		<td><code><b>draw:editresize</b></code></td>
+		<td>When the user resizes a rectangle or circle.</td>
+		<td>See <code>Leaflet.Draw.Event.js</code> for full details.</td>
 	</tr>
 	<tr id='l-draw-event-draw:editvertex'>
-		<td><code><b>draw:editvertex</b>
-		<td><code>LayerGroup</code></td>
-		<td>List of all layers just being edited from the map.
-Triggered when a vertex is edited on a polyline or polygon.</td>
+		<td><code><b>draw:editvertex</b></code></td>
+		<td>Triggered when a vertex is edited on a polyline or polygon.</td>
+		<td>See <code>Leaflet.Draw.Event.js</code> for full details.</td>
 	</tr>
 	<tr id='l-draw-event-draw:editstop'>
-		<td><code><b>draw:editstop</b>
-		<td><code>String</code></td>
-		<td>The type of edit this is. One of: <code>edit</code>
-Triggered when the user has finshed editing (edit mode) and saves edits.</td>
+		<td><code><b>draw:editstop</b></code></td>
+		<td>Triggered when the user has finshed editing (edit mode) and saves edits.</td>
+		<td><code>handler</code>: String, the type of handler this is. One of: <code>edit</code></td>
 	</tr>
 	<tr id='l-draw-event-draw:deletestart'>
-		<td><code><b>draw:deletestart</b>
-		<td><code>String</code></td>
-		<td>The type of edit this is. One of: <code>remove</code>
-Triggered when the user starts remove mode by clicking the remove tool button.</td>
+		<td><code><b>draw:deletestart</b></code></td>
+		<td>After the user starts remove mode by clicking the remove tool button.</td>
+		<td><code>handler</code>: String, the type of handler this is. Value:  `remove`</td>
 	</tr>
 	<tr id='l-draw-event-draw:deletestop'>
-		<td><code><b>draw:deletestop</b>
-		<td><code>String</code></td>
-		<td>The type of edit this is. One of: <code>remove</code>
-Triggered when the user has finished removing shapes (remove mode) and saves.</td>
+		<td><code><b>draw:deletestop</b></code></td>
+		<td>After the user has finished removing shapes (remove mode) and saves.</td>
+		<td><code>handler</code>: String, describing the type of handler this is. Value: `remove`.</td>
 	</tr>
 </tbody></table>
 
@@ -1777,6 +1782,27 @@ for this section of the documentation, please edit docs-misc.leafdoc in the buil
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>undoEnabled</td>
+<td>Boolean</td>
+<td><code>&#39;true&#39;</code></td>
+<td>Whether ctrl+Z/ctrl+Y <a href="#l-undo">undo</a> is enabled by default.</td>
+</tr>
+<tr>
+<tr>
+<td>undoKey</td>
+<td>String</td>
+<td><code>&#39;ctrl+Z&#39;</code></td>
+<td>The key bound for undo, if <a href="#l-undo">undo</a> is enabled.</td>
+</tr>
+<tr>
+<tr>
+<td>position</td>
+<td>String</td>
+<td><code>&#39;ctrl+Y&#39;</code></td>
+<td>The key bound for <a href="#l-undo">redo</a>, if redo is enabled.</td>
+</tr>
+<tr>
 <tr>
 <td>position</td>
 <td>String</td>
