@@ -34,9 +34,9 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
         
 		// force moves to be inside our bounds
         var originalRadius = L.LatLngUtil.radiusToBounds(bbounds, originalCenter, this._getResizeMarkerPoint(originalCenter));
+        var resizemarkerPoint = this._getResizeMarkerPoint(latlng);
         
         if (bbounds) {
-            var resizemarkerPoint = this._getResizeMarkerPoint(latlng);
             var moveToRadius = L.LatLngUtil.radiusToBounds(bbounds, latlng, resizemarkerPoint);
             moveOk = (originalRadius - moveToRadius) < 0.01;
         }

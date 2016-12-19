@@ -109,22 +109,22 @@ L.Draw.UndoManager =  L.Class.extend({
         this._enabled = true;
         
         this.stateHandler.enable();
-        map.on(L.Draw.Event.DRAWSTART, this.drawstart, this);
-        map.on(L.Draw.Event.DRAWSTOP, this.drawstop, this);
-        map.on(L.Draw.Event.CANCELED, this.canceled, this);
-        map.on(L.Draw.Event.CREATED, this.created, this);
-        map.on(L.Draw.Event.DRAWVERTEX, this.drawvertex, this);
-        map.on(L.Draw.Event.DELETESTART, this.deletestart, this);
-        map.on(L.Draw.Event.DELETESTOP, this.deletestop, this);
-        map.on(L.Draw.Event.DELETED, this.deleted, this);
-        map.on(L.Draw.Event.EDITSTART, this.editstart, this);
-        map.on(L.Draw.Event.EDITHOOK, this.edithook, this);
-        map.on(L.Draw.Event.EDITSTOP, this.editstop, this);
-        map.on(L.Draw.Event.EDITDONE, this.editdone, this);
-        map.on(L.Draw.Event.EDITVERTEX, this.editvertex, this);
-        map.on(L.Draw.Event.EDITMOVE, this.editmove, this);
-        map.on(L.Draw.Event.EDITRESIZE, this.editresize, this);
-        map.on(L.Draw.Event.EDITREVERT, this.editrevert, this);
+        this._map.on(L.Draw.Event.DRAWSTART, this.drawstart, this);
+        this._map.on(L.Draw.Event.DRAWSTOP, this.drawstop, this);
+        this._map.on(L.Draw.Event.CANCELED, this.canceled, this);
+        this._map.on(L.Draw.Event.CREATED, this.created, this);
+        this._map.on(L.Draw.Event.DRAWVERTEX, this.drawvertex, this);
+        this._map.on(L.Draw.Event.DELETESTART, this.deletestart, this);
+        this._map.on(L.Draw.Event.DELETESTOP, this.deletestop, this);
+        this._map.on(L.Draw.Event.DELETED, this.deleted, this);
+        this._map.on(L.Draw.Event.EDITSTART, this.editstart, this);
+        this._map.on(L.Draw.Event.EDITHOOK, this.edithook, this);
+        this._map.on(L.Draw.Event.EDITSTOP, this.editstop, this);
+        this._map.on(L.Draw.Event.EDITDONE, this.editdone, this);
+        this._map.on(L.Draw.Event.EDITVERTEX, this.editvertex, this);
+        this._map.on(L.Draw.Event.EDITMOVE, this.editmove, this);
+        this._map.on(L.Draw.Event.EDITRESIZE, this.editresize, this);
+        this._map.on(L.Draw.Event.EDITREVERT, this.editrevert, this);
     },
     
     disable: function () {
@@ -133,22 +133,22 @@ L.Draw.UndoManager =  L.Class.extend({
         }
         this._enabled = false;
     
-        map.off(L.Draw.Event.DRAWSTART, this.drawstart, this);
-        map.off(L.Draw.Event.DRAWSTOP, this.drawstop, this);
-        map.off(L.Draw.Event.CANCELED, this.canceled, this);
-        map.off(L.Draw.Event.CREATED, this.created, this);
-        map.off(L.Draw.Event.DRAWVERTEX, this.drawvertex, this);
-        map.off(L.Draw.Event.DELETESTART, this.deletestart, this);
-        map.off(L.Draw.Event.DELETESTOP, this.deletestop, this);
-        map.off(L.Draw.Event.DELETED, this.deleted, this);
-        map.off(L.Draw.Event.EDITSTART, this.editstart, this);
-        map.off(L.Draw.Event.EDITHOOK, this.edithook, this);
-        map.off(L.Draw.Event.EDITSTOP, this.editstop, this);
-        map.off(L.Draw.Event.EDITDONE, this.editdone, this);
-        map.off(L.Draw.Event.EDITVERTEX, this.editvertex, this);
-        map.off(L.Draw.Event.EDITMOVE, this.editmove, this);
-        map.off(L.Draw.Event.EDITRESIZE, this.editresize, this);
-        map.off(L.Draw.Event.EDITREVERT, this.editrevert, this);
+        this._map.off(L.Draw.Event.DRAWSTART, this.drawstart, this);
+        this._map.off(L.Draw.Event.DRAWSTOP, this.drawstop, this);
+        this._map.off(L.Draw.Event.CANCELED, this.canceled, this);
+        this._map.off(L.Draw.Event.CREATED, this.created, this);
+        this._map.off(L.Draw.Event.DRAWVERTEX, this.drawvertex, this);
+        this._map.off(L.Draw.Event.DELETESTART, this.deletestart, this);
+        this._map.off(L.Draw.Event.DELETESTOP, this.deletestop, this);
+        this._map.off(L.Draw.Event.DELETED, this.deleted, this);
+        this._map.off(L.Draw.Event.EDITSTART, this.editstart, this);
+        this._map.off(L.Draw.Event.EDITHOOK, this.edithook, this);
+        this._map.off(L.Draw.Event.EDITSTOP, this.editstop, this);
+        this._map.off(L.Draw.Event.EDITDONE, this.editdone, this);
+        this._map.off(L.Draw.Event.EDITVERTEX, this.editvertex, this);
+        this._map.off(L.Draw.Event.EDITMOVE, this.editmove, this);
+        this._map.off(L.Draw.Event.EDITRESIZE, this.editresize, this);
+        this._map.off(L.Draw.Event.EDITREVERT, this.editrevert, this);
         this.stateHandler.disable();
     },
     
@@ -326,6 +326,8 @@ L.Draw.UndoManager =  L.Class.extend({
     },
     
     editvertex: function (e) {
+        console.log(e);
+    
         // re-adding a marker is a two step process, begun by undoNested, and then finished here when
         // the event triggered by the manual .click() call there has fired
         if (this.incompleteAdd) {

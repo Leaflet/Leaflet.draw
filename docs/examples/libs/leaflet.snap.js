@@ -55,10 +55,12 @@ L.Handler.MarkerSnap = L.Handler.extend({
         if (this._markers.indexOf(marker) == -1)
             this._markers.push(marker);
         marker.on('move', this._snapMarker, this);
+        this._map.on('touchmove', this._snapMarker, this);
     },
 
     unwatchMarker: function (marker) {
         marker.off('move', this._snapMarker, this);
+        this._map.off('touchmove', this._snapMarker, this);
         delete marker['snap'];
     },
 
@@ -70,9 +72,9 @@ L.Handler.MarkerSnap = L.Handler.extend({
     },
 
     _snapMarker: function(e) {
-        var marker = e.target,
-            latlng = marker.getLatLng(),
-            snaplist = [];
+        var marker = e.target;
+        var snaplist = [];
+        var latlng = e.target._latlng || e.latlng;
             
         if (! latlng) {
             return;
@@ -135,6 +137,17 @@ L.Handler.MarkerSnap = L.Handler.extend({
 
         closest = closest || {layer: null, latlng: null};
         this._updateSnap(marker, closest.layer, closest.latlng);
+        
+        if (e.latlng && closest.latlng) {        
+            e.latlng = closest.latlng;
+        }
+        
+        if (e.originalEvent && e.originalEvent.clientX && closest.layer && closest.latlng) {
+            var snapTouchPoint = this._map.project(closest.latlng, this._map.getZoom());
+            e.originalEvent.clientX = snapTouchPoint.x;
+            e.originalEvent.clientY = snapTouchPoint.y;
+            e.originalEvent.snapped = true;
+        }
     },
 
     _findClosestLayerSnap: function (map, layers, latlng, tolerance, withVertices) {
@@ -227,6 +240,10 @@ L.Handler.MarkerSnap = L.Handler.extend({
     },
 
     _updateSnap: function (marker, layer, latlng) {
+        if (! marker.hasOwnProperty('_latlng')) {
+            return;
+        }
+    
         if (layer && latlng) {
             marker._latlng = L.latLng(latlng);
             marker.update();
@@ -490,23 +507,29 @@ L.Draw.Feature.SnapMixin = {
               }, this);
 
         marker.on('click', this._snap_on_click, this);
+        //this._map.on('mouseup', this._snap_on_click, this);
+        //this._map.on('touchstart', this._snap_on_click, this);
     },
 
     _snap_on_click: function (e) {
         if (this._errorShown) {
             return;
         }
+        
+        // for touch
+        var latlng = e.target._latlng || e.latlng;
     
         if (this._markers) {
             var markerCount = this._markers.length,
                 marker = this._markers[markerCount - 1];
-            if (this._mouseMarker.snap) {
+            if (marker && this._mouseMarker.snap) {
                 if(e){
                   // update the feature being drawn to reflect the snapped location:
-                  marker.setLatLng(e.target._latlng);
+                  marker.setLatLng(latlng);
+                  marker._snapped = true;
                   if (this._poly){
                     var polyPointsCount = this._poly._latlngs.length;
-                    this._poly._latlngs[polyPointsCount - 1] = e.target._latlng;
+                    this._poly._latlngs[polyPointsCount - 1] = latlng;
                     this._poly.redraw();
                   }
                 }

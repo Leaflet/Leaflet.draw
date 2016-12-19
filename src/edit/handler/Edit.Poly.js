@@ -19,7 +19,7 @@ L.Edit.Poly = L.Handler.extend({
 
 	// @method initialize(): void
 	initialize: function (poly, options) {
-        if (L.Browser.touch) {
+        if (! L.Browser.pointer) {
             this.options.moveIcon = this.options.touchMoveIcon;
         }
          
@@ -299,7 +299,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	// @method intialize(): void
 	initialize: function (poly, latlngs, options) {
 		// if touch, switch to touch icon
-		if (L.Browser.touch) {
+		if (! L.Browser.pointer) {
 			this.options.icon = this.options.touchIcon;
 		}
 		this._poly = poly;

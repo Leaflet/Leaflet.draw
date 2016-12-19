@@ -15,16 +15,20 @@ L.Edit.Marker = L.Handler.extend({
 	// Add listener hooks to this handler
 	addHooks: function () {
 		var marker = this._marker;
-
-		marker.dragging.enable();
-		marker.on('dragstart', this._onDragStart, marker);
-		marker.on('dragend', this._onDragEnd, marker);
-		this._toggleMarkerHighlight();
         
-        this._map.fire(L.Draw.Event.EDITHOOK, {
-            'editHandler' : this,
-            'layer': this._marker
-        });
+        if (this._marker._map) {
+            this._map = this._marker._map;
+        
+            marker.dragging.enable();
+            marker.on('dragstart', this._onDragStart, marker);
+            marker.on('dragend', this._onDragEnd, marker);
+            this._toggleMarkerHighlight();
+            
+            this._map.fire(L.Draw.Event.EDITHOOK, {
+                'editHandler' : this,
+                'layer': this._marker
+            });
+        }
 	},
 
 	// @method removeHooks(): void

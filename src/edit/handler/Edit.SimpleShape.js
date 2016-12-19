@@ -26,7 +26,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 	// @method intialize(): void
 	initialize: function (shape, options) {
 		// if touch, switch to touch icon
-		if (L.Browser.touch) {
+		if (! L.Browser.pointer) {
 			this.options.moveIcon = this.options.touchMoveIcon;
 			this.options.resizeIcon = this.options.touchResizeIcon;
 		}
@@ -50,12 +50,12 @@ L.Edit.SimpleShape = L.Handler.extend({
 				}
 				this._map.addLayer(this._markerGroup);
 			}
-		}
         
-        this._map.fire(L.Draw.Event.EDITHOOK, {
-            'editHandler' : this,
-            'layer': shape
-        });
+            this._map.fire(L.Draw.Event.EDITHOOK, {
+                'editHandler' : this,
+                'layer': shape
+            });
+		}
 	},
 
 	// @method removeHooks(): void
