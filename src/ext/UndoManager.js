@@ -326,8 +326,6 @@ L.Draw.UndoManager =  L.Class.extend({
     },
     
     editvertex: function (e) {
-        console.log(e);
-    
         // re-adding a marker is a two step process, begun by undoNested, and then finished here when
         // the event triggered by the manual .click() call there has fired
         if (this.incompleteAdd) {
@@ -335,8 +333,7 @@ L.Draw.UndoManager =  L.Class.extend({
             var editHandler = this._getEditHandler(this.currentEditInfo.poly, true);
         
             editHandler._originalLatLng = this.currentEditInfo.originalLatLng;
-            this.currentEditInfo.marker.setLatLng(this.currentEditInfo.originalLatLng);
-                
+            this.currentEditInfo.marker.setLatLng(this.currentEditInfo.originalLatLng.clone());
             editHandler._onMarkerDrag({'target' : this.currentEditInfo.marker});
             editHandler.updateMarkers();
             editHandler._poly.fire('edit');
@@ -505,13 +502,12 @@ L.Draw.UndoManager =  L.Class.extend({
             params.layer.setRadius(params.original.originalRadius);
         }
         
+        // NOTES #1: main-mode poly move is broker
+        // NOTES #2: need to implement "undo-todo" and "redo-todo" queues, for if a user slams ctrl-z or ctrl-y very fast
+        //           undoMain/redoMain/undoNested/redoNested would then do a tail-recursion check at the end of their call to see if there was anything in the queues
+        
         else if (type == 'editpoly/Move') {
-            var latlngs = this._defaultShape(params.layer.getLatLngs());
-            for (var i = 0; i < latlngs.length; ++i) {
-                latlngs[i].lat -= params.latMove;
-                latlngs[i].lng -= params.lngMove;
-            }
-            this._poly.redraw();
+            this._mainPolyMove(-1, params);
         }
     },
     
@@ -567,13 +563,20 @@ L.Draw.UndoManager =  L.Class.extend({
         }
         
         else if (type == 'editpoly/Move') {
-            var latlngs = this._defaultShape(params.layer.getLatLngs());
-            for (var i = 0; i < latlngs.length; ++i) {
-                latlngs[i].lat += params.latMove;
-                latlngs[i].lng += params.lngMove;
-            }
-            this._poly.redraw();
+            this._mainPolyMove(1, params);
         }
+    },
+    
+    _mainPolyMove : function (u, params) {
+        var latDiff = u*Math.abs(params.original.originalLatLng.lat - params.newLatLng.lat);
+        var lngDiff = u*Math.abs(params.original.originalLatLng.lng - params.newLatLng.lng);
+    
+        var latlngs = this._defaultShape(params.layer.getLatLngs());
+        for (var i = 0; i < latlngs.length; ++i) {
+            latlngs[i].lat -= latDiff;
+            latlngs[i].lng -= lngDiff;
+        }
+        params.layer.redraw();
     },
     
     undoNested : function (type, params) {
@@ -668,7 +671,7 @@ L.Draw.UndoManager =  L.Class.extend({
         
         else if (type == 'editpoly/Move') {
             this.eventBlock ++;
-            var editHandler = this._getEditHandler(params.poly);
+            var editHandler = this._getEditHandler(params.layer);
             editHandler._move(params.newLatLng);
         }
         
@@ -700,18 +703,22 @@ L.Draw.UndoManager =  L.Class.extend({
     /*
      *************************************
      */
+     
+     _getIndexedMarker: function (index, editHandler) {
+        var keyedIndex = index;
+        if (index == editHandler._markers.length) {
+            keyedIndex = 0;
+        }
+        return editHandler._markers[keyedIndex];
+     },
     
     _removeVertex: function (params) {
         this.incompleteRemove = true;
         var editHandler = this._getEditHandler(params.poly, true);
-        
-        var nextIndex = params.nextIndex;
-        if (nextIndex == editHandler._markers.length) {
-            nextIndex = 0;
-        }
+        var marker = this._getIndexedMarker(params.originalIndex, editHandler);
         
         this.currentEditInfo = params;
-        params.marker.fire('click');
+        marker.fire('click');
     },
     
     _addVertex: function (params) {
@@ -719,13 +726,8 @@ L.Draw.UndoManager =  L.Class.extend({
         
         var editHandler = this._getEditHandler(params.poly, true);
         
-        var nextIndex = params.nextIndex;
-        if (nextIndex == editHandler._markers.length) {
-            nextIndex = 0;
-        }
-        
-        var prev = editHandler._markers[params.prevIndex];
-        var next = editHandler._markers[nextIndex];
+        var prev = this._getIndexedMarker(params.prevIndex, editHandler);
+        var next = this._getIndexedMarker(params.nextIndex, editHandler);
         
         if (prev._middleRight) {
             editHandler._markerGroup.removeLayer(prev._middleRight);
@@ -735,7 +737,7 @@ L.Draw.UndoManager =  L.Class.extend({
             editHandler._markerGroup.removeLayer(next._middleLeft);
         }
         
-        params.marker = editHandler._createMiddleMarker(prev, next, params.originalLatLng, params.originalIndex);
+        params.marker = editHandler._createMiddleMarker(prev, next, params.originalLatLng.clone(), params.originalIndex);
         
         this.currentEditInfo = params;
         params.marker.fire('click');
