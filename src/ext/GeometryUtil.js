@@ -137,7 +137,7 @@ function _round(value, precision) {
 	if (precision) {
 		rounded = value.toFixed(precision);
 	} else {
-		rounded = Math.ceil(value);
+		rounded = Math.round(value);
 	}
 
 	return rounded;
