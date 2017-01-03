@@ -5,7 +5,7 @@
 L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 	// Ported from the OpenLayers implementation. See https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Geometry/LinearRing.js#L270
 
-	// @method geodesicArea(): void
+	// @method geodesicArea(): number
 	geodesicArea: function (latLngs) {
 		var pointsCount = latLngs.length,
 			area = 0.0,
@@ -25,7 +25,8 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return Math.abs(area);
 	},
 
-	// @method readableArea(): void
+	// @method readableArea(area, isMetric): string
+	// Returns a readable area string in yards or metric
 	readableArea: function (area, isMetric) {
 		var areaStr;
 
@@ -50,32 +51,59 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return areaStr;
 	},
 
-	// @method readableDistance(): void
-	readableDistance: function (distance, isMetric, useFeet) {
-		var distanceStr;
+	// @method readableDistance(distance, units): string
+	// Converts a metric distance to one of [ feet, nauticalMile, metric or yards ] string
+	//
+	// @alternative
+	// @method readableDistance(distance, isMetric, useFeet, isNauticalMile): string
+	// Converts metric distance to distance string.
+	readableDistance: function (distance, isMetric, isFeet, isNauticalMile) {
+		var distanceStr,
+			units;
 
-		if (isMetric) {
+		if (typeof isMetric == "string") {
+			units = isMetric;
+		} else {
+			if (isFeet) {
+				units = 'feet';
+			} else if (isNauticalMile) {
+				units = 'nauticalMile';
+			} else if (isMetric) {
+				units = 'metric';
+			} else {
+				units = 'yards';
+			}
+		}
+
+		switch (units) {
+		case 'metric':
 			// show metres when distance is < 1km, then show km
 			if (distance > 1000) {
-				distanceStr = (distance  / 1000).toFixed(2) + ' km';
+				distanceStr = (distance / 1000).toFixed(2) + ' km';
 			} else {
 				distanceStr = Math.ceil(distance) + ' m';
 			}
-		} else {
+			break;
+		case 'feet':
+			distance *= 1.09361 * 3;
+			distanceStr = Math.ceil(distance) + ' ft';
+
+			break;
+		case 'nauticalMile':
+			distance *= 0.53996;
+			distanceStr = (distance / 1000).toFixed(2) + ' nm';
+			break;
+		case 'yards':
+		default:
 			distance *= 1.09361;
 
 			if (distance > 1760) {
 				distanceStr = (distance / 1760).toFixed(2) + ' miles';
 			} else {
-				var suffix = ' yd';
-				if (useFeet) {
-					distance = distance * 3;
-					suffix = ' ft';
-				}
-				distanceStr = Math.ceil(distance) + suffix;
+				distanceStr = Math.ceil(distance) + ' yd';
 			}
+			break;
 		}
-
 		return distanceStr;
 	}
 });

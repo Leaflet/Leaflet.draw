@@ -25,7 +25,9 @@ L.Edit.Poly = L.Handler.extend({
 	// Compatibility method to normalize Poly* objects
 	// between 0.7.x and 1.0+
 	_defaultShape: function () {
-		if (!L.Polyline._flat) { return this._poly._latlngs; }
+		if (!L.Polyline._flat) {
+			return this._poly._latlngs;
+		}
 		return L.Polyline._flat(this._poly._latlngs) ? this._poly._latlngs : this._poly._latlngs[0];
 	},
 
@@ -36,6 +38,7 @@ L.Edit.Poly = L.Handler.extend({
 	},
 
 	// @method addHooks(): void
+	// Add listener hooks to this handler
 	addHooks: function () {
 		this._initHandlers();
 		this._eachVertexHandler(function (handler) {
@@ -44,6 +47,7 @@ L.Edit.Poly = L.Handler.extend({
 	},
 
 	// @method removeHooks(): void
+	// Remove listener hooks from this handler
 	removeHooks: function () {
 		this._eachVertexHandler(function (handler) {
 			handler.removeHooks();
@@ -51,6 +55,7 @@ L.Edit.Poly = L.Handler.extend({
 	},
 
 	// @method updateMarkers(): void
+	// Fire an update for each vertex handler
 	updateMarkers: function () {
 		this._eachVertexHandler(function (handler) {
 			handler.updateMarkers();
@@ -115,11 +120,14 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	// Compatibility method to normalize Poly* objects
 	// between 0.7.x and 1.0+
 	_defaultShape: function () {
-		if (!L.Polyline._flat) { return this._latlngs; }
+		if (!L.Polyline._flat) {
+			return this._latlngs;
+		}
 		return L.Polyline._flat(this._latlngs) ? this._latlngs : this._latlngs[0];
 	},
 
 	// @method addHooks(): void
+	// Add listener hooks to this handler.
 	addHooks: function () {
 		var poly = this._poly;
 
@@ -144,6 +152,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	},
 
 	// @method removeHooks(): void
+	// Remove listener hooks from this handler.
 	removeHooks: function () {
 		var poly = this._poly;
 
@@ -157,6 +166,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	},
 
 	// @method updateMarkers(): void
+	// Clear markers and update their location
 	updateMarkers: function () {
 		this._markerGroup.clearLayers();
 		this._initMarkers();
@@ -251,7 +261,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	_fireEdit: function () {
 		this._poly.edited = true;
 		this._poly.fire('edit');
-		this._poly._map.fire(L.Draw.Event.EDITVERTEX, { layers: this._markerGroup });
+		this._poly._map.fire(L.Draw.Event.EDITVERTEX, { layers: this._markerGroup, poly: this._poly });
 	},
 
 	_onMarkerDrag: function (e) {
@@ -295,8 +305,8 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 					poly.setStyle({ color: originalColor });
 					if (tooltip) {
 						tooltip.updateContent({
-							text:  L.drawLocal.edit.handlers.edit.tooltip.text,
-							subtext:  L.drawLocal.edit.handlers.edit.tooltip.subtext
+							text: L.drawLocal.edit.handlers.edit.tooltip.text,
+							subtext: L.drawLocal.edit.handlers.edit.tooltip.subtext
 						});
 					}
 				}, 1000);

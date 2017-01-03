@@ -4,7 +4,7 @@
  */
 L.Polyline.include({
 
-	// @method intersects(): void
+	// @method intersects(): boolean
 	// Check to see if this polyline has any linesegments that intersect.
 	// NOTE: does not support detecting intersection for degenerate cases.
 	intersects: function () {
@@ -29,7 +29,7 @@ L.Polyline.include({
 		return false;
 	},
 
-	// @method newLatLngIntersects(): void
+	// @method newLatLngIntersects(): boolean
 	// Check for intersection if new latlng was added to this polyline.
 	// NOTE: does not support detecting intersection for degenerate cases.
 	newLatLngIntersects: function (latlng, skipFirst) {
@@ -41,7 +41,7 @@ L.Polyline.include({
 		return this.newPointIntersects(this._map.latLngToLayerPoint(latlng), skipFirst);
 	},
 
-	// @method newPointIntersects(): void
+	// @method newPointIntersects(): boolean
 	// Check for intersection if new point was added to this polyline.
 	// newPoint must be a layer point.
 	// NOTE: does not support detecting intersection for degenerate cases.

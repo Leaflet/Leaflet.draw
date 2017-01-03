@@ -31,7 +31,8 @@ L.DrawToolbar = L.Toolbar.extend({
 		L.Toolbar.prototype.initialize.call(this, options);
 	},
 
-	// @method getModeHandlers(): void
+	// @method getModeHandlers(): object
+	// Get mode handlers information
 	getModeHandlers: function (map) {
 		return [
 			{
@@ -62,7 +63,8 @@ L.DrawToolbar = L.Toolbar.extend({
 		];
 	},
 
-	// @method getActions(): void
+	// @method getActions(): object
+	// Get action information
 	getActions: function (handler) {
 		return [
 			{
@@ -89,6 +91,7 @@ L.DrawToolbar = L.Toolbar.extend({
 	},
 
 	// @method setOptions(): void
+	// Sets the options to the toolbar
 	setOptions: function (options) {
 		L.setOptions(this, options);
 

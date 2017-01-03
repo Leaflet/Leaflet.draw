@@ -64,9 +64,9 @@ L.Map.TouchExtend = L.Handler.extend({
 			touchEvent = e.touches[0];
 		} else if (e.pointerType === 'touch') {
 			touchEvent = e;
-            if (!this._filterClick(e)) {
-                return;
-            }
+			if (!this._filterClick(e)) {
+				return;
+			}
 		} else {
 			return;
 		}
@@ -85,22 +85,22 @@ L.Map.TouchExtend = L.Handler.extend({
 		});
 	},
 
-    /** Borrowed from Leaflet and modified for bool ops **/
-    _filterClick: function (e) {
-        var timeStamp = (e.timeStamp || e.originalEvent.timeStamp),
-            elapsed = L.DomEvent._lastClick && (timeStamp - L.DomEvent._lastClick);
+	/** Borrowed from Leaflet and modified for bool ops **/
+	_filterClick: function (e) {
+		var timeStamp = (e.timeStamp || e.originalEvent.timeStamp),
+			elapsed = L.DomEvent._lastClick && (timeStamp - L.DomEvent._lastClick);
 
-        // are they closer together than 500ms yet more than 100ms?
-        // Android typically triggers them ~300ms apart while multiple listeners
-        // on the same event should be triggered far faster;
-        // or check if click is simulated on the element, and if it is, reject any non-simulated events
-        if ((elapsed && elapsed > 100 && elapsed < 500) || (e.target._simulatedClick && !e._simulated)) {
-            L.DomEvent.stop(e);
-            return false;
-        }
-        L.DomEvent._lastClick = timeStamp;
-        return true;
-    },
+		// are they closer together than 500ms yet more than 100ms?
+		// Android typically triggers them ~300ms apart while multiple listeners
+		// on the same event should be triggered far faster;
+		// or check if click is simulated on the element, and if it is, reject any non-simulated events
+		if ((elapsed && elapsed > 100 && elapsed < 500) || (e.target._simulatedClick && !e._simulated)) {
+			L.DomEvent.stop(e);
+			return false;
+		}
+		L.DomEvent._lastClick = timeStamp;
+		return true;
+	},
 
 	_onTouchStart: function (e) {
 		if (!this._map._loaded) {
@@ -185,7 +185,7 @@ L.Map.addInitHook('addHandler', 'touchExtend', L.Map.TouchExtend);
  * @class L.Marker.Touch
  * @aka Marker.Touch
  *
- * This isn't full Touch support. This is just to get makers to also support dom touch events after creation
+ * This isn't full Touch support. This is just to get markers to also support dom touch events after creation
  * #TODO: find a better way of getting markers to support touch.
  */
 L.Marker.Touch = L.Marker.extend({
@@ -210,9 +210,19 @@ L.Marker.Touch = L.Marker.extend({
 		// TODO refactor into something shared with Map/Path/etc. to DRY it up
 
 		var icon = this._icon,
-			events = ['dblclick', 'mousedown', 'mouseover', 'mouseout', 'contextmenu', 'touchstart', 'touchend', 'touchmove'];
+			events = ['dblclick',
+					  'mousedown',
+					  'mouseover',
+					  'mouseout',
+					  'contextmenu',
+					  'touchstart',
+					  'touchend',
+					  'touchmove'];
 		if (this._detectIE) {
-			events.concat(['MSPointerDown', 'MSPointerUp', 'MSPointerMove', 'MSPointerCancel']);
+			events.concat(['MSPointerDown',
+						   'MSPointerUp',
+						   'MSPointerMove',
+						   'MSPointerCancel']);
 		} else {
 			events.concat(['touchcancel']);
 		}

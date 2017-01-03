@@ -29,15 +29,16 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	// @method enable(): void
+	// Enable the edit toolbar
 	enable: function () {
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
 		}
-		this.fire('enabled', {handler: this.type});
-			//this disable other handlers
+		this.fire('enabled', { handler: this.type });
+		//this disable other handlers
 
 		this._map.fire(L.Draw.Event.EDITSTART, { handler: this.type });
-			//allow drawLayer to be updated before beginning edition.
+		//allow drawLayer to be updated before beginning edition.
 
 		L.Handler.prototype.enable.call(this);
 		this._featureGroup
@@ -46,17 +47,21 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	// @method disable(): void
+	// Disable the edit toolbar
 	disable: function () {
-		if (!this._enabled) { return; }
+		if (!this._enabled) {
+			return;
+		}
 		this._featureGroup
 			.off('layeradd', this._enableLayerEdit, this)
 			.off('layerremove', this._disableLayerEdit, this);
 		L.Handler.prototype.disable.call(this);
 		this._map.fire(L.Draw.Event.EDITSTOP, { handler: this.type });
-		this.fire('disabled', {handler: this.type});
+		this.fire('disabled', { handler: this.type });
 	},
 
 	// @method addHooks(): void
+	// Add listener hooks for this handler
 	addHooks: function () {
 		var map = this._map;
 
@@ -85,6 +90,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	// @method removeHooks(): void
+	// Remove listener hooks for this handler
 	removeHooks: function () {
 		if (this._map) {
 			// Clean up selected layers.
@@ -105,6 +111,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	// @method revertLayers(): void
+	// Revert each layer's geometry changes
 	revertLayers: function () {
 		this._featureGroup.eachLayer(function (layer) {
 			this._revertLayer(layer);
@@ -112,6 +119,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 	},
 
 	// @method save(): void
+	// Save the layer geometries
 	save: function () {
 		var editedLayers = new L.LayerGroup();
 		this._featureGroup.eachLayer(function (layer) {
@@ -120,7 +128,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.edited = false;
 			}
 		});
-		this._map.fire(L.Draw.Event.EDITED, {layers: editedLayers});
+		this._map.fire(L.Draw.Event.EDITED, { layers: editedLayers });
 	},
 
 	_backupLayer: function (layer) {
@@ -260,7 +268,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 	_onMarkerDragEnd: function (e) {
 		var layer = e.target;
 		layer.edited = true;
-		this._map.fire(L.Draw.Event.EDITMOVE, {layer: layer});
+		this._map.fire(L.Draw.Event.EDITMOVE, { layer: layer });
 	},
 
 	_onTouchMove: function (e) {

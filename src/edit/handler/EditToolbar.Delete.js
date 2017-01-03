@@ -27,11 +27,12 @@ L.EditToolbar.Delete = L.Handler.extend({
 	},
 
 	// @method enable(): void
+	// Enable the delete toolbar
 	enable: function () {
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
 		}
-		this.fire('enabled', { handler: this.type});
+		this.fire('enabled', { handler: this.type });
 
 		this._map.fire(L.Draw.Event.DELETESTART, { handler: this.type });
 
@@ -43,8 +44,11 @@ L.EditToolbar.Delete = L.Handler.extend({
 	},
 
 	// @method disable(): void
+	// Disable the delete toolbar
 	disable: function () {
-		if (!this._enabled) { return; }
+		if (!this._enabled) {
+			return;
+		}
 
 		this._deletableLayers
 			.off('layeradd', this._enableLayerDelete, this)
@@ -54,10 +58,11 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 		this._map.fire(L.Draw.Event.DELETESTOP, { handler: this.type });
 
-		this.fire('disabled', { handler: this.type});
+		this.fire('disabled', { handler: this.type });
 	},
 
 	// @method addHooks(): void
+	// Add listener hooks to this handler
 	addHooks: function () {
 		var map = this._map;
 
@@ -75,6 +80,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 	},
 
 	// @method removeHooks(): void
+	// Remove listener hooks from this handler
 	removeHooks: function () {
 		if (this._map) {
 			this._deletableLayers.eachLayer(this._disableLayerDelete, this);
@@ -88,6 +94,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 	},
 
 	// @method revertLayers(): void
+	// Revert the deleted layers back to their prior state.
 	revertLayers: function () {
 		// Iterate of the deleted layers and add them back into the featureGroup
 		this._deletedLayers.eachLayer(function (layer) {
@@ -97,6 +104,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 	},
 
 	// @method save(): void
+	// Save deleted layers
 	save: function () {
 		this._map.fire(L.Draw.Event.DELETED, { layers: this._deletedLayers });
 	},
