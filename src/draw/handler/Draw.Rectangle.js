@@ -11,23 +11,20 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	options: {
 		shapeOptions: {
 			stroke: true,
-			color: '#3388ff',
+			color: '#f06eaa',
 			weight: 4,
 			opacity: 0.5,
 			fill: true,
 			fillColor: null, //same as color by default
 			fillOpacity: 0.2,
 			showArea: true,
-			clickable: true
+			clickable: false
 		},
 		metric: true // Whether to use the metric measurement system or imperial
 	},
 
 	// @method initialize(): void
 	initialize: function (map, options) {
-		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
-		this.type = L.Draw.Rectangle.TYPE;
-
 		this._initialLabelText = L.drawLocal.draw.handlers.rectangle.tooltip.start;
 
 		L.Draw.SimpleShape.prototype.initialize.call(this, map, options);

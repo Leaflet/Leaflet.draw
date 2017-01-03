@@ -26,12 +26,22 @@ L.EditToolbar.Delete = L.Handler.extend({
 		this.type = L.EditToolbar.Delete.TYPE;
 	},
 
+	destroy: function() {
+		this._featureGroup = null;
+		this.options.featureGroup = null;
+	},
+
 	// @method enable(): void
 	// Enable the delete toolbar
-	enable: function () {
+	enable: function (options) {
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
 		}
+
+		if (options && options.options) {
+			L.setOptions(this, options.options);
+		}
+
 		this.fire('enabled', { handler: this.type });
 
 		this._map.fire(L.Draw.Event.DELETESTART, { handler: this.type });
@@ -72,7 +82,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 			this._deletableLayers.eachLayer(this._enableLayerDelete, this);
 			this._deletedLayers = new L.LayerGroup();
 
-			this._tooltip = new L.Draw.Tooltip(this._map);
+			this._tooltip = new L.Draw.Tooltip(this._map, this.options.tooltip);
 			this._tooltip.updateContent({ text: L.drawLocal.edit.handlers.remove.tooltip.text });
 
 			this._map.on('mousemove', this._onMouseMove, this);
@@ -107,6 +117,10 @@ L.EditToolbar.Delete = L.Handler.extend({
 	// Save deleted layers
 	save: function () {
 		this._map.fire(L.Draw.Event.DELETED, { layers: this._deletedLayers });
+	},
+
+	getChanges: function() {
+		return this._deletedLayers;
 	},
 
 	_enableLayerDelete: function (e) {

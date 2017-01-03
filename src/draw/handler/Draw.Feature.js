@@ -9,6 +9,11 @@ L.Draw.Feature = L.Handler.extend({
 
 	// @method initialize(): void
 	initialize: function (map, options) {
+		if (options.type) {
+			this.type = options.type;
+		} else {
+			this.type = this.constructor.TYPE;
+		}
 		this._map = map;
 		this._container = map._container;
 		this._overlayPane = map._panes.overlayPane;
@@ -21,11 +26,13 @@ L.Draw.Feature = L.Handler.extend({
 		L.setOptions(this, options);
 	},
 
-	// @method enable(): void
-	// Enables this handler
-	enable: function () {
+	enable: function (options) {
 		if (this._enabled) {
 			return;
+		}
+
+		if (options && options.options) {
+			L.setOptions(this, options.options);
 		}
 
 		L.Handler.prototype.enable.call(this);
@@ -58,7 +65,7 @@ L.Draw.Feature = L.Handler.extend({
 
 			map.getContainer().focus();
 
-			this._tooltip = new L.Draw.Tooltip(this._map);
+			this._tooltip = new L.Draw.Tooltip(this._map, this.options.tooltip);
 
 			L.DomEvent.on(this._container, 'keyup', this._cancelDrawing, this);
 		}

@@ -14,13 +14,13 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		showArea: false,
 		shapeOptions: {
 			stroke: true,
-			color: '#3388ff',
+			color: '#f06eaa',
 			weight: 4,
 			opacity: 0.5,
 			fill: true,
 			fillColor: null, //same as color by default
 			fillOpacity: 0.2,
-			clickable: true
+			clickable: false
 		},
 		metric: true // Whether to use the metric measurement system or imperial
 	},

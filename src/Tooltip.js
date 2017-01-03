@@ -17,14 +17,34 @@ L.Draw.Tooltip = L.Class.extend({
 
 	// @section Methods for modifying draw state
 
-	// @method initialize(map): void
+	options: {
+		className: 'leaflet-draw-tooltip',
+		classNamePrefix: 'leaflet-draw-tooltip-',
+		errorClassName: 'leaflet-error-draw-tooltip'
+	},
+
+	_css: {
+		css: function() {
+			return this.options.className;
+		},
+		prefix: function(value) {
+			return this.options.classNamePrefix + value;
+		},
+		error: function() {
+			return this.options.errorClassName;
+		}
+	},
+
+	// @method initialize(map, options): void
 	// Tooltip constructor
-	initialize: function (map) {
+	initialize: function (map, options) {
+		L.setOptions(this, options);
+		this._css.options = this.options;
+
 		this._map = map;
 		this._popupPane = map._panes.popupPane;
 
-		this._container = map.options.drawControlTooltips ?
-			L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane) : null;
+		this._container = map.options.drawControlTooltips ? L.DomUtil.create('div', this._css.css(), this._popupPane) : null;
 		this._singleLineLabel = false;
 
 		this._map.on('mouseout', this._onMouseOut, this);
@@ -51,18 +71,17 @@ L.Draw.Tooltip = L.Class.extend({
 
 		// update the vertical position (only if changed)
 		if (labelText.subtext.length === 0 && !this._singleLineLabel) {
-			L.DomUtil.addClass(this._container, 'leaflet-draw-tooltip-single');
+			L.DomUtil.addClass(this._container, this._css.prefix('single'));
 			this._singleLineLabel = true;
 		}
 		else if (labelText.subtext.length > 0 && this._singleLineLabel) {
-			L.DomUtil.removeClass(this._container, 'leaflet-draw-tooltip-single');
+			L.DomUtil.removeClass(this._container, this._css.prefix('single'));
 			this._singleLineLabel = false;
 		}
 
-		this._container.innerHTML =
-			(labelText.subtext.length > 0 ?
-			'<span class="leaflet-draw-tooltip-subtext">' + labelText.subtext + '</span>' + '<br />' : '') +
-			'<span>' + labelText.text + '</span>';
+		this._container.innerHTML = labelText.subtext.length > 0 ?
+				'<span class="' + this._css.prefix('subtext') + '">' + labelText.subtext + '</span><br />' :
+				'';
 
 		return this;
 	},
@@ -85,7 +104,7 @@ L.Draw.Tooltip = L.Class.extend({
 	// Applies error class to tooltip
 	showAsError: function () {
 		if (this._container) {
-			L.DomUtil.addClass(this._container, 'leaflet-error-draw-tooltip');
+			L.DomUtil.addClass(this._container, this._css.error());
 		}
 		return this;
 	},
@@ -94,7 +113,7 @@ L.Draw.Tooltip = L.Class.extend({
 	// Removes the error class from the tooltip
 	removeError: function () {
 		if (this._container) {
-			L.DomUtil.removeClass(this._container, 'leaflet-error-draw-tooltip');
+			L.DomUtil.removeClass(this._container, this._css.error());
 		}
 		return this;
 	},

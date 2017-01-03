@@ -28,19 +28,38 @@ L.EditToolbar.Edit = L.Handler.extend({
 		this.type = L.EditToolbar.Edit.TYPE;
 	},
 
+	destroy: function() {
+		this._featureGroup = null;
+		this.options.featureGroup = null;
+	},
+
 	// @method enable(): void
 	// Enable the edit toolbar
-	enable: function () {
+	enable: function (options) {
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
 		}
-		this.fire('enabled', { handler: this.type });
-		//this disable other handlers
 
+		if (options && options.options) {
+			L.setOptions(this, options.options);
+		}
+
+		// update feature group if it has changed
+		if (this.options.featureGroup !== this._featureGroup) {
+			this._featureGroup = this.options.featureGroup;
+			if (!(this._featureGroup instanceof L.FeatureGroup)) {
+				throw new Error('options.featureGroup must be a L.FeatureGroup');
+			}
+		}
+
+		// this disables other handlers
+		this.fire('enabled', {handler: this.type});
+
+		// allow drawLayer to be updated before beginning edition.
 		this._map.fire(L.Draw.Event.EDITSTART, { handler: this.type });
-		//allow drawLayer to be updated before beginning edition.
 
 		L.Handler.prototype.enable.call(this);
+
 		this._featureGroup
 			.on('layeradd', this._enableLayerEdit, this)
 			.on('layerremove', this._disableLayerEdit, this);
@@ -52,12 +71,23 @@ L.EditToolbar.Edit = L.Handler.extend({
 		if (!this._enabled) {
 			return;
 		}
+
+		this._featureGroup.eachLayer(function (layer) {
+			if (layer.edited) {
+				this._revertLayer(layer);
+			}
+		}, this);
+
 		this._featureGroup
 			.off('layeradd', this._enableLayerEdit, this)
 			.off('layerremove', this._disableLayerEdit, this);
+
 		L.Handler.prototype.disable.call(this);
+
 		this._map.fire(L.Draw.Event.EDITSTOP, { handler: this.type });
 		this.fire('disabled', { handler: this.type });
+
+		this.options.layer = null;
 	},
 
 	// @method addHooks(): void
@@ -68,9 +98,13 @@ L.EditToolbar.Edit = L.Handler.extend({
 		if (map) {
 			map.getContainer().focus();
 
-			this._featureGroup.eachLayer(this._enableLayerEdit, this);
+			if (this.options.layer) {
+				this._enableLayerEdit(this.options.layer);
+			} else {
+				this._featureGroup.eachLayer(this._enableLayerEdit, this);
+			}
 
-			this._tooltip = new L.Draw.Tooltip(this._map);
+			this._tooltip = new L.Draw.Tooltip(this._map, this.options.tooltip);
 			this._tooltip.updateContent({
 				text: L.drawLocal.edit.handlers.edit.tooltip.text,
 				subtext: L.drawLocal.edit.handlers.edit.tooltip.subtext
@@ -118,7 +152,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		}, this);
 	},
 
-	// @method save(): void
+	// @method save(): { map, layers[] }
 	// Save the layer geometries
 	save: function () {
 		var editedLayers = new L.LayerGroup();
@@ -128,7 +162,17 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.edited = false;
 			}
 		});
-		this._map.fire(L.Draw.Event.EDITED, { layers: editedLayers });
+	},
+
+	getChanges: function () {
+		var editedLayers = new L.LayerGroup();
+		this._featureGroup.eachLayer(function (layer) {
+			if (layer.edited) {
+				editedLayers.addLayer(layer);
+			}
+		});
+
+		return editedLayers;
 	},
 
 	_backupLayer: function (layer) {
@@ -206,7 +250,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 			layer.options.original = L.extend({}, layer.options);
 			layer.options.editing = pathOptions;
-
+		} else {
+			layer.options.original = L.extend({}, layer.options);
+			layer.options.editing = {};
 		}
 
 		if (layer instanceof L.Marker) {
