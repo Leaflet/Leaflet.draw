@@ -178,14 +178,20 @@ L.Toolbar = L.Class.extend({
 	_createButton: function (options) {
 
 		var link = L.DomUtil.create('a', options.className || '', options.container);
-		link.href = '#';
+		// Screen reader tag
+		var sr = L.DomUtil.create('span', 'sr-only', options.container);
 
-		if (options.text) {
-			link.innerHTML = options.text;
-		}
+		link.href = '#';
+		link.appendChild(sr);
 
 		if (options.title) {
 			link.title = options.title;
+			sr.innerHTML = options.title;
+		}
+
+		if (options.text) {
+			link.innerHTML = options.text;
+			sr.innerHTML = options.text;
 		}
 
 		L.DomEvent
