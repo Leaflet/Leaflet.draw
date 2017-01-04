@@ -198,6 +198,7 @@ L.Toolbar = L.Class.extend({
 			.on(link, 'click', L.DomEvent.stopPropagation)
 			.on(link, 'mousedown', L.DomEvent.stopPropagation)
 			.on(link, 'dblclick', L.DomEvent.stopPropagation)
+			.on(link, 'touchstart', L.DomEvent.stopPropagation)
 			.on(link, 'click', L.DomEvent.preventDefault)
 			.on(link, 'click', options.callback, options.context);
 
@@ -209,6 +210,7 @@ L.Toolbar = L.Class.extend({
 			.off(button, 'click', L.DomEvent.stopPropagation)
 			.off(button, 'mousedown', L.DomEvent.stopPropagation)
 			.off(button, 'dblclick', L.DomEvent.stopPropagation)
+			.off(button, 'touchstart', L.DomEvent.stopPropagation)
 			.off(button, 'click', L.DomEvent.preventDefault)
 			.off(button, 'click', callback);
 	},
