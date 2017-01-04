@@ -35,7 +35,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			fill: false,
 			clickable: true
 		},
-		metric: false, // Whether to use the metric measurement system or imperial
+		metric: true, // Whether to use the metric measurement system or imperial
 		feet: true, // When not metric, to use feet instead of yards for display.
 		nautic: false, // When not metric, not feet use nautic mile for display
 		showLength: true, // Whether to display distance in the tooltip

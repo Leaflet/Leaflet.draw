@@ -26,7 +26,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		// Whether to use the metric measurement system (truthy) or not (falsy).
 		// Also defines the units to use for the metric system as an array of
 		// strings (e.g. `['ha', 'm']`).
-		metric: false,
+		metric: true,
 		feet: true, // When not metric, to use feet instead of yards for display.
 		nautic: false, // When not metric, not feet use nautic mile for display
 		// Defines the precision for each type of unit (e.g. {km: 2, ft: 0}
