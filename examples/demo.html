@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta name="description" content="Student's personalized learning maps">
+        <meta name="keywords" content="maps, education, jquery, leaflet, geography">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+     
+        <link rel="stylesheet" href="css/leaflet.css">
+        <script src="js/leaflet.js"></script>
+        <!-- Add Leaflet-draw plugin -->
+        <link rel="stylesheet" href="css/leaflet.draw.css">
+        <script src="js/leaflet-draw-dev.js"></script>
+        <!-- Add Leaflet-illustrate plugin -->
+        <link rel="stylesheet" href="css/Leaflet.Illustrate.css">
+        <script src="js/Leaflet.Illustrate.js"></script>
+    </head>
+
+    <body>
+
+        <div id="mapid" style="width: 600px; height: 400px; position: relative; outline: none;" ></div>
+        <div>
+            <p>First click on a draw control, then click on the textbox control. See that the first control clicked is now disabled.</p>
+            <p>This will happen with any combination of the controls or if the textbox control is clicked first</p>
+        </div>
+
+
+    <script>
+
+        // Creates a L.map variable
+        var mymap = L.map('mapid').setView([51.505, -0.09], 13);
+
+        // Set a tileLayer to mymap 
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw', {
+            maxZoom: 18,
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+                '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            id: 'mapbox.streets'
+        }).addTo(mymap);
+
+        // Creates a layer group and adds it to mymap variable
+        var drawnItems = new L.FeatureGroup();
+        mymap.addLayer(drawnItems);
+
+
+        // Creates an Illustrate Object for a textbox control 
+        var illustrateControl = new L.Illustrate.Control({
+            // Customize textbox title
+            draw: {
+                textbox: {
+                    textboxTooltipEnd: "Presioná y luego arrastrá para dibujar un rectángulo de texto"
+            }}
+        });
+                            
+        // Creates an Control.Draw Object for drawing controls
+        var drawControl = new L.Control.Draw({
+            draw: {
+                illustrateToolbar: {},
+                position: 'topleft',
+                polygon: {
+                    title: "Dibujá polígonos",
+                },
+                polyline: {
+                    title: "Dibujá líneas",
+                },
+                rectangle: {
+                    title: "Dibujá rectángulos",
+                },
+                circle: {
+                    title: "Dibujá círculos",
+                },
+                marker: {
+                    title: "Insertá marcadores",
+                }
+            },
+            edit: {
+                featureGroup: drawnItems
+            }
+        });
+
+        // This function adds a layer with the drawing created with the drawing controls
+        mymap.on('draw:created', function (e) {
+            var type = e.layerType,
+            layer = e.layer;
+            drawnItems.addLayer(layer);
+            
+        });
+
+        // Asigns the drawControl Object as a property to the illustrateControl Object and vice versa
+        illustrateControl.secondToolbar = drawControl;
+
+        drawControl.illustrateToolbar = illustrateControl;
+
+        // Adds both controls to mymap object 
+        mymap.addControl(illustrateControl);
+
+        mymap.addControl(drawControl);
+
+    </script>
+
+    </body>
+
+</html>
+
+
