@@ -148,7 +148,7 @@ L.drawLocal = {
 				},
 				clearAll:{
 					title: 'clear all layers.',
-					text: 'clearAll'
+					text: 'Clear All'
 				}
 			},
 			buttons: {
