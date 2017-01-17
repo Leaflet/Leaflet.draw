@@ -37,6 +37,11 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 				.on('mousemove', this._onMouseMove, this)
 				.on('touchstart', this._onMouseDown, this)
 				.on('touchmove', this._onMouseMove, this);
+
+			// we should prevent default, otherwise default behavior (scrolling) will fire,
+			// and that will cause document.touchend to fire and will stop the drawing
+			// (circle, rectangle) in touch mode.
+			document.addEventListener('touchstart', L.DomEvent.preventDefault);
 		}
 	},
 
