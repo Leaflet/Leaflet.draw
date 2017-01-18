@@ -1,6 +1,6 @@
 engines:
-  fixme:
-    enabled: true
+ fixme:
+   enabled: true
  duplication:
    enabled: true
    config:
