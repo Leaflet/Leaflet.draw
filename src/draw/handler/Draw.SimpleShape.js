@@ -66,6 +66,8 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 			L.DomEvent.off(document, 'mouseup', this._onMouseUp, this);
 			L.DomEvent.off(document, 'touchend', this._onMouseUp, this);
 
+			document.removeEventListener('touchstart', L.DomEvent.preventDefault);
+
 			// If the box element doesn't exist they must not have moved the mouse, so don't need to destroy/return
 			if (this._shape) {
 				this._map.removeLayer(this._shape);
