@@ -25,6 +25,28 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return Math.abs(area);
 	},
 
+    // @method formattedNumber(n, precision): string
+    // Returns n in specified number format (if defined) and precision
+    formattedNumber: function (n, precision) {
+        var formatted = n.toFixed(precision);
+
+        var format = L.drawLocal.format && L.drawLocal.format.numeric,
+            delimiters = format && format.delimiters,
+            thousands = delimiters && delimiters.thousands,
+        	decimal = delimiters && delimiters.decimal;
+
+        if (thousands || decimal) {
+            var splitValue = formatted.split('.');
+			formatted = thousands ? splitValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1' + thousands) : splitValue[0];
+			decimal = decimal || '.';
+            if (splitValue.length > 1) {
+                formatted = formatted + decimal + splitValue[1];
+            }
+        }
+
+        return formatted;
+    },
+
 	// @method readableArea(area, isMetric): string
 	// Returns a readable area string in yards or metric
 	readableArea: function (area, isMetric) {
@@ -32,19 +54,19 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 
 		if (isMetric) {
 			if (area >= 10000) {
-				areaStr = (area * 0.0001).toFixed(2) + ' ha';
+				areaStr = L.GeometryUtil.formattedNumber(area * 0.0001, 2) + ' ha';
 			} else {
-				areaStr = area.toFixed(2) + ' m&sup2;';
+				areaStr = L.GeometryUtil.formattedNumber(area, 2) + ' m&sup2;';
 			}
 		} else {
 			area /= 0.836127; // Square yards in 1 meter
 
 			if (area >= 3097600) { //3097600 square yards in 1 square mile
-				areaStr = (area / 3097600).toFixed(2) + ' mi&sup2;';
+				areaStr = L.GeometryUtil.formattedNumber(area / 3097600, 2) + ' mi&sup2;';
 			} else if (area >= 4840) {//48040 square yards in 1 acre
-				areaStr = (area / 4840).toFixed(2) + ' acres';
+				areaStr = L.GeometryUtil.formattedNumber(area / 4840, 2) + ' acres';
 			} else {
-				areaStr = Math.ceil(area) + ' yd&sup2;';
+				areaStr = L.GeometryUtil.formattedNumber(Math.ceil(area)) + ' yd&sup2;';
 			}
 		}
 
@@ -79,28 +101,28 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		case 'metric':
 			// show metres when distance is < 1km, then show km
 			if (distance > 1000) {
-				distanceStr = (distance / 1000).toFixed(2) + ' km';
+				distanceStr = L.GeometryUtil.formattedNumber(distance / 1000, 2) + ' km';
 			} else {
-				distanceStr = Math.ceil(distance) + ' m';
+				distanceStr = L.GeometryUtil.formattedNumber(Math.ceil(distance)) + ' m';
 			}
 			break;
 		case 'feet':
 			distance *= 1.09361 * 3;
-			distanceStr = Math.ceil(distance) + ' ft';
+			distanceStr = L.GeometryUtil.formattedNumber(Math.ceil(distance)) + ' ft';
 
 			break;
 		case 'nauticalMile':
 			distance *= 0.53996;
-			distanceStr = (distance / 1000).toFixed(2) + ' nm';
+			distanceStr = L.GeometryUtil.formattedNumber(distance / 1000, 2) + ' nm';
 			break;
 		case 'yards':
 		default:
 			distance *= 1.09361;
 
 			if (distance > 1760) {
-				distanceStr = (distance / 1760).toFixed(2) + ' miles';
+				distanceStr = L.GeometryUtil.formattedNumber(distance / 1760, 2) + ' miles';
 			} else {
-				distanceStr = Math.ceil(distance) + ' yd';
+				distanceStr = L.GeometryUtil.formattedNumber(Math.ceil(distance)) + ' yd';
 			}
 			break;
 		}

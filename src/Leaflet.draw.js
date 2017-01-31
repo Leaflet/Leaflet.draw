@@ -72,6 +72,14 @@ L.Draw = {};
  *  **Please note the edit toolbar is not enabled by default.**
  */
 L.drawLocal = {
+	// format: {
+	// 	numeric: {
+	// 		delimiters: {
+	// 			thousands: ',',
+	// 			decimal: '.'
+	// 		}
+	// 	}
+	// },
 	draw: {
 		toolbar: {
 			// #TODO: this should be reorganized where actions are nested in actions
