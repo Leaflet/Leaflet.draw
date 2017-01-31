@@ -302,6 +302,7 @@
 
 .leaflet-edit-move {
     cursor: move;
+    background-color: #777;
 }
 
 .leaflet-edit-resize {
