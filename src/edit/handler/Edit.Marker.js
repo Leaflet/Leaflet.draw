@@ -16,9 +16,19 @@ L.Edit.Marker = L.Handler.extend({
 	addHooks: function () {
 		var marker = this._marker;
 
-		marker.dragging.enable();
-		marker.on('dragend', this._onDragEnd, marker);
-		this._toggleMarkerHighlight();
+        if (this._marker._map) {
+            this._map = this._marker._map;
+
+            marker.dragging.enable();
+            marker.on('dragstart', this._onDragStart, marker);
+            marker.on('dragend', this._onDragEnd, marker);
+            this._toggleMarkerHighlight();
+
+            this._map.fire(L.Draw.Event.EDITHOOK, {
+                'editHandler' : this,
+                'layer': this._marker
+            });
+        }
 	},
 
 	// @method removeHooks(): void
@@ -27,14 +37,29 @@ L.Edit.Marker = L.Handler.extend({
 		var marker = this._marker;
 
 		marker.dragging.disable();
+		marker.off('dragstart', this._onDragStart, marker);
 		marker.off('dragend', this._onDragEnd, marker);
 		this._toggleMarkerHighlight();
 	},
 
+	_onDragStart: function (e) {
+        this._originalLatLng = e.target.getLatLng().clone();
+    },
+
 	_onDragEnd: function (e) {
 		var layer = e.target;
+
+        var newLatLng = L.LatLngUtil.pointToBounds(this._map.options.maxBounds, layer.getLatLng());
+        e.target.setLatLng(newLatLng);
+
 		layer.edited = true;
-		this._map.fire(L.Draw.Event.EDITMOVE, { layer: layer });
+		this._map.fire(L.Draw.Event.EDITMOVE, {
+            layer: layer,
+            newLatLng: newLatLng,
+            originalLatLng: this._originalLatLng.clone(),
+            editType: 'editmarker/Move',
+            editHandler: this
+        });
 	},
 
 	_toggleMarkerHighlight: function () {

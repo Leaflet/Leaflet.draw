@@ -1,6 +1,6 @@
 /*L.Map.mergeOptions({
- editControl: true
- });*/
+	editControl: true
+});*/
 /**
  * @class L.EditToolbar
  * @aka EditToolbar
@@ -52,18 +52,32 @@ L.EditToolbar = L.Toolbar.extend({
 		this._selectedFeatureCount = 0;
 	},
 
-	// @method getModeHandlers(): object
+	// @method getModeHandlers(): void
 	// Get mode handlers information
 	getModeHandlers: function (map) {
 		var featureGroup = this.options.featureGroup;
+		var editHandler;
+
+		if (L.EditToolbar.SnapEdit) {
+			editHandler = new L.EditToolbar.SnapEdit(map, {
+                snapOptions: this.options.snapOptions,
+				featureGroup: featureGroup,
+				selectedPathOptions: this.options.edit.selectedPathOptions,
+				poly: this.options.poly
+			});
+		}
+		else {
+			editHandler = new L.EditToolbar.Edit(map, {
+                featureGroup: featureGroup,
+				selectedPathOptions: this.options.edit.selectedPathOptions,
+				poly: this.options.poly
+			});
+		}
+
 		return [
 			{
 				enabled: this.options.edit,
-				handler: new L.EditToolbar.Edit(map, {
-					featureGroup: featureGroup,
-					selectedPathOptions: this.options.edit.selectedPathOptions,
-					poly: this.options.poly
-				}),
+				handler: editHandler,
 				title: L.drawLocal.edit.toolbar.buttons.edit
 			},
 			{
@@ -76,7 +90,7 @@ L.EditToolbar = L.Toolbar.extend({
 		];
 	},
 
-	// @method getActions(): object
+	// @method getActions(): void
 	// Get actions information
 	getActions: function () {
 		return [
@@ -101,7 +115,7 @@ L.EditToolbar = L.Toolbar.extend({
 		];
 	},
 
-	// @method addToolbar(map): L.DomUtil
+	// @method addToolbar(): void
 	// Adds the toolbar to the map
 	addToolbar: function (map) {
 		var container = L.Toolbar.prototype.addToolbar.call(this, map);

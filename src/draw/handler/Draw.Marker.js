@@ -76,7 +76,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 	},
 
 	_onMouseMove: function (e) {
-		var latlng = e.latlng;
+        var latlng = L.LatLngUtil.pointToBounds(this._map.options.maxBounds, e.latlng);
 
 		this._tooltip.updatePosition(latlng);
 		this._mouseMarker.setLatLng(latlng);

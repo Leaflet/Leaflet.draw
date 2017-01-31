@@ -71,6 +71,10 @@ L.Map.TouchExtend = L.Handler.extend({
 			return;
 		}
 
+        if (e.pointerType == 'mouse') {
+            return;
+        }
+
 		var containerPoint = this._map.mouseEventToContainerPoint(touchEvent),
 			layerPoint = this._map.mouseEventToLayerPoint(touchEvent),
 			latlng = this._map.layerPointToLatLng(layerPoint);

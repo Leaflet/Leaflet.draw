@@ -11,7 +11,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	Poly: L.Polyline,
 
 	options: {
-		allowIntersection: true,
+		allowIntersection: false,
 		repeatMode: false,
 		drawError: {
 			color: '#b00b00',
@@ -45,7 +45,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// @method initialize(): void
 	initialize: function (map, options) {
 		// if touch, switch to touch icon
-		if (L.Browser.touch) {
+		if (! L.Browser.pointer) {
 			this.options.icon = this.options.touchIcon;
 		}
 
@@ -103,9 +103,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 			this._map
 				.on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
+				.on('touchstart', this._onTouch, this)
 				.on('mousemove', this._onMouseMove, this)
 				.on('zoomlevelschange', this._onZoomEnd, this)
-				.on('touchstart', this._onTouch, this)
 				.on('zoomend', this._onZoomEnd, this);
 
 		}
@@ -144,10 +144,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			.off('mousemove', this._onMouseMove, this)
 			.off('zoomlevelschange', this._onZoomEnd, this)
 			.off('zoomend', this._onZoomEnd, this)
-			.off('touchstart', this._onTouch, this)
-			.off('click', this._onTouch, this);
+			.off('touchstart', this._onTouch, this);
 	},
 
+	// @method deleteLastVertex(): void
+    // Remove the last vertex from the polyline, removes polyline from map if only one point exists.
 	// @method deleteLastVertex(): void
 	// Remove the last vertex from the polyline, removes polyline from map if only one point exists.
 	deleteLastVertex: function () {
@@ -169,6 +170,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		}
 
 		this._vertexChanged(latlng, false);
+        return latlng;
 	},
 
 	// @method addVertex(): void
@@ -258,7 +260,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_vertexChanged: function (latlng, added) {
-		this._map.fire(L.Draw.Event.DRAWVERTEX, { layers: this._markerGroup });
+		this._map.fire(L.Draw.Event.DRAWVERTEX, { layers: this._markerGroup, drawHandler: this });
 		this._updateFinishHandler();
 
 		this._updateRunningMeasure(latlng, added);
@@ -282,25 +284,41 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	_startPoint: function (clientX, clientY) {
 		this._mouseDownOrigin = L.point(clientX, clientY);
-	},
-
-	_onMouseUp: function (e) {
 		var originalEvent = e.originalEvent;
 		var clientX = originalEvent.clientX;
 		var clientY = originalEvent.clientY;
-		this._endPoint.call(this, clientX, clientY, e);
-		this._clickHandled = null;
+		this._startPoint.call(this, clientX, clientY);
+	},
+
+	_startPoint: function (clientX, clientY) {
+		this._mouseDownOrigin = L.point(clientX, clientY);
+	},
+
+	_onMouseUp: function (e) {
+        if (this._mouseMarker.snapped) {
+            delete this._mouseMarker._snapped;
+            var snappedPoint = this._map.project(this._mouseMarker.getLatLng(), this._map.getZoom());
+            this._endPoint.call(snappedPoint, e);
+        }
+
+        else {
+            var originalEvent = e.originalEvent;
+            var clientX = originalEvent.clientX;
+            var clientY = originalEvent.clientY;
+            this._endPoint.call(this, clientX, clientY, e);
+        }
 	},
 
 	_endPoint: function (clientX, clientY, e) {
 		if (this._mouseDownOrigin) {
 			var dragCheckDistance = L.point(clientX, clientY)
 				.distanceTo(this._mouseDownOrigin);
-			var lastPtDistance = this._calculateFinishDistance(e.latlng);
-			if (lastPtDistance < 10 && L.Browser.touch) {
-				this._finishShape();
-			} else if (Math.abs(dragCheckDistance) < 9 * (window.devicePixelRatio || 1)) {
-				this.addVertex(e.latlng);
+
+			if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
+                var bbounds = this._map.options.maxBounds;
+                if (!bbounds || (bbounds && bbounds.contains(e.latlng))) {
+                    this.addVertex(e.latlng);
+                }
 			}
 			this._enableNewMarkers(); // after a short pause, enable new markers
 		}
@@ -313,14 +331,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var originalEvent = e.originalEvent;
 		var clientX;
 		var clientY;
-		if (originalEvent.touches && originalEvent.touches[0] && !this._clickHandled && !this._touchHandled && !this._disableMarkers) {
+		if (originalEvent.touches && originalEvent.touches[0]) {
 			clientX = originalEvent.touches[0].clientX;
 			clientY = originalEvent.touches[0].clientY;
-			this._disableNewMarkers();
-			this._touchHandled = true;
 			this._startPoint.call(this, clientX, clientY);
 			this._endPoint.call(this, clientX, clientY, e);
-			this._touchHandled = null;
 		}
 		this._clickHandled = null;
 	},
@@ -494,7 +509,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var markersLength = this._markers.length,
 			previousMarkerIndex, distance;
 
-		if (this._markers.length === 1) {
+		if (this._markers.length <= 1) {
 			this._measurementRunningTotal = 0;
 		} else {
 			previousMarkerIndex = markersLength - (added ? 2 : 1);

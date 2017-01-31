@@ -38,7 +38,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 		//this disable other handlers
 
 		this._map.fire(L.Draw.Event.EDITSTART, { handler: this.type });
-		//allow drawLayer to be updated before beginning edition.
+			//allow drawLayer to be updated before beginning edition.
 
 		L.Handler.prototype.enable.call(this);
 		this._featureGroup
@@ -57,7 +57,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			.off('layerremove', this._disableLayerEdit, this);
 		L.Handler.prototype.disable.call(this);
 		this._map.fire(L.Draw.Event.EDITSTOP, { handler: this.type });
-		this.fire('disabled', { handler: this.type });
+		this.fire('disabled', {handler: this.type});
 	},
 
 	// @method addHooks(): void
@@ -128,7 +128,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.edited = false;
 			}
 		});
-		this._map.fire(L.Draw.Event.EDITED, { layers: editedLayers });
+		this._map.fire(L.Draw.Event.EDITED, {layers: editedLayers});
 	},
 
 	_backupLayer: function (layer) {
@@ -268,7 +268,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 	_onMarkerDragEnd: function (e) {
 		var layer = e.target;
 		layer.edited = true;
-		this._map.fire(L.Draw.Event.EDITMOVE, { layer: layer });
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: layer});
 	},
 
 	_onTouchMove: function (e) {
