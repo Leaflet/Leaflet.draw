@@ -6,10 +6,23 @@ L.Edit = L.Edit || {};
  * @aka Edit.Poly
  */
 L.Edit.Poly = L.Handler.extend({
-	options: {},
+	options: {
+		moveIcon: new L.DivIcon({
+			iconSize: new L.Point(8, 8),
+			className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-move'
+		}),
+		touchMoveIcon: new L.DivIcon({
+			iconSize: new L.Point(20, 20),
+			className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-move leaflet-touch-icon'
+		})
+	},
 
 	// @method initialize(): void
 	initialize: function (poly, options) {
+
+		if (L.Browser.touch) {
+			this.options.moveIcon = this.options.touchMoveIcon;
+		}
 
 		this.latlngs = [poly._latlngs];
 		if (poly._holes) {
@@ -44,6 +57,7 @@ L.Edit.Poly = L.Handler.extend({
 		this._eachVertexHandler(function (handler) {
 			handler.addHooks();
 		});
+		this._initMarkers();
 	},
 
 	// @method removeHooks(): void
@@ -52,6 +66,7 @@ L.Edit.Poly = L.Handler.extend({
 		this._eachVertexHandler(function (handler) {
 			handler.removeHooks();
 		});
+		this._releaseMarkers();
 	},
 
 	// @method updateMarkers(): void
@@ -74,8 +89,158 @@ L.Edit.Poly = L.Handler.extend({
 		if (e.layer._holes) {
 			this.latlngs = this.latlngs.concat(e.layer._holes);
 		}
-	}
+	},
 
+	_initMarkers: function() {
+		this._poly.on("edit", this._onEdit, this);
+
+		if (this._poly._map) {
+			this._map = this._poly._map;
+
+			if (!this._markerGroup) {
+				this._markerGroup = new L.LayerGroup();
+				this._map.addLayer(this._markerGroup);
+			}
+
+			if (!this._moveMarker) {
+
+				var latlng = this._getMoveMarkerLatLng();
+
+				this._moveMarker = new L.Marker.Touch(latlng, {
+					draggable: true,
+					icon: this.options.moveIcon,
+					zIndexOffset: 10
+				});
+				this._moveMarker._origLatLng = latlng;
+
+				this._moveMarker
+					.on('dragstart', this._onMarkerDragStart, this)
+					.on('drag', this._onMarkerDrag, this)
+					.on('dragend', this._onMarkerDragEnd, this)
+					.on('touchstart', this._onTouchStart, this)
+					.on('touchmove', this._onTouchMove, this)
+					.on('MSPointerMove', this._onTouchMove, this)
+					.on('touchend', this._onTouchEnd, this)
+					.on('MSPointerUp', this._onTouchEnd, this);
+
+				this._markerGroup.addLayer(this._moveMarker);
+			}
+		}
+	},
+
+	_releaseMarkers: function () {
+		this._moveMarker
+			.off('dragstart', this._onMarkerDragStart, this)
+			.off('drag', this._onMarkerDrag, this)
+			.off('dragend', this._onMarkerDragEnd, this)
+			.off('touchstart', this._onTouchStart, this)
+			.off('touchmove', this._onTouchMove, this)
+			.off('MSPointerMove', this._onTouchMove, this)
+			.off('touchend', this._onTouchEnd, this)
+			.off('MSPointerUp', this._onTouchEnd, this);
+
+		this._markerGroup.removeLayer(this._moveMarker);
+		delete this._moveMarker;
+
+		this._map.removeLayer(this._markerGroup);
+		delete this._markerGroup;
+
+		delete this._map;
+
+		this._poly.off("edit", this._onEdit, this);
+	},
+
+	_fireEdit: function () {
+		this._poly.edited = true;
+		this._poly.fire('edit');
+	},
+
+	_onEdit: function (e) {
+		if (this._moveMarker) {
+			var latlng = this._getMoveMarkerLatLng();
+
+			this._moveMarker.setLatLng(latlng);
+			this._moveMarker._origLatLng = latlng;
+		}
+	},
+
+	_onMarkerDragStart: function (e) {
+		var marker = e.target;
+		marker.setOpacity(0);
+
+		this._poly.fire('editstart');
+	},
+
+	_onMarkerDrag: function (e) {
+		var marker = e.target,
+			latlng = marker.getLatLng();
+
+		this._move(latlng);
+
+		this._poly.fire('editdrag');
+	},
+
+	_onMarkerDragEnd: function (e) {
+		var marker = e.target;
+		marker.setOpacity(1);
+
+		this._fireEdit();
+	},
+
+	_onTouchStart: function (e) {
+		var marker = e.target;
+		marker.setOpacity(0);
+
+		this._poly.fire('editstart');
+	},
+
+	_onTouchMove: function (e) {
+		var layerPoint = this._map.mouseEventToLayerPoint(e.originalEvent.touches[0]),
+			latlng = this._map.layerPointToLatLng(layerPoint);
+
+		this._move(latlng);
+
+		return false;
+	},
+
+	_onTouchEnd: function (e) {
+		var marker = e.target;
+		marker.setOpacity(1);
+
+		this._fireEdit();
+	},
+
+	_move: function (latlng) {
+		var moveMarker = this._moveMarker;
+
+		var latlngs = this._defaultShape();
+
+		var latMove = latlng.lat - moveMarker._origLatLng.lat;
+		var lngMove = latlng.lng - moveMarker._origLatLng.lng;
+
+		for (var i = 0; i < latlngs.length; ++i) {
+			latlngs[i].lat += latMove;
+			latlngs[i].lng += lngMove;
+		}
+
+		moveMarker.setLatLng(latlng);
+		moveMarker._origLatLng = latlng;
+
+		this._poly.redraw();
+		this.updateMarkers();
+
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: this._poly});
+	},
+
+	_getMoveMarkerLatLng: function () {
+
+		var latlngs = this._defaultShape();
+
+		var p1 = this._map.project(latlngs[0]);
+		var p2 = this._map.project(latlngs[1]);
+
+		return this._map.unproject(p1._multiplyBy(0.75)._add(p2._multiplyBy(0.25)));
+	}
 });
 
 /**
