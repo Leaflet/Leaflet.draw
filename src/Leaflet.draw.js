@@ -153,6 +153,10 @@ L.drawLocal = {
 				cancel: {
 					title: 'Cancel editing, discards all changes.',
 					text: 'Cancel'
+				},
+				clearAll:{
+					title: 'clear all layers.',
+					text: 'Clear All'
 				}
 			},
 			buttons: {
