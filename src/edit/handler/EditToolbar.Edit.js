@@ -69,6 +69,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 			map.getContainer().focus();
 
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
+			//in case user clicks "Clear All" button in editing mode
+			this._deletedLayers = new L.LayerGroup();
 
 			this._tooltip = new L.Draw.Tooltip(this._map);
 			this._tooltip.updateContent({
@@ -98,6 +100,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 			// Clear the backups of the original layers
 			this._uneditedLayerProps = {};
+			this._deletedLayers = null;
 
 			this._tooltip.dispose();
 			this._tooltip = null;
@@ -128,7 +131,22 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.edited = false;
 			}
 		});
-		this._map.fire(L.Draw.Event.EDITED, { layers: editedLayers });
+		if (this._deletedLayers.getLayers().length) {
+			this._map.fire(L.Draw.Event.DELETED, { layers: this._deletedLayers });
+		}
+		else if (editedLayers.getLayers().length) {
+			this._map.fire(L.Draw.Event.EDITED, { layers: editedLayers });
+		}
+	},
+
+	// @method removeAllLayers(): void
+	// Remove all delateable layers
+	removeAllLayers: function(){
+		// Iterate of the delateable layers and add remove them
+		this._featureGroup.eachLayer(function (layer) {
+			this._removeLayer({layer:layer});
+		}, this);
+		this.save();
 	},
 
 	_backupLayer: function (layer) {
@@ -151,6 +169,16 @@ L.EditToolbar.Edit = L.Handler.extend({
 				};
 			}
 		}
+	},
+
+	_removeLayer: function (e) {
+		var layer = e.layer || e.target || e;
+
+		this._featureGroup.removeLayer(layer);
+
+		this._deletedLayers.addLayer(layer);
+
+		layer.fire('deleted');
 	},
 
 	_getTooltipText: function () {
