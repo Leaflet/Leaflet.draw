@@ -30,6 +30,24 @@ describe("L.Edit", function () {
 		});
 	});
 
+  describe("L.Edit.CircleMarker", function () {
+		var circleMarker;
+
+		beforeEach(function () {
+			circleMarker = new L.CircleMarker(new L.LatLng(1, 2)).addTo(map);
+			circleMarker.editing.enable();
+		});
+
+		it("Is activated correctly when editing.enable() is called.", function () {});
+
+		it("Moves the circlemarker to the correct latlng", function () {
+			var newLatLng = new L.LatLng(3, 5);
+
+			circleMarker.editing._move(newLatLng);
+			expect(circleMarker.getLatLng()).to.eql(newLatLng);
+		});
+	});
+
 	describe("L.Edit.Circle", function () {
 		var circle;
 
