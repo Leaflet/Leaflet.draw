@@ -1,6 +1,6 @@
 {
   "name": "leaflet-draw",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "description": "Vector drawing plugin for Leaflet",
   "devDependencies": {
     "eslint": "^3.5.0 <3.6.0",

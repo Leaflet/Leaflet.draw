@@ -39,6 +39,27 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		return Math.abs(area);
 	},
 
+	// @method formattedNumber(n, precision): string
+	// Returns n in specified number format (if defined) and precision
+	formattedNumber: function (n, precision) {
+		var formatted = n.toFixed(precision),
+			format = L.drawLocal.format && L.drawLocal.format.numeric,
+			delimiters = format && format.delimiters,
+			thousands = delimiters && delimiters.thousands,
+			decimal = delimiters && delimiters.decimal;
+
+		if (thousands || decimal) {
+			var splitValue = formatted.split('.');
+			formatted = thousands ? splitValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1' + thousands) : splitValue[0];
+			decimal = decimal || '.';
+			if (splitValue.length > 1) {
+				formatted = formatted + decimal + splitValue[1];
+			}
+		}
+
+		return formatted;
+	},
+
 	// @method readableArea(area, isMetric, precision): string
 	// Returns a readable area string in yards or metric.
 	// The value will be rounded as defined by the precision option object.
@@ -57,21 +78,21 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 			}
 
 			if (area >= 1000000 && units.indexOf('km') !== -1) {
-				areaStr = _round(area * 0.000001, precision['km']) + ' km&sup2;';
+				areaStr = L.GeometryUtil.formattedNumber(area * 0.000001, precision['km']) + ' km²';
 			} else if (area >= 10000 && units.indexOf('ha') !== -1) {
-				areaStr = _round(area * 0.0001, precision['ha']) + ' ha';
+				areaStr = L.GeometryUtil.formattedNumber(area * 0.0001, precision['ha']) + ' ha';
 			} else {
-				areaStr = _round(area, precision['m']) + ' m&sup2;';
+				areaStr = L.GeometryUtil.formattedNumber(area, precision['m']) + ' m²';
 			}
 		} else {
 			area /= 0.836127; // Square yards in 1 meter
 
 			if (area >= 3097600) { //3097600 square yards in 1 square mile
-				areaStr = _round(area / 3097600, precision['mi']) + ' mi&sup2;';
+				areaStr = L.GeometryUtil.formattedNumber(area / 3097600, precision['mi']) + ' mi²';
 			} else if (area >= 4840) { //4840 square yards in 1 acre
-				areaStr = _round(area / 4840, precision['ac']) + ' acres';
+				areaStr = L.GeometryUtil.formattedNumber(area / 4840, precision['ac']) + ' acres';
 			} else {
-				areaStr = _round(area, precision['yd']) + ' yd&sup2;';
+				areaStr = L.GeometryUtil.formattedNumber(area, precision['yd']) + ' yd²';
 			}
 		}
 
@@ -104,45 +125,33 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 		case 'metric':
 			// show metres when distance is < 1km, then show km
 			if (distance > 1000) {
-				distanceStr = _round(distance / 1000, precision['km']) + ' km';
+				distanceStr = L.GeometryUtil.formattedNumber(distance / 1000, precision['km']) + ' km';
 			} else {
-				distanceStr = _round(distance, precision['m']) + ' m';
+				distanceStr = L.GeometryUtil.formattedNumber(distance, precision['m']) + ' m';
 			}
 			break;
 		case 'feet':
 			distance *= 1.09361 * 3;
-			distanceStr = _round(distance, precision['ft']) + ' ft';
+			distanceStr = L.GeometryUtil.formattedNumber(distance, precision['ft']) + ' ft';
 
 			break;
 		case 'nauticalMile':
 			distance *= 0.53996;
-			distanceStr = _round(distance / 1000, precision['nm']) + ' nm';
+			distanceStr = L.GeometryUtil.formattedNumber(distance / 1000, precision['nm']) + ' nm';
 			break;
 		case 'yards':
 		default:
 			distance *= 1.09361;
 
 			if (distance > 1760) {
-				distanceStr = _round(distance / 1760, precision['mi']) + ' miles';
+				distanceStr = L.GeometryUtil.formattedNumber(distance / 1760, precision['mi']) + ' miles';
 			} else {
-				distanceStr = _round(distance, precision['yd']) + ' yd';
+				distanceStr = L.GeometryUtil.formattedNumber(distance, precision['yd']) + ' yd';
 			}
 			break;
 		}
 		return distanceStr;
 	}
 });
-
-function _round(value, precision) {
-	var rounded;
-
-	if (precision) {
-		rounded = value.toFixed(precision);
-	} else {
-		rounded = Math.round(value);
-	}
-
-	return rounded;
-}
 
 })();
