@@ -41,7 +41,10 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 			// we should prevent default, otherwise default behavior (scrolling) will fire,
 			// and that will cause document.touchend to fire and will stop the drawing
 			// (circle, rectangle) in touch mode.
-			document.addEventListener('touchstart', L.DomEvent.preventDefault);
+			// (update): we have to send passive now to prevent scroll, because by default it is {passive: true} now, which means,
+			// handler can't event.preventDefault 
+			// check the news https://developers.google.com/web/updates/2016/06/passive-event-listeners
+			document.addEventListener('touchstart', L.DomEvent.preventDefault, {passive: false});
 		}
 	},
 
