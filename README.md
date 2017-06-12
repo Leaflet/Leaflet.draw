@@ -27,8 +27,6 @@ Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGE
 - [Contributing](#contributing)
 - [Thanks](#thanks)
 
-
-<a name="customlanguage" />
 ## Customizing language and text in Leaflet.draw
 
 Leaflet.draw uses the `L.drawLocal` configuration object to set any text used in the plugin. Customizing this will allow support for changing the text or supporting another language.
@@ -37,15 +35,14 @@ See [Leaflet.draw.js](https://github.com/Leaflet/Leaflet.draw/blob/master/src/Le
 
 E.g.
 
-````js
+```js
     // Set the button title text for the polygon button
     L.drawLocal.draw.toolbar.buttons.polygon = 'Draw a sexy polygon!';
     
     // Set the tooltip start text for the rectangle
     L.drawLocal.draw.handlers.rectangle.tooltip.start = 'Not telling...';
-````
+```
 
-<a name="commontasks" />
 ## Common tasks
 
 The following examples outline some common tasks.
@@ -132,7 +129,7 @@ You can change a draw handlers options after initialisation by using the `setDra
 
 E.g. to change the colour of the rectangle:
 
-````js
+```js
 drawControl.setDrawingOptions({
     rectangle: {
     	shapeOptions: {
@@ -140,11 +137,10 @@ drawControl.setDrawingOptions({
         }
     }
 });
-````
+```
 
-<a name="contributing" />
 # Contributing
-
+ 
 ## Testing
 
 To test you can install the npm dependencies:
