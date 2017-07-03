@@ -5,6 +5,13 @@ Leaflet.draw Changelog
 
 An in-progress version being developed on the master branch.
 
+## 0.4.10 (July 3, 2017)
+
+ * Locking Leaflet version to 0.7.x-1.0.x
+ * Polygon line length, square kilometers and configurable precision
+ * fix for _getMeasurementString
+ * Locale number formatting added
+
 ## 0.4.2 (November 7, 2016)
 
 ### Improvements
