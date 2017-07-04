@@ -34,7 +34,13 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	},
 
 	_drawShape: function (latlng) {
-        var bounds = L.LatLngUtil.boxToBounds(this._map.options.maxBounds, this._startLatLng, latlng);
+        var bounds;
+        if (this._map.options.maxBounds) {
+            bounds = L.LatLngUtil.boxToBounds(this._map.options.maxBounds, this._startLatLng, latlng);
+        }
+        else {
+            bounds = L.LatLngUtil.makeBounds(this._startLatLng, latlng);
+        }
         
 		if (!this._shape) {
 			this._shape = new L.Rectangle(bounds, this.options.shapeOptions);
@@ -58,7 +64,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 		if (shape) {
 			latLngs = this._shape._defaultShape ? this._shape._defaultShape() : this._shape.getLatLngs();
 			area = L.GeometryUtil.geodesicArea(latLngs);
-			subtext = showArea ? L.GeometryUtil.readableArea(area, this.options.metric) : ''
+			subtext = showArea ? L.GeometryUtil.readableArea(area, this.options.metric) : '';
         }
 
 		return {

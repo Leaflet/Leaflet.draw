@@ -14,6 +14,7 @@ L.Draw.Feature = L.Handler.extend({
 		this._container = map._container;
 		this._overlayPane = map._panes.overlayPane;
 		this._popupPane = map._panes.popupPane;
+        this._mapDraggable = false;
 
 		// Merge default shapeOptions options with custom shapeOptions
 		if (options && options.shapeOptions) {
@@ -55,6 +56,11 @@ L.Draw.Feature = L.Handler.extend({
 		var map = this._map;
 
 		if (map) {
+            this._mapDraggable = this._map.dragging.enabled();
+            if (this._mapDraggable) {
+                this._map.dragging.disable();
+            }
+            
 			L.DomUtil.disableTextSelection();
 
 			map.getContainer().focus();
@@ -69,6 +75,10 @@ L.Draw.Feature = L.Handler.extend({
 	// Removes event listeners from this handler
 	removeHooks: function () {
 		if (this._map) {
+			if (this._mapDraggable) {
+				this._map.dragging.enable();
+			}
+            
 			L.DomUtil.enableTextSelection();
 
 			this._tooltip.dispose();

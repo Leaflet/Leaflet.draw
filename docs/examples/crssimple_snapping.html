@@ -77,8 +77,6 @@ Demo featuring:
 <li>Undo (ctrl-z) and Redo (ctrl-y) are enabled for all drawing, editing, and deleting.</li>
 <li>L.Draw is used with L.CRS.Simple using a max-bounds, enforced for drawing and editing.</li>
 <li>L.Snap is enabled for all drawing and editing, with a snap-distance of 20px.</li>
-<li>L.Snap.Guidelines is enabled for Rectangle and Circle, drawing and editing.</li>
-<li>L.Snap.Gridlines is enabled, with a spacing of 49px per grid.</li>
 </ul>
 </div>
 <script>
@@ -145,13 +143,6 @@ Demo featuring:
         var layer = event.layer;
         drawnItems.addLayer(layer);
     });
-    
-    var gridlines = new L.Snap.Gridlines(map, guideLayers, {
-        'pixelSpacingX' : 98,
-        'pixelSpacingY' : 98
-    });
-    
-    var guideLines = new L.Snap.Guidelines(map, guideLayers, {});
 </script>
 
 </body>

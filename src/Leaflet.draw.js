@@ -1,7 +1,7 @@
 /**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = '0.4.2';
+L.drawVersion = '0.4.9';
 /**
  * @class L.Draw
  * @aka Draw
@@ -52,7 +52,7 @@ L.Draw = {};
  * @class L.drawLocal
  * @aka L.drawLocal
  *
- * The core toolbar class of the API — it is used to create the toolbar ui
+ * The core toolbar class of the API. it is used to create the toolbar ui
  *
  * @example
  * ```js
@@ -72,6 +72,14 @@ L.Draw = {};
  *  **Please note the edit toolbar is not enabled by default.**
  */
 L.drawLocal = {
+	// format: {
+	// 	numeric: {
+	// 		delimiters: {
+	// 			thousands: ',',
+	// 			decimal: '.'
+	// 		}
+	// 	}
+	// },
 	draw: {
 		toolbar: {
 			// #TODO: this should be reorganized where actions are nested in actions
@@ -145,7 +153,11 @@ L.drawLocal = {
 				cancel: {
 					title: 'Cancel editing, discards all changes.',
 					text: 'Cancel'
-				}
+				},
+                clearAll: {
+                    title: 'Clear all layers.',
+                    text: 'Clear All'
+  				}
 			},
 			buttons: {
 				edit: 'Edit layers.',

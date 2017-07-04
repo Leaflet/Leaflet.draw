@@ -187,7 +187,8 @@ L.Edit.Poly = L.Handler.extend({
     
     _onMarkerDragStart: function (e) {
         var marker = e.target;
-        marker.setOpacity(0);
+        
+        L.DomUtil.addClass(marker._icon, 'leaflet-active-editing-icon');
         this._originalLatLng = this._getMoveMarkerLatLng();
         this._poly.fire('editstart');
     },
@@ -202,13 +203,15 @@ L.Edit.Poly = L.Handler.extend({
     
     _onMarkerDragEnd: function (e) {
         var marker = e.target;
-        marker.setOpacity(1);
+        
+        L.DomUtil.removeClass(marker._icon, 'leaflet-active-editing-icon');
         this._fireEdit();
     },
     
     _onTouchStart: function (e) {
         var marker = e.target;
-        marker.setOpacity(0);
+        
+        L.DomUtil.addClass(marker._icon, 'leaflet-active-editing-icon');
         this._originalLatLng = this._getMoveMarkerLatLng();
         this._poly.fire('editstart');
     },
@@ -223,7 +226,8 @@ L.Edit.Poly = L.Handler.extend({
     
     _onTouchEnd: function (e) {
         var marker = e.target;
-        marker.setOpacity(1);
+        
+        L.DomUtil.removeClass(marker._icon, 'leaflet-active-editing-icon');
         this._fireEdit();
     },
     
@@ -254,6 +258,7 @@ L.Edit.Poly = L.Handler.extend({
             lngMove: lngMove,
             editType: 'editpoly/Move',
         });
+        this._poly.fire('move');
     },
     
     _getMoveMarkerLatLng: function () {
@@ -418,11 +423,11 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		marker
 			.on('dragstart', this._onMarkerDragStart, this)
 			.on('drag', this._onMarkerDrag, this)
-			.on('dragend', this._fireEdit, this)
+			.on('dragend', this._onMarkerDragEnd, this)
 			.on('touchmove', this._onTouchMove, this)
-			.on('touchend', this._fireEdit, this)
+			.on('touchend', this._onMarkerDragEnd, this)
 			.on('MSPointerMove', this._onTouchMove, this)
-			.on('MSPointerUp', this._fireEdit, this);
+			.on('MSPointerUp', this._onMarkerDragEnd, this);
 
 		this._markerGroup.addLayer(marker);
 
@@ -430,11 +435,17 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	},
 
 	_onMarkerDragStart: function (e) {
+        L.DomUtil.addClass(e.target._icon, 'leaflet-active-editing-icon');
         this._dragIndex = e.target._index;
         this._dragStartLocation = e.target.getLatLng().clone();
         this._dragEndLocation = null;
 		this._poly.fire('editstart');
 	},
+
+    _onMarkerDragEnd: function (e) {
+		L.DomUtil.removeClass(e.target._icon, 'leaflet-active-editing-icon');
+        this._fireEdit(e);
+    },
 
 	_spliceLatLngs: function () {
 		var latlngs = this._defaultShape();
@@ -468,12 +479,12 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		this._poly.fire('edit');
         
         // if fired directly by event
-        if (editType == null) {
+        if ((typeof(editType) == 'undefined') || (editType === null)) {
             editType = 'editvertex/Move';
         }
         
         // if fired directly by event
-        if ((editInfo == null) && (this._dragStartLocation != null)) {
+        if (((typeof(editInfo) == 'undefined') || (editInfo === null)) && (this._dragStartLocation !== null)) {
             editInfo = {
                 index: this._dragIndex,
                 originalLatLng: this._dragStartLocation.clone(),
@@ -482,7 +493,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
         }
         
         // not sure how this could happen, so if it does, just bail
-        else if (editInfo == null) {
+        else if ((typeof(editInfo) == 'undefined') || (editInfo === null)) {
             return;
         }
         
@@ -672,6 +683,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			this._markers.splice(i, 0, marker);
 
 			marker.setOpacity(1);
+            L.DomUtil.addClass(marker._icon, 'leaflet-active-editing-icon');
 
 			this._updateIndexes(i, 1);
 			marker2._index++;
@@ -682,6 +694,8 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		};
 
 		onDragEnd = function () {
+            L.DomUtil.removeClass(marker._icon, 'leaflet-active-editing-icon');
+            
 			marker.off('dragstart', onDragStart, this);
 			marker.off('dragend', onDragEnd, this);
 			marker.off('touchmove', onDragStart, this);

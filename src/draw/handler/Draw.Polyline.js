@@ -279,18 +279,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_onMouseUp: function (e) {
-        if (this._mouseMarker.snapped) {
-            delete this._mouseMarker._snapped;
-            var snappedPoint = this._map.project(this._mouseMarker.getLatLng(), this._map.getZoom());
-            this._endPoint.call(snappedPoint, e);
-        }
-        
-        else {
-            var originalEvent = e.originalEvent;
-            var clientX = originalEvent.clientX;
-            var clientY = originalEvent.clientY;
-            this._endPoint.call(this, clientX, clientY, e);
-        }
+        var originalEvent = e.originalEvent;
+        var clientX = originalEvent.clientX;
+        var clientY = originalEvent.clientY;
+        this._endPoint.call(this, clientX, clientY, e);
 	},
     
 	_endPoint: function (clientX, clientY, e) {
@@ -314,12 +306,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var originalEvent = e.originalEvent;
 		var clientX;
 		var clientY;
-		if (originalEvent.touches && originalEvent.touches[0]) {
-			clientX = originalEvent.touches[0].clientX;
-			clientY = originalEvent.touches[0].clientY;
-			this._startPoint.call(this, clientX, clientY);
-			this._endPoint.call(this, clientX, clientY, e);
-		}
+        if (originalEvent.touches && originalEvent.touches[0]) {
+            clientX = originalEvent.touches[0].clientX;
+            clientY = originalEvent.touches[0].clientY;
+            this._startPoint.call(this, clientX, clientY);
+            this._endPoint.call(this, clientX, clientY, e);
+        }
 	},
 
 	_onMouseOut: function () {
@@ -400,10 +392,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			fraction = i / length;
 
 			//calculate new x,y point
-			dashPoint = {
-				x: Math.floor((pointA.x * (1 - fraction)) + (fraction * pointB.x)),
-				y: Math.floor((pointA.y * (1 - fraction)) + (fraction * pointB.y))
-			};
+			dashPoint = new L.Point(
+                Math.floor((pointA.x * (1 - fraction)) + (fraction * pointB.x)),
+				Math.floor((pointA.y * (1 - fraction)) + (fraction * pointB.y))
+			);
 
 			//add guide dash to guide container
 			dash = L.DomUtil.create('div', 'leaflet-draw-guide-dash', this._guidesContainer);

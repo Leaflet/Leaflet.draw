@@ -2,8 +2,8 @@
  * @class L.Draw.Toolbar
  * @aka Toolbar
  *
- * The toolbar class of the API — it is used to create the ui
- * This will be depreciated
+ * The toolbar class of the API. it is used to create the ui
+ * This will be deprecated
  *
  * @example
  *
@@ -175,36 +175,53 @@ L.Toolbar = L.Class.extend({
 			.on('disabled', this._handlerDeactivated, this);
 	},
 
-	_createButton: function (options) {
+    _detectIOS: function () {
+        var iOS = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
+  	    return iOS;
+  	},
 
+	_createButton: function (options) {
 		var link = L.DomUtil.create('a', options.className || '', options.container);
 		link.href = '#';
+        // Screen reader tag
+        var sr = L.DomUtil.create('span', 'sr-only', options.container);
 
+        link.href = '#';
+        link.appendChild(sr);
+        
 		if (options.text) {
 			link.innerHTML = options.text;
+            sr.innerHTML = options.text;
 		}
 
 		if (options.title) {
 			link.title = options.title;
+            sr.innerHTML = options.title;
 		}
+        
+        var buttonEvent = this._detectIOS() ? 'touchstart' : 'click';
 
 		L.DomEvent
 			.on(link, 'click', L.DomEvent.stopPropagation)
 			.on(link, 'mousedown', L.DomEvent.stopPropagation)
 			.on(link, 'dblclick', L.DomEvent.stopPropagation)
+            .on(link, 'touchstart', L.DomEvent.stopPropagation)
 			.on(link, 'click', L.DomEvent.preventDefault)
-			.on(link, 'click', options.callback, options.context);
+			.on(link, buttonEvent, options.callback, options.context);
 
 		return link;
 	},
 
 	_disposeButton: function (button, callback) {
+        var buttonEvent = this._detectIOS() ? 'touchstart' : 'click';
+        
 		L.DomEvent
 			.off(button, 'click', L.DomEvent.stopPropagation)
 			.off(button, 'mousedown', L.DomEvent.stopPropagation)
 			.off(button, 'dblclick', L.DomEvent.stopPropagation)
+            .off(button, 'touchstart', L.DomEvent.stopPropagation)
 			.off(button, 'click', L.DomEvent.preventDefault)
-			.off(button, 'click', callback);
+			.off(button, buttonEvent, callback);
 	},
 
 	_handlerActivated: function (e) {
@@ -212,6 +229,7 @@ L.Toolbar = L.Class.extend({
 		this.disable();
 
 		// Cache new active feature
+        this._activeModeType = e.handler;
 		this._activeMode = this._modes[e.handler];
 
 		L.DomUtil.addClass(this._activeMode.button, 'leaflet-draw-toolbar-button-enabled');

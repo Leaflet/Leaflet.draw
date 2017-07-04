@@ -46,8 +46,11 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
             this._resizeMarkers[0].setLatLng(resizemarkerPoint);
 
             // Move the circle
-            this._shape.setLatLng(latlng);
-            this._moveMarker.setLatLng(latlng);
+            this._shape._latlng = latlng;
+            this._shape.redraw();
+            
+            this._moveMarker._latlng = latlng;
+            this._moveMarker.update();
 
             this._map.fire(L.Draw.Event.EDITMOVE, {
                 layer: this._shape,
@@ -56,9 +59,11 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
                 editType: 'editcircle/Move',
                 editHandler: this
             });
+            this._shape.fire('move', {'latlng': latlng});
         }
         else {
-            this._moveMarker.setLatLng(originalCenter);
+            this._moveMarker._latlng = originalCenter;
+            this._moveMarker.update();
         }
 	},
 
@@ -79,6 +84,7 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
             editType: 'editcircle/Resize',
             editHandler: this
         });
+        this._shape.fire('resize');
 	}
 });
 

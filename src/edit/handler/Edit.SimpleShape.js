@@ -43,6 +43,17 @@ L.Edit.SimpleShape = L.Handler.extend({
 			this._map = this._shape._map;
 			shape.setStyle(shape.options.editing);
 
+            if ((shape instanceof L.FeatureGroup) && (! shape.hasOwnProperty('_bboxOutline'))) {
+                shape._bboxOutline = L.rectangle(shape.getBounds(), {
+                    color: 'black',
+                    dashArray: '10, 10',
+                    fill: true,
+                    fillColor: '#fe57a1',
+                    fillOpacity: 0.1
+                });
+                shape.addLayer(shape._bboxOutline);
+            }
+
 			if (shape._map) {
 				this._map = shape._map;
 				if (!this._markerGroup) {
@@ -63,7 +74,15 @@ L.Edit.SimpleShape = L.Handler.extend({
 	removeHooks: function () {
 		var shape = this._shape;
 
-		shape.setStyle(shape.options.original);
+        if (shape instanceof L.FeatureGroup) {
+            shape.removeLayer(shape._bboxOutline);
+            this._map.removeLayer(shape._bboxOutline);
+            delete shape._bboxOutline;
+            L.FGUtils.applyFGOptions(shape, shape.options.original);
+        }
+        else {
+            shape.setStyle(shape.options.original);
+        }
 
 		if (shape._map) {
 			this._unbindMarker(this._moveMarker);
@@ -148,8 +167,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 
 	_onMarkerDragStart: function (e) {
 		var marker = e.target;
-		marker.setOpacity(0);
-
+		L.DomUtil.addClass(marker._icon, 'leaflet-active-editing-icon');
 		this._shape.fire('editstart');
 	},
 
@@ -178,7 +196,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 
 	_onMarkerDragEnd: function (e) {
 		var marker = e.target;
-		marker.setOpacity(1);
+		L.DomUtil.removeClass(marker._icon, 'leaflet-active-editing-icon');
 
 		this._fireEdit();
 	},
@@ -192,7 +210,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 				marker = e.target,
 				currentCornerIndex = marker._cornerIndex;
 			
-			marker.setOpacity(0);
+			L.DomUtil.addClass(marker._icon, 'leaflet-active-editing-icon');
 
 			// Copyed from Edit.Rectangle.js line 23 _onMarkerDragStart()
 			// Latlng is null otherwise.
@@ -223,7 +241,8 @@ L.Edit.SimpleShape = L.Handler.extend({
 
 	_onTouchEnd: function (e) {
 		var marker = e.target;
-		marker.setOpacity(1);
+        
+        L.DomUtil.removeClass(marker._icon, 'leaflet-active-editing-icon');
 		this.updateMarkers();
 		this._fireEdit();
 	},

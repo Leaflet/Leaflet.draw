@@ -3,8 +3,8 @@ L.Draw = L.Draw || {};
  * @class L.Draw.Tooltip
  * @aka Tooltip
  *
- * The tooltip class — it is used to display the tooltip while drawing
- * This will be depreciated
+ * The tooltip class. it is used to display the tooltip while drawing
+ * This will be deprecated
  *
  * @example
  *
