@@ -1,203 +1,206 @@
 /*L.Map.mergeOptions({
-	editControl: true
-});*/
+ editControl: true
+ });*/
 /**
  * @class L.EditToolbar
  * @aka EditToolbar
  */
 L.EditToolbar = L.Toolbar.extend({
-	statics: {
-		TYPE: 'edit'
-	},
+  statics: {
+    TYPE: 'edit'
+  },
 
-	options: {
-		edit: {
-			selectedPathOptions: {
-				dashArray: '10, 10',
+  options: {
+    edit: {
+      selectedPathOptions: {
+        dashArray: '10, 10',
 
-				fill: true,
-				fillColor: '#fe57a1',
-				fillOpacity: 0.1,
+        fill: true,
+        fillColor: '#fe57a1',
+        fillOpacity: 0.1,
 
-				// Whether to user the existing layers color
-				maintainColor: false
-			}
-		},
-		remove: {},
-		poly: null,
-		featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
-	},
+        // Whether to user the existing layers color
+        maintainColor: false
+      }
+    },
+    remove: {},
+    poly: null,
+    featureGroup: null /* REQUIRED! TODO: perhaps if not set then all layers on the map are selectable? */
+  },
 
-	// @method intialize(): void
-	initialize: function (options) {
-		// Need to set this manually since null is an acceptable value here
-		if (options.edit) {
-			if (typeof options.edit.selectedPathOptions === 'undefined') {
-				options.edit.selectedPathOptions = this.options.edit.selectedPathOptions;
-			}
-			options.edit.selectedPathOptions = L.extend({}, this.options.edit.selectedPathOptions, options.edit.selectedPathOptions);
-		}
+  // @method intialize(): void
+  initialize: function (options) {
+    // Need to set this manually since null is an acceptable value here
+    if (options.edit) {
+      if (typeof options.edit.selectedPathOptions === 'undefined') {
+        options.edit.selectedPathOptions = this.options.edit.selectedPathOptions;
+      }
+      options.edit.selectedPathOptions = L.extend({}, this.options.edit.selectedPathOptions, options.edit.selectedPathOptions);
+    }
 
-		if (options.remove) {
-			options.remove = L.extend({}, this.options.remove, options.remove);
-		}
+    if (options.remove) {
+      options.remove = L.extend({}, this.options.remove, options.remove);
+    }
 
-		if (options.poly) {
-			options.poly = L.extend({}, this.options.poly, options.poly);
-		}
+    if (options.poly) {
+      options.poly = L.extend({}, this.options.poly, options.poly);
+    }
 
-		this._toolbarClass = 'leaflet-draw-edit';
-		L.Toolbar.prototype.initialize.call(this, options);
+    this._toolbarClass = 'leaflet-draw-edit';
+    L.Toolbar.prototype.initialize.call(this, options);
 
-		this._selectedFeatureCount = 0;
-	},
+    this._selectedFeatureCount = 0;
+  },
 
-	// @method getModeHandlers(): void
-	// Get mode handlers information
-	getModeHandlers: function (map) {
-		var featureGroup = this.options.featureGroup;
-		var editHandler;
+  getEditHandler: function (map, featureGroup) {
+    return new L.EditToolbar.Edit(map, {
+      featureGroup: featureGroup,
+      selectedPathOptions: this.options.edit.selectedPathOptions,
+      poly: this.options.poly
+    });
+  },
 
-		if (L.EditToolbar.SnapEdit) {
-			editHandler = new L.EditToolbar.SnapEdit(map, {
-                snapOptions: this.options.snapOptions,
-				featureGroup: featureGroup,
-				selectedPathOptions: this.options.edit.selectedPathOptions,
-				poly: this.options.poly
-			});
-		}
-		else {
-			editHandler = new L.EditToolbar.Edit(map, {
-                featureGroup: featureGroup,
-				selectedPathOptions: this.options.edit.selectedPathOptions,
-				poly: this.options.poly
-			});
-		}
+  // @method getModeHandlers(): void
+  // Get mode handlers information
+  getModeHandlers: function (map) {
+    var featureGroup = this.options.featureGroup;
+    var editHandler = this.getEditHandler(map, featureGroup);
 
-		return [
-			{
-				enabled: this.options.edit,
-				handler: editHandler,
-				title: L.drawLocal.edit.toolbar.buttons.edit
-			},
-			{
-				enabled: this.options.remove,
-				handler: new L.EditToolbar.Delete(map, {
-					featureGroup: featureGroup
-				}),
-				title: L.drawLocal.edit.toolbar.buttons.remove
-			}
-		];
-	},
+    return [
+      {
+        enabled: this.options.edit,
+        handler: editHandler,
+        title: L.drawLocal.edit.toolbar.buttons.edit
+      },
+      {
+        enabled: this.options.remove,
+        handler: new L.EditToolbar.Delete(map, {
+          featureGroup: featureGroup
+        }),
+        title: L.drawLocal.edit.toolbar.buttons.remove
+      }
+    ];
+  },
 
-	// @method getActions(): void
-	// Get actions information
-	getActions: function () {
-		return [
-			{
-				title: L.drawLocal.edit.toolbar.actions.save.title,
-				text: L.drawLocal.edit.toolbar.actions.save.text,
-				callback: this._save,
-				context: this
-			},
-			{
-				title: L.drawLocal.edit.toolbar.actions.cancel.title,
-				text: L.drawLocal.edit.toolbar.actions.cancel.text,
-				callback: this.disable,
-				context: this
-			},
-			{
-				title: L.drawLocal.edit.toolbar.actions.clearAll.title,
-				text: L.drawLocal.edit.toolbar.actions.clearAll.text,
-				callback: this._clearAllLayers,
-				context: this
-			}
-		];
-	},
+  // @method getActions(): void
+  // Get actions information
+  getActions: function () {
+    var actions = [
+      {
+        title: L.drawLocal.edit.toolbar.actions.save.title,
+        text: L.drawLocal.edit.toolbar.actions.save.text,
+        callback: this._save,
+        context: this
+      },
+      {
+        title: L.drawLocal.edit.toolbar.actions.cancel.title,
+        text: L.drawLocal.edit.toolbar.actions.cancel.text,
+        callback: this.disable,
+        context: this
+      },
+      {
+        title: L.drawLocal.edit.toolbar.actions.clearAll.title,
+        text: L.drawLocal.edit.toolbar.actions.clearAll.text,
+        callback: this._clearAllLayers,
+        context: this
+      }
+    ];
 
-	// @method addToolbar(): void
-	// Adds the toolbar to the map
-	addToolbar: function (map) {
-		var container = L.Toolbar.prototype.addToolbar.call(this, map);
+    if (this._activeModeType === 'remove') {
+      actions.push({
+        title: L.drawLocal.edit.toolbar.actions.clearAll.title,
+        text: L.drawLocal.edit.toolbar.actions.clearAll.text,
+        callback: this._clearAllLayers,
+        context: this
+      });
+    }
 
-		this._checkDisabled();
+    return actions;
+  },
 
-		this.options.featureGroup.on('layeradd layerremove', this._checkDisabled, this);
+  // @method addToolbar(): void
+  // Adds the toolbar to the map
+  addToolbar: function (map) {
+    var container = L.Toolbar.prototype.addToolbar.call(this, map);
 
-		return container;
-	},
+    this._checkDisabled();
 
-	// @method removeToolbar(): void
-	// Removes the toolbar from the map
-	removeToolbar: function () {
-		this.options.featureGroup.off('layeradd layerremove', this._checkDisabled, this);
+    this.options.featureGroup.on('layeradd layerremove', this._checkDisabled, this);
 
-		L.Toolbar.prototype.removeToolbar.call(this);
-	},
+    return container;
+  },
 
-	// @method disable(): void
-	// Disables the toolbar
-	disable: function () {
-		if (!this.enabled()) {
-			return;
-		}
+  // @method removeToolbar(): void
+  // Removes the toolbar from the map
+  removeToolbar: function () {
+    this.options.featureGroup.off('layeradd layerremove', this._checkDisabled, this);
 
-		this._activeMode.handler.revertLayers();
+    L.Toolbar.prototype.removeToolbar.call(this);
+  },
 
-		L.Toolbar.prototype.disable.call(this);
-	},
+  // @method disable(): void
+  // Disables the toolbar
+  disable: function () {
+    if (!this.enabled()) {
+      return;
+    }
 
-	_save: function () {
-		this._activeMode.handler.save();
-		if (this._activeMode) {
-			this._activeMode.handler.disable();
-		}
-	},
+    this._activeMode.handler.revertLayers();
 
-	_clearAllLayers:function(){
-		this._activeMode.handler.removeAllLayers();
-		if (this._activeMode) {
-			this._activeMode.handler.disable();
-		}
-	},
+    L.Toolbar.prototype.disable.call(this);
+  },
 
-	_checkDisabled: function () {
-		var featureGroup = this.options.featureGroup,
-			hasLayers = featureGroup.getLayers().length !== 0,
-			button;
+  _save: function () {
+    this._activeMode.handler.save();
+    if (this._activeMode) {
+      this._activeMode.handler.disable();
+    }
+  },
 
-		if (this.options.edit) {
-			button = this._modes[L.EditToolbar.Edit.TYPE].button;
+  _clearAllLayers: function () {
+    this._activeMode.handler.removeAllLayers();
+    if (this._activeMode) {
+      this._activeMode.handler.disable();
+    }
+  },
 
-			if (hasLayers) {
-				L.DomUtil.removeClass(button, 'leaflet-disabled');
-			} else {
-				L.DomUtil.addClass(button, 'leaflet-disabled');
-			}
+  _checkDisabled: function () {
+    var featureGroup = this.options.featureGroup,
+      hasLayers = featureGroup.getLayers().length !== 0,
+      button;
 
-			button.setAttribute(
-				'title',
-				hasLayers ?
-					L.drawLocal.edit.toolbar.buttons.edit
-					: L.drawLocal.edit.toolbar.buttons.editDisabled
-			);
-		}
+    if (this.options.edit) {
+      button = this._modes[L.EditToolbar.Edit.TYPE].button;
 
-		if (this.options.remove) {
-			button = this._modes[L.EditToolbar.Delete.TYPE].button;
+      if (hasLayers) {
+        L.DomUtil.removeClass(button, 'leaflet-disabled');
+      } else {
+        L.DomUtil.addClass(button, 'leaflet-disabled');
+      }
 
-			if (hasLayers) {
-				L.DomUtil.removeClass(button, 'leaflet-disabled');
-			} else {
-				L.DomUtil.addClass(button, 'leaflet-disabled');
-			}
+      button.setAttribute(
+        'title',
+        hasLayers ?
+          L.drawLocal.edit.toolbar.buttons.edit
+          : L.drawLocal.edit.toolbar.buttons.editDisabled
+      );
+    }
 
-			button.setAttribute(
-				'title',
-				hasLayers ?
-					L.drawLocal.edit.toolbar.buttons.remove
-					: L.drawLocal.edit.toolbar.buttons.removeDisabled
-			);
-		}
-	}
+    if (this.options.remove) {
+      button = this._modes[L.EditToolbar.Delete.TYPE].button;
+
+      if (hasLayers) {
+        L.DomUtil.removeClass(button, 'leaflet-disabled');
+      } else {
+        L.DomUtil.addClass(button, 'leaflet-disabled');
+      }
+
+      button.setAttribute(
+        'title',
+        hasLayers ?
+          L.drawLocal.edit.toolbar.buttons.remove
+          : L.drawLocal.edit.toolbar.buttons.removeDisabled
+      );
+    }
+  }
 });

@@ -36,8 +36,14 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 	},
 
 	_drawShape: function (latlng) {
-        var boundRadius = L.LatLngUtil.radiusToBounds(this._map.options.maxBounds, this._startLatLng, latlng);
-    
+        var boundRadius;
+        if (this._map.options.maxBounds) {
+            boundRadius = L.LatLngUtil.radiusToBounds(this._map.options.maxBounds, this._startLatLng, latlng);
+        }
+        else {
+            boundRadius = this._startLatLng.distanceTo(latlng);
+        }
+
 		if (!this._shape) {
 			this._shape = new L.Circle(this._startLatLng, boundRadius, this.options.shapeOptions);
 			this._map.addLayer(this._shape);
@@ -52,25 +58,23 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 	},
 
 	_onMouseMove: function (e) {
-		var latlng = e.latlng,
-			showRadius = this.options.showRadius,
-			useMetric = this.options.metric,
-			radius;
-            
+		// first grab the original mouseMarker latlng here instead of the eventlatlngso that snap works correctly
+			// if we're not using snap, these two will be the same.
+			var snappedLatLng = this._mouseMarker.getLatLng();
+			var latlng = e.latlng;
+this._mouseMarker.setLatLng(latlng);
 		// for snap
-		this._mouseMarker.setLatLng(latlng);
-
-		this._tooltip.updatePosition(latlng);
+		this._mouseMarker.setLatLng(latlng);this._tooltip.updatePosition(snappedLatLng);
 		if (this._isDrawing) {
-			this._drawShape(latlng);
+			this._drawShape(snappedLatLng);
 
 			// Get the new radius (rounded to 1 dp)
-			radius = this._shape.getRadius().toFixed(1);
+			var radius = this._shape.getRadius().toFixed(1);
 
 			var subtext = '';
-			if (showRadius) {
+			if (this.options.showRadius) {
 				subtext = L.drawLocal.draw.handlers.circle.radius + ': ' +
-						  L.GeometryUtil.readableDistance(radius, useMetric, this.options.feet, this.options.nautic);
+						  L.GeometryUtil.readableDistance(radius, this.options.metric, this.options.feet, this.options.nautic);
 			}
 			this._tooltip.updateContent({
 				text: this._endLabelText,

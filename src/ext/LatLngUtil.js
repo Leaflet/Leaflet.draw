@@ -25,7 +25,7 @@ L.LatLngUtil = {
 	cloneLatLng: function (latlng) {
 		return L.latLng(latlng.lat, latlng.lng);
 	},
-    
+
 	pointToBounds: function (bbounds, point) {
         if (bbounds) {
             var bLat = Math.min(bbounds.getNorth(), Math.max(bbounds.getSouth(), point.lat));
@@ -35,14 +35,27 @@ L.LatLngUtil = {
         return point;
     },
 
+    // makes a bounding box that's always (southWest,northEast) because L.LatLngBounds will internally assume this with no checking!!
+    makeBounds: function (point1, point2) {
+        var southLat = Math.min(point1.lat, point2.lat);
+        var northLat = Math.max(point1.lat, point2.lat);
+
+        var westLng = Math.min(point1.lng, point2.lng);
+        var eastLng = Math.max(point1.lng, point2.lng);
+
+        var southWest = new L.LatLng(southLat, westLng);
+        var northEast = new L.LatLng(northLat, eastLng);
+        return new L.LatLngBounds(southWest, northEast);
+    },
+
     boxToBounds: function (bbounds, startCorner, otherCorner) {
         var boundedCorner = L.LatLngUtil.pointToBounds(bbounds, otherCorner);
-        return new L.LatLngBounds(startCorner, boundedCorner);
+        return L.LatLngUtil.makeBounds(startCorner, boundedCorner);
     },
 
     radiusToBounds: function (bbounds, startPoint, otherPoint) {
         var d = startPoint.distanceTo(otherPoint);
-        
+
         if (bbounds) {
             if ((startPoint.lat-d) < bbounds.getSouth()) {
                 d = Math.abs(startPoint.lat - bbounds.getSouth());
@@ -57,7 +70,7 @@ L.LatLngUtil = {
                 d = Math.abs(startPoint.lng - bbounds.getEast());
             }
         }
-        
+
         return d;
     }
 };

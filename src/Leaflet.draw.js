@@ -1,7 +1,7 @@
 /**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = '0.4.2';
+L.drawVersion = '0.4.9';
 /**
  * @class L.Draw
  * @aka Draw
@@ -52,7 +52,7 @@ L.Draw = {};
  * @class L.drawLocal
  * @aka L.drawLocal
  *
- * The core toolbar class of the API — it is used to create the toolbar ui
+ * The core toolbar class of the API - it is used to create the toolbar ui
  *
  * @example
  * ```js
@@ -154,10 +154,10 @@ L.drawLocal = {
 					title: 'Cancel editing, discards all changes.',
 					text: 'Cancel'
 				},
-				clearAll:{
-					title: 'clear all layers.',
-					text: 'Clear All'
-				}
+        clearAll: {
+            title: 'Clear all layers.',
+            text: 'Clear All'
+        }
 			},
 			buttons: {
 				edit: 'Edit layers.',

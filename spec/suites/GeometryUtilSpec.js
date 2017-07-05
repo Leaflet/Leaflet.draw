@@ -32,6 +32,7 @@ describe("L.GeometryUtil", function () {
 			expect(L.GeometryUtil.readableDistance(1609.3488537961, false, false, true)).to.eql('0.87 nm');
 			expect(L.GeometryUtil.readableDistance(1610.3488537961, false, false, true)).to.eql('0.87 nm');
 			expect(L.GeometryUtil.readableDistance(1610.3488537961, 'nauticalMile')).to.eql('0.87 nm');
+			expect(L.GeometryUtil.readableDistance(1610.3488537961, 'yards')).to.eql('1.00 miles');
 		});
 	});
 

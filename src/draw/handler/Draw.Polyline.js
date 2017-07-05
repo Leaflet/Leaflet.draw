@@ -148,9 +148,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	// @method deleteLastVertex(): void
-    // Remove the last vertex from the polyline, removes polyline from map if only one point exists.
-	// @method deleteLastVertex(): void
-	// Remove the last vertex from the polyline, removes polyline from map if only one point exists.
+  // Remove the last vertex from the polyline, removes polyline from map if only one point exists.
 	deleteLastVertex: function () {
 		if (this._markers.length <= 1) {
 			return;
@@ -178,7 +176,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	addVertex: function (latlng) {
 		var markersLength = this._markers.length;
 		// markersLength must be greater than or equal to 2 before intersections can occur
-		if (markersLength >= 2 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
+        if (markersLength >= 2 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
 			this._showErrorTooltip();
 			return;
 		}
@@ -290,23 +288,14 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._startPoint.call(this, clientX, clientY);
 	},
 
-	_startPoint: function (clientX, clientY) {
-		this._mouseDownOrigin = L.point(clientX, clientY);
+	_startPoint: function (clientX, clientY) {this._mouseDownOrigin = L.point(clientX, clientY);
 	},
 
 	_onMouseUp: function (e) {
-        if (this._mouseMarker.snapped) {
-            delete this._mouseMarker._snapped;
-            var snappedPoint = this._map.project(this._mouseMarker.getLatLng(), this._map.getZoom());
-            this._endPoint.call(snappedPoint, e);
-        }
-
-        else {
-            var originalEvent = e.originalEvent;
-            var clientX = originalEvent.clientX;
-            var clientY = originalEvent.clientY;
-            this._endPoint.call(this, clientX, clientY, e);
-        }
+        var originalEvent = e.originalEvent;
+        var clientX = originalEvent.clientX;
+        var clientY = originalEvent.clientY;
+        this._endPoint.call(this, clientX, clientY, e);
 	},
 
 	_endPoint: function (clientX, clientY, e) {
@@ -335,9 +324,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			clientX = originalEvent.touches[0].clientX;
 			clientY = originalEvent.touches[0].clientY;
 			this._startPoint.call(this, clientX, clientY);
-			this._endPoint.call(this, clientX, clientY, e);
-		}
-		this._clickHandled = null;
+			this._endPoint.call(this, clientX, clientY,e);
+		}this._clickHandled = null;
 	},
 
 	_onMouseOut: function () {
@@ -446,10 +434,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			fraction = i / length;
 
 			//calculate new x,y point
-			dashPoint = {
-				x: Math.floor((pointA.x * (1 - fraction)) + (fraction * pointB.x)),
-				y: Math.floor((pointA.y * (1 - fraction)) + (fraction * pointB.y))
-			};
+			dashPoint = new L.Point(
+                Math.floor((pointA.x * (1 - fraction)) + (fraction * pointB.x)),
+				Math.floor((pointA.y * (1 - fraction)) + (fraction * pointB.y))
+			);
 
 			//add guide dash to guide container
 			dash = L.DomUtil.create('div', 'leaflet-draw-guide-dash', this._guidesContainer);

@@ -40,14 +40,14 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 			formatted = thousands ? splitValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1' + thousands) : splitValue[0];
 			decimal = decimal || '.';
             if (splitValue.length > 1) {
-                formatted = formatted + decimal + splitValue[1];
+               formatted = formatted + decimal + splitValue[1];
             }
         }
 
         return formatted;
     },
 
-	// @method readableArea(area, isMetric): string
+	// @method readableArea(): string
 	// Returns a readable area string in yards or metric
 	readableArea: function (area, isMetric) {
 		var areaStr;
@@ -116,6 +116,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 			distanceStr = L.GeometryUtil.formattedNumber(distance / 1000, 2) + ' nm';
 			break;
 		case 'yards':
+        /* falls through */
 		default:
 			distance *= 1.09361;
 
