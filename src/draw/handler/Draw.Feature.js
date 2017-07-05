@@ -1,4 +1,3 @@
-
 L.Draw = L.Draw || {};
 
 /**
@@ -14,7 +13,7 @@ L.Draw.Feature = L.Handler.extend({
 		this._container = map._container;
 		this._overlayPane = map._panes.overlayPane;
 		this._popupPane = map._panes.popupPane;
-        this._mapDraggable = false;
+    this._mapDraggable = false;
 
 		// Merge default shapeOptions options with custom shapeOptions
 		if (options && options.shapeOptions) {
@@ -60,7 +59,7 @@ L.Draw.Feature = L.Handler.extend({
             if (this._mapDraggable) {
                 this._map.dragging.disable();
             }
-            
+
 			L.DomUtil.disableTextSelection();
 
 			map.getContainer().focus();
@@ -78,7 +77,7 @@ L.Draw.Feature = L.Handler.extend({
 			if (this._mapDraggable) {
 				this._map.dragging.enable();
 			}
-            
+
 			L.DomUtil.enableTextSelection();
 
 			this._tooltip.dispose();
@@ -101,7 +100,7 @@ L.Draw.Feature = L.Handler.extend({
 	// Cancel drawing when the escape key is pressed
 	_cancelDrawing: function (e) {
 		if (e.keyCode === 27) {
-            this._map.fire(L.Draw.Event.CANCELED, { layerType: this.type });
+      this._map.fire(L.Draw.Event.CANCELED, { layerType: this.type });
 			this.disable();
 		}
 	}

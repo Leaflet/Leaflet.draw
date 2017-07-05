@@ -106,7 +106,7 @@ L.EditToolbar = L.Toolbar.extend({
       }
     ];
 
-    if (this._activeModeType === 'remove') {
+    if (handler.removeAllLayers) {
       actions.push({
         title: L.drawLocal.edit.toolbar.actions.clearAll.title,
         text: L.drawLocal.edit.toolbar.actions.clearAll.text,
