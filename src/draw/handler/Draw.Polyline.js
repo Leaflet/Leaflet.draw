@@ -45,7 +45,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// @method initialize(): void
 	initialize: function (map, options) {
 		// if touch, switch to touch icon
-		if (! L.Browser.pointer) {
+		if (!L.Browser.pointer) {
 			this.options.icon = this.options.touchIcon;
 		}
 
@@ -148,7 +148,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	// @method deleteLastVertex(): void
-  // Remove the last vertex from the polyline, removes polyline from map if only one point exists.
+	// Remove the last vertex from the polyline, removes polyline from map if only one point exists.
 	deleteLastVertex: function () {
 		if (this._markers.length <= 1) {
 			return;
@@ -168,7 +168,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		}
 
 		this._vertexChanged(latlng, false);
-        return latlng;
+		return latlng;
 	},
 
 	// @method addVertex(): void
@@ -176,7 +176,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	addVertex: function (latlng) {
 		var markersLength = this._markers.length;
 		// markersLength must be greater than or equal to 2 before intersections can occur
-        if (markersLength >= 2 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
+		if (markersLength >= 2 && !this.options.allowIntersection && this._poly.newLatLngIntersects(latlng)) {
 			this._showErrorTooltip();
 			return;
 		}
@@ -288,14 +288,15 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._startPoint.call(this, clientX, clientY);
 	},
 
-	_startPoint: function (clientX, clientY) {this._mouseDownOrigin = L.point(clientX, clientY);
+	_startPoint: function (clientX, clientY) {
+		this._mouseDownOrigin = L.point(clientX, clientY);
 	},
 
 	_onMouseUp: function (e) {
-        var originalEvent = e.originalEvent;
-        var clientX = originalEvent.clientX;
-        var clientY = originalEvent.clientY;
-        this._endPoint.call(this, clientX, clientY, e);
+		var originalEvent = e.originalEvent;
+		var clientX = originalEvent.clientX;
+		var clientY = originalEvent.clientY;
+		this._endPoint.call(this, clientX, clientY, e);
 	},
 
 	_endPoint: function (clientX, clientY, e) {
@@ -304,10 +305,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				.distanceTo(this._mouseDownOrigin);
 
 			if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
-                var bbounds = this._map.options.maxBounds;
-                if (!bbounds || (bbounds && bbounds.contains(e.latlng))) {
-                    this.addVertex(e.latlng);
-                }
+				var bbounds = this._map.options.maxBounds;
+				if (!bbounds || (bbounds && bbounds.contains(e.latlng))) {
+					this.addVertex(e.latlng);
+				}
 			}
 			this._enableNewMarkers(); // after a short pause, enable new markers
 		}
@@ -324,8 +325,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			clientX = originalEvent.touches[0].clientX;
 			clientY = originalEvent.touches[0].clientY;
 			this._startPoint.call(this, clientX, clientY);
-			this._endPoint.call(this, clientX, clientY,e);
-		}this._clickHandled = null;
+			this._endPoint.call(this, clientX, clientY, e);
+		}
+		this._clickHandled = null;
 	},
 
 	_onMouseOut: function () {
@@ -341,25 +343,25 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_calculateFinishDistance: function (potentialLatLng) {
 		var lastPtDistance
 		if (this._markers.length > 0) {
-				var finishMarker;
-				if (this.type === L.Draw.Polyline.TYPE) {
-					finishMarker = this._markers[this._markers.length - 1];
-				} else if (this.type === L.Draw.Polygon.TYPE) {
-					finishMarker = this._markers[0];
-				} else {
-					return Infinity;
-				}
-				var lastMarkerPoint = this._map.latLngToContainerPoint(finishMarker.getLatLng()),
+			var finishMarker;
+			if (this.type === L.Draw.Polyline.TYPE) {
+				finishMarker = this._markers[this._markers.length - 1];
+			} else if (this.type === L.Draw.Polygon.TYPE) {
+				finishMarker = this._markers[0];
+			} else {
+				return Infinity;
+			}
+			var lastMarkerPoint = this._map.latLngToContainerPoint(finishMarker.getLatLng()),
 				potentialMarker = new L.Marker(potentialLatLng, {
 					icon: this.options.icon,
 					zIndexOffset: this.options.zIndexOffset * 2
 				});
-				var potentialMarkerPint = this._map.latLngToContainerPoint(potentialMarker.getLatLng());
-				lastPtDistance = lastMarkerPoint.distanceTo(potentialMarkerPint);
-			} else {
-				lastPtDistance = Infinity;
-			}
-			return lastPtDistance;
+			var potentialMarkerPint = this._map.latLngToContainerPoint(potentialMarker.getLatLng());
+			lastPtDistance = lastMarkerPoint.distanceTo(potentialMarkerPint);
+		} else {
+			lastPtDistance = Infinity;
+		}
+		return lastPtDistance;
 	},
 
 	_updateFinishHandler: function () {
@@ -435,7 +437,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 			//calculate new x,y point
 			dashPoint = new L.Point(
-                Math.floor((pointA.x * (1 - fraction)) + (fraction * pointB.x)),
+				Math.floor((pointA.x * (1 - fraction)) + (fraction * pointB.x)),
 				Math.floor((pointA.y * (1 - fraction)) + (fraction * pointB.y))
 			);
 
@@ -513,7 +515,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			distance;
 
 		// calculate the distance from the last fixed point to the mouse position
-		distance = previousLatLng && currentLatLng && currentLatLng.distanceTo ? this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng) : this._measurementRunningTotal || 0 ;
+		distance = previousLatLng && currentLatLng && currentLatLng.distanceTo ?
+			this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng) :
+			this._measurementRunningTotal || 0;
 
 		return L.GeometryUtil.readableDistance(distance, this.options.metric, this.options.feet, this.options.nautic, this.options.precision);
 	},
@@ -565,7 +569,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 	// see _disableNewMarkers
 	_enableNewMarkers: function () {
-		setTimeout(function() {
+		setTimeout(function () {
 			this._disableMarkers = false;
 		}.bind(this), 50);
 	},

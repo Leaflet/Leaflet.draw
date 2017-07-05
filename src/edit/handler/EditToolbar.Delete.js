@@ -75,11 +75,11 @@ L.EditToolbar.Delete = L.Handler.extend({
 			this._tooltip.updateContent({ text: L.drawLocal.edit.handlers.remove.tooltip.text });
 
 			this._map.on('mousemove', this._onMouseMove, this);
-            L.DomEvent.on(this._map._container, 'keyup', this.keyCancel, this);
+			L.DomEvent.on(this._map._container, 'keyup', this.keyCancel, this);
 		}
 	},
 
-    keyCancel: function (e) {
+	keyCancel: function (e) {
 		if (e.keyCode === 27) {
 			this.disable();
 		}
@@ -96,7 +96,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 			this._tooltip = null;
 
 			this._map.off('mousemove', this._onMouseMove, this);
-            L.DomEvent.off(this._map._container, 'keyup', this.keyCancel, this);
+			L.DomEvent.off(this._map._container, 'keyup', this.keyCancel, this);
 		}
 	},
 
@@ -118,23 +118,23 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 	// @method removeAllLayers(): void
 	// Remove all delateable layers
-	removeAllLayers: function(){
+	removeAllLayers: function () {
 		// Iterate of the delateable layers and add remove them
 		this._deletableLayers.eachLayer(function (layer) {
-			this._removeLayer({layer:layer});
+			this._removeLayer({ layer: layer });
 		}, this);
 		this.save();
 	},
 
-    // @method removeAllLayers(): void
-    // Remove all delateable layers
-    removeAllLayers: function(){
-        // Iterate of the delateable layers and add remove them
-        this._deletableLayers.eachLayer(function (layer) {
-            this._removeLayer({ layer:layer });
-        }, this);
-        this.save();
-    },
+	// @method removeAllLayers(): void
+	// Remove all delateable layers
+	removeAllLayers: function () {
+		// Iterate of the delateable layers and add remove them
+		this._deletableLayers.eachLayer(function (layer) {
+			this._removeLayer({ layer: layer });
+		}, this);
+		this.save();
+	},
 
 	_enableLayerDelete: function (e) {
 		var layer = e.layer || e.target || e;
@@ -152,13 +152,13 @@ L.EditToolbar.Delete = L.Handler.extend({
 	},
 
 	_removeLayer: function (e) {
-        var layer;
-        if (e.target instanceof L.FeatureGroup) {
-            layer = e.target;
-        }
-        else {
-            layer = e.layer || e.target || e;
-        }
+		var layer;
+		if (e.target instanceof L.FeatureGroup) {
+			layer = e.target;
+		}
+		else {
+			layer = e.layer || e.target || e;
+		}
 
 		this._deletableLayers.removeLayer(layer);
 

@@ -26,7 +26,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 	// @method intialize(): void
 	initialize: function (shape, options) {
 		// if touch, switch to touch icon
-		if (! L.Browser.pointer) {
+		if (!L.Browser.pointer) {
 			this.options.moveIcon = this.options.touchMoveIcon;
 			this.options.resizeIcon = this.options.touchResizeIcon;
 		}
@@ -43,16 +43,16 @@ L.Edit.SimpleShape = L.Handler.extend({
 			this._map = this._shape._map;
 			shape.setStyle(shape.options.editing);
 
-            if ((shape instanceof L.FeatureGroup) && (! shape.hasOwnProperty('_bboxOutline'))) {
-                shape._bboxOutline = L.rectangle(shape.getBounds(), {
-                    color: 'black',
-                    dashArray: '10, 10',
-                    fill: true,
-                    fillColor: '#fe57a1',
-                    fillOpacity: 0.1
-                });
-                shape.addLayer(shape._bboxOutline);
-            }
+			if ((shape instanceof L.FeatureGroup) && (!shape.hasOwnProperty('_bboxOutline'))) {
+				shape._bboxOutline = L.rectangle(shape.getBounds(), {
+					color: 'black',
+					dashArray: '10, 10',
+					fill: true,
+					fillColor: '#fe57a1',
+					fillOpacity: 0.1
+				});
+				shape.addLayer(shape._bboxOutline);
+			}
 
 			if (shape._map) {
 				this._map = shape._map;
@@ -62,10 +62,10 @@ L.Edit.SimpleShape = L.Handler.extend({
 				this._map.addLayer(this._markerGroup);
 			}
 
-            this._map.fire(L.Draw.Event.EDITHOOK, {
-                'editHandler' : this,
-                'layer': shape
-            });
+			this._map.fire(L.Draw.Event.EDITHOOK, {
+				'editHandler': this,
+				'layer': shape
+			});
 		}
 	},
 
@@ -74,15 +74,15 @@ L.Edit.SimpleShape = L.Handler.extend({
 	removeHooks: function () {
 		var shape = this._shape;
 
-        if (shape instanceof L.FeatureGroup) {
-            shape.removeLayer(shape._bboxOutline);
-            this._map.removeLayer(shape._bboxOutline);
-            delete shape._bboxOutline;
-            L.FGUtils.applyFGOptions(shape, shape.options.original);
-        }
-        else {
-            shape.setStyle(shape.options.original);
-        }
+		if (shape instanceof L.FeatureGroup) {
+			shape.removeLayer(shape._bboxOutline);
+			this._map.removeLayer(shape._bboxOutline);
+			delete shape._bboxOutline;
+			L.FGUtils.applyFGOptions(shape, shape.options.original);
+		}
+		else {
+			shape.setStyle(shape.options.original);
+		}
 
 		if (shape._map) {
 			this._unbindMarker(this._moveMarker);
@@ -175,9 +175,9 @@ L.Edit.SimpleShape = L.Handler.extend({
 		this._shape.edited = true;
 		this._shape.fire('edit');
 
-        if (this._shape._map) {
-            this._shape._map.fire(L.Draw.Event.EDITDONE);
-        }
+		if (this._shape._map) {
+			this._shape._map.fire(L.Draw.Event.EDITDONE);
+		}
 	},
 
 	_onMarkerDrag: function (e) {
@@ -242,7 +242,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 	_onTouchEnd: function (e) {
 		var marker = e.target;
 
-        L.DomUtil.removeClass(marker._icon, 'leaflet-active-editing-icon');
+		L.DomUtil.removeClass(marker._icon, 'leaflet-active-editing-icon');
 		this.updateMarkers();
 		this._fireEdit();
 	},

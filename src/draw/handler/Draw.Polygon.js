@@ -92,7 +92,8 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		}
 
 		if (area) {
-			measurementString += '<br>' + L.GeometryUtil.readableArea(area, this.options.metric, this.options.precision);
+			measurementString += '<br>' +
+								 L.GeometryUtil.readableArea(area, this.options.metric, this.options.precision);
 		}
 
 		return measurementString;
