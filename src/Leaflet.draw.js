@@ -1,3 +1,7 @@
+
+/* squash jshint complaints about L never being declared */
+/* globals L:true */
+
 /**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
@@ -52,7 +56,7 @@ L.Draw = {};
  * @class L.drawLocal
  * @aka L.drawLocal
  *
- * The core toolbar class of the API. it is used to create the toolbar ui
+ * The core toolbar class of the API - it is used to create the toolbar ui
  *
  * @example
  * ```js
@@ -154,10 +158,10 @@ L.drawLocal = {
 					title: 'Cancel editing, discards all changes.',
 					text: 'Cancel'
 				},
-                clearAll: {
-                    title: 'Clear all layers.',
-                    text: 'Clear All'
-  				}
+				clearAll: {
+					title: 'Clear all layers.',
+					text: 'Clear All'
+				}
 			},
 			buttons: {
 				edit: 'Edit layers.',

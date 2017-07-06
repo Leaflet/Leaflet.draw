@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>L.CRS.Simple example - Leaflet.Draw</title>
-    
+
 
     <link rel="stylesheet" href="libs/leaflet.css" />
     <link rel="stylesheet" href="../../src/leaflet.draw.css" />
@@ -36,7 +36,7 @@
     <script src="../../src/Control.Draw.js"></script>
     <script src="../../src/Tooltip.js"></script>
     <script src="../../src/Toolbar.js"></script>
-    
+
     <script src="../../src/ext/UndoManager.js"></script>
     <script src="../../src/ext/StateHandler.js"></script>
 
@@ -52,14 +52,14 @@
 			width: 600px;
 			height: 400px;
 		}
-        
+
         #centerer {
             width: 600px;
             margin: auto;
             font-family: Georgia, serif;
         }
 	</style>
-	
+
 </head>
 <body>
 <div id="centerer">
@@ -83,7 +83,7 @@ Demo featuring:
 
     // note: will be based on image size. each lat/lng is equal to 32px; here we have 3196 = 196*16 = 98*32
     var maxBounds = new L.LatLngBounds(new L.LatLng(-98, 0), new L.LatLng(0, 98));
-                             
+
     // needed for L.Draw to work with L.CRS.Simple
     L.LatLng.prototype.distanceTo = function (other) {
         var otherBounded = other;
@@ -91,7 +91,7 @@ Demo featuring:
         var dy = other.lat - this.lat;
         return Math.sqrt(dx*dx + dy*dy);
     };
-    
+
 	var map = L.map('map', {
 		crs: L.CRS.Simple,
         maxZoom: 5,
@@ -99,7 +99,7 @@ Demo featuring:
         tileSize: 196,
         maxBounds: maxBounds
 	}).setView([1, 1], 4);
-    
+
     var tw = L.tileLayer('tiles/{id}/{z}/{x}/{y}.png', {
         attribution: 'ME',
         maxZoom: 5,
@@ -108,7 +108,7 @@ Demo featuring:
         id: 'bookhorse',
         accessToken: 'NONE'
     }).addTo(map);
-     
+
     var guideLayers = [];
     var drawnItems = L.featureGroup().addTo(map);
     var drawControl = new L.Control.Draw({
@@ -128,7 +128,7 @@ Demo featuring:
             },
         }
     });
-    
+
     drawControl.setDrawingOptions({
         polyline: { guideLayers: guideLayers, snapDistance: 10, snapVertices: true },
         polygon: { guideLayers: guideLayers, snapDistance: 10, snapVertices: true },
@@ -136,12 +136,15 @@ Demo featuring:
         rectangle: { guideLayers: guideLayers, snapDistance: 10, snapVertices: true },
         circle: { guideLayers: guideLayers, snapDistance: 10, snapVertices: true }
     });
-        
+
     map.addControl(drawControl);
+
+    map.on(L.Draw.Event.CREATED, function (e) {
+        drawnItems.addLayer(e.layer);
+    });
     
-    map.on('draw:created', function(event) {
-        var layer = event.layer;
-        drawnItems.addLayer(layer);
+    map.on(L.Draw.Event.CREATED, function (e) {
+        guideLayers.push(e.layer);
     });
 </script>
 

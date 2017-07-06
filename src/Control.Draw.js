@@ -9,7 +9,7 @@ L.Control.Draw = L.Control.extend({
 		position: 'topleft',
 		draw: {},
 		edit: false,
-        undoEnabled: true,
+		undoEnabled: true,
 		undoStackSize: 20, // set to -1 for infinite
 		undoKey: 'ctrl+z',
 		redoKey: 'ctrl+y'
@@ -46,21 +46,9 @@ L.Control.Draw = L.Control.extend({
 			// Listen for when toolbar is enabled
 			this._toolbars[L.EditToolbar.TYPE].on('enable', this._toolbarEnabled, this);
 		}
-        
-        if (L.Draw.UndoManager && this.options.undoEnabled) {
-            if (this.hasOwnProperty('undoManager')) {
-                this.undoManager.enable();
-            }
-            else {
-                var drawnItems = options.edit.featureGroup;
-                this.undoManager = new L.Draw.UndoManager(drawnItems._map, drawnItems, {
-                    maxStackSize: this.options.undoStackSize,
-                    undoKey: this.options.undoKey,
-                    redoKey: this.options.redoKey
-                });
-            }
-        }
-        
+
+		this._instantiateUndoManager();
+
 		L.toolbar = this; //set global var for editing the toolbar
 	},
 
@@ -90,8 +78,30 @@ L.Control.Draw = L.Control.extend({
 			}
 		}
 
+		this._instantiateUndoManager();
+
 		return container;
 	},
+    
+    _instantiateUndoManager: function () {
+		if (L.Draw.UndoManager && this.options.undoEnabled) {
+			if (this.hasOwnProperty('undoManager')) {
+				this.undoManager.enable();
+                return;
+			}
+            
+            if (!(this.options.edit) && (this.options.edit.featureGroup)) {
+                throw new Error ('Must define options.edit.featureGroup to use the UndoManager!');
+            }
+            
+            var drawnItems = this.options.edit.featureGroup;
+            this.undoManager = new L.Draw.UndoManager(drawnItems._map, drawnItems, {
+                maxStackSize: this.options.undoStackSize,
+                undoKey: this.options.undoKey,
+                redoKey: this.options.redoKey
+            });
+        }
+    },
 
 	// @method onRemove(): void
 	// Removes the toolbars from the map toolbar container
@@ -101,10 +111,10 @@ L.Control.Draw = L.Control.extend({
 				this._toolbars[toolbarId].removeToolbar();
 			}
 		}
-        
-        if (this.hasOwnProperty('undoManager')) {
-            this.undoManager.disable();
-        }
+
+		if (this.hasOwnProperty('undoManager')) {
+			this.undoManager.disable();
+		}
 	},
 
 	// @method setDrawingOptions(options): void
@@ -115,14 +125,14 @@ L.Control.Draw = L.Control.extend({
 				this._toolbars[toolbarId].setOptions(options);
 			}
 		}
-        
-        for (var option in options) {
-            if (options.hasOwnProperty(option)) {
-                if (options[option].hasOwnProperty('guideLayers') && L.Draw.UndoManager && this.options.undoEnabled) {
-                    this.undoManager.setGuideLayers(options[option].guideLayers);
-                }
-            }
-        }
+
+		for (var option in options) {
+			if (options.hasOwnProperty(option)) {
+				if (options[option].hasOwnProperty('guideLayers') && L.Draw.UndoManager && this.options.undoEnabled) {
+					this.undoManager.setGuideLayers(options[option].guideLayers);
+				}
+			}
+		}
 	},
 
 	_toolbarEnabled: function (e) {

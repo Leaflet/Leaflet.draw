@@ -311,7 +311,7 @@ L.Draw.Event.DELETESTOP = 'draw:deletestop';
  *                     module. could be different if the generated action was
  *                     installed with L.UndoManager.addExtension.
  *                tag: optional string; allows undo items to be selectively removed
- *                     by tag name using L.StateHandler
+ *                     by tag name using L.StateHandler 
  *         
  * Triggered when the user has finished removing shapes (remove mode) and saves.
  */

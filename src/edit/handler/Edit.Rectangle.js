@@ -32,11 +32,11 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 			marker = e.target,
 			currentCornerIndex = marker._cornerIndex;
 
-        this._toggleCornerMarkers(0);
-        if (marker !== this._moveMarker) {
-            this._oppositeCorner = corners[(currentCornerIndex + 2) % 4];
-            this._resizeMarkers[currentCornerIndex].setOpacity(1);
-        }
+		this._toggleCornerMarkers(0);
+		if (marker !== this._moveMarker) {
+			this._oppositeCorner = corners[(currentCornerIndex + 2) % 4];
+			this._resizeMarkers[currentCornerIndex].setOpacity(1);
+		}
 	},
 
 	_onMarkerDragEnd: function (e) {
@@ -58,88 +58,87 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 	},
 
 	_move: function (newCenter) {
-        var newLatLngs = [];
-        
+		var newLatLngs = [];
+
 		var latlngs = this._shape._defaultShape ? this._shape._defaultShape() : this._shape.getLatLngs();
 		var bounds = this._shape.getBounds();
 		var originalCenter = bounds.getCenter();
-            
-        // Offset the latlngs to the new center
+
+		// Offset the latlngs to the new center
 		// but enforce move to be inside our maxBounds
-        var bbounds = this._map.options.maxBounds;
-            
+		var bbounds = this._map.options.maxBounds;
+
 		// enforce move to be inside our maxBounds
-        var okToMove = true;
-        var originals = [];
-        for (var i = 0, l = latlngs.length; i < l; i++) {
-            originals.push(latlngs[i].clone());
-            var offsetLat = latlngs[i].lat - originalCenter.lat;
-            var offsetLng = latlngs[i].lng - originalCenter.lng;
-            var newLat = newCenter.lat + offsetLat;
-            var newLng = newCenter.lng + offsetLng;
-            
-            var newLatLng = new L.LatLng(newLat, newLng);
-            if (bbounds && (! bbounds.contains(newLatLng))) {
-                okToMove = false;
-            }
-            
-            newLatLngs.push([newLat, newLng]);
-        }
-        
-        // only move if all corners are inside the maxbound
-        if (okToMove) {
-            // Offset the latlngs to the new center
-            this._shape.setLatLngs(newLatLngs);
+		var okToMove = true;
+		var originals = [];
+		for (var i = 0, l = latlngs.length; i < l; i++) {
+			originals.push(latlngs[i].clone());
+			var offsetLat = latlngs[i].lat - originalCenter.lat;
+			var offsetLng = latlngs[i].lng - originalCenter.lng;
+			var newLat = newCenter.lat + offsetLat;
+			var newLng = newCenter.lng + offsetLng;
 
-            // Reposition the resize markers
-            this._repositionCornerMarkers();
-            this._moveMarker._latlng = newCenter;
-            this._moveMarker.update();
+			var newLatLng = new L.LatLng(newLat, newLng);
+			if (bbounds && (!bbounds.contains(newLatLng))) {
+				okToMove = false;
+			}
 
-            this._map.fire(L.Draw.Event.EDITMOVE, {
-                layer: this._shape,
-                newCenter: newCenter,
-                originalCenter: originalCenter,
-                originalLatLngs: originals,
-                newLatLngs: newLatLngs,
-                editType: 'editrect/Move',
-                editHandler: this
-            });
-            this._shape.fire('move', {'latlng': newCenter});
-        }
-        else {
-            this._moveMarker._latlng = originalCenter;
-            this._moveMarker.update();
-        }
+			newLatLngs.push([newLat, newLng]);
+		}
+
+		// only move if all corners are inside the maxbound
+		if (okToMove) {
+			// Offset the latlngs to the new center
+			this._shape.setLatLngs(newLatLngs);
+
+			// Reposition the resize markers
+			this._repositionCornerMarkers();
+			this._moveMarker._latlng = newCenter;
+			this._moveMarker.update();
+
+			this._map.fire(L.Draw.Event.EDITMOVE, {
+				layer: this._shape,
+				newCenter: newCenter,
+				originalCenter: originalCenter,
+				originalLatLngs: originals,
+				newLatLngs: newLatLngs,
+				editType: 'editrect/Move',
+				editHandler: this
+			});
+			this._shape.fire('move', { 'latlng': newCenter });
+		}
+		else {
+			this._moveMarker._latlng = originalCenter;
+			this._moveMarker.update();
+		}
 	},
 
 	_resize: function (latlng) {
 		var bounds;
-        var bbounds = this._map.options.maxBounds;
-        
+		var bbounds = this._map.options.maxBounds;
+
 		var originalBounds = this._shape.getBounds();
-        
 		// Update the shape based on the current position of this corner and the opposite point
-        if (bbounds) {
-            this._shape.setBounds(L.LatLngUtil.boxToBounds(bbounds, this._oppositeCorner, latlng));
-        }
-        else {
-            this._shape.setBounds(L.LatLngUtil.makeBounds(latlng, this._oppositeCorner));
-        }
-        
+		if (bbounds) {
+			this._shape.setBounds(L.LatLngUtil.boxToBounds(bbounds, this._oppositeCorner, latlng));
+		}
+		else {
+			this._shape.setBounds(L.LatLngUtil.makeBounds(latlng, this._oppositeCorner));
+		}
+
 		// Reposition the move marker
 		bounds = this._shape.getBounds();
 		this._moveMarker._latlng = bounds.getCenter().clone();
-        this._moveMarker.update();
+		this._moveMarker.update();
 
 		this._map.fire(L.Draw.Event.EDITRESIZE, {
-            layer: this._shape,
-            originalBounds: originalBounds,
-            newBounds: bounds,
-            editType: 'editrect/Resize',
-            editHandler: this
-        });
-        this._shape.fire('resize');
+			layer: this._shape,
+			originalBounds: originalBounds,
+			newBounds: bounds,
+			editType: 'editrect/Resize',
+			editHandler: this
+		});
+		this._shape.fire('resize');
 	},
 
 	_getCorners: function () {
@@ -162,8 +161,8 @@ L.Edit.Rectangle = L.Edit.SimpleShape.extend({
 		var corners = this._getCorners();
 
 		for (var i = 0, l = this._resizeMarkers.length; i < l; i++) {
-            this._resizeMarkers[i]._latlng = corners[i].clone();
-            this._resizeMarkers[i].update();
+			this._resizeMarkers[i]._latlng = corners[i].clone();
+			this._resizeMarkers[i].update();
 		}
 	}
 });

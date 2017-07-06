@@ -314,6 +314,10 @@ L.Handler.MarkerSnap = L.Handler.extend({
     _snapMarker: function(e) {
         var closest = L.Snap.snapMarker(e, this._guides, this._map, this.options, this._buffer);
         
+        if (! closest) {
+            return;
+        }
+        
         if (e.originalEvent && e.originalEvent.clientX && closest.layer && closest.latlng) {
             var snapTouchPoint = this._map.project(closest.latlng, this._map.getZoom());
             e.originalEvent.clientX = snapTouchPoint.x;
@@ -638,6 +642,8 @@ L.Draw.Feature.SnapMixin = {
         
         if (! this._mouseMarker) {
             return {
+                'distance': null,
+                'layer': null,
                 'latlng': null
             };
         }
@@ -647,7 +653,15 @@ L.Draw.Feature.SnapMixin = {
             buffer = this._snapper._buffer;
         }
         
-        return L.Snap.snapMarker(ex, this.options.guideLayers || [], this._map, this.options, buffer);
+        var closest = L.Snap.snapMarker(ex, this.options.guideLayers || [], this._map, this.options, buffer);
+        if (! closest) {
+            return {
+                'distance': null,
+                'layer': null,
+                'latlng': null
+            };
+        }
+        return closest;
     },
     
     _snap_on_disabled: function () {
