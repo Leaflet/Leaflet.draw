@@ -109,6 +109,16 @@ L.EditToolbar.Delete = L.Handler.extend({
 		this._map.fire(L.Draw.Event.DELETED, { layers: this._deletedLayers });
 	},
 
+	// @method removeAllLayers(): void
+	// Remove all delateable layers
+	removeAllLayers: function(){
+		// Iterate of the delateable layers and add remove them
+		this._deletableLayers.eachLayer(function (layer) {
+			this._removeLayer({layer:layer});
+		}, this);
+		this.save();
+	},
+
 	_enableLayerDelete: function (e) {
 		var layer = e.layer || e.target || e;
 
