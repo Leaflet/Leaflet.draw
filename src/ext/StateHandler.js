@@ -82,25 +82,26 @@ L.Draw.StateHandler = L.Class.extend({
 		var checkedKey = (checkCtl) ? key.substr(-1) : key;
 		checkedKey = checkedKey.toLowerCase();
 
-		var that = this;
-		this.keyChecker[key] = function (e) {
-			if (((e.key.toLowerCase() === checkedKey)
-				 || (e.code.substr(-1).toLowerCase() === checkedKey))
-				&& (e.ctrlKey || (!checkCtl))) {
-				e.preventDefault();
-				e.stopPropagation();
-				action.call(that);
-				return false;
-			}
-		};
+        var that = this;
+        this.keyChecker[key] = function (e) {
+            var sameKey =(e.key.toLowerCase() === checkedKey);
+              var sameCodeKey = (e.code.substr(-1).toLowerCase() === checkedKey);
+              var ctlMatch = (e.ctrlKey || (!checkCtl));
+			if ((sameKey || sameCodeKey) && ctlMatch) {
+                e.preventDefault();
+                e.stopPropagation();
+                action.call(that);
+                return false;
+            }
+        };
 
-		L.DomEvent.on(document, 'keyup', this.keyChecker[key], this);
-	},
+        L.DomEvent.on(document, 'keyup', this.keyChecker[key], this);
+    },
 
-	unbindKey: function (key) {
-		L.DomEvent.off(document, 'keyup', this.keyChecker[key], this);
-		delete this.keyChecker[key];
-	},
+    unbindKey: function (key) {
+        L.DomEvent.off(document, 'keyup', this.keyChecker[key], this);
+        delete this.keyChecker[key];
+    },
 
 	clear: function () {
 		this.undoStack = [];

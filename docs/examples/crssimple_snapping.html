@@ -139,9 +139,12 @@ Demo featuring:
 
     map.addControl(drawControl);
 
-    map.on('draw:created', function(event) {
-        var layer = event.layer;
-        drawnItems.addLayer(layer);
+    map.on(L.Draw.Event.CREATED, function (e) {
+        drawnItems.addLayer(e.layer);
+    });
+
+    map.on(L.Draw.Event.CREATED, function (e) {
+        guideLayers.push(e.layer);
     });
 </script>
 

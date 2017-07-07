@@ -73,7 +73,7 @@ L.Edit.Circle = L.Edit.SimpleShape.extend({
 
 		var originalRadius = L.LatLngUtil.radiusToBounds(bbounds, originalCenter, this._getResizeMarkerPoint(originalCenter));
 		var moveLatLng = this._moveMarker.getLatLng();
-		varradius = L.LatLngUtil.radiusToBounds(bbounds, moveLatLng, latlng);
+        var radius = L.LatLngUtil.radiusToBounds(bbounds, moveLatLng, latlng);
 		this._shape.setRadius(radius);
 
 		this._map.fire(L.Draw.Event.EDITRESIZE, {

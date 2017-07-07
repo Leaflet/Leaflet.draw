@@ -1,3 +1,7 @@
+
+/* squash jshint complaints about L never being declared */
+/* globals L:true */
+
 /**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */

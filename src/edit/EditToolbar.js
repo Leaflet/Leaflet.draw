@@ -84,7 +84,7 @@ L.EditToolbar = L.Toolbar.extend({
 
 	// @method getActions(): void
 	// Get actions information
-	getActions: function () {
+	getActions: function (handler) {
 		var actions = [
 			{
 				title: L.drawLocal.edit.toolbar.actions.save.title,

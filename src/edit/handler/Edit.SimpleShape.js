@@ -43,17 +43,6 @@ L.Edit.SimpleShape = L.Handler.extend({
 			this._map = this._shape._map;
 			shape.setStyle(shape.options.editing);
 
-			if ((shape instanceof L.FeatureGroup) && (!shape.hasOwnProperty('_bboxOutline'))) {
-				shape._bboxOutline = L.rectangle(shape.getBounds(), {
-					color: 'black',
-					dashArray: '10, 10',
-					fill: true,
-					fillColor: '#fe57a1',
-					fillOpacity: 0.1
-				});
-				shape.addLayer(shape._bboxOutline);
-			}
-
 			if (shape._map) {
 				this._map = shape._map;
 				if (!this._markerGroup) {

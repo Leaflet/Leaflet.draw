@@ -66,12 +66,13 @@
 		// The value will be rounded as defined by the precision option object.
 		readableArea: function (area, isMetric, precision) {
 			var areaStr,
-				units,
-				precision = L.Util.extend({}, defaultPrecision, precision);
+				units;
+
+            precision = L.Util.extend({}, defaultPrecision, precision);
 
 			if (isMetric) {
 				units = ['ha', 'm'];
-				type = typeof isMetric;
+				var type = typeof isMetric;
 				if (type === 'string') {
 					units = [isMetric];
 				} else if (type !== 'boolean') {
@@ -79,21 +80,21 @@
 				}
 
 				if (area >= 1000000 && units.indexOf('km') !== -1) {
-					areaStr = L.GeometryUtil.formattedNumber(area * 0.000001, precision['km']) + ' km²';
+					areaStr = L.GeometryUtil.formattedNumber(area * 0.000001, precision.km) + ' km²';
 				} else if (area >= 10000 && units.indexOf('ha') !== -1) {
-					areaStr = L.GeometryUtil.formattedNumber(area * 0.0001, precision['ha']) + ' ha';
+					areaStr = L.GeometryUtil.formattedNumber(area * 0.0001, precision.ha) + ' ha';
 				} else {
-					areaStr = L.GeometryUtil.formattedNumber(area, precision['m']) + ' m²';
+					areaStr = L.GeometryUtil.formattedNumber(area, precision.m) + ' m²';
 				}
 			} else {
 				area /= 0.836127; // Square yards in 1 meter
 
 				if (area >= 3097600) { //3097600 square yards in 1 square mile
-					areaStr = L.GeometryUtil.formattedNumber(area / 3097600, precision['mi']) + ' mi²';
+					areaStr = L.GeometryUtil.formattedNumber(area / 3097600, precision.mi) + ' mi²';
 				} else if (area >= 4840) { //4840 square yards in 1 acre
-					areaStr = L.GeometryUtil.formattedNumber(area / 4840, precision['ac']) + ' acres';
+					areaStr = L.GeometryUtil.formattedNumber(area / 4840, precision.ac) + ' acres';
 				} else {
-					areaStr = L.GeometryUtil.formattedNumber(area, precision['yd']) + ' yd²';
+					areaStr = L.GeometryUtil.formattedNumber(area, precision.yd) + ' yd²';
 				}
 			}
 
@@ -112,6 +113,8 @@
 				units,
 				precision = L.Util.extend({}, defaultPrecision, precision);
 
+            precision = L.Util.extend({}, defaultPrecision, precision);
+
 			if (isMetric) {
 				units = typeof isMetric == 'string' ? isMetric : 'metric';
 			} else if (isFeet) {
@@ -126,19 +129,19 @@
 			case 'metric':
 				// show metres when distance is < 1km, then show km
 				if (distance > 1000) {
-					distanceStr = L.GeometryUtil.formattedNumber(distance / 1000, precision['km']) + ' km';
+					distanceStr = L.GeometryUtil.formattedNumber(distance / 1000, precision.km) + ' km';
 				} else {
-					distanceStr = L.GeometryUtil.formattedNumber(distance, precision['m']) + ' m';
+					distanceStr = L.GeometryUtil.formattedNumber(distance, precision.m) + ' m';
 				}
 				break;
 			case 'feet':
 				distance *= 1.09361 * 3;
-				distanceStr = L.GeometryUtil.formattedNumber(distance, precision['ft']) + ' ft';
+				distanceStr = L.GeometryUtil.formattedNumber(distance, precision.ft) + ' ft';
 
 				break;
 			case 'nauticalMile':
 				distance *= 0.53996;
-				distanceStr = L.GeometryUtil.formattedNumber(distance / 1000, precision['nm']) + ' nm';
+				distanceStr = L.GeometryUtil.formattedNumber(distance / 1000, precision.nm) + ' nm';
 				break;
 			case 'yards':
 				/* falls through */
@@ -146,9 +149,9 @@
 				distance *= 1.09361;
 
 				if (distance > 1760) {
-					distanceStr = L.GeometryUtil.formattedNumber(distance / 1760, precision['mi']) + ' miles';
+					distanceStr = L.GeometryUtil.formattedNumber(distance / 1760, precision.mi) + ' miles';
 				} else {
-					distanceStr = L.GeometryUtil.formattedNumber(distance, precision['yd']) + ' yd';
+					distanceStr = L.GeometryUtil.formattedNumber(distance, precision.yd) + ' yd';
 				}
 				break;
 			}

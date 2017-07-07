@@ -279,15 +279,13 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._startPoint.call(this, clientX, clientY);
 		}
 	},
-
-	_startPoint: function (clientX, clientY) {
+    _startPoint: function (clientX, clientY) {
 		this._mouseDownOrigin = L.point(clientX, clientY);
 		var originalEvent = e.originalEvent;
 		var clientX = originalEvent.clientX;
 		var clientY = originalEvent.clientY;
 		this._startPoint.call(this, clientX, clientY);
 	},
-
 	_startPoint: function (clientX, clientY) {
 		this._mouseDownOrigin = L.point(clientX, clientY);
 	},
@@ -304,7 +302,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			var dragCheckDistance = L.point(clientX, clientY)
 				.distanceTo(this._mouseDownOrigin);
 
-			if (Math.abs(distance) < 9 * (window.devicePixelRatio || 1)) {
+			if (Math.abs(dragCheckDistance) < 9 * (window.devicePixelRatio || 1)) {
 				var bbounds = this._map.options.maxBounds;
 				if (!bbounds || (bbounds && bbounds.contains(e.latlng))) {
 					this.addVertex(e.latlng);
@@ -341,7 +339,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// this is semi-ugly code but the only reliable way i found to get the job done
 	// note: calculating point.distanceTo between mouseDownOrigin and last marker did NOT work
 	_calculateFinishDistance: function (potentialLatLng) {
-		var lastPtDistance
+		var lastPtDistance;
 		if (this._markers.length > 0) {
 			var finishMarker;
 			if (this.type === L.Draw.Polyline.TYPE) {

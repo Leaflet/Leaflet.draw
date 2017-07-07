@@ -47,19 +47,7 @@ L.Control.Draw = L.Control.extend({
 			this._toolbars[L.EditToolbar.TYPE].on('enable', this._toolbarEnabled, this);
 		}
 
-		if (L.Draw.UndoManager && this.options.undoEnabled) {
-			if (this.hasOwnProperty('undoManager')) {
-				this.undoManager.enable();
-			}
-			else {
-				var drawnItems = options.edit.featureGroup;
-				this.undoManager = new L.Draw.UndoManager(drawnItems._map, drawnItems, {
-					maxStackSize: this.options.undoStackSize,
-					undoKey: this.options.undoKey,
-					redoKey: this.options.redoKey
-				});
-			}
-		}
+         this._instantiateUndoManager();
 
 		L.toolbar = this; //set global var for editing the toolbar
 	},
@@ -90,21 +78,30 @@ L.Control.Draw = L.Control.extend({
 			}
 		}
 
-		if (L.Draw.UndoManager && this.options.undoEnabled) {
-			if (this.hasOwnProperty('undoManager')) {
-				this.undoManager.enable();
-			}
-			else {
-				this.undoManager = new L.Draw.UndoManager(map, drawnItems, {
-					maxStackSize: this.options.undoStackSize,
-					undoKey: this.options.undoKey,
-					redoKey: this.options.redoKey
-				});
-			}
-		}
+		this._instantiateUndoManager();
 
 		return container;
 	},
+
+    _instantiateUndoManager: function () {
+		if (L.Draw.UndoManager && this.options.undoEnabled) {
+			if (this.hasOwnProperty('undoManager')) {
+				this.undoManager.enable();
+                return;
+			}
+
+            if (!(this.options.edit) && (this.options.edit.featureGroup)) {
+                throw new Error ('Must define options.edit.featureGroup to use the UndoManager!');
+            }
+
+            var drawnItems = this.options.edit.featureGroup;
+            this.undoManager = new L.Draw.UndoManager(drawnItems._map, drawnItems, {
+                maxStackSize: this.options.undoStackSize,
+                undoKey: this.options.undoKey,
+                redoKey: this.options.redoKey
+            });
+        }
+    },
 
 	// @method onRemove(): void
 	// Removes the toolbars from the map toolbar container
