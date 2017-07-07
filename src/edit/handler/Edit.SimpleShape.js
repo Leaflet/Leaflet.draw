@@ -38,22 +38,18 @@ L.Edit.SimpleShape = L.Handler.extend({
 	// @method addHooks(): void
 	// Add listener hooks to this handler
 	addHooks: function () {
-		var shape = this._shape;
 		if (this._shape._map) {
 			this._map = this._shape._map;
-			shape.setStyle(shape.options.editing);
+			this._shape.setStyle(this._shape.options.editing);
 
-			if (shape._map) {
-				this._map = shape._map;
-				if (!this._markerGroup) {
-					this._initMarkers();
-				}
-				this._map.addLayer(this._markerGroup);
-			}
+            if (!this._markerGroup) {
+                this._initMarkers();
+            }
+            this._map.addLayer(this._markerGroup);
 
 			this._map.fire(L.Draw.Event.EDITHOOK, {
 				'editHandler': this,
-				'layer': shape
+				'layer': this._shape
 			});
 		}
 	},

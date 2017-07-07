@@ -84,7 +84,7 @@ L.Control.Draw = L.Control.extend({
 	},
     
     _instantiateUndoManager: function () {
-		if (L.Draw.UndoManager && this.options.undoEnabled) {
+		if (L.Draw.UndoManager && this.options.undoEnabled && this.options.edit.featureGroup) {
 			if (this.hasOwnProperty('undoManager')) {
 				this.undoManager.enable();
                 return;

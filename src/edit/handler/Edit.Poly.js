@@ -51,16 +51,20 @@ L.Edit.Poly = L.Handler.extend({
 	// @method addHooks(): void
 	// Add listener hooks to this handler
 	addHooks: function () {
-		this._initHandlers();
-		this._eachVertexHandler(function (handler) {
-			handler.addHooks();
-		});
-		this._initMarkers();
-
-		this._map.fire(L.Draw.Event.EDITHOOK, {
-			'editHandler': this,
-			'layer': this._poly
-		});
+        this._initHandlers();
+        this._eachVertexHandler(function (handler) {
+            handler.addHooks();
+        });
+        this._initMarkers();
+        
+        if (this._poly._map) {
+            this._map = this._poly._map;
+            
+            this._map.fire(L.Draw.Event.EDITHOOK, {
+                'editHandler': this,
+                'layer': this._poly
+            });
+        }
 	},
 
 	// @method removeHooks(): void
@@ -341,20 +345,19 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		poly.setStyle(poly.options.editing);
 
 		if (this._poly._map) {
-
 			this._map = this._poly._map; // Set map
 
 			if (!this._markerGroup) {
 				this._initMarkers();
 			}
 			this._poly._map.addLayer(this._markerGroup);
+                
+            this._map.fire(L.Draw.Event.EDITHOOK, {
+                'layer': poly,
+                'vertex': true,
+                'editHandler': this
+            });
 		}
-
-		this._map.fire(L.Draw.Event.EDITHOOK, {
-			'layer': poly,
-			'vertex': true,
-			'editHandler': this
-		});
 	},
 
 	// @method removeHooks(): void

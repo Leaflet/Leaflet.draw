@@ -24,8 +24,8 @@ describe("L.GeometryUtil", function () {
 
 		it("imperial feet", function () {
 			expect(L.GeometryUtil.readableDistance(1609.3488537961, false, true, false)).to.eql('5280 ft');
-			expect(L.GeometryUtil.readableDistance(1610.3488537961, false, true, false)).to.eql('5284 ft');
-			expect(L.GeometryUtil.readableDistance(1610.3488537961, 'feet')).to.eql('5284 ft');
+			expect(L.GeometryUtil.readableDistance(1610.3488537961, false, true, false)).to.eql('5283 ft'); // equal to 5283.2967644229ft according to google, not 5284ft
+			expect(L.GeometryUtil.readableDistance(1610.3488537961, 'feet')).to.eql('5283 ft'); // as above
 		});
 
 		it("nautical", function () {
