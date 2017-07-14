@@ -47,7 +47,7 @@ L.Control.Draw = L.Control.extend({
 			this._toolbars[L.EditToolbar.TYPE].on('enable', this._toolbarEnabled, this);
 		}
 
-		this._instantiateUndoManager();
+         this._instantiateUndoManager();
 
 		L.toolbar = this; //set global var for editing the toolbar
 	},
@@ -82,18 +82,18 @@ L.Control.Draw = L.Control.extend({
 
 		return container;
 	},
-    
+
     _instantiateUndoManager: function () {
 		if (L.Draw.UndoManager && this.options.undoEnabled && this.options.edit.featureGroup) {
 			if (this.hasOwnProperty('undoManager')) {
 				this.undoManager.enable();
                 return;
 			}
-            
+
             if (!(this.options.edit) && (this.options.edit.featureGroup)) {
                 throw new Error ('Must define options.edit.featureGroup to use the UndoManager!');
             }
-            
+
             var drawnItems = this.options.edit.featureGroup;
             this.undoManager = new L.Draw.UndoManager(drawnItems._map, drawnItems, {
                 maxStackSize: this.options.undoStackSize,

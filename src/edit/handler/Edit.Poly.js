@@ -581,6 +581,9 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		var originalLatLng = marker._latlng.clone();
 		var originalIndex = marker._index;
 
+		var originalLatLng = marker._latlng.clone();
+		var originalIndex = marker._index;
+
 		// remove the marker
 		this._removeMarker(marker);
 
@@ -654,7 +657,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			latlng = this._getMiddleLatLng(marker1, marker2);
 		}
 
-		var marker = this._createMarker(latlng);
+		varmarker = this._createMarker(latlng);
 
 		marker.setOpacity(0.6);
 

@@ -67,7 +67,7 @@
 		readableArea: function (area, isMetric, precision) {
 			var areaStr,
 				units;
-			
+
             precision = L.Util.extend({}, defaultPrecision, precision);
 
 			if (isMetric) {
@@ -110,8 +110,9 @@
 		// The value will be rounded as defined by the precision option object.
 		readableDistance: function (distance, isMetric, isFeet, isNauticalMile, precision) {
 			var distanceStr,
-				units;
-			
+				units,
+				precision = L.Util.extend({}, defaultPrecision, precision);
+
             precision = L.Util.extend({}, defaultPrecision, precision);
 
 			if (isMetric) {

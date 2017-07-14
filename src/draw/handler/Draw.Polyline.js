@@ -279,7 +279,13 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._startPoint.call(this, clientX, clientY);
 		}
 	},
-
+    _startPoint: function (clientX, clientY) {
+		this._mouseDownOrigin = L.point(clientX, clientY);
+		var originalEvent = e.originalEvent;
+		var clientX = originalEvent.clientX;
+		var clientY = originalEvent.clientY;
+		this._startPoint.call(this, clientX, clientY);
+	},
 	_startPoint: function (clientX, clientY) {
 		this._mouseDownOrigin = L.point(clientX, clientY);
 	},

@@ -54,7 +54,10 @@ for this section of the documentation, please edit docs-misc.leafdoc in the buil
 | drawError | Object | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Polyline.js#L10) | Configuration options for the error that displays if an intersection is detected.
 | guidelineDistance | Number | `20` | Distance in pixels between each guide dash.
 | shapeOptions | [Leaflet Polyline options](http://leafletjs.com/reference.html#polyline-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Polyline.js#L20) | The options used when drawing the polyline/polygon on the map.
-| metric | Bool | `true` | Determines which measurement system (metric or imperial) is used.
+| showLength | Bool | `true` | Show the length of the drawn line. **The area is only approximate and become less accurate the larger the polygon is.**
+| metric | Bool | `true` | Use the metric measurement system.
+| feet | Bool | `true` | Use feet instead of yards and miles, when not using the metric measurement system.
+| nautic | Bool | `false` | Use nautic miles instead of yards and miles, when not using the metric measurement system nor feet.
 | zIndexOffset | Number | `2000` | This should be a high number to ensure that you can draw over all other layers on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
@@ -64,6 +67,11 @@ for this section of the documentation, please edit docs-misc.leafdoc in the buil
 | Option | Type | Default | Description
 | --- | --- | --- | ---
 | showArea | Bool | `false` | Show the area of the drawn polygon in m², ha or km². **The area is only approximate and become less accurate the larger the polygon is.**
+| showLength | Bool | `false` | Show the length of the drawn line. **The area is only approximate and become less accurate the larger the polygon is.**
+| metric | Object | `true` | Use the metric measurement system. Can be a boolean value, but can also be an array to specify which units to use. Possible units are `km` (kilometers), `ha` (hectares), `m` (metres). So a value of `['km', 'm']` means that the length will be shown in metres and, when more than a 1000 metres, in kilometers, and the area will be shown in m² or km² and acres will not be used.
+| feet | Bool | `true` | Use feet instead of yards and miles, when not using the metric measurement system.
+| nautic | Bool | `false` | Use nautic miles instead of yards and miles, when not using the metric measurement system nor feet.
+| precision | Object | `{km: 2, ha: 2, m: 0, mi: 2, ac: 2, yd: 0, ft: 0, nm: 2}` | Defines the precision to use for numbers of each type of unit. Possible units are `km` (kilometers), `ha` (hectares), `m` (metres), `mi` (miles), `ac` (acres), `ya` (yards), `ft` (feet), `nm` (nautical miles). For example `{km: 1}` changes the default precision for km and km² to one which gives values like `1.5 km` and `15.0 km²` in stead of `1.53 km` and `15.01 km²`.
 
 
 @namespace RectangleOptions
