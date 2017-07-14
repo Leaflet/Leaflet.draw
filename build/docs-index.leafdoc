@@ -8,6 +8,7 @@ This file just defines the order of the classes in the docs.
 @class L.Draw.Feature
 @class L.Draw.SimpleShape
 @class L.Draw.Marker
+@class L.Draw.CircleMarker
 @class L.Draw.Circle
 @class L.Draw.Polyline
 @class L.Draw.Rectangle
@@ -15,6 +16,7 @@ This file just defines the order of the classes in the docs.
 
 @class L.Edit.SimpleShape
 @class L.Edit.Marker
+@class L.Edit.CircleMarker
 @class L.Edit.Circle
 @class L.Edit.Polyline
 @class L.Edit.Rectangle
