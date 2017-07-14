@@ -128,11 +128,11 @@
 
         var guideLayers = [guides, road];
         drawControl.setDrawingOptions({
-            polyline: { guideLayers: guideLayers },
-            polygon: { guideLayers: guideLayers, snapDistance: 5 },
-            marker: { guideLayers: guideLayers, snapVertices: false },
-            rectangle: false,
-            circle: false
+            polyline: { guideLayers: guideLayers, snapDistance: 10, snapVertices: false  },
+            polygon: { guideLayers: guideLayers, snapDistance: 10, snapVertices: false },
+            marker: { guideLayers: guideLayers, snapDistance: 10, snapVertices: false },
+            rectangle: { guideLayers: guideLayers, snapDistance: 10, snapVertices: false },
+            circle: { guideLayers: guideLayers, snapDistance: 10, snapVertices: false },
         });
 
         map.on(L.Draw.Event.CREATED, function (e) {
