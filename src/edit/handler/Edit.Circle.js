@@ -23,7 +23,7 @@ L.Edit.Circle = L.Edit.CircleMarker.extend({
 
 	_resize: function (latlng) {
 		var moveLatLng = this._moveMarker.getLatLng(),
-			radius = moveLatLng.distanceTo(latlng);
+			radius = this._map.distance(moveLatLng, latlng);
 
 		this._shape.setRadius(radius);
 
