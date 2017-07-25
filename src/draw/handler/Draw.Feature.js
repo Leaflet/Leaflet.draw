@@ -35,7 +35,7 @@ L.Draw.Feature = L.Handler.extend({
 		this._map.fire(L.Draw.Event.DRAWSTART, { layerType: this.type });
 	},
 
-	// @method initialize(): void
+	// @method disable(): void
 	disable: function () {
 		if (!this._enabled) {
 			return;
