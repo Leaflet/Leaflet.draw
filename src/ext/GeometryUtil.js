@@ -42,7 +42,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 	// @method formattedNumber(n, precision): string
 	// Returns n in specified number format (if defined) and precision
 	formattedNumber: function (n, precision) {
-		var formatted = n.toFixed(precision),
+		var formatted = parseFloat(n).toFixed(precision),
 			format = L.drawLocal.format && L.drawLocal.format.numeric,
 			delimiters = format && format.delimiters,
 			thousands = delimiters && delimiters.thousands,
@@ -65,7 +65,7 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 	// The value will be rounded as defined by the precision option object.
 	readableArea: function (area, isMetric, precision) {
 		var areaStr,
-			units, 
+			units,
 			precision = L.Util.extend({}, defaultPrecision, precision);
 
 		if (isMetric) {
