@@ -11,7 +11,7 @@
  * @example
  * ```js
  * map.on(L.Draw.Event.CREATED; function (e) {
- *    var type = e.layerType;
+ *    var type = e.layerType,
  *        layer = e.layer;
  *
  *    if (type === 'marker') {
@@ -44,7 +44,7 @@ L.Draw.Event.CREATED = 'draw:created';
  *
  * @example
  * ```js
- *      map.on('draw:edited'; function (e) {
+ *      map.on('draw:edited', function (e) {
      *          var layers = e.layers;
      *          layers.eachLayer(function (layer) {
      *              //do whatever you want; most likely save back to db
