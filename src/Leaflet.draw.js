@@ -153,35 +153,35 @@ L.drawLocal = {
 		toolbar: {
 			actions: {
 				save: {
-					title: 'Save changes.',
+					title: 'Save changes',
 					text: 'Save'
 				},
 				cancel: {
-					title: 'Cancel editing, discards all changes.',
+					title: 'Cancel editing, discards all changes',
 					text: 'Cancel'
 				},
 				clearAll:{
-					title: 'clear all layers.',
+					title: 'Clear all layers',
 					text: 'Clear All'
 				}
 			},
 			buttons: {
-				edit: 'Edit layers.',
-				editDisabled: 'No layers to edit.',
-				remove: 'Delete layers.',
-				removeDisabled: 'No layers to delete.'
+				edit: 'Edit layers',
+				editDisabled: 'No layers to edit',
+				remove: 'Delete layers',
+				removeDisabled: 'No layers to delete'
 			}
 		},
 		handlers: {
 			edit: {
 				tooltip: {
-					text: 'Drag handles, or marker to edit feature.',
+					text: 'Drag handles or markers to edit features.',
 					subtext: 'Click cancel to undo changes.'
 				}
 			},
 			remove: {
 				tooltip: {
-					text: 'Click on a feature to remove'
+					text: 'Click on a feature to remove.'
 				}
 			}
 		}
