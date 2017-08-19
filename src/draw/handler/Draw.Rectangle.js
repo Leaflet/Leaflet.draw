@@ -39,18 +39,18 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 			return;
 		}
 
-		this._twoClicksToggle = false;
+		this._isCurrentlyTwoClickDrawing = false;
 		L.Draw.SimpleShape.prototype.disable.call(this);
 	},
     
 	_onMouseUp: function (e) {
-		if (!this._shape && !this._twoClicksToggle) {
-			this._twoClicksToggle = true;
+		if (!this._shape && !this._isCurrentlyTwoClickDrawing) {
+			this._isCurrentlyTwoClickDrawing = true;
 			return;
 		}
 		
 		// Make sure closing click is on map
-		if (this._twoClicksToggle && !_hasAncestor(e.target, 'leaflet-pane')) {
+		if (this._isCurrentlyTwoClickDrawing && !_hasAncestor(e.target, 'leaflet-pane')) {
 			return;
 		}
 
