@@ -39,7 +39,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 			return;
 		}
 
-		this._twoClicksToggle = false;
+		this._isCurrentlyTwoClickDrawing = false;
 		L.Draw.SimpleShape.prototype.disable.call(this);
 	},
     
