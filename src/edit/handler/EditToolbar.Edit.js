@@ -7,7 +7,17 @@ L.EditToolbar.Edit = L.Handler.extend({
 		TYPE: 'edit'
 	},
 
-	includes: L.Mixin.Events,
+    includes: function() {
+		var version = L.version.split(".");
+
+		//If Version is >= 1.2.0
+        if(parseInt(version[0],10) === 1 && parseInt(version[1],10) >= 2 ) {
+        	return L.Events
+		} else {
+            return L.Mixin.Events
+		}
+
+    },
 
 	// @method intialize(): void
 	initialize: function (map, options) {
