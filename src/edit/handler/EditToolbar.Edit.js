@@ -7,18 +7,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 		TYPE: 'edit'
 	},
 
-    includes: function() {
-		var version = L.version.split(".");
-
-		//If Version is >= 1.2.0
-        if(parseInt(version[0],10) === 1 && parseInt(version[1],10) >= 2 ) {
-        	return L.Events
-		} else {
-            return L.Mixin.Events
-		}
-
-    },
-
 	// @method intialize(): void
 	initialize: function (map, options) {
 		L.Handler.prototype.initialize.call(this, map);
@@ -36,6 +24,14 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.EditToolbar.Edit.TYPE;
+
+        var version = L.version.split(".");
+        //If Version is >= 1.2.0
+        if(parseInt(version[0],10) === 1 && parseInt(version[1],10) >= 2 ) {
+            L.EditToolbar.Edit.include(L.Events);
+        } else {
+            L.EditToolbar.Edit.include(L.Mixin.Events);
+        }
 	},
 
 	// @method enable(): void
