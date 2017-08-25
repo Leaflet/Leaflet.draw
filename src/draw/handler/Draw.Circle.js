@@ -36,7 +36,13 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 	},
 
 	_drawShape: function (latlng) {
-    var distance = this._map.distance(this._startLatLng, latlng);
+		// Calculate the distance based on the version
+		if(L.GeometryUtil.isVersion07x()){
+			var distance = this._startLatLng.distanceTo(latlng);
+		} else {
+			var distance = this._map.distance(this._startLatLng, latlng);
+		}
+
 		if (!this._shape) {
 			this._shape = new L.Circle(this._startLatLng, distance, this.options.shapeOptions);
 			this._map.addLayer(this._shape);
