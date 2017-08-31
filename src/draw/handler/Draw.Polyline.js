@@ -290,6 +290,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var originalEvent = e.originalEvent;
 		var clientX = originalEvent.clientX;
 		var clientY = originalEvent.clientY;
+		if (L.Browser.gecko) this._startPoint.call(this, clientX, clientY);
 		this._endPoint.call(this, clientX, clientY, e);
 		this._clickHandled = null;
 	},
