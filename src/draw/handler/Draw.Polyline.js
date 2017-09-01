@@ -466,9 +466,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_getTooltipText: function () {
 		var showLength = this.options.showLength,
 			labelText, distanceStr;
-		if (L.Browser.touch) {
+		/* if (L.Browser.touch) {
 			showLength = false; // if there's a better place to put this, feel free to move it
-		}
+		} */
 		if (this._markers.length === 0) {
 			labelText = {
 				text: L.drawLocal.draw.handlers.polyline.tooltip.start
@@ -513,7 +513,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// calculate the distance from the last fixed point to the mouse position
 		distance = previousLatLng && currentLatLng ? this._measurementRunningTotal + this._map.distance(currentLatLng, previousLatLng) * (this.options.factor || 1) : this._measurementRunningTotal || 0 ;
 
-		return L.GeometryUtil.readableDistance(distance, this.options.metric, this.options.feet, this.options.nautic, this.options.precision);
+		return distance ? L.GeometryUtil.readableDistance(distance, this.options.metric, this.options.feet, this.options.nautic, this.options.precision):'';
 	},
 
 	_showErrorTooltip: function () {
