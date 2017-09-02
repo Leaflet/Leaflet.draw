@@ -13,17 +13,21 @@
 
     <script src="../../src/edit/handler/Edit.Poly.js"></script>
     <script src="../../src/edit/handler/Edit.SimpleShape.js"></script>
-    <script src="../../src/edit/handler/Edit.Circle.js"></script>
     <script src="../../src/edit/handler/Edit.Rectangle.js"></script>
     <script src="../../src/edit/handler/Edit.Marker.js"></script>
+    <script src="../../src/edit/handler/Edit.CircleMarker.js"></script>
+    <script src="../../src/edit/handler/Edit.Circle.js"></script>
+
 
     <script src="../../src/draw/handler/Draw.Feature.js"></script>
     <script src="../../src/draw/handler/Draw.Polyline.js"></script>
     <script src="../../src/draw/handler/Draw.Polygon.js"></script>
     <script src="../../src/draw/handler/Draw.SimpleShape.js"></script>
     <script src="../../src/draw/handler/Draw.Rectangle.js"></script>
-    <script src="../../src/draw/handler/Draw.Circle.js"></script>
     <script src="../../src/draw/handler/Draw.Marker.js"></script>
+    <script src="../../src/draw/handler/Draw.CircleMarker.js"></script>
+    <script src="../../src/draw/handler/Draw.Circle.js"></script>
+
 
     <script src="../../src/ext/TouchEvents.js"></script>
     <script src="../../src/ext/LatLngUtil.js"></script>
@@ -131,6 +135,7 @@
             polyline: { guideLayers: guideLayers },
             polygon: { guideLayers: guideLayers, snapDistance: 5 },
             marker: { guideLayers: guideLayers, snapVertices: false },
+            circlemarker: { guideLayers: guideLayers },
             rectangle: false,
             circle: false
         });
