@@ -313,6 +313,7 @@ L.Toolbar = L.Class.extend({
 		}
 
 		this._actionsContainer.style.display = 'block';
+		this._map.fire(L.Draw.Event.TOOLBAROPENED);
 	},
 
 	_hideActionsToolbar: function () {
@@ -322,5 +323,6 @@ L.Toolbar = L.Class.extend({
 		L.DomUtil.removeClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
 		L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-top');
 		L.DomUtil.removeClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
+		this._map.fire(L.Draw.Event.TOOLBARCLOSED);
 	}
 });
