@@ -22,7 +22,7 @@ L.Draw.Feature = L.Handler.extend({
         var version = L.version.split(".");
         //If Version is >= 1.2.0
         if(parseInt(version[0],10) === 1 && parseInt(version[1],10) >= 2 ) {
-            L.Draw.Feature.include(L.Events);
+            L.Draw.Feature.include(L.Evented.prototype);
         } else {
             L.Draw.Feature.include(L.Mixin.Events);
         }
