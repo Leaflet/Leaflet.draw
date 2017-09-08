@@ -281,7 +281,7 @@ markers. It also turns off the ability to edit layers.</p>
 
 <pre><code class="lang-js">map.on(L.Draw.Event.CREATED, function (e) {
    var type = e.layerType;
-       layer = e.layer;
+   var layer = e.layer;
    if (type === &#39;marker&#39;) {
        // Do marker specific actions
    }
