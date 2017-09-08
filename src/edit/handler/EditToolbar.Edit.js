@@ -28,7 +28,7 @@ L.EditToolbar.Edit = L.Handler.extend({
         var version = L.version.split(".");
         //If Version is >= 1.2.0
         if(parseInt(version[0],10) === 1 && parseInt(version[1],10) >= 2 ) {
-            L.EditToolbar.Edit.include(L.Events);
+            L.EditToolbar.Edit.include(L.Evented.prototype);
         } else {
             L.EditToolbar.Edit.include(L.Mixin.Events);
         }
