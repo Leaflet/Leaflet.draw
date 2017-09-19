@@ -1,5 +1,5 @@
 /*
- Leaflet.draw 0.4.12+b9814b0, a plugin that adds drawing and editing tools to Leaflet powered maps.
+ Leaflet.draw 0.4.12+f58d96c, a plugin that adds drawing and editing tools to Leaflet powered maps.
  (c) 2012-2017, Jacob Toye, Jon West, Smartrak, Leaflet
 
  https://github.com/Leaflet/Leaflet.draw
@@ -8,7 +8,7 @@
 (function (window, document, undefined) {/**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = "0.4.12+b9814b0";
+L.drawVersion = "0.4.12+f58d96c";
 /**
  * @class L.Draw
  * @aka Draw
@@ -561,6 +561,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				.addTo(this._map);
 
 			this._map
+				.on('mousedown', this._onMouseDown, this)
 				.on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
 				.on('mousemove', this._onMouseMove, this)
 				.on('zoomlevelschange', this._onZoomEnd, this)
@@ -599,6 +600,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._clearGuides();
 
 		this._map
+			.off('mousedown', this._onMouseDown, this)
 			.off('mouseup', this._onMouseUp, this)
 			.off('mousemove', this._onMouseMove, this)
 			.off('zoomlevelschange', this._onZoomEnd, this)
@@ -747,7 +749,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var originalEvent = e.originalEvent;
 		var clientX = originalEvent.clientX;
 		var clientY = originalEvent.clientY;
-		if (L.Browser.gecko) this._startPoint.call(this, clientX, clientY);
 		this._endPoint.call(this, clientX, clientY, e);
 		this._clickHandled = null;
 	},

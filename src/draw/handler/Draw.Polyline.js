@@ -104,6 +104,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				.addTo(this._map);
 
 			this._map
+				.on('mousedown', this._onMouseDown, this)
 				.on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
 				.on('mousemove', this._onMouseMove, this)
 				.on('zoomlevelschange', this._onZoomEnd, this)
@@ -142,6 +143,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this._clearGuides();
 
 		this._map
+			.off('mousedown', this._onMouseDown, this)
 			.off('mouseup', this._onMouseUp, this)
 			.off('mousemove', this._onMouseMove, this)
 			.off('zoomlevelschange', this._onZoomEnd, this)
@@ -290,7 +292,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var originalEvent = e.originalEvent;
 		var clientX = originalEvent.clientX;
 		var clientY = originalEvent.clientY;
-		if (L.Browser.gecko) this._startPoint.call(this, clientX, clientY);
 		this._endPoint.call(this, clientX, clientY, e);
 		this._clickHandled = null;
 	},
