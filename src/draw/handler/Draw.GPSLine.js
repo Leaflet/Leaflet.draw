@@ -101,7 +101,7 @@ L.Draw.GPSLine = L.Draw.Feature.extend({
 		.off('locationfound',this._locationfound, this)
 		.off('locationerror',this._locationerror, this);
 
-		map.stopLocate();
+		this._map.stopLocate();
 
 		this._cleanUpShape();
 
