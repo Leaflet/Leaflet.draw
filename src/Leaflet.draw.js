@@ -97,6 +97,7 @@ L.drawLocal = {
 				text: 'Delete last point'
 			},
 			buttons: {
+				gpsline: 'Track position',
 				polyline: 'Draw a polyline',
 				polygon: 'Draw a polygon',
 				rectangle: 'Draw a rectangle',
@@ -127,6 +128,14 @@ L.drawLocal = {
 					start: 'Click to start drawing shape.',
 					cont: 'Click to continue drawing shape.',
 					end: 'Click first point to close this shape.'
+				}
+			},
+			gpsline: {
+				tooltip: {
+					start: 'Getting GPS location...',
+					loweraccuracy: 'Location results are below required accuracy level.',
+					cont: 'Move to track position or click save to end.',
+					end: 'Move to track position or click save to end.'
 				}
 			},
 			polyline: {

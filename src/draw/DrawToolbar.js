@@ -9,6 +9,7 @@ L.DrawToolbar = L.Toolbar.extend({
 	},
 
 	options: {
+		gpsline: {},
 		polyline: {},
 		polygon: {},
 		rectangle: {},
@@ -36,6 +37,11 @@ L.DrawToolbar = L.Toolbar.extend({
 	// Get mode handlers information
 	getModeHandlers: function (map) {
 		return [
+			{
+				enabled: this.options.gpsline,
+				handler: new L.Draw.GPSLine(map, this.options.gpsline),
+				title: L.drawLocal.draw.toolbar.buttons.gpsline
+			},
 			{
 				enabled: this.options.polyline,
 				handler: new L.Draw.Polyline(map, this.options.polyline),

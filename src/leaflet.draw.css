@@ -26,7 +26,7 @@
     background-image: url('images/spritesheet.png');
     background-image: linear-gradient(transparent, transparent), url('images/spritesheet.svg');
     background-repeat: no-repeat;
-    background-size: 300px 30px;
+    background-size: 350px 30px;
     background-clip: padding-box;
 }
 
@@ -148,6 +148,14 @@
 /* ================================================================== */
 /* Draw toolbar
 /* ================================================================== */
+
+.leaflet-draw-toolbar .leaflet-draw-draw-gpsline {
+    background-position: -296px -2px;
+}
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-gpsline {
+    background-position: -294px -1px;
+}
 
 .leaflet-draw-toolbar .leaflet-draw-draw-polyline {
     background-position: -2px -2px;
