@@ -133,7 +133,7 @@ L.drawLocal = {
 			gpsline: {
 				tooltip: {
 					start: 'Getting GPS location...',
-					loweraccuracy: 'Location results are below required accuracy level.',
+					lowaccuracy	: 'Location results are below required accuracy level.',
 					cont: 'Move to track position or click save to end.',
 					end: 'Move to track position or click save to end.'
 				}

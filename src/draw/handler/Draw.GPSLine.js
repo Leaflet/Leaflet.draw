@@ -88,7 +88,15 @@ L.Draw.GPSLine = L.Draw.Feature.extend({
 				.on('locationfound',this._locationfound, this)
 				.on('mousemove', this._onMouseMove, this)
 				.on('locationerror',this._locationerror, this);
+
+			if ( L.Browser.touch ) {
+				this._map
+					.on('zoomend', this._touchZoomEnd, this)
+					.on('moveend', this._touchZoomEnd, this);
+			}
 		}
+
+		window.tooltip = this._tooltip;
 	},
 
 	// @method removeHooks(): void
@@ -100,6 +108,12 @@ L.Draw.GPSLine = L.Draw.Feature.extend({
 		.off('mousemove', this._onMouseMove, this)
 		.off('locationfound',this._locationfound, this)
 		.off('locationerror',this._locationerror, this);
+
+		if ( L.Browser.touch ) {
+			this._map
+				.on('zoomend', this._touchZoomEnd, this)
+				.on('moveend', this._touchZoomEnd, this);
+		}
 
 		this._map.stopLocate();
 
@@ -153,7 +167,7 @@ L.Draw.GPSLine = L.Draw.Feature.extend({
 	},
 
 	_locationfound: function(e){
-		if ( e.accuracy < this.options.minAccuracy ) {
+		if ( e.accuracy > this.options.minAccuracy ) {
 			var labelText = {
 				text: L.drawLocal.draw.handlers.gpsline.tooltip.lowaccuracy
 			};
@@ -175,6 +189,23 @@ L.Draw.GPSLine = L.Draw.Feature.extend({
 	},
 
 	/**
+	 * On touch screen our tooltips don't always show up. 
+	 * We're going to put them right below the labels that stick out the sides of the buttons.
+	 */
+	_touchZoomEnd: function(e){
+		var a_bounds = document.getElementsByClassName('leaflet-draw-draw-gpsline')[0].getBoundingClientRect();
+		var map_bounds = map._container.getBoundingClientRect();
+
+		a_bounds.x -= map_bounds.x - a_bounds.width;
+		a_bounds.y -= map_bounds.y - a_bounds.height;
+
+		a_bounds.y += 11;
+		a_bounds.x -= 19;
+		a_bounds = this._map.containerPointToLatLng( a_bounds );	
+		this._tooltip.updatePosition( a_bounds );
+	},
+
+	/**
 	 * Get the contextual tooltip text.
 	 */
 	_getTooltipText: function(){
@@ -190,7 +221,10 @@ L.Draw.GPSLine = L.Draw.Feature.extend({
 			};
 		}
 
-		this._tooltip.updateContent(labelText);
+
+		this._tooltip
+			.removeError()
+			.updateContent(labelText);
 
 		return labelText;
 	},
