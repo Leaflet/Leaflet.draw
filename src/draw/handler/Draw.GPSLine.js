@@ -16,7 +16,8 @@ L.Draw.GPSLine = L.Draw.Feature.extend({
 		// Our unique options.
 		minDistance: 5, // Min distance in meters for each point.
 		minAccuracy: 10, // Mininmum accuracy to accept a point.
-		markerIcon: new L.Icon.Default(),
+		markerIcon: new L.Icon.Default(), 
+		smoothingFactor: 0, // Used in L.LineUtil.simplify
 
 		// All the Location Options from: http://leafletjs.com/reference-1.2.0.html#locate-options
 		watch: true,
@@ -54,10 +55,14 @@ L.Draw.GPSLine = L.Draw.Feature.extend({
 			this.options.icon = this.options.touchIcon;
 		}
 
+		this.options = L.Util.extend( this.options, options );
+		this._pointsAdded = 0;
+		this._lastSmoothing = 0;
+
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.GPSLine.TYPE;
 
-		L.Draw.Feature.prototype.initialize.call(this, map, options);
+		L.Draw.Feature.prototype.initialize.call(this, map, this.options);
 	},
 
 
@@ -117,8 +122,6 @@ L.Draw.GPSLine = L.Draw.Feature.extend({
 
 		this._map.stopLocate();
 
-		this._cleanUpShape();
-
 		// remove markers from map
 		this._map.removeLayer(this._markerGroup);
 		delete this._markerGroup;
@@ -140,6 +143,9 @@ L.Draw.GPSLine = L.Draw.Feature.extend({
 			}
 		}
 
+		latlng.x = latlng.lat;
+		latlng.y = latlng.lng;
+
 		this._markers.push(this._createMarker(latlng));
 
 		this._poly.addLatLng(latlng);
@@ -148,22 +154,30 @@ L.Draw.GPSLine = L.Draw.Feature.extend({
 			this._map.addLayer(this._poly);
 		}
 
+		this._pointsAdded++;
+
+		if ( this.options.smoothingFactor > 0 && this._pointsAdded % 5 === 0 ) {
+			// this._smoothLine();
+		}
+
 		this._map.fire(L.Draw.Event.DRAWVERTEX, { layers: this._markerGroup });
 	},
 
 	// @method completeShape(): void
 	// Closes the polyline between the first and last points
 	completeShape: function () {
+		this._pointsAdded = 0;
+
 		if (this._markers.length === 0 ) {
 			return;
 		}
 
+		if ( this.options.smoothingFactor > 0 ) {
+			// this._smoothLine();
+		}
+
 		this._fireCreatedEvent();
 		this.disable();
-
-		if (this.options.repeatMode) {
-			this.enable();
-		}
 	},
 
 	_locationfound: function(e){
@@ -188,21 +202,39 @@ L.Draw.GPSLine = L.Draw.Feature.extend({
 		this._tooltip.showAsError();
 	},
 
+	_smoothLine: function() {
+		var smoothed = L.LineUtil.simplify( this._poly._latlngs,this.options.smoothingFactor );
+		this._poly.setLatLngs( smoothed );
+
+		var poly_i;
+		var splice_count;
+		for(var i=this._lastSmoothing; i<smoothed.length;){
+			poly_i = this._poly._latlngs.indexOf( smoothed[i] );
+
+			if ( poly_i === i ) {
+				// Do nothing.
+			} else {
+				splice_count = (poly_i - i) + 1;
+				this._markers = this._markers.splice(i, splice_count);
+				this._markers = this._markers.splice(i, splice_count);
+			}
+		}
+
+		this._lastSmoothing = smoothed.length;
+
+		this._markerGroup.clearLayers();
+
+		this._poly.setLatLngs( this._markers );
+	},
+
 	/**
 	 * On touch screen our tooltips don't always show up. 
 	 * We're going to put them right below the labels that stick out the sides of the buttons.
 	 */
 	_touchZoomEnd: function(e){
-		var a_bounds = document.getElementsByClassName('leaflet-draw-draw-gpsline')[0].getBoundingClientRect();
-		var map_bounds = map._container.getBoundingClientRect();
-
-		a_bounds.x -= map_bounds.x - a_bounds.width;
-		a_bounds.y -= map_bounds.y - a_bounds.height;
-
-		a_bounds.y += 11;
-		a_bounds.x -= 19;
-		a_bounds = this._map.containerPointToLatLng( a_bounds );	
-		this._tooltip.updatePosition( a_bounds );
+		var newPos = this._map.mouseEventToLayerPoint(e.originalEvent);
+		var latlng = this._map.layerPointToLatLng(newPos);
+		this._tooltip.updatePosition( latlng );
 	},
 
 	/**
@@ -241,12 +273,6 @@ L.Draw.GPSLine = L.Draw.Feature.extend({
 
 
 	//*******  Verbatim from Draw.Polyline.js *******/
-
-	_cleanUpShape: function () {
-		if (this._markers.length > 1) {
-			this._markers[this._markers.length - 1].off('click', this._finishShape, this);
-		}
-	},
 
 	_fireCreatedEvent: function () {
 		var latlngs = this._poly.getLatLngs();
