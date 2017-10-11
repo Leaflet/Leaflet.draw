@@ -8,9 +8,9 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   viewBox="0 0 600 60"
+   viewBox="0 0 660 60"
    height="60"
-   width="600"
+   width="660"
    id="svg4225"
    version="1.1"
    inkscape:version="0.91 r13725"
@@ -153,4 +153,19 @@
      id="circle-3"
      d="m 581.65725,30 c 0,6.078 -4.926,11 -11,11 -6.074,0 -11,-4.922 -11,-11 0,-6.074 4.926,-11 11,-11 6.074,0 11,4.926 11,11 z"
      inkscape:connector-curvature="0" />
+  <g id="sector">
+      <circle style="fill:#EEEEEE;stroke:#464646;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:2,2;stroke-opacity:1"
+       id="sector-c"
+       cx="630" cy="30" r="10"/>
+	  <circle style="fill:#464646;stroke:#464646;stroke-width:1;stroke-opacity:1"
+       id="sector-c"
+       cx="630" cy="30" r="1"/>
+      <path
+       id="sector-s"
+       d="M 630,40 A 10 10,0,0,0 640 30 L 630,30 z"
+       inkscape:connector-curvature="0"
+       style="stroke-width:2;stroke:#464646;fill:#464646;fill-opacity:1" />
+    </g>
+  
+	   
 </svg>
