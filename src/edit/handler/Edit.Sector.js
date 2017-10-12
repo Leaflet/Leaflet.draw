@@ -7,41 +7,94 @@ L.Edit = L.Edit || {};
 L.Edit.Sector = L.Edit.CircleMarker.extend({
 
 	_createResizeMarker: function () {
-		var center = this._shape.getLatLng(),
-			resizemarkerPoint = this._getResizeMarkerPoint(center);
-
 		this._resizeMarkers = [];
-		this._resizeMarkers.push(this._createMarker(resizemarkerPoint, this.options.resizeIcon));
+		var resizeMakerPoints = this._getResizeMarkerPoints();
+		for(var i=0; i<3; i++) {
+			this._resizeMarkers.push(this._createMarker(resizeMakerPoints[i], this.options.resizeIcon));
+			this._resizeMarkers[i]._sectorIndex = i;
+		}
 	},
 
-	_getResizeMarkerPoint: function (latlng) {
-		var angle = (this._shape.options.startAngle+this._shape.options.stopAngle)*Math.PI/360;
+	_getResizeMarkerPoint: function (latlng, direction) {
+		var angle = direction*Math.PI/180;
 		var deltaX = this._shape._radius * Math.sin(angle),
 			deltaY = this._shape._radius * Math.cos(angle),
 			point = this._map.project(latlng);
 			
 		return this._map.unproject([point.x + deltaX, point.y - deltaY]);
 	},
+	
+	_getResizeMarkerPoints: function () {
+		var center = this._shape.getLatLng(),
+			points = [];		
+		points.push(this._getResizeMarkerPoint(center, this._shape.options.startAngle));
+		points.push(this._getResizeMarkerPoint(center, (this._shape.options.startAngle+this._shape.options.stopAngle)/2));
+		points.push(this._getResizeMarkerPoint(center, this._shape.options.stopAngle));
+		return points;
+	},
+	
+	_onMarkerDrag: function (e) {
+		var marker = e.target,
+			latlng = marker.getLatLng();
 
-	_resize: function (latlng) {
-		var radius,
-			moveLatLng = this._moveMarker.getLatLng();
-
-		// Calculate the radius based on the version
-		if(L.GeometryUtil.isVersion07x()){
-			radius = moveLatLng.distanceTo(latlng);
+		if (marker === this._moveMarker) {
+			this._move(latlng);
 		} else {
-			radius = this._map.distance(moveLatLng, latlng);
+			this._resize(marker);
 		}
+
+		this._shape.redraw();
+		this._shape.fire('editdrag');
+	},
+
+	_resize: function (marker) {
+		var radius,
+			moveLatLng = this._moveMarker.getLatLng(),
+			latlng = marker.getLatLng();
 		
-		this._shape.setRadius(radius);
 		var deltax = latlng.lng-moveLatLng.lng,
 			deltay = latlng.lat-moveLatLng.lat;
 		var direction = Math.atan(deltay/deltax)*180/Math.PI;
 			direction = deltax<0?270-direction:90-direction;
-		this._shape.setDirection(direction, 90);
+		
+		if (marker._sectorIndex === 1) {
+			// Calculate the radius based on the version
+			if(L.GeometryUtil.isVersion07x()){
+				radius = moveLatLng.distanceTo(latlng);
+			} else {
+				radius = this._map.distance(moveLatLng, latlng);
+			}
+			this._shape.setRadius(radius);
+			var degree = (this._shape.options.stopAngle - this._shape.options.startAngle);
+			this._shape.setDirection(direction, degree);
+		} else if(marker._sectorIndex === 0) {
+			direction = direction > this._shape.options.stopAngle?direction - 360:direction;
+			this._shape.setStartAngle(direction);
+		} else {
+			direction = direction < this._shape.options.startAngle?direction + 360:direction;
+			this._shape.setStopAngle(direction);
+		}
+		
+		this._repositionResizeMarkers();
 
 		this._map.fire(L.Draw.Event.EDITRESIZE, { layer: this._shape });
+	},
+	
+	_move: function (latlng) {
+		// Move the sector
+		this._shape.setLatLng(latlng);
+		
+		// Move resize markers
+		this._repositionResizeMarkers();
+
+		this._map.fire(L.Draw.Event.EDITMOVE, { layer: this._shape });
+	},
+	
+	_repositionResizeMarkers: function () {
+		var resizeMakerPoints = this._getResizeMarkerPoints();
+		for(var i=0; i<3; i++) {
+			this._resizeMarkers[i].setLatLng(resizeMakerPoints[i]);
+		}
 	}
 });
 

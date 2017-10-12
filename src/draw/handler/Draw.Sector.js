@@ -62,8 +62,8 @@ L.Draw.Sector = L.Draw.SimpleShape.extend({
 	},
 
 	_fireCreatedEvent: function () {
-		var circle = new L.semiCircle(this._startLatLng, this._shape.getRadius(), this.options.shapeOptions).setDirection(this.options.direction, 90);
-		L.Draw.SimpleShape.prototype._fireCreatedEvent.call(this, circle);
+		var sector = L.semiCircle(this._startLatLng, this._shape.getRadius(), this.options.shapeOptions).setDirection(this.options.direction, 90);
+		L.Draw.SimpleShape.prototype._fireCreatedEvent.call(this, sector);
 	},
 
 	_onMouseMove: function (e) {
