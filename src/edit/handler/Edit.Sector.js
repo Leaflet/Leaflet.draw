@@ -27,9 +27,9 @@ L.Edit.Sector = L.Edit.CircleMarker.extend({
 	_getResizeMarkerPoints: function () {
 		var center = this._shape.getLatLng(),
 			points = [];		
-		points.push(this._getResizeMarkerPoint(center, this._shape.options.startAngle));
-		points.push(this._getResizeMarkerPoint(center, (this._shape.options.startAngle+this._shape.options.stopAngle)/2));
-		points.push(this._getResizeMarkerPoint(center, this._shape.options.stopAngle));
+		points.push(this._getResizeMarkerPoint(center, this._shape._startAngle));
+		points.push(this._getResizeMarkerPoint(center, (this._shape._startAngle+this._shape._stopAngle)/2));
+		points.push(this._getResizeMarkerPoint(center, this._shape._stopAngle));
 		return points;
 	},
 	
@@ -65,13 +65,13 @@ L.Edit.Sector = L.Edit.CircleMarker.extend({
 				radius = this._map.distance(moveLatLng, latlng);
 			}
 			this._shape.setRadius(radius);
-			var degree = (this._shape.options.stopAngle - this._shape.options.startAngle);
+			var degree = (this._shape._stopAngle - this._shape._startAngle);
 			this._shape.setDirection(direction, degree);
 		} else if(marker._sectorIndex === 0) {
-			direction = direction > this._shape.options.stopAngle?direction - 360:direction;
+			direction = direction > this._shape._stopAngle?direction - 360:direction;
 			this._shape.setStartAngle(direction);
 		} else {
-			direction = direction < this._shape.options.startAngle?direction + 360:direction;
+			direction = direction < this._shape._startAngle?direction + 360:direction;
 			this._shape.setStopAngle(direction);
 		}
 		

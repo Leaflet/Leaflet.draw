@@ -42,29 +42,43 @@
             startAngle: 0,
             stopAngle: 359.9999
         },
+		
+		initialize: function (latlng, options) {
+			L.Util.setOptions(this, options);
+			this._latlng = L.latLng(latlng);
 
-        startAngle: function () {
-            if (this.options.startAngle < this.options.stopAngle) {
-                return fixAngle(this.options.startAngle);
+			if (isNaN(this.options.radius)) { throw new Error('Circle radius cannot be NaN'); }
+
+			// @section
+			// @aka Circle options
+			// @option radius: Number; Radius of the circle, in meters.
+			this._mRadius = this.options.radius;
+			this._startAngle = this.options.startAngle;
+			this._stopAngle = this.options.stopAngle;
+		},
+		
+		startAngle: function () {
+            if (this._startAngle < this._stopAngle) {
+                return fixAngle(this._startAngle);
             } else {
-                return fixAngle(this.options.stopAngle);
+                return fixAngle(this._stopAngle);
             }
         },
         stopAngle: function () {
-            if (this.options.startAngle < this.options.stopAngle) {
-                return fixAngle(this.options.stopAngle);
+            if (this._startAngle < this._stopAngle) {
+                return fixAngle(this._stopAngle);
             } else {
-                return fixAngle(this.options.startAngle);
+                return fixAngle(this._startAngle);
             }
         },
 
         setStartAngle: function (angle) {
-            this.options.startAngle = angle;
+            this.options.startAngle = this._startAngle = angle;
             return this.redraw();
         },
 
         setStopAngle: function (angle) {
-            this.options.stopAngle = angle;
+            this.options.stopAngle = this._stopAngle = angle;
             return this.redraw();
         },
 
@@ -72,8 +86,8 @@
             if (degrees === undefined) {
                 degrees = 10;
             }
-            this.options.startAngle = direction - (degrees / 2);
-            this.options.stopAngle = direction + (degrees / 2);
+            this.options.startAngle = this._startAngle = direction - (degrees / 2);
+            this.options.stopAngle = this._stopAngle = direction + (degrees / 2);
 
             return this.redraw();
         },
@@ -82,8 +96,8 @@
         },
 
         isSemicircle: function () {
-            var startAngle = this.options.startAngle,
-                stopAngle = this.options.stopAngle;
+            var startAngle = this._startAngle,
+                stopAngle = this._stopAngle;
 
             return (
                 !(startAngle === 0 && stopAngle > 359) &&
@@ -146,7 +160,7 @@
                 start = p.rotated(layer.startAngle(), r),
                 end = p.rotated(layer.stopAngle(), r);
 
-            var largeArc = (layer.options.stopAngle - layer.options.startAngle >= 180) ? '1' : '0';
+            var largeArc = (layer._stopAngle - layer._startAngle >= 180) ? '1' : '0';
 
             var d = 'M' + p.x + ',' + p.y +
                 // line to first start point
