@@ -22,8 +22,8 @@ Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGE
 
 ## In this readme
 
-- [Customizing Language](#customlanguage)
-- [Common tasks](#commontasks)
+- [Customizing Language](#customizing-language-and-text-in-leafletdraw)
+- [Common tasks](#common-tasks)
 - [Contributing](#contributing)
 - [Thanks](#thanks)
 
