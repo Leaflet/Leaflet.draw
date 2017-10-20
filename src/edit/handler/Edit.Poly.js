@@ -6,10 +6,8 @@ L.Edit = L.Edit || {};
  * @aka Edit.Poly
  */
 L.Edit.Poly = L.Handler.extend({
-	options: {},
-
 	// @method initialize(): void
-	initialize: function (poly, options) {
+	initialize: function (poly) {
 
 		this.latlngs = [poly._latlngs];
 		if (poly._holes) {
@@ -17,7 +15,6 @@ L.Edit.Poly = L.Handler.extend({
 		}
 
 		this._poly = poly;
-		L.setOptions(this, options);
 
 		this._poly.on('revert-edited', this._updateLatLngs, this);
 	},
@@ -65,7 +62,7 @@ L.Edit.Poly = L.Handler.extend({
 	_initHandlers: function () {
 		this._verticesHandlers = [];
 		for (var i = 0; i < this.latlngs.length; i++) {
-			this._verticesHandlers.push(new L.Edit.PolyVerticesEdit(this._poly, this.latlngs[i], this.options));
+			this._verticesHandlers.push(new L.Edit.PolyVerticesEdit(this._poly, this.latlngs[i], this._poly.options.poly));
 		}
 	},
 
@@ -469,7 +466,7 @@ L.Polyline.addInitHook(function () {
 
 	if (L.Edit.Poly) {
 
-		this.editing = new L.Edit.Poly(this, this.options.poly);
+		this.editing = new L.Edit.Poly(this);
 
 		if (this.options.editable) {
 			this.editing.enable();
