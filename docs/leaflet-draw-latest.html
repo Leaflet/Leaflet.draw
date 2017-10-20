@@ -279,9 +279,9 @@ markers. It also turns off the ability to edit layers.</p>
 
 
 
-<pre><code class="lang-js">map.on(L.Draw.Event.CREATED; function (e) {
+<pre><code class="lang-js">map.on(L.Draw.Event.CREATED, function (e) {
    var type = e.layerType;
-       layer = e.layer;
+   var layer = e.layer;
    if (type === &#39;marker&#39;) {
        // Do marker specific actions
    }
@@ -289,7 +289,7 @@ markers. It also turns off the ability to edit layers.</p>
    map.addLayer(layer);
 });
 </code></pre>
-<pre><code class="lang-js">     map.on(&#39;draw:edited&#39;; function (e) {
+<pre><code class="lang-js">     map.on(&#39;draw:edited&#39;, function (e) {
          var layers = e.layers;
          layers.eachLayer(function (layer) {
              //do whatever you want; most likely save back to db
