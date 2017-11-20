@@ -151,7 +151,15 @@ L.GeometryUtil = L.extend(L.GeometryUtil || {}, {
 			break;
 		}
 		return distanceStr;
-	}
+	},
+
+	// @method isVersion07x(): boolean
+	// Returns true if the Leaflet version is 0.7.x, false otherwise.
+	isVersion07x: function(){
+		var version = L.version.split(".");
+		//If Version is == 0.7.*
+		return parseInt(version[0], 10) === 0 && parseInt(version[1], 10) === 7;
+	},
 });
 
 })();

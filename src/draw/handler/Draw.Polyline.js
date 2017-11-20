@@ -39,8 +39,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		feet: true, // When not metric, to use feet instead of yards for display.
 		nautic: false, // When not metric, not feet use nautic mile for display
 		showLength: true, // Whether to display distance in the tooltip
-    zIndexOffset: 2000, // This should be > than the highest z-index any map layers
-    factor: 1 // To change distance calculation
+        zIndexOffset: 2000, // This should be > than the highest z-index any map layers
+        factor: 1, // To change distance calculation
+        maxPoints: 0 // Once this number of points are placed, finish shape
 	},
 
 	// @method initialize(): void
@@ -298,7 +299,10 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			var dragCheckDistance = L.point(clientX, clientY)
 				.distanceTo(this._mouseDownOrigin);
 			var lastPtDistance = this._calculateFinishDistance(e.latlng);
-			if (lastPtDistance < 10 && L.Browser.touch) {
+            if(this.options.maxPoints > 1 && this.options.maxPoints == this._markers.length+1) {
+                this.addVertex(e.latlng);
+                this._finishShape();
+            } else if (lastPtDistance < 10 && L.Browser.touch) {
 				this._finishShape();
 			} else if (Math.abs(dragCheckDistance) < 9 * (window.devicePixelRatio || 1)) {
 				this.addVertex(e.latlng);
@@ -499,7 +503,13 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._measurementRunningTotal = 0;
 		} else {
 			previousMarkerIndex = markersLength - (added ? 2 : 1);
-			distance = this._map.distance(latlng, this._markers[previousMarkerIndex].getLatLng()) * (this.options.factor || 1);
+
+			// Calculate the distance based on the version
+			if(L.GeometryUtil.isVersion07x()){
+				distance = latlng.distanceTo(this._markers[previousMarkerIndex].getLatLng()) * (this.options.factor || 1);
+			} else {
+				distance = this._map.distance(latlng, this._markers[previousMarkerIndex].getLatLng()) * (this.options.factor || 1);
+			}
 
 			this._measurementRunningTotal += distance * (added ? 1 : -1);
 		}
@@ -510,8 +520,12 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			previousLatLng = this._markers[this._markers.length - 1].getLatLng(),
 			distance;
 
-		// calculate the distance from the last fixed point to the mouse position
-		distance = previousLatLng && currentLatLng ? this._measurementRunningTotal + this._map.distance(currentLatLng, previousLatLng) * (this.options.factor || 1) : this._measurementRunningTotal || 0 ;
+		// Calculate the distance from the last fixed point to the mouse position based on the version
+		if(L.GeometryUtil.isVersion07x()){
+			distance = previousLatLng && currentLatLng && currentLatLng.distanceTo ? this._measurementRunningTotal + currentLatLng.distanceTo(previousLatLng) * (this.options.factor || 1) : this._measurementRunningTotal || 0 ;
+		} else {
+			distance = previousLatLng && currentLatLng ? this._measurementRunningTotal + this._map.distance(currentLatLng, previousLatLng) * (this.options.factor || 1) : this._measurementRunningTotal || 0 ;
+		}
 
 		return L.GeometryUtil.readableDistance(distance, this.options.metric, this.options.feet, this.options.nautic, this.options.precision);
 	},
