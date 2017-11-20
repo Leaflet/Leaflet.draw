@@ -60,11 +60,12 @@ L.Draw.Marker = L.Draw.Feature.extend({
 		L.Draw.Feature.prototype.removeHooks.call(this);
 
 		if (this._map) {
+			this._map
+				.off('click', this._onClick, this)
+				.off('click', this._onTouch, this)
 			if (this._marker) {
 				this._marker.off('click', this._onClick, this);
 				this._map
-					.off('click', this._onClick, this)
-					.off('click', this._onTouch, this)
 					.removeLayer(this._marker);
 				delete this._marker;
 			}
