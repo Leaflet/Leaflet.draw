@@ -168,3 +168,10 @@ L.Draw.Event.TOOLBAROPENED = 'draw:toolbaropened';
  * Triggered when a toolbar is closed.
  */
 L.Draw.Event.TOOLBARCLOSED = 'draw:toolbarclosed';
+
+/**
+ * @event draw:markercontext: String
+ *
+ * Triggered when a marker is right clicked.
+ */
+L.Draw.Event.MARKERCONTEXT = 'draw:markercontext';
