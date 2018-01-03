@@ -16,9 +16,9 @@ Supports [Leaflet](https://github.com/Leaflet/Leaflet/releases) 0.7.x and 1.0.0+
 
 Please check out our [Api Documentation](https://leaflet.github.io/Leaflet.draw/docs/leaflet-draw-latest.html)
 
-#### Upgrading from Leaflet.draw 0.1
+#### Changelog
 
-Leaflet.draw 0.2.0 changes a LOT of things from 0.1. Please see [BREAKING CHANGES](https://github.com/Leaflet/Leaflet.draw/blob/master/BREAKINGCHANGES.md) for how to upgrade.
+- Draw quadrant.
 
 ## In this readme
 

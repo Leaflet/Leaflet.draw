@@ -101,6 +101,7 @@ L.drawLocal = {
 				polygon: 'Draw a polygon',
 				rectangle: 'Draw a rectangle',
 				circle: 'Draw a circle',
+				sector: 'Draw a sector',
 				marker: 'Draw a marker',
 				circlemarker: 'Draw a circlemarker'
 			}
@@ -109,6 +110,12 @@ L.drawLocal = {
 			circle: {
 				tooltip: {
 					start: 'Click and drag to draw circle.'
+				},
+				radius: 'Radius'
+			},
+			sector: {
+				tooltip: {
+					start: 'Click and drag to draw sector.'
 				},
 				radius: 'Radius'
 			},

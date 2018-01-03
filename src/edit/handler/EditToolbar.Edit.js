@@ -146,6 +146,13 @@ L.EditToolbar.Edit = L.Handler.extend({
 				this._uneditedLayerProps[id] = {
 					latlngs: L.LatLngUtil.cloneLatLngs(layer.getLatLngs())
 				};
+			} else if (layer instanceof L.SemiCircle) {
+				this._uneditedLayerProps[id] = {
+					latlng: L.LatLngUtil.cloneLatLng(layer.getLatLng()),
+					radius: layer.getRadius(),
+					startAngle: layer.getStartAngle(),
+					stopAngle: layer.getStopAngle()
+				};
 			} else if (layer instanceof L.Circle) {
 				this._uneditedLayerProps[id] = {
 					latlng: L.LatLngUtil.cloneLatLng(layer.getLatLng()),
@@ -180,6 +187,10 @@ L.EditToolbar.Edit = L.Handler.extend({
 			} else if (layer instanceof L.Circle) {
 				layer.setLatLng(this._uneditedLayerProps[id].latlng);
 				layer.setRadius(this._uneditedLayerProps[id].radius);
+				if (layer instanceof L.SemiCircle) {
+					layer.setStartAngle(this._uneditedLayerProps[id].startAngle);
+					layer.setStopAngle(this._uneditedLayerProps[id].stopAngle);
+				}
 			} else if (layer instanceof L.Marker || layer instanceof L.CircleMarker) { // Marker or CircleMarker
 				layer.setLatLng(this._uneditedLayerProps[id].latlng);
 			}

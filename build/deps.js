@@ -14,9 +14,10 @@ var deps = {
 			'draw/handler/Draw.Polygon.js',
 			'draw/handler/Draw.SimpleShape.js',
 			'draw/handler/Draw.Rectangle.js',
-      'draw/handler/Draw.Marker.js',
-      'draw/handler/Draw.CircleMarker.js',
-      'draw/handler/Draw.Circle.js'
+			'draw/handler/Draw.Marker.js',
+			'draw/handler/Draw.CircleMarker.js',
+			'draw/handler/Draw.Circle.js',
+			'draw/handler/Draw.Sector.js'
 		],
 		desc: 'Drawing handlers for: polylines, polygons, rectangles, circles, circlemarkers and markers.',
 		deps: ['Core']
@@ -28,8 +29,9 @@ var deps = {
 			'edit/handler/Edit.Poly.js',
 			'edit/handler/Edit.SimpleShape.js',
 			'edit/handler/Edit.Rectangle.js',
-      'edit/handler/Edit.CircleMarker.js',
-			'edit/handler/Edit.Circle.js'
+			'edit/handler/Edit.CircleMarker.js',
+			'edit/handler/Edit.Circle.js',
+			'edit/handler/Edit.Sector.js'
 		],
 		desc: 'Editing handlers for: polylines, polygons, rectangles, circlemarkers and circles.',
 		deps: ['Core']
@@ -42,7 +44,8 @@ var deps = {
 			'ext/GeometryUtil.js',
 			'ext/LineUtil.Intersect.js',
 			'ext/Polyline.Intersect.js',
-			'ext/Polygon.Intersect.js'
+			'ext/Polygon.Intersect.js',
+			'ext/Semicircle.js'
 		],
 		desc: 'Extensions of leaflet classes.'
 	},
@@ -62,7 +65,7 @@ var deps = {
 			'draw/DrawToolbar.js'
 		],
 		desc: 'Draw toolbar.',
-		deps: ['DrawHandlers', 'CommonUI']
+		deps: ['DrawHandlers', 'CommonUI', 'Extensions']
 	},
 
 	EditUI: {
@@ -72,7 +75,7 @@ var deps = {
 			'edit/handler/EditToolbar.Delete.js'
 		],
 		desc: 'Edit toolbar.',
-		deps: ['EditHandlers', 'CommonUI']
+		deps: ['EditHandlers', 'CommonUI', 'Extensions']
 	}
 };
 

@@ -26,7 +26,7 @@
     background-image: url('images/spritesheet.png');
     background-image: linear-gradient(transparent, transparent), url('images/spritesheet.svg');
     background-repeat: no-repeat;
-    background-size: 300px 30px;
+    background-size: 330px 30px;
     background-clip: padding-box;
 }
 
@@ -179,6 +179,14 @@
 
 .leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-circle {
     background-position: -90px -1px;
+}
+
+.leaflet-draw-toolbar .leaflet-draw-draw-sector {
+    background-position: -303px -2px;
+}
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-sector {
+    background-position: -301px -1px;
 }
 
 .leaflet-draw-toolbar .leaflet-draw-draw-marker {
