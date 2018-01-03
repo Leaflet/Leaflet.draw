@@ -94,6 +94,12 @@
         getDirection: function () {
             return this.stopAngle() - (this.stopAngle() - this.startAngle()) / 2;
         },
+        getStartAngle: function () {
+            return this._startAngle;
+        },
+        getStopAngle: function () {
+            return this._stopAngle;
+        },
 
         isSemicircle: function () {
             var startAngle = this._startAngle,
