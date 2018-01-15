@@ -337,7 +337,11 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 				}, 1000);
 			}
 		}
-
+		//refresh the bounds when draging
+		this._poly._bounds._southWest = L.latLng(Infinity,Infinity);
+		this._poly._bounds._northEast = L.latLng(-Infinity,-Infinity);
+		var latlngs = this._poly.getLatLngs();
+		this._poly._convertLatLngs(latlngs, true);
 		this._poly.redraw();
 		this._poly.fire('editdrag');
 	},
