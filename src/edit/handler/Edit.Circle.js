@@ -30,6 +30,13 @@ L.Edit.Circle = L.Edit.CircleMarker.extend({
 		} else {
 			radius = this._map.distance(moveLatLng, latlng);
 		}
+		this._shape.setRadius(radius);
+
+		this._map._editTooltip.updateContent({
+			text: L.drawLocal.edit.handlers.edit.tooltip.subtext + '<br />' + L.drawLocal.edit.handlers.edit.tooltip.text,
+			subtext: L.drawLocal.draw.handlers.circle.radius + ': ' +
+ 				L.GeometryUtil.readableDistance(radius, true, this.options.feet, this.options.nautic)
+ 		});
 
 		this._shape.setRadius(radius);
 		

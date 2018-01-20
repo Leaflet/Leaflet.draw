@@ -210,6 +210,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 
 			marker = this._createMarker(latlngs[i], i);
 			marker.on('click', this._onMarkerClick, this);
+			marker.on('contextmenu', this._onContextMenu, this);
 			this._markers.push(marker);
 		}
 
@@ -382,6 +383,13 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		}
 
 		this._fireEdit();
+	},
+
+	_onContextMenu: function (e) {
+		var marker = e.target;
+		var poly = this._poly;
+		this._poly._map.fire(L.Draw.Event.MARKERCONTEXT, { marker: marker, layers: this._markerGroup, poly: this._poly });
+		L.DomEvent.stopPropagation;
 	},
 
 	_onTouchMove: function (e) {
