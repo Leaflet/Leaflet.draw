@@ -40,11 +40,12 @@ for this section of the documentation, please edit docs-misc.leafdoc in the buil
 
 | Option    | Type  | Default   | Description   |
 | --------- | ----- | --------- | ------------- |
-| polyline  | [PolylineOptions](#polylineoptions)   | `{ }` | Polyline draw handler options. Set to `false` to disable handler. |
-| polygon   | [PolygonOptions](#polygonoptions)     | `{ }` | Polygon draw handler options. Set to `false` to disable handler.  |
-| rectangle | [RectangleOptions](#rectangleoptions) | `{ }` | Rectangle draw handler options. Set to `false` to disable handler.|
-| circle    | [CircleOptions](#circleoptions)       | `{ }` | Circle draw handler options. Set to `false` to disable handler.   |
-| marker    | [MarkerOptions](#markeroptions)       | `{ }` | Marker draw handler options. Set to `false` to disable handler.   |
+| polyline     | [PolylineOptions](#polylineoptions)         | `{ }` | Polyline draw handler options. Set to `false` to disable handler.      |
+| polygon      | [PolygonOptions](#polygonoptions)           | `{ }` | Polygon draw handler options. Set to `false` to disable handler.       |
+| rectangle    | [RectangleOptions](#rectangleoptions)       | `{ }` | Rectangle draw handler options. Set to `false` to disable handler.     |
+| circle       | [CircleOptions](#circleoptions)             | `{ }` | Circle draw handler options. Set to `false` to disable handler.        |
+| marker       | [MarkerOptions](#markeroptions)             | `{ }` | Marker draw handler options. Set to `false` to disable handler.        |
+| circlemarker | [CircleMarkerOptions](#circlemarkeroptions) | `{ }` | Circle marker draw handler options. Set to `false` to disable handler. |
 
 @namespace PolylineOptions
 
