@@ -139,11 +139,11 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		if (path) {
 			if (poly.options.editing.className) {
 				if (poly.options.original.className) {
-					poly.options.original.className.split(' ').forEach(function(className) {
+					poly.options.original.className.split(' ').forEach(function (className) {
 						L.DomUtil.removeClass(path, className);
 					});
 				}
-				poly.options.editing.className.split(' ').forEach(function(className) {
+				poly.options.editing.className.split(' ').forEach(function (className) {
 					L.DomUtil.addClass(path, className);
 				});
 			}
@@ -170,11 +170,11 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 
 		if (path) {
 			if (poly.options.editing.className) {
-				poly.options.editing.className.split(' ').forEach(function(className) {
+				poly.options.editing.className.split(' ').forEach(function (className) {
 					L.DomUtil.removeClass(path, className);
 				});
 				if (poly.options.original.className) {
-					poly.options.original.className.split(' ').forEach(function(className) {
+					poly.options.original.className.split(' ').forEach(function (className) {
 						L.DomUtil.addClass(path, className);
 					});
 				}
@@ -287,7 +287,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	_fireEdit: function () {
 		this._poly.edited = true;
 		this._poly.fire('edit');
-		this._poly._map.fire(L.Draw.Event.EDITVERTEX, { layers: this._markerGroup, poly: this._poly });
+		this._poly._map.fire(L.Draw.Event.EDITVERTEX, {layers: this._markerGroup, poly: this._poly});
 	},
 
 	_onMarkerDrag: function (e) {
@@ -310,7 +310,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			if (!poly.options.poly.allowIntersection && poly.intersects()) {
 
 				var originalColor = poly.options.color;
-				poly.setStyle({ color: this.options.drawError.color });
+				poly.setStyle({color: this.options.drawError.color});
 
 				// Manually trigger 'dragend' behavior on marker we are about to remove
 				// WORKAROUND: introduced in 1.0.0-rc2, may be related to #4484
@@ -328,7 +328,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 
 				// Reset everything back to normal after a second
 				setTimeout(function () {
-					poly.setStyle({ color: originalColor });
+					poly.setStyle({color: originalColor});
 					if (tooltip) {
 						tooltip.updateContent({
 							text: L.drawLocal.edit.handlers.edit.tooltip.text,
@@ -339,8 +339,8 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			}
 		}
 		//refresh the bounds when draging
-		this._poly._bounds._southWest = L.latLng(Infinity,Infinity);
-		this._poly._bounds._northEast = L.latLng(-Infinity,-Infinity);
+		this._poly._bounds._southWest = L.latLng(Infinity, Infinity);
+		this._poly._bounds._northEast = L.latLng(-Infinity, -Infinity);
 		var latlngs = this._poly.getLatLngs();
 		this._poly._convertLatLngs(latlngs, true);
 		this._poly.redraw();
@@ -388,7 +388,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	_onContextMenu: function (e) {
 		var marker = e.target;
 		var poly = this._poly;
-		this._poly._map.fire(L.Draw.Event.MARKERCONTEXT, { marker: marker, layers: this._markerGroup, poly: this._poly });
+		this._poly._map.fire(L.Draw.Event.MARKERCONTEXT, {marker: marker, layers: this._markerGroup, poly: this._poly});
 		L.DomEvent.stopPropagation;
 	},
 

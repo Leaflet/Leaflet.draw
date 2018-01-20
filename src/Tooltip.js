@@ -62,7 +62,7 @@ L.Draw.Tooltip = L.Class.extend({
 
 		this._container.innerHTML =
 			(labelText.subtext.length > 0 ?
-			'<span class="leaflet-draw-tooltip-subtext">' + labelText.subtext + '</span>' + '<br />' : '') +
+				'<span class="leaflet-draw-tooltip-subtext">' + labelText.subtext + '</span>' + '<br />' : '') +
 			'<span>' + labelText.text + '</span>';
 
 		if (!labelText.text && !labelText.subtext) {

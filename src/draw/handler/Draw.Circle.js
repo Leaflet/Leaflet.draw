@@ -37,7 +37,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 
 	_drawShape: function (latlng) {
 		// Calculate the distance based on the version
-		if(L.GeometryUtil.isVersion07x()){
+		if (L.GeometryUtil.isVersion07x()) {
 			var distance = this._startLatLng.distanceTo(latlng);
 		} else {
 			var distance = this._map.distance(this._startLatLng, latlng);
@@ -72,7 +72,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 			var subtext = '';
 			if (showRadius) {
 				subtext = L.drawLocal.draw.handlers.circle.radius + ': ' +
-						  L.GeometryUtil.readableDistance(radius, useMetric, this.options.feet, this.options.nautic);
+					L.GeometryUtil.readableDistance(radius, useMetric, this.options.feet, this.options.nautic);
 			}
 			this._tooltip.updateContent({
 				text: this._endLabelText,

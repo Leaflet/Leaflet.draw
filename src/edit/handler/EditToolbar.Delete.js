@@ -23,13 +23,13 @@ L.EditToolbar.Delete = L.Handler.extend({
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.EditToolbar.Delete.TYPE;
 
-		var version = L.version.split(".");
-        //If Version is >= 1.2.0
-        if(parseInt(version[0],10) === 1 && parseInt(version[1],10) >= 2 ) {
-            L.EditToolbar.Delete.include(L.Evented.prototype);
-        } else {
-            L.EditToolbar.Delete.include(L.Mixin.Events);
-        }
+		var version = L.version.split('.');
+		//If Version is >= 1.2.0
+		if (parseInt(version[0], 10) === 1 && parseInt(version[1], 10) >= 2) {
+			L.EditToolbar.Delete.include(L.Evented.prototype);
+		} else {
+			L.EditToolbar.Delete.include(L.Mixin.Events);
+		}
 
 	},
 
@@ -39,9 +39,9 @@ L.EditToolbar.Delete = L.Handler.extend({
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
 		}
-		this.fire('enabled', { handler: this.type });
+		this.fire('enabled', {handler: this.type});
 
-		this._map.fire(L.Draw.Event.DELETESTART, { handler: this.type });
+		this._map.fire(L.Draw.Event.DELETESTART, {handler: this.type});
 
 		L.Handler.prototype.enable.call(this);
 
@@ -63,9 +63,9 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 		L.Handler.prototype.disable.call(this);
 
-		this._map.fire(L.Draw.Event.DELETESTOP, { handler: this.type });
+		this._map.fire(L.Draw.Event.DELETESTOP, {handler: this.type});
 
-		this.fire('disabled', { handler: this.type });
+		this.fire('disabled', {handler: this.type});
 	},
 
 	// @method addHooks(): void
@@ -80,7 +80,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 			this._deletedLayers = new L.LayerGroup();
 
 			this._tooltip = new L.Draw.Tooltip(this._map);
-			this._tooltip.updateContent({ text: L.drawLocal.edit.handlers.remove.tooltip.text });
+			this._tooltip.updateContent({text: L.drawLocal.edit.handlers.remove.tooltip.text});
 
 			this._map.on('mousemove', this._onMouseMove, this);
 		}
@@ -106,22 +106,22 @@ L.EditToolbar.Delete = L.Handler.extend({
 		// Iterate of the deleted layers and add them back into the featureGroup
 		this._deletedLayers.eachLayer(function (layer) {
 			this._deletableLayers.addLayer(layer);
-			layer.fire('revert-deleted', { layer: layer });
+			layer.fire('revert-deleted', {layer: layer});
 		}, this);
 	},
 
 	// @method save(): void
 	// Save deleted layers
 	save: function () {
-		this._map.fire(L.Draw.Event.DELETED, { layers: this._deletedLayers });
+		this._map.fire(L.Draw.Event.DELETED, {layers: this._deletedLayers});
 	},
 
 	// @method removeAllLayers(): void
 	// Remove all delateable layers
-	removeAllLayers: function(){
+	removeAllLayers: function () {
 		// Iterate of the delateable layers and add remove them
 		this._deletableLayers.eachLayer(function (layer) {
-			this._removeLayer({layer:layer});
+			this._removeLayer({layer: layer});
 		}, this);
 		this.save();
 	},

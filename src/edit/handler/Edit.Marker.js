@@ -34,7 +34,7 @@ L.Edit.Marker = L.Handler.extend({
 	_onDragEnd: function (e) {
 		var layer = e.target;
 		layer.edited = true;
-		this._map.fire(L.Draw.Event.EDITMOVE, { layer: layer });
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: layer});
 	},
 
 	_toggleMarkerHighlight: function () {

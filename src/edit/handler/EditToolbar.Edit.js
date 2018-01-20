@@ -25,13 +25,13 @@ L.EditToolbar.Edit = L.Handler.extend({
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.EditToolbar.Edit.TYPE;
 
-        var version = L.version.split(".");
-        //If Version is >= 1.2.0
-        if(parseInt(version[0],10) === 1 && parseInt(version[1],10) >= 2 ) {
-            L.EditToolbar.Edit.include(L.Evented.prototype);
-        } else {
-            L.EditToolbar.Edit.include(L.Mixin.Events);
-        }
+		var version = L.version.split('.');
+		//If Version is >= 1.2.0
+		if (parseInt(version[0], 10) === 1 && parseInt(version[1], 10) >= 2) {
+			L.EditToolbar.Edit.include(L.Evented.prototype);
+		} else {
+			L.EditToolbar.Edit.include(L.Mixin.Events);
+		}
 	},
 
 	// @method enable(): void
@@ -40,10 +40,10 @@ L.EditToolbar.Edit = L.Handler.extend({
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
 		}
-		this.fire('enabled', { handler: this.type });
+		this.fire('enabled', {handler: this.type});
 		//this disable other handlers
 
-		this._map.fire(L.Draw.Event.EDITSTART, { handler: this.type });
+		this._map.fire(L.Draw.Event.EDITSTART, {handler: this.type});
 		//allow drawLayer to be updated before beginning edition.
 
 		L.Handler.prototype.enable.call(this);
@@ -62,8 +62,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 			.off('layeradd', this._enableLayerEdit, this)
 			.off('layerremove', this._disableLayerEdit, this);
 		L.Handler.prototype.disable.call(this);
-		this._map.fire(L.Draw.Event.EDITSTOP, { handler: this.type });
-		this.fire('disabled', { handler: this.type });
+		this._map.fire(L.Draw.Event.EDITSTOP, {handler: this.type});
+		this.fire('disabled', {handler: this.type});
 	},
 
 	// @method addHooks(): void
@@ -134,7 +134,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.edited = false;
 			}
 		});
-		this._map.fire(L.Draw.Event.EDITED, { layers: editedLayers });
+		this._map.fire(L.Draw.Event.EDITED, {layers: editedLayers});
 	},
 
 	_backupLayer: function (layer) {
@@ -184,7 +184,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.setLatLng(this._uneditedLayerProps[id].latlng);
 			}
 
-			layer.fire('revert-edited', { layer: layer });
+			layer.fire('revert-edited', {layer: layer});
 		}
 	},
 
@@ -274,7 +274,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 	_onMarkerDragEnd: function (e) {
 		var layer = e.target;
 		layer.edited = true;
-		this._map.fire(L.Draw.Event.EDITMOVE, { layer: layer });
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: layer});
 	},
 
 	_onTouchMove: function (e) {
