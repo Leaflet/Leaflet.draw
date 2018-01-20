@@ -1,7 +1,7 @@
 {
   "name": "leaflet-draw",
   "description": "Vector drawing plugin for Leaflet",
-  "version": "0.4.14",
+  "version": "1.0.0",
   "main": [
     "dist/leaflet.draw.js",
     "dist/leaflet.draw.css",
@@ -48,7 +48,7 @@
     "url": "https://github.com/Leaflet/Leaflet.draw.git"
   },
   "dependencies": {
-    "leaflet": ">=0.7.0 <1.1"
+    "leaflet": ">=0.7.0"
   },
   "devDependencies": {
     "eslint": "~3.5.0",
