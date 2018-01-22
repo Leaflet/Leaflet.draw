@@ -1,0 +1,361 @@
+/*
+LESS variables are information about icon's compiled state, stored under its original file name
+
+.icon-home {
+  width: @icon-home-width;
+}
+
+The large array-like variables contain all information about a single icon
+@icon-home: x y offset_x offset_y width height total_width total_height image_path name;
+
+At the bottom of this section, we provide information about the spritesheet itself
+@spritesheet: width height image @spritesheet-sprites;
+*/
+@circle-marker-name: 'circle-marker';
+@circle-marker-x: 0px;
+@circle-marker-y: 0px;
+@circle-marker-offset-x: 0px;
+@circle-marker-offset-y: 0px;
+@circle-marker-width: 30px;
+@circle-marker-height: 30px;
+@circle-marker-total-width: 30px;
+@circle-marker-total-height: 270px;
+@circle-marker-image: './sprite.png';
+@circle-marker: 0px 0px 0px 0px 30px 30px 30px 270px './sprite.png' 'circle-marker';
+@circle-name: 'circle';
+@circle-x: 0px;
+@circle-y: 30px;
+@circle-offset-x: 0px;
+@circle-offset-y: -30px;
+@circle-width: 30px;
+@circle-height: 30px;
+@circle-total-width: 30px;
+@circle-total-height: 270px;
+@circle-image: './sprite.png';
+@circle: 0px 30px 0px -30px 30px 30px 30px 270px './sprite.png' 'circle';
+@edit-name: 'edit';
+@edit-x: 0px;
+@edit-y: 60px;
+@edit-offset-x: 0px;
+@edit-offset-y: -60px;
+@edit-width: 30px;
+@edit-height: 30px;
+@edit-total-width: 30px;
+@edit-total-height: 270px;
+@edit-image: './sprite.png';
+@edit: 0px 60px 0px -60px 30px 30px 30px 270px './sprite.png' 'edit';
+@line-name: 'line';
+@line-x: 0px;
+@line-y: 90px;
+@line-offset-x: 0px;
+@line-offset-y: -90px;
+@line-width: 30px;
+@line-height: 30px;
+@line-total-width: 30px;
+@line-total-height: 270px;
+@line-image: './sprite.png';
+@line: 0px 90px 0px -90px 30px 30px 30px 270px './sprite.png' 'line';
+@marker-name: 'marker';
+@marker-x: 0px;
+@marker-y: 120px;
+@marker-offset-x: 0px;
+@marker-offset-y: -120px;
+@marker-width: 30px;
+@marker-height: 30px;
+@marker-total-width: 30px;
+@marker-total-height: 270px;
+@marker-image: './sprite.png';
+@marker: 0px 120px 0px -120px 30px 30px 30px 270px './sprite.png' 'marker';
+@polygon-name: 'polygon';
+@polygon-x: 0px;
+@polygon-y: 150px;
+@polygon-offset-x: 0px;
+@polygon-offset-y: -150px;
+@polygon-width: 30px;
+@polygon-height: 30px;
+@polygon-total-width: 30px;
+@polygon-total-height: 270px;
+@polygon-image: './sprite.png';
+@polygon: 0px 150px 0px -150px 30px 30px 30px 270px './sprite.png' 'polygon';
+@polyline-name: 'polyline';
+@polyline-x: 0px;
+@polyline-y: 180px;
+@polyline-offset-x: 0px;
+@polyline-offset-y: -180px;
+@polyline-width: 30px;
+@polyline-height: 30px;
+@polyline-total-width: 30px;
+@polyline-total-height: 270px;
+@polyline-image: './sprite.png';
+@polyline: 0px 180px 0px -180px 30px 30px 30px 270px './sprite.png' 'polyline';
+@rectangle-name: 'rectangle';
+@rectangle-x: 0px;
+@rectangle-y: 210px;
+@rectangle-offset-x: 0px;
+@rectangle-offset-y: -210px;
+@rectangle-width: 30px;
+@rectangle-height: 30px;
+@rectangle-total-width: 30px;
+@rectangle-total-height: 270px;
+@rectangle-image: './sprite.png';
+@rectangle: 0px 210px 0px -210px 30px 30px 30px 270px './sprite.png' 'rectangle';
+@remove-name: 'remove';
+@remove-x: 0px;
+@remove-y: 240px;
+@remove-offset-x: 0px;
+@remove-offset-y: -240px;
+@remove-width: 30px;
+@remove-height: 30px;
+@remove-total-width: 30px;
+@remove-total-height: 270px;
+@remove-image: './sprite.png';
+@remove: 0px 240px 0px -240px 30px 30px 30px 270px './sprite.png' 'remove';
+@retina-circle-marker-name: 'retina_circle-marker';
+@retina-circle-marker-x: 0px;
+@retina-circle-marker-y: 0px;
+@retina-circle-marker-offset-x: 0px;
+@retina-circle-marker-offset-y: 0px;
+@retina-circle-marker-width: 60px;
+@retina-circle-marker-height: 60px;
+@retina-circle-marker-total-width: 60px;
+@retina-circle-marker-total-height: 540px;
+@retina-circle-marker-image: './sprite@2x.png';
+@retina-circle-marker: 0px 0px 0px 0px 60px 60px 60px 540px './sprite@2x.png' 'retina_circle-marker';
+@retina-circle-name: 'retina_circle';
+@retina-circle-x: 0px;
+@retina-circle-y: 60px;
+@retina-circle-offset-x: 0px;
+@retina-circle-offset-y: -60px;
+@retina-circle-width: 60px;
+@retina-circle-height: 60px;
+@retina-circle-total-width: 60px;
+@retina-circle-total-height: 540px;
+@retina-circle-image: './sprite@2x.png';
+@retina-circle: 0px 60px 0px -60px 60px 60px 60px 540px './sprite@2x.png' 'retina_circle';
+@retina-edit-name: 'retina_edit';
+@retina-edit-x: 0px;
+@retina-edit-y: 120px;
+@retina-edit-offset-x: 0px;
+@retina-edit-offset-y: -120px;
+@retina-edit-width: 60px;
+@retina-edit-height: 60px;
+@retina-edit-total-width: 60px;
+@retina-edit-total-height: 540px;
+@retina-edit-image: './sprite@2x.png';
+@retina-edit: 0px 120px 0px -120px 60px 60px 60px 540px './sprite@2x.png' 'retina_edit';
+@retina-line-name: 'retina_line';
+@retina-line-x: 0px;
+@retina-line-y: 180px;
+@retina-line-offset-x: 0px;
+@retina-line-offset-y: -180px;
+@retina-line-width: 60px;
+@retina-line-height: 60px;
+@retina-line-total-width: 60px;
+@retina-line-total-height: 540px;
+@retina-line-image: './sprite@2x.png';
+@retina-line: 0px 180px 0px -180px 60px 60px 60px 540px './sprite@2x.png' 'retina_line';
+@retina-marker-name: 'retina_marker';
+@retina-marker-x: 0px;
+@retina-marker-y: 240px;
+@retina-marker-offset-x: 0px;
+@retina-marker-offset-y: -240px;
+@retina-marker-width: 60px;
+@retina-marker-height: 60px;
+@retina-marker-total-width: 60px;
+@retina-marker-total-height: 540px;
+@retina-marker-image: './sprite@2x.png';
+@retina-marker: 0px 240px 0px -240px 60px 60px 60px 540px './sprite@2x.png' 'retina_marker';
+@retina-polygon-name: 'retina_polygon';
+@retina-polygon-x: 0px;
+@retina-polygon-y: 300px;
+@retina-polygon-offset-x: 0px;
+@retina-polygon-offset-y: -300px;
+@retina-polygon-width: 60px;
+@retina-polygon-height: 60px;
+@retina-polygon-total-width: 60px;
+@retina-polygon-total-height: 540px;
+@retina-polygon-image: './sprite@2x.png';
+@retina-polygon: 0px 300px 0px -300px 60px 60px 60px 540px './sprite@2x.png' 'retina_polygon';
+@retina-polyline-name: 'retina_polyline';
+@retina-polyline-x: 0px;
+@retina-polyline-y: 360px;
+@retina-polyline-offset-x: 0px;
+@retina-polyline-offset-y: -360px;
+@retina-polyline-width: 60px;
+@retina-polyline-height: 60px;
+@retina-polyline-total-width: 60px;
+@retina-polyline-total-height: 540px;
+@retina-polyline-image: './sprite@2x.png';
+@retina-polyline: 0px 360px 0px -360px 60px 60px 60px 540px './sprite@2x.png' 'retina_polyline';
+@retina-rectangle-name: 'retina_rectangle';
+@retina-rectangle-x: 0px;
+@retina-rectangle-y: 420px;
+@retina-rectangle-offset-x: 0px;
+@retina-rectangle-offset-y: -420px;
+@retina-rectangle-width: 60px;
+@retina-rectangle-height: 60px;
+@retina-rectangle-total-width: 60px;
+@retina-rectangle-total-height: 540px;
+@retina-rectangle-image: './sprite@2x.png';
+@retina-rectangle: 0px 420px 0px -420px 60px 60px 60px 540px './sprite@2x.png' 'retina_rectangle';
+@retina-remove-name: 'retina_remove';
+@retina-remove-x: 0px;
+@retina-remove-y: 480px;
+@retina-remove-offset-x: 0px;
+@retina-remove-offset-y: -480px;
+@retina-remove-width: 60px;
+@retina-remove-height: 60px;
+@retina-remove-total-width: 60px;
+@retina-remove-total-height: 540px;
+@retina-remove-image: './sprite@2x.png';
+@retina-remove: 0px 480px 0px -480px 60px 60px 60px 540px './sprite@2x.png' 'retina_remove';
+@spritesheet-width: 30px;
+@spritesheet-height: 270px;
+@spritesheet-image: './sprite.png';
+@spritesheet-sprites: @circle-marker @circle @edit @line @marker @polygon @polyline @rectangle @remove;
+@spritesheet: 30px 270px './sprite.png' @spritesheet-sprites;
+@retina-spritesheet-width: 60px;
+@retina-spritesheet-height: 540px;
+@retina-spritesheet-image: './sprite@2x.png';
+@retina-spritesheet-sprites: @retina-circle-marker @retina-circle @retina-edit @retina-line @retina-marker @retina-polygon @retina-polyline @retina-rectangle @retina-remove;
+@retina-spritesheet: 60px 540px './sprite@2x.png' @retina-spritesheet-sprites;
+
+/*
+These "retina group" variables are mappings for the naming and pairing of normal and retina sprites.
+
+The list formatted variables are intended for mixins like `retina-sprite` and `retina-sprites`.
+*/
+@circle-marker-group-name: 'circle-marker';
+@circle-marker-group: 'circle-marker' @circle-marker @retina-circle-marker;
+@circle-group-name: 'circle';
+@circle-group: 'circle' @circle @retina-circle;
+@edit-group-name: 'edit';
+@edit-group: 'edit' @edit @retina-edit;
+@line-group-name: 'line';
+@line-group: 'line' @line @retina-line;
+@marker-group-name: 'marker';
+@marker-group: 'marker' @marker @retina-marker;
+@polygon-group-name: 'polygon';
+@polygon-group: 'polygon' @polygon @retina-polygon;
+@polyline-group-name: 'polyline';
+@polyline-group: 'polyline' @polyline @retina-polyline;
+@rectangle-group-name: 'rectangle';
+@rectangle-group: 'rectangle' @rectangle @retina-rectangle;
+@remove-group-name: 'remove';
+@remove-group: 'remove' @remove @retina-remove;
+@retina-groups: @circle-marker-group @circle-group @edit-group @line-group @marker-group @polygon-group @polyline-group @rectangle-group @remove-group;
+
+/*
+The provided classes are intended to be used with the array-like variables
+
+.icon-home {
+  .sprite-width(@icon-home);
+}
+.icon-email {
+  .sprite(@icon-email);
+}
+
+Example usage in HTML:
+
+`display: block` sprite:
+<div class="icon-home"></div>
+
+To change `display` (e.g. `display: inline-block;`), we suggest using a common CSS class:
+
+// CSS
+.icon {
+  display: inline-block;
+}
+
+// HTML
+<i class="icon icon-home"></i>
+*/
+.sprite-width(@sprite) {
+  width: extract(@sprite, 5);
+}
+
+.sprite-height(@sprite) {
+  height: extract(@sprite, 6);
+}
+
+.sprite-position(@sprite) {
+  @sprite-offset-x: extract(@sprite, 3);
+  @sprite-offset-y: extract(@sprite, 4);
+  background-position: @sprite-offset-x @sprite-offset-y;
+}
+
+.sprite-image(@sprite) {
+  @sprite-image: extract(@sprite, 9);
+  @sprite-image-bare: ~`"@{sprite-image}".slice(1, -1)`;
+  background-image: url(@sprite-image-bare);
+}
+
+.sprite(@sprite) {
+  .sprite-image(@sprite);
+  .sprite-position(@sprite);
+  .sprite-width(@sprite);
+  .sprite-height(@sprite);
+}
+
+/*
+The `retina-sprite` class sets up rules and a media query for a sprite/retina sprite.
+  It should be used with a "retina group" variable.
+
+The media query is from CSS Tricks: https://css-tricks.com/snippets/css/retina-display-media-query/
+
+@icon-home-group: 'icon-home' @icon-home @icon-home-2x;
+
+.icon-home {
+  .retina-sprite(@icon-home-group);
+}
+*/
+.sprite-background-size(@sprite) {
+  @sprite-total-width: extract(@sprite, 7);
+  @sprite-total-height: extract(@sprite, 8);
+  background-size: @sprite-total-width @sprite-total-height;
+}
+
+.retina-sprite(@retina-group) {
+  @normal-sprite: extract(@retina-group, 2);
+  @retina-sprite: extract(@retina-group, 3);
+  .sprite(@normal-sprite);
+
+  @media (-webkit-min-device-pixel-ratio: 2),
+         (min-resolution: 192dpi) {
+    .sprite-image(@retina-sprite);
+    .sprite-background-size(@normal-sprite);
+  }
+}
+
+/*
+The `.sprites` mixin generates identical output to the CSS template
+  but can be overridden inside of LESS
+
+This must be run when you have at least 2 sprites.
+  If run with a single sprite, then there will be reference errors.
+
+.sprites(@spritesheet-sprites);
+*/
+.sprites(@sprites, @i: 1) when (@i <= length(@sprites)) {
+  @sprite: extract(@sprites, @i);
+  @sprite-name: e(extract(@sprite, 10));
+  .@{sprite-name} {
+    .sprite(@sprite);
+  }
+  .sprites(@sprites, @i + 1);
+}
+
+/*
+The `.retina-sprites` mixin generates a CSS rule and media query for retina groups
+  This yields the same output as CSS retina template but can be overridden in LESS
+
+.retina-sprites(@retina-groups);
+*/
+.retina-sprites(@retina-groups, @i: 1) when (@i <= length(@retina-groups)) {
+  @retina-group: extract(@retina-groups, @i);
+  @sprite-name: e(extract(@retina-group, 1));
+  .@{sprite-name} {
+    .retina-sprite(@retina-group);
+  }
+  .retina-sprites(@retina-groups, @i + 1);
+}
