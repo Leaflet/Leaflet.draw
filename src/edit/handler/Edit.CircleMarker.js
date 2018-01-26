@@ -18,15 +18,15 @@ L.Edit.CircleMarker = L.Edit.SimpleShape.extend({
 
 	_move: function (latlng) {
 		if (this._resizeMarkers.length) {
-				var resizemarkerPoint = this._getResizeMarkerPoint(latlng);
-				// Move the resize marker
-				this._resizeMarkers[0].setLatLng(resizemarkerPoint);
+			var resizemarkerPoint = this._getResizeMarkerPoint(latlng);
+			// Move the resize marker
+			this._resizeMarkers[0].setLatLng(resizemarkerPoint);
 		}
 
 		// Move the circle
 		this._shape.setLatLng(latlng);
 
-		this._map.fire(L.Draw.Event.EDITMOVE, { layer: this._shape });
+		this._map.fire(L.Draw.Event.EDITMOVE, {layer: this._shape});
 	},
 });
 

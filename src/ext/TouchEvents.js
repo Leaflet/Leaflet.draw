@@ -211,18 +211,18 @@ L.Marker.Touch = L.Marker.extend({
 
 		var icon = this._icon,
 			events = ['dblclick',
-					  'mousedown',
-					  'mouseover',
-					  'mouseout',
-					  'contextmenu',
-					  'touchstart',
-					  'touchend',
-					  'touchmove'];
+				'mousedown',
+				'mouseover',
+				'mouseout',
+				'contextmenu',
+				'touchstart',
+				'touchend',
+				'touchmove'];
 		if (this._detectIE) {
 			events.concat(['MSPointerDown',
-						   'MSPointerUp',
-						   'MSPointerMove',
-						   'MSPointerCancel']);
+				'MSPointerUp',
+				'MSPointerMove',
+				'MSPointerCancel']);
 		} else {
 			events.concat(['touchcancel']);
 		}

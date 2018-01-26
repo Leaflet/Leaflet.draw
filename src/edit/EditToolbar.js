@@ -95,12 +95,12 @@ L.EditToolbar = L.Toolbar.extend({
 		];
 
 		if (handler.removeAllLayers) {
-			 actions.push({
-                 title: L.drawLocal.edit.toolbar.actions.clearAll.title,
-                 text: L.drawLocal.edit.toolbar.actions.clearAll.text,
-                 callback: this._clearAllLayers,
-                 context: this
-             });
+			actions.push({
+				title: L.drawLocal.edit.toolbar.actions.clearAll.title,
+				text: L.drawLocal.edit.toolbar.actions.clearAll.text,
+				callback: this._clearAllLayers,
+				context: this
+			});
 		}
 
 		return actions;
@@ -145,7 +145,7 @@ L.EditToolbar = L.Toolbar.extend({
 		}
 	},
 
-	_clearAllLayers:function(){
+	_clearAllLayers: function () {
 		this._activeMode.handler.removeAllLayers();
 		if (this._activeMode) {
 			this._activeMode.handler.disable();

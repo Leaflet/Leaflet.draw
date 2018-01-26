@@ -19,13 +19,13 @@ L.Draw.Feature = L.Handler.extend({
 		}
 		L.setOptions(this, options);
 
-        var version = L.version.split(".");
-        //If Version is >= 1.2.0
-        if(parseInt(version[0],10) === 1 && parseInt(version[1],10) >= 2 ) {
-            L.Draw.Feature.include(L.Evented.prototype);
-        } else {
-            L.Draw.Feature.include(L.Mixin.Events);
-        }
+		var version = L.version.split('.');
+		//If Version is >= 1.2.0
+		if (parseInt(version[0], 10) === 1 && parseInt(version[1], 10) >= 2) {
+			L.Draw.Feature.include(L.Evented.prototype);
+		} else {
+			L.Draw.Feature.include(L.Mixin.Events);
+		}
 	},
 
 	// @method enable(): void
@@ -37,9 +37,9 @@ L.Draw.Feature = L.Handler.extend({
 
 		L.Handler.prototype.enable.call(this);
 
-		this.fire('enabled', { handler: this.type });
+		this.fire('enabled', {handler: this.type});
 
-		this._map.fire(L.Draw.Event.DRAWSTART, { layerType: this.type });
+		this._map.fire(L.Draw.Event.DRAWSTART, {layerType: this.type});
 	},
 
 	// @method disable(): void
@@ -50,9 +50,9 @@ L.Draw.Feature = L.Handler.extend({
 
 		L.Handler.prototype.disable.call(this);
 
-		this._map.fire(L.Draw.Event.DRAWSTOP, { layerType: this.type });
+		this._map.fire(L.Draw.Event.DRAWSTOP, {layerType: this.type});
 
-		this.fire('disabled', { handler: this.type });
+		this.fire('disabled', {handler: this.type});
 	},
 
 	// @method addHooks(): void
@@ -91,13 +91,13 @@ L.Draw.Feature = L.Handler.extend({
 	},
 
 	_fireCreatedEvent: function (layer) {
-		this._map.fire(L.Draw.Event.CREATED, { layer: layer, layerType: this.type });
+		this._map.fire(L.Draw.Event.CREATED, {layer: layer, layerType: this.type});
 	},
 
 	// Cancel drawing when the escape key is pressed
 	_cancelDrawing: function (e) {
 		if (e.keyCode === 27) {
-			this._map.fire('draw:canceled', { layerType: this.type });
+			this._map.fire('draw:canceled', {layerType: this.type});
 			this.disable();
 		}
 	}

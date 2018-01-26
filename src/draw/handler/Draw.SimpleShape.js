@@ -30,7 +30,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
 
-			this._tooltip.updateContent({ text: this._initialLabelText });
+			this._tooltip.updateContent({text: this._initialLabelText});
 
 			this._map
 				.on('mousedown', this._onMouseDown, this)
@@ -42,7 +42,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 			// and that will cause document.touchend to fire and will stop the drawing
 			// (circle, rectangle) in touch mode.
 			// (update): we have to send passive now to prevent scroll, because by default it is {passive: true} now, which means,
-			// handler can't event.preventDefault 
+			// handler can't event.preventDefault
 			// check the news https://developers.google.com/web/updates/2016/06/passive-event-listeners
 			document.addEventListener('touchstart', L.DomEvent.preventDefault, {passive: false});
 		}

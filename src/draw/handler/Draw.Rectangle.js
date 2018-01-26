@@ -32,7 +32,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 
 		L.Draw.SimpleShape.prototype.initialize.call(this, map, options);
 	},
-    
+
 	// @method disable(): void
 	disable: function () {
 		if (!this._enabled) {
@@ -42,13 +42,13 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 		this._isCurrentlyTwoClickDrawing = false;
 		L.Draw.SimpleShape.prototype.disable.call(this);
 	},
-    
+
 	_onMouseUp: function (e) {
 		if (!this._shape && !this._isCurrentlyTwoClickDrawing) {
 			this._isCurrentlyTwoClickDrawing = true;
 			return;
 		}
-		
+
 		// Make sure closing click is on map
 		if (this._isCurrentlyTwoClickDrawing && !_hasAncestor(e.target, 'leaflet-pane')) {
 			return;
@@ -56,7 +56,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 
 		L.Draw.SimpleShape.prototype._onMouseUp.call(this);
 	},
-    
+
 	_drawShape: function (latlng) {
 		if (!this._shape) {
 			this._shape = new L.Rectangle(new L.LatLngBounds(this._startLatLng, latlng), this.options.shapeOptions);
@@ -80,7 +80,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 		if (shape) {
 			latLngs = this._shape._defaultShape ? this._shape._defaultShape() : this._shape.getLatLngs();
 			area = L.GeometryUtil.geodesicArea(latLngs);
-			subtext = showArea ? L.GeometryUtil.readableArea(area, this.options.metric) : ''
+			subtext = showArea ? L.GeometryUtil.readableArea(area, this.options.metric) : '';
 		}
 
 		return {
@@ -90,7 +90,9 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	}
 });
 
-function _hasAncestor (el, cls) {
-	while ((el = el.parentElement) && !el.classList.contains(cls));
+function _hasAncestor(el, cls) {
+	while ((el = el.parentElement) && !el.classList.contains(cls)) {
+		;
+	}
 	return el;
 }
