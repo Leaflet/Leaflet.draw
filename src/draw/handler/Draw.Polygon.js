@@ -41,6 +41,21 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		this.type = L.Draw.Polygon.TYPE;
 	},
 
+	// @method completeShape(): void
+	// Closes the polygon between the first and last points
+	completeShape: function () {
+		if (this._markers.length <= 2) {
+			return;
+		}
+
+		this._fireCreatedEvent();
+		this.disable();
+
+		if (this.options.repeatMode) {
+			this.enable();
+		}
+	},
+
 	_updateFinishHandler: function () {
 		var markerCount = this._markers.length;
 
