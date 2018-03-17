@@ -137,7 +137,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		}
 
 		if (path) {
-			if (poly.options.editing.className) {
+			if (poly.options.editing && poly.options.editing.className) {
 				if (poly.options.original.className) {
 					poly.options.original.className.split(' ').forEach(function (className) {
 						L.DomUtil.removeClass(path, className);
@@ -169,7 +169,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		var path = poly._path;
 
 		if (path) {
-			if (poly.options.editing.className) {
+			if (poly.options.editing && poly.options.editing.className) {
 				poly.options.editing.className.split(' ').forEach(function (className) {
 					L.DomUtil.removeClass(path, className);
 				});
