@@ -200,7 +200,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// @method completeShape(): void
 	// Closes the polyline between the first and last points
 	completeShape: function () {
-		if (this._markers.length <= 1) {
+		if (this._markers.length <= 1 || !this._shapeIsValid()) {
 			return;
 		}
 
