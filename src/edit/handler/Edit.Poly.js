@@ -187,6 +187,10 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			poly._map.removeLayer(this._markerGroup);
 			delete this._markerGroup;
 			delete this._markers;
+			if(poly.dragMarker){
+				poly._map.removeLayer(poly.dragMarker);
+				delete poly.dragMarker
+			}
 		}
 	},
 
@@ -203,7 +207,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		}
 		this._markers = [];
 
-		var latlngs = this._defaultShape(),
+		var latlngs = this._poly._defaultShape(),
 			i, j, len, marker;
 
 		for (i = 0, len = latlngs.length; i < len; i++) {
@@ -227,8 +231,73 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			this._createMiddleMarker(markerLeft, markerRight);
 			this._updatePrevNext(markerLeft, markerRight);
 		}
+		!this._poly.dragMarker && this._createDragMarker();
 	},
+	_createDragMarker:function () {
+		//add the marker, the polyline or polygon can be moved
+		var latlng = this._poly.getBounds().getCenter();
+		var dragMarker = new L.Marker.Touch(latlng, {
+			draggable: true,
+			icon: this.options.icon
+		});
+		dragMarker._origLatLng = latlng;
+		dragMarker.setOpacity(0.6);
+		this._poly.dragMarker = dragMarker;
+		this.lastDragLatlng = latlng;
 
+		var me = this;
+		onDragStart = function () {
+			me._markerGroup.clearLayers();
+		};
+		onDrag = function (e) {
+			var target = e.target;
+			var latLng = target.getLatLng();
+			var moveX,moveY;
+			if(me.lastDragLatlng) {
+				moveX = latLng.lng - me.lastDragLatlng.lng;
+				moveY = latLng.lat - me.lastDragLatlng.lat;
+				me.lastDragLatlng = latLng;
+			}
+			var lastFeatureLatlngs = me._poly._defaultShape();
+			var newLatlngs = [],lastLatLng;
+			for(var i=0; i<lastFeatureLatlngs.length; i++) {
+				lastLatLng = lastFeatureLatlngs[i];
+				newLatlngs.push([lastLatLng.lat+moveY, lastLatLng.lng+moveX]);
+			}
+			me._poly.setLatLngs(newLatlngs);
+			me._poly._convertLatLngs(newLatlngs);
+			me._poly.redraw();
+			me._poly._map.fire(L.Draw.Event.EDITMOVE, { layer: me._poly });
+		};
+
+		onDragEnd = function () {
+			me._initMarkers();
+			me._poly._map.fire(L.Draw.Event.EDITMOVE, { layer: me._poly });
+		};
+
+		onClick = function () {
+			onDragStart.call(this);
+			onDragEnd.call(this);
+			this._fireEdit();
+		};
+
+		dragMarker
+			.on('click', onClick, this)
+			.on('dragstart', onDragStart, this)
+			.on('drag', onDrag, this)
+			.on('dragend', onDragEnd, this)
+			.on('touchmove', onDragStart, this);
+
+		// this._poly.dragMarker && this._map.removeLayer(this._poly.dragMarker);
+		this._map.addLayer(dragMarker);
+	},
+	_refreshDragMarker: function () {
+		if(this._poly.dragMarker) {
+			var latLng = this._poly.getBounds().getCenter();
+			this._poly.dragMarker.setLatLng(latLng);
+			this.lastDragLatlng = latLng;
+		}
+	},
 	_createMarker: function (latlng, index) {
 		// Extending L.Marker in TouchEvents.js to include touch.
 		var marker = new L.Marker.Touch(latlng, {
@@ -258,7 +327,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	},
 
 	_spliceLatLngs: function () {
-		var latlngs = this._defaultShape();
+		var latlngs = this._poly._defaultShape();
 		var removed = [].splice.apply(latlngs, arguments);
 		this._poly._convertLatLngs(latlngs, true);
 		this._poly.redraw();
@@ -345,6 +414,8 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		this._poly._convertLatLngs(latlngs, true);
 		this._poly.redraw();
 		this._poly.fire('editdrag');
+		this._refreshDragMarker();
+		this._poly._map.fire(L.Draw.Event.EDITVERTEX, { layers: this._markerGroup, poly: this._poly });
 	},
 
 	_onMarkerClick: function (e) {
@@ -353,7 +424,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			marker = e.target;
 
 		// If removing this point would create an invalid polyline/polygon don't remove
-		if (this._defaultShape().length < minPoints) {
+		if (this._poly._defaultShape().length < minPoints) {
 			return;
 		}
 
