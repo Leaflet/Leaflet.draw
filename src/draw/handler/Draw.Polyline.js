@@ -97,24 +97,24 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			}
 
 			this._mouseMarker
-                .on('mouseout', this._onMouseOut, this)
-                .on('mousemove', this._onMouseMove, this) // Necessary to prevent 0.8 stutter
-                .on('mousedown', this._onMouseDown, this)
-                .on('mouseup', this._onMouseUp, this) // Necessary for 0.8 compatibility
-                .on('touchend', this._onTouchEnd, this)
-                .on('touchmove', this._onTouchMove, this)
-                .on('touchstart', this._onTouchStart, this)
-                .on('touchcancel', this._onTouchCancel, this)
-                .addTo(this._map);
+				.on('mouseout', this._onMouseOut, this)
+				.on('mousemove', this._onMouseMove, this) // Necessary to prevent 0.8 stutter
+				.on('mousedown', this._onMouseDown, this)
+				.on('mouseup', this._onMouseUp, this) // Necessary for 0.8 compatibility
+				.on('touchend', this._onTouchEnd, this)
+				.on('touchmove', this._onTouchMove, this)
+				.on('touchstart', this._onTouchStart, this)
+				.on('touchcancel', this._onTouchCancel, this)
+				.addTo(this._map);
 
-            this._map
-                .on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
-                .on('mousemove', this._onMouseMove, this)
-                .on('zoomlevelschange', this._onZoomEnd, this)
-                .on('zoomend', this._onZoomEnd, this)
-                .on('touchmove', this._onTouchMove, this)
-                .on('touchstart', this._onTouchStart, this)
-                .on('touchcancel', this._onTouchCancel, this);
+			this._map
+				.on('mouseup', this._onMouseUp, this) // Necessary for 0.7 compatibility
+				.on('mousemove', this._onMouseMove, this)
+				.on('zoomlevelschange', this._onZoomEnd, this)
+				.on('zoomend', this._onZoomEnd, this)
+				.on('touchmove', this._onTouchMove, this)
+				.on('touchstart', this._onTouchStart, this)
+				.on('touchcancel', this._onTouchCancel, this);
 
 		}
 	},
@@ -137,30 +137,30 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		delete this._poly;
 
 		this._mouseMarker
-            .off('mousedown', this._onMouseDown, this)
-            .off('mouseout', this._onMouseOut, this)
-            .off('mouseup', this._onMouseUp, this)
-            .off('mousemove', this._onMouseMove, this)
-            .off('touchend', this._onTouchEnd, this)
-            .off('touchmove', this._onTouchMove, this)
-            .off('touchstart', this._onTouchStart, this)
-            .off('touchcancel', this._onTouchCancel, this);
-        this._map.removeLayer(this._mouseMarker);
-        delete this._mouseMarker;
+			.off('mousedown', this._onMouseDown, this)
+			.off('mouseout', this._onMouseOut, this)
+			.off('mouseup', this._onMouseUp, this)
+			.off('mousemove', this._onMouseMove, this)
+			.off('touchend', this._onTouchEnd, this)
+			.off('touchmove', this._onTouchMove, this)
+			.off('touchstart', this._onTouchStart, this)
+			.off('touchcancel', this._onTouchCancel, this);
+		this._map.removeLayer(this._mouseMarker);
+		delete this._mouseMarker;
 
-        // clean up DOM
-        this._clearGuides();
+		// clean up DOM
+		this._clearGuides();
 
-        this._map
-            .off('mouseup', this._onMouseUp, this)
-            .off('mousemove', this._onMouseMove, this)
-            .off('zoomlevelschange', this._onZoomEnd, this)
-            .off('zoomend', this._onZoomEnd, this)
-            .off('touchend', this._onTouchEnd, this)
-            .off('touchmove', this._onTouchMove, this)
-            .off('touchstart', this._onTouchStart, this)
-            .off('touchcancel', this._onTouchCancel, this)
-            .off('click', this._onTouchStart, this);
+		this._map
+			.off('mouseup', this._onMouseUp, this)
+			.off('mousemove', this._onMouseMove, this)
+			.off('zoomlevelschange', this._onZoomEnd, this)
+			.off('zoomend', this._onZoomEnd, this)
+			.off('touchend', this._onTouchEnd, this)
+			.off('touchmove', this._onTouchMove, this)
+			.off('touchstart', this._onTouchStart, this)
+			.off('touchcancel', this._onTouchCancel, this)
+			.off('click', this._onTouchStart, this);
 	},
 
 	// @method deleteLastVertex(): void
@@ -328,50 +328,50 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// ontouch prevented by clickHandled flag because some browsers fire both click/touch events,
 	// causing unwanted behavior
 	_onTouchStart: function (e) {
-        var originalEvent = e.originalEvent;
-        var touch = originalEvent.changedTouches && originalEvent.changedTouches[0]
-        var clientX = touch.clientX;
-        var clientY = touch.clientY;
-        if (originalEvent.touches && originalEvent.touches[0] && !this._clickHandled && !this._touchHandled && !this._disableMarkers) {
-            this._onTouchMove(e);
-            this._touchHandled = true;
-            this._disableNewMarkers();
-            this._startPoint.call(this, clientX, clientY);
-        }
-    },
+		var originalEvent = e.originalEvent;
+		var touch = originalEvent.changedTouches && originalEvent.changedTouches[0]
+		var clientX = touch.clientX;
+		var clientY = touch.clientY;
+		if (originalEvent.touches && originalEvent.touches[0] && !this._clickHandled && !this._touchHandled && !this._disableMarkers) {
+			this._onTouchMove(e);
+			this._touchHandled = true;
+			this._disableNewMarkers();
+			this._startPoint.call(this, clientX, clientY);
+		}
+	},
 
-    _onTouchEnd: function (e) {
-        var originalEvent = e.originalEvent;
-        var touch = originalEvent.changedTouches && originalEvent.changedTouches[0]
-        var clientX = touch.clientX;
-        var clientY = touch.clientY;
-        // touchend event does not have 'latlng' nor necessarily 'touches' list. 
-        // We must add 'latlng' so that '_endpoint' can add marker
-        var newPos = this._map.mouseEventToLayerPoint(touch);
-        e.latlng = this._map.layerPointToLatLng(newPos);
-        this._endPoint.call(this, clientX, clientY, e);
-        this._touchHandled = null;
-        this._clearGuides();
-    },
+	_onTouchEnd: function (e) {
+		var originalEvent = e.originalEvent;
+		var touch = originalEvent.changedTouches && originalEvent.changedTouches[0]
+		var clientX = touch.clientX;
+		var clientY = touch.clientY;
+		// touchend event does not have 'latlng' nor necessarily 'touches' list. 
+		// We must add 'latlng' so that '_endpoint' can add marker
+		var newPos = this._map.mouseEventToLayerPoint(touch);
+		e.latlng = this._map.layerPointToLatLng(newPos);
+		this._endPoint.call(this, clientX, clientY, e);
+		this._touchHandled = null;
+		this._clearGuides();
+	},
 
-    // Not tested, should be safe to reset everything
-    _onTouchCancel: function (e) {
-        this._enableNewMarkers();
-        this._mouseDownOrigin = null;
-        this._touchHandled = null;
-    },
+	// Not tested, should be safe to reset everything
+	_onTouchCancel: function (e) {
+		this._enableNewMarkers();
+		this._mouseDownOrigin = null;
+		this._touchHandled = null;
+	},
 
-    // Direct copy from _onMouseMove, not sure how applicable all parts are.
-    _onTouchMove: function (e) {
-        var newPos = this._map.mouseEventToLayerPoint(e.originalEvent.touches[0]);
-        var latlng = this._map.layerPointToLatLng(newPos);
+	// Direct copy from _onMouseMove, not sure how applicable all parts are.
+	_onTouchMove: function (e) {
+		var newPos = this._map.mouseEventToLayerPoint(e.originalEvent.touches[0]);
+		var latlng = this._map.layerPointToLatLng(newPos);
 
-        // Save latlng
-        // should this be moved to _updateGuide() ?
-        this._currentLatLng = latlng;
-        this._updateTooltip(latlng);
-        L.DomEvent.preventDefault(e.originalEvent);
-    },
+		// Save latlng
+		// should this be moved to _updateGuide() ?
+		this._currentLatLng = latlng;
+		this._updateTooltip(latlng);
+		L.DomEvent.preventDefault(e.originalEvent);
+	},
 
 	_onMouseOut: function () {
 		if (this._tooltip) {
