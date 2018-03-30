@@ -215,6 +215,11 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		}
 
+		// Set movable option for editing mode
+		if (this.options.movable) {
+			layer.options.movable = this.options.movable;
+		}
+
 		if (layer instanceof L.Marker) {
 			if (layer.editing) {
 				layer.editing.enable();
