@@ -58,10 +58,13 @@ L.Map.TouchExtend = L.Handler.extend({
 		// its touch list.
 		var touchEvent = {};
 		if (typeof e.touches !== 'undefined') {
-			if (!e.touches.length) {
-				return;
+			if (e.touches.length) {
+				touchEvent = e.touches[0];
+			} else if (type === 'touchend' && e.changedTouches.length) {
+				touchEvent = e.changedTouches[0];
+			} else {
+				return
 			}
-			touchEvent = e.touches[0];
 		} else if (e.pointerType === 'touch') {
 			touchEvent = e;
 			if (!this._filterClick(e)) {
