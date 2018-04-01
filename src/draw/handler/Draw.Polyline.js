@@ -342,9 +342,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	_onTouchStart: function (e) {
 		var originalEvent = e.originalEvent;
 		var touch = originalEvent.changedTouches && originalEvent.changedTouches[0]
-		var clientX = touch.clientX;
-		var clientY = touch.clientY;
-		if (originalEvent.touches && originalEvent.touches[0] && !this._clickHandled && !this._touchHandled && !this._disableMarkers) {
+		if (touch && !this._clickHandled && !this._touchHandled && !this._disableMarkers) {
+			var clientX = touch.clientX;
+			var clientY = touch.clientY;
 			this._onTouchMove(e);
 			this._touchHandled = true;
 			this._disableNewMarkers();
