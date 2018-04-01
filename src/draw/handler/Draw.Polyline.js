@@ -309,22 +309,33 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_endPoint: function (clientX, clientY, e) {
-		if (this._mouseDownOrigin) {
-			var dragCheckDistance = L.point(clientX, clientY)
-				.distanceTo(this._mouseDownOrigin);
-			var lastPtDistance = this._calculateFinishDistance(e.latlng);
-			if (this.options.maxPoints > 1 && this.options.maxPoints == this._markers.length + 1) {
-				this.addVertex(e.latlng);
-				this._finishShape();
-			} else if (lastPtDistance < 10 && L.Browser.touch) {
-				this._finishShape();
-			} else if (Math.abs(dragCheckDistance) < 9 * (window.devicePixelRatio || 1)) {
-				this.addVertex(e.latlng);
-			}
-			this._enableNewMarkers(); // after a short pause, enable new markers
-		}
-		this._mouseDownOrigin = null;
-	},
+        if (this._mouseDownOrigin) {
+            var dragCheckDistance = L.point(clientX, clientY)
+                .distanceTo(this._mouseDownOrigin);
+            var lastPtDistance = this._calculateFinishDistance(e.latlng);
+            if (this.options.maxPoints > 1 && this.options.maxPoints == this._markers.length + 1) {
+                this.addVertex(e.latlng);
+                this._finishShape();
+                this._pointProcessed = true;
+            } else if (lastPtDistance < 10 && L.Browser.touch) {
+                this._finishShape();
+                this._pointProcessed = true;
+            } else if (Math.abs(dragCheckDistance) < 9 * (window.devicePixelRatio || 1)) {
+                this.addVertex(e.latlng);
+                this._pointProcessed = true;
+            }
+            this._enableNewMarkers(); // after a short pause, enable new markers
+        }
+        // We need to stopPropagation iff the event was touch and not a zoom/drag
+        // - stopPropagation so that other layers with e.g. pop-ups don't trigger
+        // - allow propagation for zoom/drag so that map updates correctly (zoom/drag handlers )
+        // Not using L.Browser.touch b/c it is misidentified on some desktop IE versions
+        if (this._pointProcessed && e.type === 'touchend') {
+            e.originalEvent.stopPropagation();
+        }
+        this._pointProcessed = null;
+        this._mouseDownOrigin = null;
+    },
 
 	// ontouch prevented by clickHandled flag because some browsers fire both click/touch events,
 	// causing unwanted behavior
