@@ -56,6 +56,10 @@ L.Edit.SimpleShape = L.Handler.extend({
 	// @method removeHooks(): void
 	// Remove listener hooks from this handler
 	removeHooks: function () {
+		if (!this_.map) {
+		  return;
+		}
+			
 		var shape = this._shape;
 
 		shape.setStyle(shape.options.original);
