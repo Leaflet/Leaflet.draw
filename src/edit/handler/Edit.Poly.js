@@ -427,6 +427,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			onDragEnd;
 
 		marker.setOpacity(0.6);
+		marker.setZIndexOffset(-1000);
 
 		marker1._middleRight = marker2._middleLeft = marker;
 
@@ -446,6 +447,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			this._markers.splice(i, 0, marker);
 
 			marker.setOpacity(1);
+			marker.setZIndexOffset(1000);
 
 			this._updateIndexes(i, 1);
 			marker2._index++;
