@@ -13,6 +13,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	options: {
 		allowIntersection: true,
 		repeatMode: false,
+		canContinue: true,
 		drawError: {
 			color: '#b00b00',
 			timeout: 2500
@@ -61,6 +62,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Polyline.TYPE;
+		this._continueHandlers = [];
 
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
 	},
@@ -96,6 +98,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				});
 			}
 
+			if (this.options.canContinue === true) {
+				this._hiddenPoly = null;
+				this._map.drawnItems.eachLayer(this._addContinueHandler, this);
+			}
+
 			this._mouseMarker
 				.on('mouseout', this._onMouseOut, this)
 				.on('mousemove', this._onMouseMove, this) // Necessary to prevent 0.8 stutter
@@ -111,11 +118,19 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 				.on('zoomend', this._onZoomEnd, this);
 
 		}
+
+		this._eachContinueHandler(function (handler) {
+			handler.addHooks();
+		});
 	},
 
 	// @method removeHooks(): void
 	// Remove listener hooks from this handler.
 	removeHooks: function () {
+		if (this._hiddenPoly) {
+			this._map.drawnItems.addLayer(this._hiddenPoly);
+		}
+
 		L.Draw.Feature.prototype.removeHooks.call(this);
 
 		this._clearHideErrorTimeout();
@@ -148,6 +163,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			.off('zoomend', this._onZoomEnd, this)
 			.off('touchstart', this._onTouch, this)
 			.off('click', this._onTouch, this);
+
+		this._removeContinueHandlers();
 	},
 
 	// @method deleteLastVertex(): void
@@ -221,8 +238,21 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			return;
 		}
 
+		var hidden = this._hiddenPoly;
+		var latlngs = this._poly._latlngs;
+
+		if (hidden) {
+			if (hidden.reversed) {
+				latlngs = latlngs.reverse();
+				delete hidden.reversed;
+			}
+			this._hiddenPoly.setLatLngs(latlngs);
+			this._map.drawnItems.addLayer(this._hiddenPoly);
+		}
+
 		this._fireCreatedEvent();
 		this.disable();
+
 		if (this.options.repeatMode) {
 			this.enable();
 		}
@@ -586,7 +616,158 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_fireCreatedEvent: function () {
-		var poly = new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions);
+		var poly;
+		if (this._hiddenPoly) {
+			poly = this._hiddenPoly;
+		} else {
+			poly = new this.Poly(this._poly.getLatLngs(), this.options.shapeOptions);
+		}
+		delete this._hiddenPoly;
 		L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
+	},
+
+	_addContinueHandler: function (layer) {
+		if (layer instanceof L.Polyline) {
+			this._continueHandlers.push(new L.Draw.PolylineContinue(layer, {}, this));
+			layer.on('vertex:click', this._continuePolyline, this);
+		}
+	},
+
+	_removeContinueHandlers: function () {
+		this._eachContinueHandler(function (handler) {
+			handler.removeHooks();
+			handler._polyline.off('vertex:click', this._continuePolyline, this);
+		});
+		this._continueHandlers = [];
+	},
+
+	_continuePolyline: function (e) {
+		this._hiddenPoly = e.target;
+		this._removeContinueHandlers();
+		this._map.drawnItems.removeLayer(this._hiddenPoly);
+
+		var latLngs = e.target._latlngs,
+			i;
+		if (e.index === 0) {
+			latLngs = latLngs.reverse();
+			this._hiddenPoly.reversed = true;
+		}
+
+		for (i = 0; i < latLngs.length; i++) {
+			this.addVertex(latLngs[i]);
+		}
+	},
+
+	_eachContinueHandler: function (callback) {
+		for (var i = 0; i < this._continueHandlers.length; i++) {
+			callback(this._continueHandlers[i]);
+		}
+	},
+
+	updateMarkers: function () {
+		this._eachContinueHandler(function (handler) {
+			handler.updateMarkers();
+		});
 	}
+
+});
+
+L.Draw.PolylineContinue = L.Handler.extend({
+	options: {
+		icon: new L.DivIcon({
+			iconSize: new L.Point(8, 8),
+			className: 'leaflet-div-icon leaflet-editing-icon'
+		}),
+		touchIcon: new L.DivIcon({
+			iconSize: new L.Point(20, 20),
+			className: 'leaflet-div-icon leaflet-editing-icon leaflet-touch-icon'
+		}),
+	},
+
+	initialize: function (polyline, options, parent) {
+		if (L.Browser.touch) {
+			this.options.icon = this.options.touchIcon;
+		}
+		this._polyline = polyline;
+		this._parent = parent;
+		L.setOptions(this, options);
+	},
+
+	addHooks: function () {
+		this._polyline.setStyle(this._polyline.options.editing);
+
+		if (this._polyline._map) {
+
+			this._map = this._polyline._map;
+
+			if (!this._markerGroup) {
+				this._initMarkers();
+			}
+			this._polyline._map.addLayer(this._markerGroup);
+		}
+	},
+
+	removeHooks: function () {
+		this._polyline.setStyle(this._polyline.options.original);
+
+		if (this._polyline._map) {
+			this._polyline._map.removeLayer(this._markerGroup);
+			delete this._markerGroup;
+			delete this._markers;
+		}
+	},
+
+	updateMarkers: function () {
+		this._markerGroup.clearLayers();
+		this._initMarkers();
+	},
+
+	_initMarkers: function () {
+		if (!this._markerGroup) {
+			this._markerGroup = new L.LayerGroup();
+		}
+		this._markers = [];
+
+		var latLngs = this._polyline.getLatLngs();
+		this._createMarker(latLngs[0], 0);
+
+		var index = latLngs.length - 1;
+		this._createMarker(latLngs[index], index);
+	},
+
+	_createMarker: function (latlng, index) {
+		var marker = new L.Marker.Touch(latlng, {
+			icon: this.options.icon,
+			zIndexOffset: this._parent.options.zIndexOffset * 2
+		});
+
+		marker._origLatLng = latlng;
+		marker._index = index;
+
+		marker
+			.on('click', this._fireContinue, this)
+			.on('touchend', this._fireContinue, this)
+			.on('MSPointerUp', this._fireContinue, this);
+
+		this._markerGroup.addLayer(marker);
+
+		this._markers.push(marker);
+		return marker;
+	},
+
+	_removeMarker: function (marker) {
+		marker
+			.off('touchend', this._fireContinue, this)
+			.off('click', this._fireContinue, this)
+			.off('MSPointerUp', this._fireContinue, this);
+	},
+
+	_fireContinue: function (e) {
+		this._polyline.fire('vertex:click', {
+			polyline: this._polyline,
+			index: e.target._index,
+			latlng: e.latlng
+		});
+	},
+
 });
