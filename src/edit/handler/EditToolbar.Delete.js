@@ -6,6 +6,8 @@ L.EditToolbar.Delete = L.Handler.extend({
 	statics: {
 		TYPE: 'remove' // not delete as delete is reserved in js
 	},
+	
+	includes: [L.Draw.EventsMixin],
 
 	// @method intialize(): void
 	initialize: function (map, options) {
@@ -22,15 +24,6 @@ L.EditToolbar.Delete = L.Handler.extend({
 
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.EditToolbar.Delete.TYPE;
-
-		var version = L.version.split('.');
-		//If Version is >= 1.2.0
-		if (parseInt(version[0], 10) === 1 && parseInt(version[1], 10) >= 2) {
-			L.EditToolbar.Delete.include(L.Evented.prototype);
-		} else {
-			L.EditToolbar.Delete.include(L.Mixin.Events);
-		}
-
 	},
 
 	// @method enable(): void

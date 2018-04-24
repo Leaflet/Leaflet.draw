@@ -44,6 +44,8 @@
  * ```
  */
 L.Toolbar = L.Class.extend({
+	includes: [L.Draw.EventsMixin],
+	
 	// @section Methods for modifying the toolbar
 
 	// @method initialize(options): void
@@ -54,14 +56,6 @@ L.Toolbar = L.Class.extend({
 		this._modes = {};
 		this._actionButtons = [];
 		this._activeMode = null;
-
-		var version = L.version.split('.');
-		//If Version is >= 1.2.0
-		if (parseInt(version[0], 10) === 1 && parseInt(version[1], 10) >= 2) {
-			L.Toolbar.include(L.Evented.prototype);
-		} else {
-			L.Toolbar.include(L.Mixin.Events);
-		}
 	},
 
 	// @method enabled(): boolean
