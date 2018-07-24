@@ -76,7 +76,19 @@ function loadSilently(path) {
 function bundleFiles(files, copy, version) {
     var node = new SourceNode(null, null, null, '');
 
-    node.add(new SourceNode(null, null, null, copy + '(function (window, document, undefined) {'));
+    var moduleDefinitionHeaderLines = [
+        copy + '(function (factory, window) {',
+        '\tif (typeof define === \'function\' && define.amd) {',
+        '\t\tdefine([\'leaflet\'], factory);',
+        '\t} else if (typeof exports === \'object\') {',
+        '\t\tmodule.exports = factory(require(\'leaflet\'));',
+        '\t}',
+        '}(function (L) {',
+    ];
+
+    for (var i = 0, len = moduleDefinitionHeaderLines.length; i < len; i++) {
+        node.add(new SourceNode(null, null, null, moduleDefinitionHeaderLines[i] + '\n'));
+    }
 
     for (var i = 0, len = files.length; i < len; i++) {
         var contents = fs.readFileSync(files[i], 'utf8');
@@ -102,7 +114,7 @@ function bundleFiles(files, copy, version) {
         node.add(new SourceNode(null, null, null, '\n\n'));
     }
 
-    node.add(new SourceNode(null, null, null, '}(window, document));'));
+    node.add(new SourceNode(null, null, null, '}, window));'));
 
     var bundle = node.toStringWithSourceMap();
     return {
