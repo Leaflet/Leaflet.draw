@@ -294,32 +294,17 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 		var marker = e.target;
 		var poly = this._poly;
 
+		var oldOrigLatLng = L.LatLngUtil.cloneLatLng(marker._origLatLng);
 		L.extend(marker._origLatLng, marker._latlng);
-
-		if (marker._middleLeft) {
-			marker._middleLeft.setLatLng(this._getMiddleLatLng(marker._prev, marker));
-		}
-		if (marker._middleRight) {
-			marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next));
-		}
-
 		if (poly.options.poly) {
 			var tooltip = poly._map._editTooltip; // Access the tooltip
 
 			// If we don't allow intersections and the polygon intersects
 			if (!poly.options.poly.allowIntersection && poly.intersects()) {
-
+				L.extend(marker._origLatLng, oldOrigLatLng);
+				marker.setLatLng(oldOrigLatLng);
 				var originalColor = poly.options.color;
 				poly.setStyle({color: this.options.drawError.color});
-
-				// Manually trigger 'dragend' behavior on marker we are about to remove
-				// WORKAROUND: introduced in 1.0.0-rc2, may be related to #4484
-				if (L.version.indexOf('0.7') !== 0) {
-					marker.dragging._draggable._onUp(e);
-				}
-				this._onMarkerClick(e); // Remove violating marker
-				// FIXME: Reset the marker to it's original position (instead of remove)
-
 				if (tooltip) {
 					tooltip.updateContent({
 						text: L.drawLocal.draw.handlers.polyline.error
@@ -338,6 +323,14 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 				}, 1000);
 			}
 		}
+
+		if (marker._middleLeft) {
+			marker._middleLeft.setLatLng(this._getMiddleLatLng(marker._prev, marker));
+		}
+		if (marker._middleRight) {
+			marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next));
+		}
+
 		//refresh the bounds when draging
 		this._poly._bounds._southWest = L.latLng(Infinity, Infinity);
 		this._poly._bounds._northEast = L.latLng(-Infinity, -Infinity);
