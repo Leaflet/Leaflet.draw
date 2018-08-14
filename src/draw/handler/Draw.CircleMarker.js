@@ -9,14 +9,16 @@ L.Draw.CircleMarker = L.Draw.Marker.extend({
 	},
 
 	options: {
-		stroke: true,
-		color: '#3388ff',
-		weight: 4,
-		opacity: 0.5,
-		fill: true,
-		fillColor: null, //same as color by default
-		fillOpacity: 0.2,
-		clickable: true,
+		shapeOptions: {
+			stroke: true,
+			color: '#3388ff',
+			weight: 4,
+			opacity: 0.5,
+			fill: true,
+			fillColor: null, //same as color by default
+			fillOpacity: 0.2,
+			clickable: true,
+		},
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
 
@@ -32,11 +34,11 @@ L.Draw.CircleMarker = L.Draw.Marker.extend({
 
 
 	_fireCreatedEvent: function () {
-		var circleMarker = new L.CircleMarker(this._marker.getLatLng(), this.options);
+		var circleMarker = new L.CircleMarker(this._marker.getLatLng(), this.options.shapeOptions);
 		L.Draw.Feature.prototype._fireCreatedEvent.call(this, circleMarker);
 	},
 
 	_createMarker: function (latlng) {
-		return new L.CircleMarker(latlng, this.options);
+		return new L.CircleMarker(latlng, this.options.shapeOptions);
 	}
 });
