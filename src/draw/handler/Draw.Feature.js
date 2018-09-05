@@ -35,9 +35,9 @@ L.Draw.Feature = L.Handler.extend({
 			return;
 		}
 
-		L.Handler.prototype.enable.call(this);
-
 		this.fire('enabled', {handler: this.type});
+
+		L.Handler.prototype.enable.call(this);
 
 		this._map.fire(L.Draw.Event.DRAWSTART, {layerType: this.type});
 	},
