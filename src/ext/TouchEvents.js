@@ -37,17 +37,17 @@ L.Map.TouchExtend = L.Handler.extend({
 	// @method removeHooks(): void
 	// Removes dom listener events from the map container
 	removeHooks: function () {
-		L.DomEvent.off(this._container, 'touchstart', this._onTouchStart);
-		L.DomEvent.off(this._container, 'touchend', this._onTouchEnd);
-		L.DomEvent.off(this._container, 'touchmove', this._onTouchMove);
+		L.DomEvent.off(this._container, 'touchstart', this._onTouchStart, this);
+		L.DomEvent.off(this._container, 'touchend', this._onTouchEnd, this);
+		L.DomEvent.off(this._container, 'touchmove', this._onTouchMove, this);
 		if (this._detectIE()) {
-			L.DomEvent.off(this._container, 'MSPointerDowm', this._onTouchStart);
-			L.DomEvent.off(this._container, 'MSPointerUp', this._onTouchEnd);
-			L.DomEvent.off(this._container, 'MSPointerMove', this._onTouchMove);
-			L.DomEvent.off(this._container, 'MSPointerCancel', this._onTouchCancel);
+			L.DomEvent.off(this._container, 'MSPointerDown', this._onTouchStart, this);
+			L.DomEvent.off(this._container, 'MSPointerUp', this._onTouchEnd, this);
+			L.DomEvent.off(this._container, 'MSPointerMove', this._onTouchMove, this);
+			L.DomEvent.off(this._container, 'MSPointerCancel', this._onTouchCancel, this);
 		} else {
-			L.DomEvent.off(this._container, 'touchcancel', this._onTouchCancel);
-			L.DomEvent.off(this._container, 'touchleave', this._onTouchLeave);
+			L.DomEvent.off(this._container, 'touchcancel', this._onTouchCancel, this);
+			L.DomEvent.off(this._container, 'touchleave', this._onTouchLeave, this);
 		}
 	},
 

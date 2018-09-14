@@ -81,7 +81,6 @@ for this section of the documentation, please edit docs-misc.leafdoc in the buil
 | --- | --- | --- | ---
 | shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Rectangle.js#L7) | The options used when drawing the rectangle on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
-| showRadius | Bool | `true` | Show the area of the drawn circle in m², ha or km². **The area is only approximate and become less accurate the larger the circle is.**
 
 @namespace CircleOptions
 
@@ -89,6 +88,7 @@ for this section of the documentation, please edit docs-misc.leafdoc in the buil
 | --- | --- | --- | ---
 | shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Circle.js#L7) | The options used when drawing the circle on the map.
 | repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
+| showRadius | Bool | `true` | Show the area of the drawn circle in m², ha or km². **The area is only approximate and become less accurate the larger the circle is.**
 
 
 @namespace MarkerOptions
