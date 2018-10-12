@@ -46,7 +46,17 @@ L.drawVersion = '0.4.2';
  * or GeometryCollection. If you need to add multigeometry features to the draw plugin, convert them to a
  * FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).
  */
-L.Draw = {};
+L.Draw = {
+	EventsMixin: (function() {
+		var version = L.version.split(".");
+		//If Version is < 1.2.0
+		if (parseInt(version[0], 10) < 1 || (parseInt(version[0], 10) === 1 && parseInt(version[1], 10) < 2)) {
+			return L.Mixin.Events;
+		} else {
+			return L.Evented.prototype;
+		}
+	})(),
+};
 
 /**
  * @class L.drawLocal

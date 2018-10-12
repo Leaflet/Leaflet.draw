@@ -6,6 +6,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 	statics: {
 		TYPE: 'edit'
 	},
+	
+	includes: [L.Draw.EventsMixin],
 
 	// @method intialize(): void
 	initialize: function (map, options) {
@@ -24,14 +26,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.EditToolbar.Edit.TYPE;
-
-		var version = L.version.split('.');
-		//If Version is >= 1.2.0
-		if (parseInt(version[0], 10) === 1 && parseInt(version[1], 10) >= 2) {
-			L.EditToolbar.Edit.include(L.Evented.prototype);
-		} else {
-			L.EditToolbar.Edit.include(L.Mixin.Events);
-		}
 	},
 
 	// @method enable(): void
