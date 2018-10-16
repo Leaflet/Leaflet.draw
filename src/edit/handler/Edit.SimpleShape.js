@@ -146,6 +146,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		marker.setOpacity(0);
 
 		this._shape.fire('editstart');
+		this._shape.fire('movestart');
 	},
 
 	_fireEdit: function () {
@@ -172,6 +173,8 @@ L.Edit.SimpleShape = L.Handler.extend({
 		marker.setOpacity(1);
 
 		this._fireEdit();
+
+		this._shape.fire('moveend');
 	},
 
 	_onTouchStart: function (e) {
@@ -192,6 +195,7 @@ L.Edit.SimpleShape = L.Handler.extend({
 		}
 
 		this._shape.fire('editstart');
+		this._shape.fire('movestart');
 	},
 
 	_onTouchMove: function (e) {
