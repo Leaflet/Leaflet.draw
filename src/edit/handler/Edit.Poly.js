@@ -255,6 +255,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 
 	_onMarkerDragStart: function () {
 		this._poly.fire('editstart');
+		this._poly.fire('movestart');
 	},
 
 	_spliceLatLngs: function () {
@@ -287,6 +288,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 	_fireEdit: function () {
 		this._poly.edited = true;
 		this._poly.fire('edit');
+		this._poly.fire('moveend');
 		this._poly._map.fire(L.Draw.Event.EDITVERTEX, {layers: this._markerGroup, poly: this._poly});
 	},
 
@@ -446,6 +448,7 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			this._updatePrevNext(marker, marker2);
 
 			this._poly.fire('editstart');
+			this._poly.fire('movestart');
 		};
 
 		onDragEnd = function () {
