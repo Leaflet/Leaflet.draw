@@ -102,5 +102,21 @@ L.Polyline.include({
 			points.push(this._map.latLngToLayerPoint(_shape[i]));
 		}
 		return points;
+	},
+
+	_checkLastSegment: function(){
+		var points = this._getProjectedPoints(),
+			length = points.length - 1,
+			p = points[length],
+			p1 = points[0];
+
+		for (var i = 1; i < length - 1; i++) {
+			if (L.LineUtil.segmentsIntersect(p, p1, points[i], points[i + 1])) {
+				return true;
+			}
+		}
+
+		return false;
 	}
+
 });

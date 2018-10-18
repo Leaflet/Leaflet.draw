@@ -221,6 +221,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			return;
 		}
 
+		if (this._poly._checkLastSegment()) {
+			this._showErrorTooltip();
+			return;
+		}
+
 		this._fireCreatedEvent();
 		this.disable();
 		if (this.options.repeatMode) {
