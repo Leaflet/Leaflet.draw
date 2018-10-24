@@ -16,7 +16,9 @@ L.Edit.Marker = L.Handler.extend({
 	addHooks: function () {
 		var marker = this._marker;
 
-		marker.dragging.enable();
+		if (marker.dragging != null) {
+			marker.dragging.enable();
+		}
 		marker.on('dragend', this._onDragEnd, marker);
 		this._toggleMarkerHighlight();
 	},
@@ -26,7 +28,9 @@ L.Edit.Marker = L.Handler.extend({
 	removeHooks: function () {
 		var marker = this._marker;
 
-		marker.dragging.disable();
+		if (marker.dragging != null) {
+			marker.dragging.disable();
+		}
 		marker.off('dragend', this._onDragEnd, marker);
 		this._toggleMarkerHighlight();
 	},

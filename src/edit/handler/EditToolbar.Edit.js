@@ -219,7 +219,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 			if (layer.editing) {
 				layer.editing.enable();
 			}
-			layer.dragging.enable();
+			if (layer.dragging != null) {
+				layer.dragging.enable();
+			}
 			layer
 				.on('dragend', this._onMarkerDragEnd)
 				// #TODO: remove when leaflet finally fixes their draggable so it's touch friendly again.
@@ -255,7 +257,9 @@ L.EditToolbar.Edit = L.Handler.extend({
 		}
 
 		if (layer instanceof L.Marker) {
-			layer.dragging.disable();
+			if (layer.dragging != null) {
+				layer.dragging.disable();
+			}
 			layer
 				.off('dragend', this._onMarkerDragEnd, this)
 				.off('touchmove', this._onTouchMove, this)
