@@ -66,6 +66,7 @@
 		readableArea: function (area, isMetric, precision) {
 			var areaStr,
 				units,
+				type,
 				precision = L.Util.extend({}, defaultPrecision, precision);
 
 			if (isMetric) {
