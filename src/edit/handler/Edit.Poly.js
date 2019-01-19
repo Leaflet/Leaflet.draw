@@ -59,10 +59,20 @@ L.Edit.Poly = L.Handler.extend({
 		});
 	},
 
-	_initHandlers: function () {
+	_initHandlers: function () {		
 		this._verticesHandlers = [];
-		for (var i = 0; i < this.latlngs.length; i++) {
-			this._verticesHandlers.push(new L.Edit.PolyVerticesEdit(this._poly, this.latlngs[i], this._poly.options.poly));
+        var secondArraySize = this.latlngs[0].filter(Array.isArray).length;
+        
+        for (var i = 0; i < this.latlngs.length; i++) {
+            if (secondArraySize > 1) {
+                var arraySize = this.latlngs[i].length;
+                for (var j = 0; j < arraySize; j++) {
+                    this._verticesHandlers.push(new L.Edit.PolyVerticesEdit(this._poly, this.latlngs[i][j], this._poly.options.poly));
+                }
+            } else {
+                this._verticesHandlers.push(new L.Edit.PolyVerticesEdit(this._poly, this.latlngs[i], this._poly.options.poly));
+            }
+            
 		}
 	},
 
