@@ -17,7 +17,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 			fill: true,
 			fillColor: null, //same as color by default
 			fillOpacity: 0.2,
-			clickable: true
+			interactive: true
 		},
 		showArea: true, //Whether to show the area in the tooltip
 		metric: true // Whether to use the metric measurement system or imperial

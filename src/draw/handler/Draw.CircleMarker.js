@@ -16,7 +16,7 @@ L.Draw.CircleMarker = L.Draw.Marker.extend({
 		fill: true,
 		fillColor: null, //same as color by default
 		fillOpacity: 0.2,
-		clickable: true,
+		interactive: true,
 		zIndexOffset: 2000 // This should be > than the highest z-index any markers
 	},
 

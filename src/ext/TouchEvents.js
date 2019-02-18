@@ -203,7 +203,7 @@ L.Marker.Touch = L.Marker.extend({
 	// with the addition of the touch events
 	_initInteractionLegacy: function () {
 
-		if (!this.options.clickable) {
+		if (!this.options.interactive) {
 			return;
 		}
 
