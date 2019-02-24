@@ -10,7 +10,7 @@
  *
  * @example
  * ```js
- * map.on(L.Draw.Event.CREATED; function (e) {
+ * map.on(L.Draw.Event.CREATED, function (e) {
  *    var type = e.layerType,
  *        layer = e.layer;
  *
