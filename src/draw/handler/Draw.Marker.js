@@ -50,7 +50,7 @@ L.Draw.Marker = L.Draw.Feature.extend({
 				.addTo(this._map);
 
 			this._map.on('mousemove', this._onMouseMove, this);
-			this._map.on('click', this._onTouch, this);
+			this._map.on('click touchstart', this._onTouch, this);
 		}
 	},
 
