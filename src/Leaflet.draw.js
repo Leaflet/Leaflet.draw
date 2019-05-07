@@ -1,7 +1,7 @@
 /**
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
-L.drawVersion = '0.4.2';
+L.drawVersion = '0.4.3';
 /**
  * @class L.Draw
  * @aka Draw
@@ -97,6 +97,7 @@ L.drawLocal = {
 				text: 'Delete last point'
 			},
 			buttons: {
+				line: "Draw a line",
 				polyline: 'Draw a polyline',
 				polygon: 'Draw a polygon',
 				rectangle: 'Draw a rectangle',
@@ -129,10 +130,17 @@ L.drawLocal = {
 					end: 'Click first point to close this shape.'
 				}
 			},
+			line: {
+				tooltip: {
+					start: 'Click to start drawing the line.',
+					cont: 'Clik a second point to finish the line',
+					end: 'Click a second point to finish the line.'
+				}
+			},
 			polyline: {
 				error: '<strong>Error:</strong> shape edges cannot cross!',
 				tooltip: {
-					start: 'Click to start drawing line.',
+					start: 'Click to start drawing polyline.',
 					cont: 'Click to continue drawing line.',
 					end: 'Click last point to finish line.'
 				}

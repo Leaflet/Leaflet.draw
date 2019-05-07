@@ -5,9 +5,9 @@ tmp/**/*
 *.iml
 _site
 *.sublime-*
-dist/*.js
-dist/*.css
-dist/*.map
+# dist/*.js
+# dist/*.css
+# dist/*.map
 coverage/
 *.js.html
 .mailmap
