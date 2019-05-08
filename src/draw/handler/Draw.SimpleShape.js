@@ -44,7 +44,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 			// (update): we have to send passive now to prevent scroll, because by default it is {passive: true} now, which means,
 			// handler can't event.preventDefault
 			// check the news https://developers.google.com/web/updates/2016/06/passive-event-listeners
-			document.addEventListener('touchstart', L.DomEvent.preventDefault, {passive: false});
+			this._map.getPanes().mapPane.addEventListener('touchstart', L.DomEvent.preventDefault, {passive: false});
 		}
 	},
 
@@ -69,7 +69,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 			L.DomEvent.off(document, 'mouseup', this._onMouseUp, this);
 			L.DomEvent.off(document, 'touchend', this._onMouseUp, this);
 
-			document.removeEventListener('touchstart', L.DomEvent.preventDefault);
+			this._map.getPanes().mapPane.removeEventListener('touchstart', L.DomEvent.preventDefault);
 
 			// If the box element doesn't exist they must not have moved the mouse, so don't need to destroy/return
 			if (this._shape) {
