@@ -125,7 +125,7 @@ L.Draw.Tooltip = L.Class.extend({
 		}
 	},
 
-	onFirstMouseMove: function() {
+	_onFirstMouseMove: function() {
 		// XXX: We don't have mouse position at init time, so we defer the
 		// tooltip visibility to the time when we have it
 		this._hasPosition = true;
