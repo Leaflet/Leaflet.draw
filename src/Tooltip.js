@@ -22,13 +22,18 @@ L.Draw.Tooltip = L.Class.extend({
 	initialize: function (map) {
 		this._map = map;
 		this._popupPane = map._panes.popupPane;
+
+		/* internal state properties */
 		this._visible = false;
+		this._isTooltipEmpty = true;
+		this._hasPosition = false;
 
 		this._container = map.options.drawControlTooltips ?
 			L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane) : null;
 		this._singleLineLabel = false;
 
 		this._map.on('mouseout', this._onMouseOut, this);
+		this._map.once('mousemove', this._onFirstMouseMove, this);
 	},
 
 	// @method dispose(): void
@@ -66,11 +71,15 @@ L.Draw.Tooltip = L.Class.extend({
 			'<span>' + labelText.text + '</span>';
 
 		if (!labelText.text && !labelText.subtext) {
+			this._isTooltipEmpty = true;
 			this._visible = false;
 			this._container.style.visibility = 'hidden';
 		} else {
-			this._visible = true;
-			this._container.style.visibility = 'inherit';
+			this._isTooltipEmpty = false;
+			if (this._hasPosition) {
+				this._visible = true;
+				this._container.style.visibility = 'inherit';
+			}
 		}
 
 		return this;
@@ -113,6 +122,15 @@ L.Draw.Tooltip = L.Class.extend({
 	_onMouseOut: function () {
 		if (this._container) {
 			this._container.style.visibility = 'hidden';
+		}
+	},
+
+	_onFirstMouseMove: function() {
+		// XXX: We don't have mouse position at init time, so we defer the
+		// tooltip visibility to the time when we have it
+		this._hasPosition = true;
+		if (!this._isTooltipEmpty) {
+			this._visible = true;
 		}
 	}
 });
