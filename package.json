@@ -43,7 +43,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Leaflet/Leaflet.draw.git"
+    "url": "https://github.com/betterview/Leaflet.draw.git"
   },
   "keywords": [
     "maps",
@@ -94,5 +94,8 @@
       "key-spacing": 0,
       "consistent-return": 0
     }
+  },
+  "dependencies": {
+    "babel-eslint": "^10.0.3"
   }
 }
