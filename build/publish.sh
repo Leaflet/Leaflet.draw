@@ -27,5 +27,5 @@ git push --tags -f
 
 #npm publish
 
-git checkout master
+git checkout develop
 git branch -D build
