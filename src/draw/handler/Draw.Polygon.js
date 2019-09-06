@@ -41,6 +41,18 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		this.type = L.Draw.Polygon.TYPE;
 	},
 
+
+	_endPoint: function (clientX, clientY, e) {
+		if (this._markers.length > 2) {
+			var dblClickPointDistance = this._calculateDistance(e.latlng, this._markers[this._markers.length - 1]);
+			if (dblClickPointDistance < 10 && L.Browser.touch) {
+				this._enableNewMarkers()
+				return
+			}
+		}
+		_endPoint.call(this, clientX, clientY, e)
+	},
+
 	_updateFinishHandler: function () {
 		var markerCount = this._markers.length;
 

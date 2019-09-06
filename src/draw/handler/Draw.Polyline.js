@@ -43,7 +43,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		factor: 1, // To change distance calculation
 		maxPoints: 0 // Once this number of points are placed, finish shape
 	},
-
+	
 	// @method initialize(): void
 	initialize: function (map, options) {
 		// if touch, switch to touch icon
@@ -63,6 +63,24 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this.type = L.Draw.Polyline.TYPE;
 
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
+	},
+	_calculateDistance: function (potentialLatLng, marker) {
+		var lastPtDistance;
+		if (this._markers.length > 0) {
+			var markerPoint = this._map.latLngToContainerPoint(marker.getLatLng())
+			var potentialMarker = new L.Marker(potentialLatLng, {
+				icon: this.options.icon,
+				zIndexOffset: this.options.zIndexOffset * 2
+			})
+	
+			var potentialMarkerPint = this._map.latLngToContainerPoint(potentialMarker.getLatLng())
+			lastPtDistance = markerPoint.distanceTo(potentialMarkerPint);
+	
+			console.log(markerPoint, potentialMarkerPint, lastPtDistance)
+		} else {
+			lastPtDistance = Infinity;
+		}
+		return lastPtDistance
 	},
 
 	// @method addHooks(): void
