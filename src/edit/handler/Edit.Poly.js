@@ -183,7 +183,9 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 			}
 		}
 
-		poly.setStyle(poly.options.original);
+		if (poly.options.original) {
+			poly.setStyle(poly.options.original);
+		}
 
 		if (poly._map) {
 			poly._map.removeLayer(this._markerGroup);
