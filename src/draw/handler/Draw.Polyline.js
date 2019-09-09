@@ -43,7 +43,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		factor: 1, // To change distance calculation
 		maxPoints: 0 // Once this number of points are placed, finish shape
 	},
-	
+
 	// @method initialize(): void
 	initialize: function (map, options) {
 		// if touch, switch to touch icon
@@ -63,24 +63,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		this.type = L.Draw.Polyline.TYPE;
 
 		L.Draw.Feature.prototype.initialize.call(this, map, options);
-	},
-	_calculateDistance: function (potentialLatLng, marker) {
-		var lastPtDistance;
-		if (this._markers.length > 0) {
-			var markerPoint = this._map.latLngToContainerPoint(marker.getLatLng())
-			var potentialMarker = new L.Marker(potentialLatLng, {
-				icon: this.options.icon,
-				zIndexOffset: this.options.zIndexOffset * 2
-			})
-	
-			var potentialMarkerPint = this._map.latLngToContainerPoint(potentialMarker.getLatLng())
-			lastPtDistance = markerPoint.distanceTo(potentialMarkerPint);
-	
-			console.log(markerPoint, potentialMarkerPint, lastPtDistance)
-		} else {
-			lastPtDistance = Infinity;
-		}
-		return lastPtDistance
 	},
 
 	// @method addHooks(): void
@@ -278,7 +260,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	},
 
 	_vertexChanged: function (latlng, added) {
-		this._map.fire(L.Draw.Event.DRAWVERTEX, {layers: this._markerGroup});
+		this._map.fire(L.Draw.Event.DRAWVERTEX, { layers: this._markerGroup });
 		this._updateFinishHandler();
 
 		this._updateRunningMeasure(latlng, added);
@@ -320,7 +302,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			if (this.options.maxPoints > 1 && this.options.maxPoints == this._markers.length + 1) {
 				this.addVertex(e.latlng);
 				this._finishShape();
-			} else if (lastPtDistance < 10 && L.Browser.touch) {
+			} else if (lastPtDistance < 10) { //&& L.Browser.touch 
 				this._finishShape();
 			} else if (Math.abs(dragCheckDistance) < 9 * (window.devicePixelRatio || 1)) {
 				this.addVertex(e.latlng);
@@ -551,11 +533,11 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		// Update tooltip
 		this._tooltip
 			.showAsError()
-			.updateContent({text: this.options.drawError.message});
+			.updateContent({ text: this.options.drawError.message });
 
 		// Update shape
 		this._updateGuideColor(this.options.drawError.color);
-		this._poly.setStyle({color: this.options.drawError.color});
+		this._poly.setStyle({ color: this.options.drawError.color });
 
 		// Hide the error after 2 seconds
 		this._clearHideErrorTimeout();
@@ -574,7 +556,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 		// Revert shape
 		this._updateGuideColor(this.options.shapeOptions.color);
-		this._poly.setStyle({color: this.options.shapeOptions.color});
+		this._poly.setStyle({ color: this.options.shapeOptions.color });
 	},
 
 	_clearHideErrorTimeout: function () {

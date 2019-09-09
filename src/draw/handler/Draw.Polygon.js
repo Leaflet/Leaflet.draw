@@ -9,7 +9,6 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 	},
 
 	Poly: L.Polygon,
-
 	options: {
 		showArea: false,
 		showLength: false,
@@ -39,18 +38,6 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 
 		// Save the type so super can fire, need to do this as cannot do this.TYPE :(
 		this.type = L.Draw.Polygon.TYPE;
-	},
-
-
-	_endPoint: function (clientX, clientY, e) {
-		if (this._markers.length > 2) {
-			var dblClickPointDistance = this._calculateDistance(e.latlng, this._markers[this._markers.length - 1]);
-			if (dblClickPointDistance < 10 && L.Browser.touch) {
-				this._enableNewMarkers()
-				return
-			}
-		}
-		_endPoint.call(this, clientX, clientY, e)
 	},
 
 	_updateFinishHandler: function () {
@@ -139,3 +126,33 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		}
 	}
 });
+
+L.Draw.Polyline.prototype._calculateDistance = function (potentialLatLng, marker) {
+  var lastPtDistance
+  if (this._markers.length > 0) {
+    var markerPoint = this._map.latLngToContainerPoint(marker.getLatLng())
+    var potentialMarker = new L.Marker(potentialLatLng, {
+      icon: this.options.icon,
+      zIndexOffset: this.options.zIndexOffset * 2
+    })
+
+    var potentialMarkerPint = this._map.latLngToContainerPoint(potentialMarker.getLatLng())
+    lastPtDistance = markerPoint.distanceTo(potentialMarkerPint)
+  } else {
+    lastPtDistance = Infinity
+  }
+  return lastPtDistance
+}
+
+var _endPoint = L.Draw.Polygon.prototype._endPoint
+L.Draw.Polygon.prototype._endPoint = function (clientX, clientY, e) {
+  if (this._markers.length > 2) {
+    var dblClickPointDistance = this._calculateDistance(e.latlng, this._markers[this._markers.length - 1])
+		if (dblClickPointDistance < 10) { //&& L.Browser.touch 
+          this._enableNewMarkers()
+          return
+        }
+  }
+
+  _endPoint.call(this, clientX, clientY, e)
+}
