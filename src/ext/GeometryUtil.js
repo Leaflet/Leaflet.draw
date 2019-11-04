@@ -65,6 +65,7 @@
 		// The value will be rounded as defined by the precision option object.
 		readableArea: function (area, isMetric, precision) {
 			var areaStr,
+				type,
 				units,
 				precision = L.Util.extend({}, defaultPrecision, precision);
 
