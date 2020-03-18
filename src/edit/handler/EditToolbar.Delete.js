@@ -113,7 +113,7 @@ L.EditToolbar.Delete = L.Handler.extend({
 	// @method save(): void
 	// Save deleted layers
 	save: function () {
-		this._map.fire(L.Draw.Event.DELETED, {layers: this._deletedLayers});
+		this._map.fire(L.Draw.Event.DELETED, {layer: this._deletedLayers});
 	},
 
 	// @method removeAllLayers(): void
