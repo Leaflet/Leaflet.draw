@@ -20,7 +20,8 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 			clickable: true
 		},
 		showArea: true, //Whether to show the area in the tooltip
-		metric: true // Whether to use the metric measurement system or imperial
+		maxExtent: 0, //Max extent (hectareas) for drawn rectangle (0=no limits) 
+		metric: true //Whether to use the metric measurement system or imperial
 	},
 
 	// @method initialize(): void
