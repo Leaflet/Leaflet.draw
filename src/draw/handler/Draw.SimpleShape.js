@@ -103,6 +103,17 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 		if (this._isDrawing) {
 			this._tooltip.updateContent(this._getTooltipText());
 			this._drawShape(latlng);
+
+			/* Control rectangle max bounds while drawing */
+      if (this._shape && this.options.maxExtent !== 0) {
+        latLngs = this._shape._defaultShape ? this._shape._defaultShape() : this._shape.getLatLngs();
+        area = L.GeometryUtil.geodesicArea(latLngs);
+        ha = area /10000 //conversion from m2 to ha
+        if (ha > this.options.maxExtent){
+          this._fireCreatedEvent();
+          this.disable();
+        }
+      }
 		}
 	},
 
