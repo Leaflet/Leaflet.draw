@@ -70,7 +70,7 @@
 
 			if (isMetric) {
 				units = ['ha', 'm'];
-				type = typeof isMetric;
+				var type = typeof isMetric;
 				if (type === 'string') {
 					units = [isMetric];
 				} else if (type !== 'boolean') {
