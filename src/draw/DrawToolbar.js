@@ -10,6 +10,7 @@ L.DrawToolbar = L.Toolbar.extend({
 
 	options: {
 		polyline: {},
+		curve: L.Curve ? {} : false,
 		polygon: {},
 		rectangle: {},
 		circle: {},
@@ -40,6 +41,11 @@ L.DrawToolbar = L.Toolbar.extend({
 				enabled: this.options.polyline,
 				handler: new L.Draw.Polyline(map, this.options.polyline),
 				title: L.drawLocal.draw.toolbar.buttons.polyline
+			},
+			{
+				enabled: this.options.curve,
+				handler: new L.Draw.Curve(map, this.options.curve),
+				title: L.drawLocal.draw.toolbar.buttons.curve
 			},
 			{
 				enabled: this.options.polygon,

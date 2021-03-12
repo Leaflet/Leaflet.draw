@@ -4,6 +4,7 @@
     <title>Leaflet.draw vector editing handlers</title>
 
     <script src="libs/leaflet-src.js"></script>
+    <script src="libs/Curve.js"></script>
     <link rel="stylesheet" href="libs/leaflet.css"/>
 
     <script src="../../src/Leaflet.draw.js"></script>
@@ -19,6 +20,7 @@
     <script src="../../src/ext/Polygon.Intersect.js"></script>
     <script src="../../src/ext/Polyline.Intersect.js"></script>
     <script src="../../src/ext/TouchEvents.js"></script>
+    <script src="../../src/ext/CurveCommon.js"></script>
 
     <script src="../../src/draw/DrawToolbar.js"></script>
     <script src="../../src/draw/handler/Draw.Feature.js"></script>
@@ -29,6 +31,7 @@
     <script src="../../src/draw/handler/Draw.CircleMarker.js"></script>
     <script src="../../src/draw/handler/Draw.Polygon.js"></script>
     <script src="../../src/draw/handler/Draw.Rectangle.js"></script>
+    <script src="../../src/draw/handler/Draw.Curve.js"></script>
 
 
     <script src="../../src/edit/EditToolbar.js"></script>
@@ -43,6 +46,8 @@
     <script src="../../src/edit/handler/Edit.Marker.js"></script>
     <script src="../../src/edit/handler/Edit.CircleMarker.js"></script>
     <script src="../../src/edit/handler/Edit.Circle.js"></script>
+    <script src="../../src/edit/handler/Edit.Curve.js"></script>
+    
 </head>
 <body>
 <div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
@@ -53,6 +58,7 @@
             osm = L.tileLayer(osmUrl, { maxZoom: 18, attribution: osmAttrib }),
             map = new L.Map('map', { center: new L.LatLng(51.505, -0.04), zoom: 13 }),
             drawnItems = L.featureGroup().addTo(map);
+
     L.control.layers({
         'osm': osm.addTo(map),
         "google": L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
@@ -64,22 +70,25 @@
             featureGroup: drawnItems,
             poly: {
                 allowIntersection: false
-            }
+            },
         },
         draw: {
             polygon: {
                 allowIntersection: false,
-                showArea: true
-            }
+                showArea: true,
+            },
         }
     }));
 
     map.on(L.Draw.Event.CREATED, function (event) {
         var layer = event.layer;
-
+        layer.setStyle({fill: true, fillColor: 'orange', color: 'green'});
         drawnItems.addLayer(layer);
     });
+
 
 </script>
 </body>
 </html>
+
+

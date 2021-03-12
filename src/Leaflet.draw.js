@@ -45,7 +45,12 @@ L.drawVersion = '0.4.2';
  * Leaflet.draw does not work with multigeometry features such as MultiPoint, MultiLineString, MultiPolygon,
  * or GeometryCollection. If you need to add multigeometry features to the draw plugin, convert them to a
  * FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).
- */
+ *
+ * ### Draw curves
+ * In order to be able to draw and edit curves, the [Leaflet.curve](https://github.com/elfalem/Leaflet.curve) plugin must be imported before Leaflet.draw.
+ * If it's not the case, the button to draw curves will simply not appear. 
+ * 
+*/
 L.Draw = {};
 
 /**
@@ -98,6 +103,7 @@ L.drawLocal = {
 			},
 			buttons: {
 				polyline: 'Draw a polyline',
+				curve: 'Draw a Beziers curve',
 				polygon: 'Draw a polygon',
 				rectangle: 'Draw a rectangle',
 				circle: 'Draw a circle',
@@ -135,6 +141,14 @@ L.drawLocal = {
 					start: 'Click to start drawing line.',
 					cont: 'Click to continue drawing line.',
 					end: 'Click last point to finish line.'
+				}
+			},
+			curve: {
+				tooltip: {
+					start: 'Click to place the starting point.',
+					cont: 'Press to place the next destination point.',
+					drag: 'Drag to ajust the curve.',
+					end: 'Click first or last point to finish curve.'
 				}
 			},
 			rectangle: {

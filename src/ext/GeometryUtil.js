@@ -152,6 +152,12 @@
 			}
 			return distanceStr;
 		},
+		
+		getPointSymetric: function(ref, point) {
+			var lat = 2 * ref[0] - point[0];
+			var lng = 2 * ref[1] - point[1];
+			return [lat, lng]
+		},
 
 		// @method isVersion07x(): boolean
 		// Returns true if the Leaflet version is 0.7.x, false otherwise.

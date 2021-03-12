@@ -152,6 +152,10 @@
 .leaflet-draw-toolbar .leaflet-draw-draw-polyline {
 	background-position: -2px -2px;
 }
+.leaflet-draw-toolbar .leaflet-draw-draw-curve {
+	background-image: url('images/bezier.png');
+	background-size: contain;
+}
 
 .leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polyline {
 	background-position: 0 -1px;
@@ -306,6 +310,10 @@
 	-webkit-border-radius: 4px;
 	border-radius: 4px;
 	box-sizing: content-box;
+}
+.leaflet-editing-handle {
+	background-color: #ff3c3cb7;
+	border-radius: 100%;
 }
 
 .leaflet-edit-move {

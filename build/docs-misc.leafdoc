@@ -42,6 +42,7 @@ for this section of the documentation, please edit docs-misc.leafdoc in the buil
 | --------- | ----- | --------- | ------------- |
 | polyline     | [PolylineOptions](#polylineoptions)         | `{ }` | Polyline draw handler options. Set to `false` to disable handler.      |
 | polygon      | [PolygonOptions](#polygonoptions)           | `{ }` | Polygon draw handler options. Set to `false` to disable handler.       |
+| curve        | [CurveOptions](#curveoptions)         		 | `{ }` | Curve draw handler options. Set to `false` to disable handler.     	  |
 | rectangle    | [RectangleOptions](#rectangleoptions)       | `{ }` | Rectangle draw handler options. Set to `false` to disable handler.     |
 | circle       | [CircleOptions](#circleoptions)             | `{ }` | Circle draw handler options. Set to `false` to disable handler.        |
 | marker       | [MarkerOptions](#markeroptions)             | `{ }` | Marker draw handler options. Set to `false` to disable handler.        |
@@ -74,6 +75,14 @@ for this section of the documentation, please edit docs-misc.leafdoc in the buil
 | nautic | Bool | `false` | Use nautic miles instead of yards and miles, when not using the metric measurement system nor feet.
 | precision | Object | `{km: 2, ha: 2, m: 0, mi: 2, ac: 2, yd: 0, ft: 0, nm: 2}` | Defines the precision to use for numbers of each type of unit. Possible units are `km` (kilometers), `ha` (hectares), `m` (metres), `mi` (miles), `ac` (acres), `ya` (yards), `ft` (feet), `nm` (nautical miles). For example `{km: 1}` changes the default precision for km and km² to one which gives values like `1.5 km` and `15.0 km²` in stead of `1.53 km` and `15.01 km²`.
 
+
+@namespace CurveOptions
+
+| Option | Type | Default | Description
+| --- | --- | --- | ---
+| shapeOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Curve.js#L19) | The options used when drawing the curve on the map.
+| shapeGuideOptions | [Leaflet Path options](http://leafletjs.com/reference.html#path-options) | [See code](https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Curve.js#L27) | The options used when drawing preview curve on mouse hover/drag.
+| repeatMode | Bool | `false` | Determines if the draw tool remains enabled after drawing a shape.
 
 @namespace RectangleOptions
 

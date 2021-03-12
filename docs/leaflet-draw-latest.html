@@ -138,6 +138,9 @@ should be editable. The featureGroup can contain 0 or more features with geometr
 Leaflet.draw does not work with multigeometry features such as MultiPoint, MultiLineString, MultiPolygon,
 or GeometryCollection. If you need to add multigeometry features to the draw plugin, convert them to a
 FeatureCollection of non-multigeometries (Points, LineStrings, or Polygons).</p>
+<h3 id="draw-curves">Draw curves</h3>
+<p>In order to be able to draw and edit curves, the <a href="https://github.com/elfalem/Leaflet.curve">Leaflet.curve</a> plugin must be imported before Leaflet.draw.
+If it&#39;s not the case, the button to draw curves will simply not appear.</p>
 
 
 
@@ -353,7 +356,7 @@ Triggered when the user has finished a particular vector or marker.</td>
 		<td><code><b>draw:drawvertex</b>
 		<td><code>LayerGroup</code></td>
 		<td>List of all layers just being added from the map.
-Triggered when a vertex is created on a polyline or polygon.</td>
+Triggered when a vertex is created on a polyline, polygon or curve.</td>
 	</tr>
 	<tr id='l-draw-event-draw:editstart'>
 		<td><code><b>draw:editstart</b>
@@ -1124,6 +1127,88 @@ Triggered when the user has finished removing shapes (remove mode) and saves.</t
 	</div>
 </div>
 
+</section><h2 id='l-draw-curve'>L.Draw.Curve</h2>
+<section>
+<h3 id='l-draw-curve-method'>Methods</h3>
+
+<section >
+
+
+
+
+<table><thead>
+	<tr>
+		<th>Method</th>
+		<th>Returns</th>
+		<th>Description</th>
+	</tr>
+	</thead><tbody>
+	<tr id='l-draw-curve-initialize'>
+		<td><code><b>initialize</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td></td>
+	</tr>
+	<tr id='l-draw-curve-addhooks'>
+		<td><code><b>addHooks</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Add listener hooks to this handler</p>
+</td>
+	</tr>
+	<tr id='l-draw-curve-removehooks'>
+		<td><code><b>removeHooks</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Remove listener hooks from this handler.</p>
+</td>
+	</tr>
+	<tr id='l-draw-curve-deletelastvertex'>
+		<td><code><b>deleteLastVertex</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Remove the last point from the path. Does nothing if only 2 points or less.</p>
+</td>
+	</tr>
+</tbody></table>
+
+</section>
+
+
+<div class='accordion'>
+	<label><span class='expander'>▶</span> Methods inherited from <a href='#l-draw-feature'>L.Draw.Feature</a></label>
+	<div class='accordion-overflow'>
+		<div class='accordion-content'><section >
+
+
+
+
+<table><thead>
+	<tr>
+		<th>Method</th>
+		<th>Returns</th>
+		<th>Description</th>
+	</tr>
+	</thead><tbody>
+	<tr id='l-draw-curve-enable'>
+		<td><code><b>enable</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Enables this handler</p>
+</td>
+	</tr>
+	<tr id='l-draw-curve-disable'>
+		<td><code><b>disable</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td></td>
+	</tr>
+	<tr id='l-draw-curve-setoptions'>
+		<td><code><b>setOptions</b>(<i>object</i>)</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Sets new options to this handler</p>
+</td>
+	</tr>
+</tbody></table>
+
+</section></div>
+	</div>
+</div>
+
 </section><h2 id='l-edit-simpleshape'>L.Edit.SimpleShape</h2>
 <section>
 <h3 id='l-edit-simpleshape-method'>Methods</h3>
@@ -1345,6 +1430,50 @@ Triggered when the user has finished removing shapes (remove mode) and saves.</t
 		<td><code><b>updateMarkers</b>()</nobr></code></td>
 		<td><code>void</code></td>
 		<td><p>Fire an update for each vertex handler</p>
+</td>
+	</tr>
+</tbody></table>
+
+</section>
+
+
+</section><h2 id='l-edit-curve'>L.Edit.Curve</h2>
+<section>
+<h3 id='l-edit-curve-method'>Methods</h3>
+
+<section >
+
+
+
+
+<table><thead>
+	<tr>
+		<th>Method</th>
+		<th>Returns</th>
+		<th>Description</th>
+	</tr>
+	</thead><tbody>
+	<tr id='l-edit-curve-initialize'>
+		<td><code><b>initialize</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td></td>
+	</tr>
+	<tr id='l-edit-curve-addhooks'>
+		<td><code><b>addHooks</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Add listener hooks to this handler</p>
+</td>
+	</tr>
+	<tr id='l-edit-curve-removehooks'>
+		<td><code><b>removeHooks</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Remove listener hooks from this handler</p>
+</td>
+	</tr>
+	<tr id='l-edit-curve-deletelastvertex'>
+		<td><code><b>deleteLastVertex</b>()</nobr></code></td>
+		<td><code>void</code></td>
+		<td><p>Remove the last point from the path. Does nothing if only 2 points or less.</p>
 </td>
 	</tr>
 </tbody></table>
@@ -2101,6 +2230,12 @@ for this section of the documentation, please edit docs-misc.leafdoc in the buil
 <td>Polygon draw handler options. Set to <code>false</code> to disable handler.</td>
 </tr>
 <tr>
+<td>curve</td>
+<td><a href="#curveoptions">CurveOptions</a></td>
+<td><code>{ }</code></td>
+<td>Curve draw handler options. Set to <code>false</code> to disable handler.</td>
+</tr>
+<tr>
 <td>rectangle</td>
 <td><a href="#rectangleoptions">RectangleOptions</a></td>
 <td><code>{ }</code></td>
@@ -2245,6 +2380,37 @@ for this section of the documentation, please edit docs-misc.leafdoc in the buil
 <td>Object</td>
 <td><code>{km: 2, ha: 2, m: 0, mi: 2, ac: 2, yd: 0, ft: 0, nm: 2}</code></td>
 <td>Defines the precision to use for numbers of each type of unit. Possible units are <code>km</code> (kilometers), <code>ha</code> (hectares), <code>m</code> (metres), <code>mi</code> (miles), <code>ac</code> (acres), <code>ya</code> (yards), <code>ft</code> (feet), <code>nm</code> (nautical miles). For example <code>{km: 1}</code> changes the default precision for km and km² to one which gives values like <code>1.5 km</code> and <code>15.0 km²</code> in stead of <code>1.53 km</code> and <code>15.01 km²</code>.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id='curveoptions'>CurveOptions</h2><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>shapeOptions</td>
+<td><a href="http://leafletjs.com/reference.html#path-options">Leaflet Path options</a></td>
+<td><a href="https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Curve.js#L19">See code</a></td>
+<td>The options used when drawing the curve on the map.</td>
+</tr>
+<tr>
+<td>shapeGuideOptions</td>
+<td><a href="http://leafletjs.com/reference.html#path-options">Leaflet Path options</a></td>
+<td><a href="https://github.com/Leaflet/Leaflet.draw/blob/master/src/draw/handler/Draw.Curve.js#L27">See code</a></td>
+<td>The options used when drawing preview curve on mouse hover/drag.</td>
+</tr>
+<tr>
+<td>repeatMode</td>
+<td>Bool</td>
+<td><code>false</code></td>
+<td>Determines if the draw tool remains enabled after drawing a shape.</td>
 </tr>
 </tbody>
 </table>
