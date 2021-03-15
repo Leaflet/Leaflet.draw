@@ -48,7 +48,8 @@ L.drawVersion = '0.4.2';
  *
  * ### Draw curves
  * In order to be able to draw and edit curves, the [Leaflet.curve](https://github.com/elfalem/Leaflet.curve) plugin must be imported before Leaflet.draw.
- * If it's not the case, the button to draw curves will simply not appear. 
+ * If it's not the case, the button to draw curves will simply not appear.  
+ * As the Renderer class must be defined to draw curves with L.curve, it is not enabled for Leaflet versions before 1.0.
  * 
 */
 L.Draw = {};
