@@ -3,7 +3,8 @@
  * @aka Draw.Curve
  * @inherits L.Draw.Feature
  */
-L.Draw.Curve = L.Draw.Feature.include(CurveCommon).extend({
+L.Draw.Curve = L.Draw.Feature.extend({
+	includes: CurveCommon,
 	statics: {
 		TYPE: 'curve'
 	},
@@ -120,9 +121,7 @@ L.Draw.Curve = L.Draw.Feature.include(CurveCommon).extend({
 			var firstMarker = this._createGoTo([e.latlng.lat, e.latlng.lng], 'M');
 			firstMarker.on('click', this._finishClose, this);
 			this._map.fire(L.Draw.Event.DRAWVERTEX, {layers: this._markerGroup});
-			// var firstMarker = new L.Marker.Touch(e.latlng, this.markerOptions).addTo(this._markerGroup);
 			return;
-			// firstMarker.on('click', this._finishShape, this);
 		}
 		if (!this._futurePathDef.length) { return; }
 		this._map.fire(L.Draw.Event.DRAWVERTEX, {layers: this._markerGroup});

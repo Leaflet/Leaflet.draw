@@ -5,7 +5,8 @@ L.Edit = L.Edit || {};
  * @aka L.Edit.Curve
  * @aka Edit.Curve
  */
-L.Edit.Curve = L.Handler.include(CurveCommon).extend({
+L.Edit.Curve = L.Handler.extend({
+    includes: CurveCommon,
     options: {
 		icon: new L.DivIcon({
 			iconSize: new L.Point(10, 10),

@@ -58,7 +58,6 @@
             osm = L.tileLayer(osmUrl, { maxZoom: 18, attribution: osmAttrib }),
             map = new L.Map('map', { center: new L.LatLng(51.505, -0.04), zoom: 13 }),
             drawnItems = L.featureGroup().addTo(map);
-
     L.control.layers({
         'osm': osm.addTo(map),
         "google": L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
@@ -82,10 +81,8 @@
 
     map.on(L.Draw.Event.CREATED, function (event) {
         var layer = event.layer;
-        layer.setStyle({fill: true, fillColor: 'orange', color: 'green'});
         drawnItems.addLayer(layer);
     });
-
 
 </script>
 </body>
