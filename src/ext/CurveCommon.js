@@ -24,12 +24,6 @@ CurveCommon = {
 		delete this._latlngs;	 
 	},
 
-	_closeShape: function() {
-		if (!this._instructions.length) { return; }
-		var firstPoint = this._latlngs[0][0];
-		this._createGoTo(firstPoint, 'L');
-	},
-
 	_createGoTo: function(latlng, instruction) {
 		var currentIndex = this._instructions.length;
 		var markerDest = new L.Marker.Touch(latlng, this.markerOptions);

@@ -97,8 +97,16 @@ L.Draw.Curve = L.Draw.Feature.extend({
 			this.enable();
 		}
 	},
-	_finishClose: function() {
-		this._closeShape();
+	_finishClose: function(e) {
+		// set last point to exact marker location
+		var latlng = e.target.getLatLng();
+		latlng = [latlng.lat, latlng.lng];
+		this._futurePathDef[this._futurePathDef.length - 1] = latlng;
+		// set last control point as well
+		if (this._futurePathDef.length > 3) {
+			this._futurePathDef[this._futurePathDef.length - 2] = latlng;
+		}
+		this._appendFuturePoint();
 		this.completeShape();
 	},
 
@@ -123,6 +131,10 @@ L.Draw.Curve = L.Draw.Feature.extend({
 			this._map.fire(L.Draw.Event.DRAWVERTEX, {layers: this._markerGroup});
 			return;
 		}
+		this._appendFuturePoint();
+	},
+
+	_appendFuturePoint: function () {
 		if (!this._futurePathDef.length) { return; }
 		this._map.fire(L.Draw.Event.DRAWVERTEX, {layers: this._markerGroup});
 		this._instructions.push(this._futurePathDef[0]);

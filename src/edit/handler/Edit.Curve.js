@@ -198,9 +198,10 @@ L.Edit.Curve = L.Handler.extend({
                 marker.on('drag click', self._onDragMarker, self);
             }
             else {
+                
                 marker._coordsIndex = [[markerIndex, 2]];
-                    // only one handle, moving the second control point (if first defined) and the destination
-                if (!isLast) {  marker._coordsIndex.push([markerIndex, 1]); }
+                // move the second control point (if first defined) and the destination
+                if (!isLast) { marker._coordsIndex.push([markerIndex, 1]); }
                 // one handle for destination, one handle for second control point
                 else if (!destSameSecondControl) {
                     marker._setupSimple = true;
