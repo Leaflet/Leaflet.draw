@@ -42,10 +42,10 @@ L.EditToolbar.Edit = L.Handler.extend({
 		}
 		this.fire('enabled', {handler: this.type});
 		//this disable other handlers
-
+		
 		this._map.fire(L.Draw.Event.EDITSTART, {handler: this.type});
 		//allow drawLayer to be updated before beginning edition.
-
+		
 		L.Handler.prototype.enable.call(this);
 		this._featureGroup
 			.on('layeradd', this._enableLayerEdit, this)
@@ -73,7 +73,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (map) {
 			map.getContainer().focus();
-
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
 
 			this._tooltip = new L.Draw.Tooltip(this._map);
@@ -155,6 +154,10 @@ L.EditToolbar.Edit = L.Handler.extend({
 				this._uneditedLayerProps[id] = {
 					latlng: L.LatLngUtil.cloneLatLng(layer.getLatLng())
 				};
+			} else if (layer instanceof L.Curve) {
+				this._uneditedLayerProps[id] = {
+					path: layer.getPath()
+				};
 			}
 		}
 	},
@@ -182,6 +185,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.setRadius(this._uneditedLayerProps[id].radius);
 			} else if (layer instanceof L.Marker || layer instanceof L.CircleMarker) { // Marker or CircleMarker
 				layer.setLatLng(this._uneditedLayerProps[id].latlng);
+			} else if (layer instanceof L.Curve) {
+				layer.setPath(this._uneditedLayerProps[id].path);
 			}
 
 			layer.fire('revert-edited', {layer: layer});
@@ -191,7 +196,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 	_enableLayerEdit: function (e) {
 		var layer = e.layer || e.target || e,
 			pathOptions, poly;
-
 		// Back up this layer (if haven't before)
 		this._backupLayer(layer);
 
@@ -214,6 +218,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			layer.options.editing = pathOptions;
 
 		}
+
 
 		if (layer instanceof L.Marker) {
 			if (layer.editing) {

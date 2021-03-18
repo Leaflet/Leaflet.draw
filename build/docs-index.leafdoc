@@ -13,12 +13,14 @@ This file just defines the order of the classes in the docs.
 @class L.Draw.Polyline
 @class L.Draw.Rectangle
 @class L.Draw.Polygon
+@class L.Draw.Curve
 
 @class L.Edit.SimpleShape
 @class L.Edit.Marker
 @class L.Edit.CircleMarker
 @class L.Edit.Circle
 @class L.Edit.Polyline
+@class L.Edit.Curve
 @class L.Edit.Rectangle
 @class L.EditToolbar.Edit
 @class L.EditToolbar.Delete

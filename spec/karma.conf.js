@@ -3,10 +3,11 @@ module.exports = function (config) {
 
 	var libSources = require(__dirname+'/../build/build.js').getFiles();
 	var leafletSources = require(__dirname+'/../node_modules/leaflet/build/build.js').getFiles();
-
 	for (var i=0; i < leafletSources.length; i++) {
 		leafletSources[i] = __dirname+"/../node_modules/leaflet/" + leafletSources[i];
 	}
+	// append optional dependency L.curve for passing tests
+	libSources.splice(0, 0, 'docs/examples/libs/Curve.js');
 
 	var files = [
 		"spec/before.js",

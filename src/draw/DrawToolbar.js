@@ -10,6 +10,7 @@ L.DrawToolbar = L.Toolbar.extend({
 
 	options: {
 		polyline: {},
+		curve: {},
 		polygon: {},
 		rectangle: {},
 		circle: {},
@@ -35,11 +36,20 @@ L.DrawToolbar = L.Toolbar.extend({
 	// @method getModeHandlers(): object
 	// Get mode handlers information
 	getModeHandlers: function (map) {
+		var curveEnabled = this.options.curve;
+		if (!L.Curve || L.version < '1.0') {
+			curveEnabled = false;
+		}
 		return [
 			{
 				enabled: this.options.polyline,
 				handler: new L.Draw.Polyline(map, this.options.polyline),
 				title: L.drawLocal.draw.toolbar.buttons.polyline
+			},
+			{
+				enabled: curveEnabled,
+				handler: new L.Draw.Curve(map, this.options.curve),
+				title: L.drawLocal.draw.toolbar.buttons.curve
 			},
 			{
 				enabled: this.options.polygon,

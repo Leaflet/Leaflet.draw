@@ -87,7 +87,7 @@ L.Draw.Event.DRAWSTOP = 'draw:drawstop';
  *
  * List of all layers just being added from the map.
  *
- * Triggered when a vertex is created on a polyline or polygon.
+ * Triggered when a vertex is created on a polyline, polygon or curve.
  */
 L.Draw.Event.DRAWVERTEX = 'draw:drawvertex';
 

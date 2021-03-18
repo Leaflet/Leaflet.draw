@@ -114,6 +114,37 @@ describe("L.Edit", function () {
 		});
 
 	});
+	describe("L.Edit.Curve", function () {
+		var edit,
+			drawnItems,
+			path;
+
+		beforeEach(function () {
+			drawnItems = new L.FeatureGroup().addTo(map);
+			edit = new L.EditToolbar.Edit(map, {
+				featureGroup: drawnItems,
+				selectedPathOptions: L.EditToolbar.prototype.options.edit.selectedPathOptions
+			});
+			path = new L.Curve(['M', [41, -87], 'C', [42, -88], [42, -89], [43, -90] ]);
+		});
+
+		it("Should change the style of the path during editing mode.", function () {
+			var originalOptions = L.extend({}, path.options);
+			drawnItems.addLayer(path);
+			edit.enable();
+			expect(path.editing.enabled()).to.equal(true);
+			expect(path.options).not.to.eql(originalOptions);
+		});
+
+		it("Should revert to original styles when editing is toggled.", function () {
+			var originalOptions = L.extend({maintainColor: false, }, path.options);
+			drawnItems.addLayer(path);
+			edit.enable();
+			edit.disable();
+			expect(path.options).to.eql(originalOptions);
+		});
+
+	});
 
 	describe("L.EditToolbar.Delete", function () {
 		var drawnItems,marker,circle,poly,deleteToollbar;
