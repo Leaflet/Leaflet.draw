@@ -26,6 +26,9 @@ L.Draw.Tooltip = L.Class.extend({
 
 		this._container = map.options.drawControlTooltips ?
 			L.DomUtil.create('div', 'leaflet-draw-tooltip', this._popupPane) : null;
+		if (this._container) {
+			L.DomUtil.setPosition(this._container, new L.Point(-999, -999));
+		}
 		this._singleLineLabel = false;
 
 		this._map.on('mouseout', this._onMouseOut, this);
