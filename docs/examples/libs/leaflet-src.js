@@ -4375,7 +4375,7 @@ var Map = Evented.extend({
 	// private methods for getting map state
 
 	_getMapPanePos: function () {
-		return getPosition(this._mapPane) || new Point(0, 0);
+		return this._mapPane ? getPosition(this._mapPane) : new Point(0, 0);
 	},
 
 	_moved: function () {

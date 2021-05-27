@@ -2260,7 +2260,7 @@ L.Map = L.Class.extend({
 	// private methods for getting map state
 
 	_getMapPanePos: function () {
-		return L.DomUtil.getPosition(this._mapPane);
+		return this._mapPane ? L.DomUtil.getPosition(this._mapPane) : new Point(0, 0);
 	},
 
 	_moved: function () {
