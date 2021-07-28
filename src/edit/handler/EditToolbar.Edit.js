@@ -42,10 +42,10 @@ L.EditToolbar.Edit = L.Handler.extend({
 		}
 		this.fire('enabled', {handler: this.type});
 		//this disable other handlers
-		
+
 		this._map.fire(L.Draw.Event.EDITSTART, {handler: this.type});
 		//allow drawLayer to be updated before beginning edition.
-		
+
 		L.Handler.prototype.enable.call(this);
 		this._featureGroup
 			.on('layeradd', this._enableLayerEdit, this)
@@ -73,6 +73,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 
 		if (map) {
 			map.getContainer().focus();
+
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
 
 			this._tooltip = new L.Draw.Tooltip(this._map);
@@ -190,6 +191,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			}
 
 			layer.fire('revert-edited', {layer: layer});
+
 		}
 	},
 
@@ -218,7 +220,6 @@ L.EditToolbar.Edit = L.Handler.extend({
 			layer.options.editing = pathOptions;
 
 		}
-
 
 		if (layer instanceof L.Marker) {
 			if (layer.editing) {

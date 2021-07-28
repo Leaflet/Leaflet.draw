@@ -3,6 +3,7 @@ module.exports = function (config) {
 
 	var libSources = require(__dirname+'/../build/build.js').getFiles();
 	var leafletSources = require(__dirname+'/../node_modules/leaflet/build/build.js').getFiles();
+	
 	for (var i=0; i < leafletSources.length; i++) {
 		leafletSources[i] = __dirname+"/../node_modules/leaflet/" + leafletSources[i];
 	}
