@@ -379,7 +379,6 @@ L.Edit.PolyVerticesEdit = L.Handler.extend({
 
 	_onContextMenu: function (e) {
 		var marker = e.target;
-		var poly = this._poly;
 		this._poly._map.fire(L.Draw.Event.MARKERCONTEXT, {marker: marker, layers: this._markerGroup, poly: this._poly});
 		L.DomEvent.stopPropagation;
 	},
