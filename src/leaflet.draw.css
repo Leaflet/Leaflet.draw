@@ -26,7 +26,7 @@
 	background-image: url('images/spritesheet.png');
 	background-image: linear-gradient(transparent, transparent), url('images/spritesheet.svg');
 	background-repeat: no-repeat;
-	background-size: 300px 30px;
+	background-size: 327px 30px;
 	background-clip: padding-box;
 }
 
@@ -157,6 +157,15 @@
 	background-position: 0 -1px;
 }
 
+.leaflet-draw-toolbar .leaflet-draw-draw-curve {
+	background-position: -297px -2px;
+}
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-curve {
+	background-position: -295px -2px;
+}
+
+
 .leaflet-draw-toolbar .leaflet-draw-draw-polygon {
 	background-position: -31px -2px;
 }
@@ -190,11 +199,11 @@
 }
 
 .leaflet-draw-toolbar .leaflet-draw-draw-circlemarker {
-	background-position: -273px -2px;
+	background-position: -272px -2px;
 }
 
 .leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-circlemarker {
-	background-position: -271px -1px;
+	background-position: -270px -1px;
 }
 
 /* ================================================================== */
@@ -306,6 +315,10 @@
 	-webkit-border-radius: 4px;
 	border-radius: 4px;
 	box-sizing: content-box;
+}
+.leaflet-editing-handle {
+	background-color: #ff3c3cb7;
+	border-radius: 100%;
 }
 
 .leaflet-edit-move {

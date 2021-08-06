@@ -6,11 +6,14 @@
 	<link rel="stylesheet" href="libs/leaflet.css" />
 
 	<script src="libs/leaflet-src.js"></script>
+	<script src="libs/Curve.js"></script>
 
 	<script src="../../src/Leaflet.draw.js"></script>
 	<script src="../../src/Leaflet.Draw.Event.js"></script>
 
 	<script src="../../src/ext/TouchEvents.js"></script>
+	<script src="../../src/ext/CurveCommon.js"></script>
+	<script src="../../src/ext/LatLngUtil.js"></script>
 
 	<script src="../../src/edit/handler/Edit.Poly.js"></script>
 	<script src="../../src/edit/handler/Edit.SimpleShape.js"></script>
@@ -18,6 +21,7 @@
 	<script src="../../src/edit/handler/Edit.Marker.js"></script>
 	<script src="../../src/edit/handler/Edit.CircleMarker.js"></script>
 	<script src="../../src/edit/handler/Edit.Circle.js"></script>
+	<script src="../../src/edit/handler/Edit.Curve.js"></script>
 
 </head>
 <body>
@@ -74,6 +78,12 @@
 		polyline.on('edit', function() {
 			console.log('Polyline was edited!');
 		});
+
+		var curve = L.curve(['M', [51.509, 0.02], 'C', [51.504, 0.04], [51.505, 0.04], [51.525, 0.02]]);
+		curve.editing.enable();
+
+		map.addLayer(curve);
+		
 	</script>
 </body>
 </html>

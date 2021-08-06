@@ -155,6 +155,10 @@ L.EditToolbar.Edit = L.Handler.extend({
 				this._uneditedLayerProps[id] = {
 					latlng: L.LatLngUtil.cloneLatLng(layer.getLatLng())
 				};
+			} else if (layer instanceof L.Curve) {
+				this._uneditedLayerProps[id] = {
+					path: layer.getPath()
+				};
 			}
 		}
 	},
@@ -182,16 +186,18 @@ L.EditToolbar.Edit = L.Handler.extend({
 				layer.setRadius(this._uneditedLayerProps[id].radius);
 			} else if (layer instanceof L.Marker || layer instanceof L.CircleMarker) { // Marker or CircleMarker
 				layer.setLatLng(this._uneditedLayerProps[id].latlng);
+			} else if (layer instanceof L.Curve) {
+				layer.setPath(this._uneditedLayerProps[id].path);
 			}
 
 			layer.fire('revert-edited', {layer: layer});
+
 		}
 	},
 
 	_enableLayerEdit: function (e) {
 		var layer = e.layer || e.target || e,
 			pathOptions, poly;
-
 		// Back up this layer (if haven't before)
 		this._backupLayer(layer);
 
