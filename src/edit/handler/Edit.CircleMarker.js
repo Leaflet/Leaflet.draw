@@ -7,7 +7,7 @@ L.Edit = L.Edit || {};
 L.Edit.CircleMarker = L.Edit.SimpleShape.extend({
 	_createMoveMarker: function () {
 		var center = this._shape.getLatLng();
-
+		this._map._editTooltip = new L.Draw.Tooltip(this._map);
 		this._moveMarker = this._createMarker(center, this.options.moveIcon);
 	},
 

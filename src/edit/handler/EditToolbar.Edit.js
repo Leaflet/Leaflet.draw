@@ -101,7 +101,8 @@ L.EditToolbar.Edit = L.Handler.extend({
 		if (this._map) {
 			// Clean up selected layers.
 			this._featureGroup.eachLayer(this._disableLayerEdit, this);
-
+			this._map._editTooltip.dispose();
+			this._map._editTooltip = null;
 			// Clear the backups of the original layers
 			this._uneditedLayerProps = {};
 

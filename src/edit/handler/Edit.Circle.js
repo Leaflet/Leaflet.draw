@@ -33,6 +33,7 @@ L.Edit.Circle = L.Edit.CircleMarker.extend({
 		this._shape.setRadius(radius);
 
 		if (this._map.editTooltip) {
+			this._map._editTooltip.updatePosition(latlng);
 			this._map._editTooltip.updateContent({
 				text: L.drawLocal.edit.handlers.edit.tooltip.subtext + '<br />' + L.drawLocal.edit.handlers.edit.tooltip.text,
 				subtext: L.drawLocal.draw.handlers.circle.radius + ': ' +
