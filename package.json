@@ -8,7 +8,7 @@
     "git-rev": "^0.2.1",
     "happen": "^0.3.2",
     "jake": "^8.0.15",
-    "karma": "^1.7.1",
+    "karma": "^6.3.16",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "~1.1.1",
     "karma-firefox-launcher": "~1.0.0",
