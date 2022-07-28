@@ -43,6 +43,20 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 		L.Draw.SimpleShape.prototype.disable.call(this);
 	},
 
+	// @method startDraw(): void
+	startDraw: function (latlng) {
+		if (this._isDrawing) {
+			return;
+		}
+
+		this._isDrawing = true;
+		this._startLatLng = latlng;
+
+		L.DomEvent
+			.on(document, 'mouseup', this._onMouseUp, this)
+			.on(document, 'touchend', this._onMouseUp, this)
+	},
+
 	_onMouseUp: function (e) {
 		if (!this._shape && !this._isCurrentlyTwoClickDrawing) {
 			this._isCurrentlyTwoClickDrawing = true;
