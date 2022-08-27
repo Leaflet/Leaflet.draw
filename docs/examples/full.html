@@ -48,7 +48,7 @@
 <div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
 
 <script>
-    var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    var osmUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             osm = L.tileLayer(osmUrl, { maxZoom: 18, attribution: osmAttrib }),
             map = new L.Map('map', { center: new L.LatLng(51.505, -0.04), zoom: 13 }),
