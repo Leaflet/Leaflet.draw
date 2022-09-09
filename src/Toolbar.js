@@ -190,35 +190,29 @@ L.Toolbar = L.Class.extend({
 
 	_createButton: function (options) {
 
-		var link = L.DomUtil.create('a', options.className || '', options.container);
-		// Screen reader tag
-		var sr = L.DomUtil.create('span', 'sr-only', options.container);
-
-		link.href = '#';
-		link.appendChild(sr);
+		var button = L.DomUtil.create('button', options.className || '', options.container);
 
 		if (options.title) {
-			link.title = options.title;
-			sr.innerHTML = options.title;
+			button.title = options.title;
 		}
 
 		if (options.text) {
-			link.innerHTML = options.text;
-			sr.innerHTML = options.text;
+			button.innerHTML = options.text;
 		}
+
+    button.setAttribute('aria-label', options.text ? options.text : options.title);
 
 		/* iOS does not use click events */
 		var buttonEvent = this._detectIOS() ? 'touchstart' : 'click';
 
 		L.DomEvent
-			.on(link, 'click', L.DomEvent.stopPropagation)
-			.on(link, 'mousedown', L.DomEvent.stopPropagation)
-			.on(link, 'dblclick', L.DomEvent.stopPropagation)
-			.on(link, 'touchstart', L.DomEvent.stopPropagation)
-			.on(link, 'click', L.DomEvent.preventDefault)
-			.on(link, buttonEvent, options.callback, options.context);
+			.on(button, 'click', L.DomEvent.stopPropagation)
+			.on(button, 'mousedown', L.DomEvent.stopPropagation)
+			.on(button, 'dblclick', L.DomEvent.stopPropagation)
+			.on(button, 'touchstart', L.DomEvent.stopPropagation)
+    .on(button, buttonEvent, options.callback, options.context);
 
-		return link;
+		return button;
 	},
 
 	_disposeButton: function (button, callback) {
