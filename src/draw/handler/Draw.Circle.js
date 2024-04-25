@@ -67,7 +67,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 			this._drawShape(latlng);
 
 			// Get the new radius (rounded to 1 dp)
-			radius = this._shape.getRadius().toFixed(1);
+			radius = parseFloat(this._shape.getRadius().toFixed(1));
 
 			var subtext = '';
 			if (showRadius) {
