@@ -154,6 +154,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// Remove the last vertex from the polyline, removes polyline from map if only one point exists.
 	deleteLastVertex: function () {
 		if (this._markers.length <= 1) {
+			this.disable();
 			return;
 		}
 
