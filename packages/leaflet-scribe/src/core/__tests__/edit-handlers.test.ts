@@ -208,6 +208,122 @@ describe('L.Edit', () => {
       expect(polyEdit._verticesHandlers[0]._markerGroup.getLayers().length).toBe(10)
     })
 
+    it('moves the whole polygon when dragging the center move marker', () => {
+      const polygon = new L.Polygon([
+        L.latLng(0, 0),
+        L.latLng(0, 10),
+        L.latLng(10, 10),
+        L.latLng(10, 0),
+      ])
+      drawnItems.addLayer(polygon)
+      edit.enable()
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const polyEdit = polygon.editing as any
+      const moveMarker = polyEdit._moveMarker
+      const before = polygon
+        .getLatLngs()[0]
+        .map((latlng: LTypes.LatLng) => L.latLng(latlng.lat, latlng.lng))
+      const editedEvents: string[] = []
+
+      map.on(L.Draw.Event.EDITMOVE, (event: LTypes.LeafletEvent) => {
+        editedEvents.push(event.type)
+      })
+
+      expect(moveMarker).toBeDefined()
+
+      moveMarker.fire('dragstart')
+      moveMarker.setLatLng(L.latLng(7, 8))
+      moveMarker.fire('drag')
+      moveMarker.fire('dragend')
+
+      const after = polygon.getLatLngs()[0]
+
+      for (let i = 0; i < after.length; i++) {
+        expect(after[i].lat).toBeCloseTo(before[i].lat + 2, 4)
+        expect(after[i].lng).toBeCloseTo(before[i].lng + 3, 4)
+      }
+
+      expect(editedEvents).toContain(L.Draw.Event.EDITMOVE)
+      expect(polygon.edited).toBe(true)
+      expect(moveMarker.getLatLng().equals(polygon.getBounds().getCenter())).toBe(true)
+    })
+
+    it('removes the polygon center move marker when editing is disabled', () => {
+      const polygon = new L.Polygon([
+        L.latLng(0, 0),
+        L.latLng(0, 10),
+        L.latLng(10, 10),
+        L.latLng(10, 0),
+      ])
+      drawnItems.addLayer(polygon)
+      edit.enable()
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const moveMarker = (polygon.editing as any)._moveMarker as LTypes.Marker
+      expect(map.hasLayer(moveMarker)).toBe(true)
+
+      polygon.editing?.disable()
+
+      expect(map.hasLayer(moveMarker)).toBe(false)
+    })
+
+    it('moves the whole polyline when dragging the center move marker', () => {
+      const polyline = new L.Polyline([
+        L.latLng(0, 0),
+        L.latLng(0, 10),
+        L.latLng(10, 10),
+      ])
+      drawnItems.addLayer(polyline)
+      edit.enable()
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const polyEdit = polyline.editing as any
+      const moveMarker = polyEdit._moveMarker
+      const before = polyline
+        .getLatLngs()
+        .map((latlng: LTypes.LatLng) => L.latLng(latlng.lat, latlng.lng))
+
+      expect(moveMarker).toBeDefined()
+
+      moveMarker.fire('dragstart')
+      moveMarker.setLatLng(L.latLng(7, 8))
+      moveMarker.fire('drag')
+      moveMarker.fire('dragend')
+
+      const after = polyline.getLatLngs()
+
+      for (let i = 0; i < after.length; i++) {
+        expect(after[i].lat).toBeCloseTo(before[i].lat + 2, 4)
+        expect(after[i].lng).toBeCloseTo(before[i].lng + 3, 4)
+      }
+
+      expect(polyline.edited).toBe(true)
+      expect(moveMarker.getLatLng().equals(polyline.getBounds().getCenter())).toBe(true)
+    })
+
+    it('keeps the center move marker in sync after a vertex is dragged', () => {
+      const polygon = new L.Polygon([
+        L.latLng(0, 0),
+        L.latLng(0, 10),
+        L.latLng(10, 10),
+        L.latLng(10, 0),
+      ])
+      drawnItems.addLayer(polygon)
+      edit.enable()
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const polyEdit = polygon.editing as any
+      const verticesHandler = polyEdit._verticesHandlers[0]
+      const marker = verticesHandler._markers[3]
+      marker.fire('dragstart')
+      marker._latlng = L.latLng(-5, 15)
+      marker.fire('drag')
+      marker.fire('dragend')
+
+      expect(polyEdit._moveMarker.getLatLng().equals(polygon.getBounds().getCenter())).toBe(true)
+    })
+
     it('removes _markerGroup from the map when the polygon is removed from the map while editing', () => {
       const polygon = new L.Polygon([
         L.latLng(0, 0),
