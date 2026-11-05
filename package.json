@@ -3,12 +3,16 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "packages/leaflet-scribe"
+    "packages/leaflet-scribe",
+    "apps/*"
   ],
   "scripts": {
     "build": "npm run build:lib",
+    "dev": "npm run dev --workspace=@leaflet-scribe/playground",
     "dev:lib": "npm run dev --workspace=leaflet-scribe",
+    "dev:playground": "npm run dev --workspace=@leaflet-scribe/playground",
     "build:lib": "npm run build --workspace=leaflet-scribe",
+    "build:playground": "npm run build --workspace=@leaflet-scribe/playground",
     "lint": "npm run lint:lib",
     "lint:lib": "npm run lint --workspace=leaflet-scribe",
     "test": "npm run test --workspace=leaflet-scribe",
