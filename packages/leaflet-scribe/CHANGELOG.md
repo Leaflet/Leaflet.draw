@@ -1,5 +1,11 @@
 # leaflet-scribe
 
+## 2.1.0
+
+### Minor Changes
+
+- 25b8f6a: Add center move handles to polylines and polygons in edit mode so the whole shape can be dragged, matching the existing circle and rectangle move behavior.
+
 ## 2.0.1
 
 ### Patch Changes
