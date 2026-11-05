@@ -185,6 +185,12 @@ npm run test:lib
 npm run build:lib
 ```
 
+A Vite + React playground lives in `apps/playground` and imports the library from source for live testing:
+
+```bash
+npm run dev
+```
+
 ## License
 
 MIT

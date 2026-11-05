@@ -193,6 +193,14 @@ export interface EditSimpleShapeOptions {
 
 export interface EditPolyOptions extends EditPolyVerticesEditOptions {
   /**
+   * The icon displayed on the move handle used to drag the whole polyline/polygon.
+   */
+  moveIcon?: L.Icon | L.DivIcon | undefined
+  /**
+   * The touch icon displayed on the move handle used to drag the whole polyline/polygon.
+   */
+  touchMoveIcon?: L.Icon | L.DivIcon | undefined
+  /**
    * Determines if line segments can cross.
    * @default true
    */

@@ -7,6 +7,17 @@ L.Edit = L.Edit || {}
  * Polyline and Polygon editing handler (`L.Edit.Poly`).
  */
 export const EditPoly = L.Handler.extend({
+  options: {
+    moveIcon: new L.DivIcon({
+      iconSize: new L.Point(8, 8),
+      className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-move',
+    }),
+    touchMoveIcon: new L.DivIcon({
+      iconSize: new L.Point(20, 20),
+      className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-move leaflet-touch-icon',
+    }),
+  },
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initialize(poly: any) {
     this.latlngs = [poly._latlngs]
@@ -17,6 +28,8 @@ export const EditPoly = L.Handler.extend({
     this._poly = poly
 
     this._poly.on('revert-edited', this._updateLatLngs, this)
+    this._poly.on('editdrag', this._updateMoveMarker, this)
+    this._poly.on('edit', this._updateMoveMarker, this)
   },
 
   _defaultShape() {
@@ -44,9 +57,11 @@ export const EditPoly = L.Handler.extend({
     this._eachVertexHandler((handler: any) => {
       handler.addHooks()
     })
+    this._createMoveMarker()
   },
 
   removeHooks() {
+    this._removeMoveMarker()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this._eachVertexHandler((handler: any) => {
       handler.removeHooks()
@@ -59,6 +74,123 @@ export const EditPoly = L.Handler.extend({
     this._eachVertexHandler((handler: any) => {
       handler.updateMarkers()
     })
+    this._updateMoveMarker()
+  },
+
+  _createMoveMarker() {
+    if (!(this._poly instanceof L.Polyline) || this._moveMarker || !this._poly._map) {
+      return
+    }
+
+    const polyOptions = this._poly.options.poly || {}
+    const moveIcon = L.Browser.touch
+      ? polyOptions.touchMoveIcon || polyOptions.moveIcon || this.options.touchMoveIcon
+      : polyOptions.moveIcon || this.options.moveIcon
+
+    const marker = new L.Marker.Touch(this._poly.getBounds().getCenter(), {
+      draggable: true,
+      icon: moveIcon,
+      zIndexOffset: 10,
+    })
+
+    marker
+      .on('dragstart', this._onMoveMarkerDragStart, this)
+      .on('drag', this._onMoveMarkerDrag, this)
+      .on('dragend', this._onMoveMarkerDragEnd, this)
+
+    this._moveMarker = marker
+    this._poly._map.addLayer(marker)
+  },
+
+  _removeMoveMarker() {
+    const marker = this._moveMarker
+
+    if (!marker) {
+      return
+    }
+
+    marker
+      .off('dragstart', this._onMoveMarkerDragStart, this)
+      .off('drag', this._onMoveMarkerDrag, this)
+      .off('dragend', this._onMoveMarkerDragEnd, this)
+
+    const map = marker._map || this._poly._map
+    if (map) {
+      map.removeLayer(marker)
+    }
+
+    this._moveMarker = null
+    this._moveMarkerStartLatLng = null
+  },
+
+  _updateMoveMarker() {
+    if (!this._moveMarker) {
+      return
+    }
+
+    this._moveMarker.setLatLng(this._poly.getBounds().getCenter())
+  },
+
+  _onMoveMarkerDragStart() {
+    this._moveMarkerStartLatLng = this._moveMarker.getLatLng()
+    this._poly.fire('editstart')
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _onMoveMarkerDrag(e: any) {
+    const map = this._poly._map
+    const marker = e.target
+
+    if (!map || !this._moveMarkerStartLatLng) {
+      return
+    }
+
+    const newLatLng = marker.getLatLng()
+    const latOffset = newLatLng.lat - this._moveMarkerStartLatLng.lat
+    const lngOffset = newLatLng.lng - this._moveMarkerStartLatLng.lng
+
+    this._translateLatLngs(this._poly.getLatLngs(), latOffset, lngOffset)
+    this._moveMarkerStartLatLng = newLatLng
+
+    this._refreshBounds()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this._eachVertexHandler((handler: any) => {
+      handler.updateMarkerPositions()
+    })
+    this._poly.redraw()
+    this._poly.fire('editdrag')
+    this._moveMarkerStartLatLng = this._moveMarker.getLatLng()
+    map.fire(L.Draw.Event.EDITMOVE, { layer: this._poly })
+  },
+
+  _onMoveMarkerDragEnd() {
+    this._moveMarkerStartLatLng = null
+    this._poly.edited = true
+    this._poly.fire('edit')
+  },
+
+  _translateLatLngs(
+    latlngs: LTypes.LatLng[] | LTypes.LatLng[][],
+    latOffset: number,
+    lngOffset: number,
+  ) {
+    for (let i = 0; i < latlngs.length; i++) {
+      const latlng = latlngs[i]
+
+      if (Array.isArray(latlng)) {
+        this._translateLatLngs(latlng, latOffset, lngOffset)
+        continue
+      }
+
+      latlng.lat += latOffset
+      latlng.lng += lngOffset
+    }
+  },
+
+  _refreshBounds() {
+    this._poly._bounds._southWest = L.latLng(Infinity, Infinity)
+    this._poly._bounds._northEast = L.latLng(-Infinity, -Infinity)
+    this._poly._convertLatLngs(this._poly.getLatLngs(), true)
   },
 
   _initHandlers() {
@@ -209,6 +341,25 @@ export const EditPolyVerticesEdit = L.Handler.extend({
   updateMarkers() {
     this._markerGroup.clearLayers()
     this._initMarkers()
+  },
+
+  updateMarkerPositions() {
+    if (!this._markers) {
+      return
+    }
+
+    for (let i = 0; i < this._markers.length; i++) {
+      const marker = this._markers[i]
+
+      marker.setLatLng(marker._origLatLng)
+
+      if (marker._middleLeft) {
+        marker._middleLeft.setLatLng(this._getMiddleLatLng(marker._prev, marker))
+      }
+      if (marker._middleRight) {
+        marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next))
+      }
+    }
   },
 
   _initMarkers() {
