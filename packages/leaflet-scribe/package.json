@@ -1,6 +1,6 @@
 {
   "name": "leaflet-scribe",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Vector drawing and editing toolkit for Leaflet maps — draw and edit polylines, polygons, rectangles, circles, circle markers, and markers. Optional React bindings.",
   "type": "module",
   "sideEffects": true,
